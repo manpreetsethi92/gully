@@ -1,0 +1,47 @@
+/* Additional App Styles */
+
+.app-container {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* Landing Hero */
+.landing-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.landing-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  width: 100%;
+  gap: 80px;
+}
+
+.landing-text {
+  flex: 1;
+  max-width: 500px;
+}
+
+.landing-visual {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .landing-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+  
+  .landing-text {
+    max-width: 100%;
+  }
+}
