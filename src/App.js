@@ -7,7 +7,7 @@ import { Toaster } from "./components/ui/sonner";
 // Pages
 import LandingPage from "./pages/LandingPage";
 import DashboardLayout from "./pages/DashboardLayout";
-import AdminDashboard from "./components/admin/AdminDashboard";
+import AdminDashboard from "./components/Admin/AdminDashboard";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 export const API = `${BACKEND_URL}/api`;
