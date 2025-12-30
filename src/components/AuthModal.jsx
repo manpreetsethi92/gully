@@ -171,10 +171,22 @@ const AuthModal = ({ isOpen, onClose }) => {
     }
   };
 
+  // Check if at least one social link is provided
+  const hasSocialLink = () => {
+    return socialLinks.instagram.trim() !== "" || socialLinks.linkedin.trim() !== "";
+  };
+
   const handleCompleteProfile = async (e) => {
     e.preventDefault();
     if (!name.trim()) { toast.error("Name is required"); return; }
     if (!age || parseInt(age) < 13) { toast.error("Please enter a valid age"); return; }
+    
+    // REQUIRE Instagram OR LinkedIn
+    if (!hasSocialLink()) { 
+      toast.error("Please add your Instagram or LinkedIn to verify your profile"); 
+      return; 
+    }
+    
     if (!bio.trim()) { toast.error("Please add a short bio"); return; }
     if (selectedSkills.length === 0) { toast.error("Select at least one skill"); return; }
 
@@ -184,11 +196,14 @@ const AuthModal = ({ isOpen, onClose }) => {
       const formattedPhone = formatPhoneNumber(phone);
       
       if (!authToken) {
+        // Pass social links at signup for new users
         const authResponse = await axios.post(`${API}/auth/verify-otp`, { 
           phone: formattedPhone, 
           otp: otp,
           name: name.trim(), 
-          age: parseInt(age)
+          age: parseInt(age),
+          instagram: socialLinks.instagram.trim() || null,
+          linkedin: socialLinks.linkedin.trim() || null
         });
         authToken = authResponse.data.token;
         login(authResponse.data.token, authResponse.data.user);
@@ -328,6 +343,42 @@ const AuthModal = ({ isOpen, onClose }) => {
                       </div>
                     </div>
 
+                    {/* SOCIAL LINKS - REQUIRED - Moved up and highlighted */}
+                    <div className="p-4 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(229, 9, 20, 0.05) 0%, rgba(255, 71, 87, 0.05) 100%)', border: '1px solid rgba(229, 9, 20, 0.2)' }}>
+                      <Label className="text-xs font-medium mb-2 block" style={{ color: '#E50914' }}>
+                        VERIFY YOUR PROFILE *
+                      </Label>
+                      <p className="text-xs text-gray-500 mb-3">Add at least one so others can see your work</p>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Instagram size={16} className="text-pink-500 flex-shrink-0" />
+                          <Input 
+                            value={socialLinks.instagram} 
+                            onChange={(e) => setSocialLinks({...socialLinks, instagram: e.target.value})} 
+                            placeholder="Username or link (e.g., tajsethi_)" 
+                            className={`h-10 text-sm ${hasSocialLink() ? 'border-green-300' : ''}`}
+                          />
+                        </div>
+                        <div className="flex items-center justify-center">
+                          <span className="text-xs text-gray-400 px-2">or</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Linkedin size={16} className="text-blue-600 flex-shrink-0" />
+                          <Input 
+                            value={socialLinks.linkedin} 
+                            onChange={(e) => setSocialLinks({...socialLinks, linkedin: e.target.value})} 
+                            placeholder="Username or link (e.g., taj-sethi)" 
+                            className={`h-10 text-sm ${hasSocialLink() ? 'border-green-300' : ''}`}
+                          />
+                        </div>
+                      </div>
+                      {hasSocialLink() && (
+                        <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
+                          <Check size={12} /> Profile verification ready
+                        </p>
+                      )}
+                    </div>
+
                     <div>
                       <Label className="text-xs font-medium text-gray-500 mb-1 block">BIO</Label>
                       <Textarea value={bio} onChange={(e) => setBio(e.target.value)} placeholder="What do you do?" className="resize-none h-16 text-sm" maxLength={200} />
@@ -351,23 +402,20 @@ const AuthModal = ({ isOpen, onClose }) => {
                       </div>
                     </div>
 
-                    <div>
-                      <Label className="text-xs font-medium text-gray-500 mb-1 block">SOCIAL LINKS (optional)</Label>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="flex items-center gap-2">
-                          <Instagram size={14} className="text-gray-400" />
-                          <Input value={socialLinks.instagram} onChange={(e) => setSocialLinks({...socialLinks, instagram: e.target.value})} placeholder="Instagram" className="h-9 text-sm" />
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Linkedin size={14} className="text-gray-400" />
-                          <Input value={socialLinks.linkedin} onChange={(e) => setSocialLinks({...socialLinks, linkedin: e.target.value})} placeholder="LinkedIn" className="h-9 text-sm" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <button type="submit" className="w-full h-11 rounded-full text-white font-semibold" style={{ background: '#E50914' }} disabled={loading}>
+                    <button 
+                      type="submit" 
+                      className="w-full h-11 rounded-full text-white font-semibold transition-opacity" 
+                      style={{ background: '#E50914', opacity: hasSocialLink() ? 1 : 0.5 }} 
+                      disabled={loading || !hasSocialLink()}
+                    >
                       {loading ? <div className="spinner mx-auto" /> : "Complete Profile"}
                     </button>
+                    
+                    {!hasSocialLink() && (
+                      <p className="text-xs text-center text-gray-400">
+                        Add Instagram or LinkedIn above to continue
+                      </p>
+                    )}
                   </form>
                 </div>
               )}
