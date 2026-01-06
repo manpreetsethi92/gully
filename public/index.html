@@ -3,13 +3,108 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/site.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
     <meta name="theme-color" content="#E50914" />
-    <meta name="description" content="titly - Connect with the right people" />
-    <title>titly</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>Titly - Connect with Creative Professionals | Find Artists, Producers & More</title>
+    <meta name="title" content="Titly - Connect with Creative Professionals | Find Artists, Producers & More" />
+    <meta name="description" content="Tell Taj who you need, get introduced. One message away from meeting artists, producers, mentors, advisors, and investors. The professional network for creatives." />
+    <meta name="keywords" content="creative network, find artists, hire producers, music collaboration, film professionals, creative freelancers, networking platform, find mentors, creative industry" />
+    <meta name="author" content="Titly" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://titliwork-website.vercel.app/" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://titliwork-website.vercel.app/" />
+    <meta property="og:title" content="Titly - Connect with Creative Professionals" />
+    <meta property="og:description" content="Tell Taj who you need, get introduced. One message away from meeting artists, producers, mentors, advisors, and investors." />
+    <meta property="og:image" content="https://titliwork-website.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Titly" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://titliwork-website.vercel.app/" />
+    <meta name="twitter:title" content="Titly - Connect with Creative Professionals" />
+    <meta name="twitter:description" content="Tell Taj who you need, get introduced. One message away from meeting artists, producers, mentors, and investors." />
+    <meta name="twitter:image" content="https://titliwork-website.vercel.app/og-image.png" />
+    <meta name="twitter:creator" content="@titly" />
+    
+    <!-- Additional SEO -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Titly" />
+    
+    <!-- Structured Data - Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Titly",
+      "url": "https://titliwork-website.vercel.app",
+      "logo": "https://titliwork-website.vercel.app/logo.png",
+      "description": "Professional networking platform connecting creative professionals across film, music, design, and more.",
+      "sameAs": [
+        "https://twitter.com/titly",
+        "https://instagram.com/titly",
+        "https://linkedin.com/company/titly"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "availableLanguage": "English"
+      }
+    }
+    </script>
+    
+    <!-- Structured Data - WebApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Titly",
+      "url": "https://titliwork-website.vercel.app",
+      "description": "Connect with creative professionals through AI-powered introductions via Telegram.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "AI-powered matching",
+        "Creative professional network",
+        "Telegram integration",
+        "Instant introductions"
+      ]
+    }
+    </script>
+    
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="%PUBLIC_URL%/phone-mockup.png" as="image" />
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>
+      <div style="padding: 20px; text-align: center; font-family: system-ui, sans-serif;">
+        <h1>Titly - Connect with Creative Professionals</h1>
+        <p>Tell Taj who you need, get introduced. One message away from meeting artists, producers, mentors, advisors, and investors.</p>
+        <p>Please enable JavaScript to use this application.</p>
+      </div>
+    </noscript>
     <div id="root"></div>
   </body>
 </html>

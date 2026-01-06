@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://titliwork-website.vercel.app/sitemap.xml
+
+# Disallow admin/private paths
+Disallow: /api/
+Disallow: /admin/
