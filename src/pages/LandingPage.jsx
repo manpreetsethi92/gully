@@ -71,98 +71,163 @@ const PhoneMockup = () => {
 
   return (
     <div 
-      className="relative w-[280px] sm:w-[320px]"
+      className="relative"
       style={{ 
-        filter: 'drop-shadow(0 25px 50px rgba(0,0,0,0.25))',
+        width: '300px',
+        filter: 'drop-shadow(0 25px 50px rgba(0,0,0,0.3))',
       }}
     >
-      {/* iPhone Frame - Pure CSS */}
+      {/* iPhone Frame */}
       <div 
-        className="relative rounded-[45px] p-[12px] overflow-hidden"
         style={{ 
-          background: '#1a1a1a',
-          boxShadow: 'inset 0 0 0 2px #333, inset 0 0 0 4px #1a1a1a',
+          background: '#000',
+          borderRadius: '50px',
+          padding: '14px',
+          border: '1px solid #333',
         }}
       >
         {/* Screen */}
         <div 
-          className="relative rounded-[35px] overflow-hidden"
           style={{ 
-            background: '#0e0e0e',
-            aspectRatio: '9/19.5',
+            background: '#000',
+            borderRadius: '38px',
+            height: '600px',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
+          {/* Dynamic Island */}
+          <div 
+            style={{ 
+              position: 'absolute',
+              top: '14px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '90px',
+              height: '26px',
+              borderRadius: '20px',
+              background: '#000',
+              zIndex: 30,
+            }}
+          />
+
           {/* Status Bar */}
-          <div className="absolute top-0 left-0 right-0 h-[44px] flex items-center justify-between px-6 z-20">
-            <span className="text-white text-[14px] font-semibold">9:41</span>
-            <div className="flex items-center gap-1">
-              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/>
-              </svg>
-              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <div 
+            style={{ 
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '50px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '0 24px',
+              zIndex: 20,
+            }}
+          >
+            <span style={{ color: '#fff', fontSize: '14px', fontWeight: 600 }}>9:41</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
                 <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
               </svg>
-              <svg className="w-6 h-3 text-white" fill="currentColor" viewBox="0 0 24 12">
-                <rect x="0" y="0" width="22" height="12" rx="2" stroke="currentColor" strokeWidth="1" fill="none"/>
-                <rect x="2" y="2" width="16" height="8" rx="1" fill="currentColor"/>
-                <rect x="22" y="4" width="2" height="4" rx="0.5" fill="currentColor"/>
+              <svg width="24" height="12" fill="#fff" viewBox="0 0 24 12">
+                <rect x="0" y="0" width="22" height="12" rx="2" stroke="#fff" strokeWidth="1" fill="none"/>
+                <rect x="2" y="2" width="16" height="8" rx="1" fill="#fff"/>
+                <rect x="22" y="4" width="2" height="4" rx="0.5" fill="#fff"/>
               </svg>
             </div>
           </div>
 
-          {/* Dynamic Island */}
-          <div 
-            className="absolute top-[12px] left-1/2 -translate-x-1/2 w-[100px] h-[28px] rounded-full z-30"
-            style={{ background: '#000' }}
-          />
-
           {/* Telegram Header */}
           <div 
-            className="absolute top-[44px] left-0 right-0 h-[60px] flex items-center px-4 z-10"
-            style={{ background: '#0e0e0e' }}
+            style={{ 
+              position: 'absolute',
+              top: '50px',
+              left: 0,
+              right: 0,
+              height: '55px',
+              background: '#1c1c1e',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '0 12px',
+              zIndex: 10,
+            }}
           >
-            <div className="flex items-center gap-3 w-full">
-              <div className="text-[#007AFF] text-[16px]">‹</div>
-              <div className="w-[36px] h-[36px] rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-sm font-semibold">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
+              <span style={{ color: '#007AFF', fontSize: '24px' }}>‹</span>
+              <div 
+                style={{
+                  width: '34px',
+                  height: '34px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #60a5fa, #3b82f6)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                }}
+              >
                 T
               </div>
-              <div className="flex-1">
-                <div className="text-white text-[15px] font-semibold">Taj</div>
-                <div className="text-gray-500 text-[12px]">bot</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ color: '#fff', fontSize: '15px', fontWeight: 600 }}>Taj</div>
+                <div style={{ color: '#8e8e93', fontSize: '12px' }}>bot</div>
               </div>
-              <div className="w-[32px] h-[32px] rounded-full overflow-hidden">
+              <div 
+                style={{ 
+                  width: '30px', 
+                  height: '30px', 
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                }}
+              >
                 <img 
                   src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&fit=crop&crop=face" 
                   alt="Profile"
-                  className="w-full h-full object-cover"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
             </div>
           </div>
 
-          {/* Chat Background Pattern */}
+          {/* Chat Background */}
           <div 
-            className="absolute inset-0 top-[104px] bottom-[70px] overflow-hidden"
             style={{ 
-              background: '#0e0e0e',
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23222' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              position: 'absolute',
+              top: '105px',
+              left: 0,
+              right: 0,
+              bottom: '65px',
+              background: '#000',
             }}
-          />
-
-          {/* Messages Container */}
-          <div className="absolute inset-0 top-[110px] bottom-[70px] flex flex-col justify-end px-3 pb-2 overflow-hidden">
-            <div className="flex flex-col gap-[6px]">
+          >
+            {/* Messages Container */}
+            <div 
+              style={{
+                position: 'absolute',
+                bottom: '10px',
+                left: '10px',
+                right: '10px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+              }}
+            >
               {visibleMessages.map((msg, idx) => (
                 <div
                   key={`${convoIndex}-${idx}`}
-                  className={`max-w-[80%] px-3 py-[8px] text-[13px] leading-[1.4] animate-fadeIn ${
-                    msg.sender === 'user' 
-                      ? 'self-end text-white rounded-[18px] rounded-br-[4px]' 
-                      : 'self-start text-white rounded-[18px] rounded-bl-[4px]'
-                  }`}
                   style={{ 
-                    backgroundColor: msg.sender === 'user' ? '#007AFF' : '#303030',
-                    animationDelay: `${idx * 0.1}s`
+                    maxWidth: '80%',
+                    padding: '8px 12px',
+                    fontSize: '13px',
+                    lineHeight: 1.4,
+                    color: '#fff',
+                    alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                    backgroundColor: msg.sender === 'user' ? '#007AFF' : '#2c2c2e',
+                    borderRadius: msg.sender === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                   }}
                 >
                   {msg.text}
@@ -173,31 +238,78 @@ const PhoneMockup = () => {
 
           {/* Input Bar */}
           <div 
-            className="absolute bottom-0 left-0 right-0 h-[70px] flex items-center px-3 gap-2"
-            style={{ background: '#1a1a1a' }}
+            style={{ 
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '65px',
+              background: '#1c1c1e',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '0 10px',
+              gap: '8px',
+            }}
           >
-            <div className="w-[32px] h-[32px] rounded-full bg-[#303030] flex items-center justify-center">
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div 
+              style={{
+                width: '30px',
+                height: '30px',
+                borderRadius: '50%',
+                background: '#2c2c2e',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <svg width="18" height="18" fill="none" stroke="#8e8e93" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
             </div>
             <div 
-              className="flex-1 h-[36px] rounded-full px-4 flex items-center text-gray-500 text-[14px]"
-              style={{ background: '#303030' }}
+              style={{ 
+                flex: 1,
+                height: '34px',
+                borderRadius: '17px',
+                background: '#2c2c2e',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 14px',
+                color: '#8e8e93',
+                fontSize: '14px',
+              }}
             >
               Message
             </div>
-            <div className="w-[32px] h-[32px] rounded-full bg-[#303030] flex items-center justify-center">
-              <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/>
+            <div 
+              style={{
+                width: '30px',
+                height: '30px',
+                borderRadius: '50%',
+                background: '#2c2c2e',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <svg width="18" height="18" fill="#8e8e93" viewBox="0 0 24 24">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
               </svg>
             </div>
           </div>
 
           {/* Home Indicator */}
           <div 
-            className="absolute bottom-[8px] left-1/2 -translate-x-1/2 w-[120px] h-[4px] rounded-full"
-            style={{ background: '#666' }}
+            style={{ 
+              position: 'absolute',
+              bottom: '6px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '110px',
+              height: '4px',
+              borderRadius: '2px',
+              background: '#555',
+            }}
           />
         </div>
       </div>
@@ -234,18 +346,7 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
-      {/* Add animation keyframes */}
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(8px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out forwards;
-        }
-      `}</style>
-
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white">
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
           <div 
             className="text-2xl font-bold cursor-pointer tracking-tight"
@@ -289,7 +390,7 @@ const LandingPage = () => {
               <div className="flex flex-col sm:flex-row items-start gap-4">
                 <button 
                   onClick={handleGetStarted}
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-semibold text-base transition-all hover:scale-105 hover:shadow-lg"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-semibold text-base transition-all hover:opacity-90"
                   style={{ background: '#E50914' }}
                 >
                   Try us now
@@ -302,7 +403,7 @@ const LandingPage = () => {
                   {['🎵', '🎨', '💼', '🎬'].map((emoji, i) => (
                     <div 
                       key={i}
-                      className="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center text-lg shadow-sm"
+                      className="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center text-lg"
                       style={{ 
                         background: ['#fee2e2', '#dbeafe', '#dcfce7', '#fef3c7'][i],
                         zIndex: 4 - i 
@@ -329,9 +430,9 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">© 2024 titly.social</p>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Terms</a>
-            <a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Privacy</a>
-            <a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Contact</a>
+            <a href="#" className="text-sm text-gray-500 hover:text-gray-900">Terms</a>
+            <a href="#" className="text-sm text-gray-500 hover:text-gray-900">Privacy</a>
+            <a href="#" className="text-sm text-gray-500 hover:text-gray-900">Contact</a>
           </div>
         </div>
       </footer>
