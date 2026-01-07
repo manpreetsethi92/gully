@@ -1,6 +1,6 @@
 {
-  "name": "Titly - Connect with Creative Professionals",
-  "short_name": "Titly",
+  "name": "Titli - Connect with Creative Professionals",
+  "short_name": "Titli",
   "description": "Tell Taj who you need, get introduced. The professional network for creatives.",
   "start_url": "/",
   "display": "standalone",
@@ -16,6 +16,16 @@
       "src": "/favicon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Opportunities",
+      "url": "/app/opportunities"
+    },
+    {
+      "name": "My Requests",
+      "url": "/app/requests"
     }
   ]
 }
