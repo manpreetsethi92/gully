@@ -146,13 +146,13 @@ const RequestsPage = ({ onRefresh }) => {
   return (
     <div>
       {/* Header */}
-      <div className="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-100">
+      <div className="sticky top-0 bg-white/80 dark:bg-[#111]/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-100 dark:border-[#222]">
         <h1 className="text-xl font-bold">My Requests</h1>
       </div>
 
       {/* Message Taj Banner */}
-      <div className="px-4 py-4 border-b border-gray-100">
-        <div className="flex items-center gap-4 p-4 rounded-2xl" style={{ background: '#fef2f2' }}>
+      <div className="px-4 py-4 border-b border-gray-100 dark:border-[#222]">
+        <div className="info-banner flex items-center gap-4 p-4 rounded-2xl bg-red-50 dark:bg-[#1a1a1a]">
           <div 
             className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
             style={{ background: '#E50914' }}
@@ -160,8 +160,8 @@ const RequestsPage = ({ onRefresh }) => {
             <MessageCircle size={24} className="text-white" />
           </div>
           <div className="flex-1">
-            <p className="font-bold text-[15px]">To create a request, message Taj</p>
-            <p className="text-gray-500 text-sm">Tell her who you need and she'll find matches for you</p>
+            <p className="font-bold text-[15px]">Tell her who you need and she'll find matches for you</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">To create a request, message Taj</p>
           </div>
           <a
             href={TELEGRAM_BOT_URL}
@@ -183,7 +183,7 @@ const RequestsPage = ({ onRefresh }) => {
           <p className="text-gray-500">Message Taj to create your first request</p>
         </div>
       ) : (
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-gray-100 dark:divide-[#222]">
           {requests.map((request) => {
             const statusStyle = getStatusColor(request.status);
             const hasMatches = request.matches_count > 0;
@@ -192,7 +192,7 @@ const RequestsPage = ({ onRefresh }) => {
             return (
               <article 
                 key={request.id} 
-                className={`px-4 py-4 hover:bg-gray-50 transition-colors ${needsAction ? 'cursor-pointer' : ''}`}
+                className={`px-4 py-4 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors ${needsAction ? 'cursor-pointer' : ''}`}
                 onClick={() => needsAction && handleViewMatches(request)}
               >
                 <div className="flex gap-3">
@@ -225,13 +225,13 @@ const RequestsPage = ({ onRefresh }) => {
                         <span>{getStatusLabel(request.status)}</span>
                       </span>
                       {hasMatches && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
                           <Users size={12} />
                           {request.matches_count} matches
                         </span>
                       )}
                       {request.approved_count > 0 && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
                           <Check size={12} />
                           {request.approved_count} approved
                         </span>
@@ -239,7 +239,7 @@ const RequestsPage = ({ onRefresh }) => {
                     </div>
 
                     <h3 className="font-bold text-[15px] mb-1">{request.title}</h3>
-                    <p className="text-[15px] text-gray-700 leading-relaxed line-clamp-2">{request.description}</p>
+                    <p className="text-[15px] text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-2">{request.description}</p>
                     
                     {/* View Matches Button */}
                     {hasMatches && (
@@ -293,7 +293,7 @@ const RequestsPage = ({ onRefresh }) => {
                   return (
                     <div 
                       key={match.id}
-                      className="border border-gray-200 rounded-xl p-4"
+                      className="match-card border border-gray-200 dark:border-[#333] rounded-xl p-4 dark:bg-[#111]"
                     >
                       {/* User Info */}
                       <div className="flex items-start gap-3 mb-3">
@@ -314,7 +314,7 @@ const RequestsPage = ({ onRefresh }) => {
                             </span>
                           </div>
                           {match.matched_user?.bio && (
-                            <p className="text-sm text-gray-600 mt-1 line-clamp-2">{match.matched_user.bio}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">{match.matched_user.bio}</p>
                           )}
                         </div>
                       </div>
@@ -325,7 +325,7 @@ const RequestsPage = ({ onRefresh }) => {
                           {match.matched_user.skills.map((skill, i) => (
                             <span 
                               key={i}
-                              className="px-2 py-0.5 bg-gray-100 rounded-full text-xs text-gray-700"
+                              className="connection-skill-tag px-2 py-0.5 bg-gray-100 dark:bg-[#222] rounded-full text-xs text-gray-700 dark:text-gray-300"
                             >
                               {skill}
                             </span>
@@ -343,7 +343,7 @@ const RequestsPage = ({ onRefresh }) => {
                       
                       {/* Actions */}
                       {canTakeAction && (
-                        <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+                        <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-[#333]">
                           <button
                             onClick={() => handleMatchAction(match.id, 'approve')}
                             disabled={actionLoading === match.id}
@@ -356,7 +356,7 @@ const RequestsPage = ({ onRefresh }) => {
                           <button
                             onClick={() => handleMatchAction(match.id, 'reject')}
                             disabled={actionLoading === match.id}
-                            className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold border border-gray-300 hover:bg-gray-50 transition-colors"
+                            className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold border border-gray-300 dark:border-[#444] hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors"
                           >
                             <X size={16} />
                             Skip

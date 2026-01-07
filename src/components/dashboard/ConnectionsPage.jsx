@@ -53,7 +53,7 @@ const ConnectionsPage = ({ onRefresh }) => {
   return (
     <div>
       {/* Header */}
-      <div className="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-100">
+      <div className="sticky top-0 bg-white/80 dark:bg-[#111]/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-100 dark:border-[#222]">
         <h1 className="text-xl font-bold">Connections</h1>
         {connections.length > 0 && (
           <p className="text-sm text-gray-500">{connections.length} connection{connections.length !== 1 ? 's' : ''}</p>
@@ -80,9 +80,9 @@ const ConnectionsPage = ({ onRefresh }) => {
           </a>
         </div>
       ) : (
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-gray-100 dark:divide-[#222]">
           {connections.map((conn) => (
-            <article key={conn.id} className="px-4 py-4 hover:bg-gray-50 transition-colors">
+            <article key={conn.id} className="px-4 py-4 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
               <div className="flex gap-3">
                 {/* Avatar */}
                 <div 
@@ -97,7 +97,7 @@ const ConnectionsPage = ({ onRefresh }) => {
                   {/* Name and Badge */}
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-bold text-[17px]">{conn.other_user?.name || 'Unknown'}</span>
-                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
                       Connected
                     </span>
                   </div>
@@ -106,13 +106,13 @@ const ConnectionsPage = ({ onRefresh }) => {
                   <p className="text-gray-500 text-sm mb-2">
                     Connected on {formatDate(conn.created_at)}
                     {conn.request_title && (
-                      <span> · For: <span className="text-gray-700">{conn.request_title}</span></span>
+                      <span> · For: <span className="text-gray-700 dark:text-gray-300">{conn.request_title}</span></span>
                     )}
                   </p>
 
                   {/* Bio */}
                   {conn.other_user?.bio && (
-                    <p className="text-[15px] text-gray-700 mb-3">{conn.other_user.bio}</p>
+                    <p className="text-[15px] text-gray-700 dark:text-gray-300 mb-3">{conn.other_user.bio}</p>
                   )}
 
                   {/* Skills */}
@@ -121,7 +121,7 @@ const ConnectionsPage = ({ onRefresh }) => {
                       {conn.other_user.skills.map((skill, i) => (
                         <span 
                           key={i}
-                          className="px-2.5 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-700"
+                          className="connection-skill-tag px-2.5 py-1 bg-gray-100 dark:bg-[#222] rounded-full text-xs font-medium text-gray-700 dark:text-gray-300"
                         >
                           {skill}
                         </span>
@@ -140,7 +140,7 @@ const ConnectionsPage = ({ onRefresh }) => {
                             href={url.startsWith('http') ? url : `https://${url}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 hover:bg-gray-200 transition-colors"
+                            className="social-link-btn flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 dark:bg-[#222] hover:bg-gray-200 dark:hover:bg-[#333] text-gray-700 dark:text-gray-300 transition-colors"
                           >
                             {getSocialIcon(platform)}
                             <span className="capitalize">{platform}</span>
