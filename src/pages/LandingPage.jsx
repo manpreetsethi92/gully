@@ -521,7 +521,7 @@ const LandingPage = () => {
       </section>
 
       {/* ==================== FINAL CTA (DARK with glow) ==================== */}
-      <section className="py-20 md:py-32 relative overflow-hidden bg-[#0a0a0a]">
+      <section className="py-12 md:py-16 relative overflow-hidden bg-[#0a0a0a]">
         {/* Gradient glow behind butterfly */}
         <div 
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] rounded-full opacity-20 blur-[100px]"
@@ -531,9 +531,9 @@ const LandingPage = () => {
         <div className="max-w-[1800px] mx-auto px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             {/* Flapping Butterfly - 2x bigger */}
-            <div className="mx-auto mb-12 flex justify-center">
+            <div className="mx-auto mb-6 md:mb-12 flex justify-center">
               <div 
-                className="butterfly-wrapper butterfly-glow w-[400px] h-[280px] md:w-[560px] md:h-[400px]" 
+                className="butterfly-wrapper butterfly-glow w-[280px] h-[200px] md:w-[560px] md:h-[400px]" 
                 style={{ 
                   position: 'relative' 
                 }}
@@ -549,19 +549,19 @@ const LandingPage = () => {
               </div>
             </div>
             
-            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-8 text-white lowercase">
+            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-4 md:mb-8 text-white lowercase">
               let titli take
               <br />
               <span className="text-[#E50914]">you places</span>
             </h2>
             
-            <p className="font-syne text-lg md:text-xl text-white/50 mb-12 max-w-lg mx-auto lowercase">
+            <p className="font-syne text-base md:text-xl text-white/50 mb-8 md:mb-12 max-w-lg mx-auto lowercase">
               your next connection is one message away.
             </p>
             
             <button 
               onClick={handleGetStarted}
-              className="group inline-flex items-center gap-4 px-12 py-6 bg-[#E50914] font-syne font-semibold text-xl tracking-wide text-white hover:gap-6 transition-all duration-300 lowercase rounded-full"
+              className="group inline-flex items-center gap-4 px-10 py-5 md:px-12 md:py-6 bg-[#E50914] font-syne font-semibold text-lg md:text-xl tracking-wide text-white hover:gap-6 transition-all duration-300 lowercase rounded-full"
             >
               get started
               <ArrowUpRight size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -571,7 +571,7 @@ const LandingPage = () => {
       </section>
 
       {/* ==================== FOOTER (DARK) ==================== */}
-      <footer className="py-4 bg-[#0a0a0a]">
+      <footer className="py-6 md:py-4 bg-[#0a0a0a]">
         <div className="max-w-[1800px] mx-auto px-8">
           <div className="flex items-center justify-center gap-4 md:gap-8">
             {["privacy", "terms", "cookies"].map((link, idx) => (
