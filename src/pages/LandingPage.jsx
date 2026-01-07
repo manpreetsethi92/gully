@@ -397,7 +397,7 @@ const LandingPage = () => {
         <div className="max-w-[1800px] mx-auto px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             {/* Flapping Butterfly */}
-            <div className="mx-auto mb-12" style={{ width: '160px' }}>
+            <div className="mx-auto mb-12" style={{ width: '480px' }}>
               <div className="butterfly-wrapper butterfly-glow" style={{ width: '100%', paddingBottom: '70%', position: 'relative' }}>
                 {/* Left Wing */}
                 <div className="wing-left">
