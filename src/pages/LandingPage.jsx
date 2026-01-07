@@ -53,6 +53,26 @@ const LandingPage = () => {
           50% { filter: drop-shadow(0 0 50px rgba(229, 9, 20, 0.6)); }
         }
         
+        @keyframes wing-flap {
+          0%, 100% { 
+            transform: perspective(400px) rotateY(0deg) translateY(0);
+          }
+          25% { 
+            transform: perspective(400px) rotateY(15deg) translateY(-10px) scaleX(0.95);
+          }
+          50% { 
+            transform: perspective(400px) rotateY(0deg) translateY(-20px);
+          }
+          75% { 
+            transform: perspective(400px) rotateY(-15deg) translateY(-10px) scaleX(0.95);
+          }
+        }
+        
+        .butterfly-flap {
+          animation: wing-flap 2s ease-in-out infinite, pulse-glow 4s ease-in-out infinite;
+          transform-style: preserve-3d;
+        }
+        
         @keyframes fade-up {
           from { opacity: 0; transform: translateY(40px); }
           to { opacity: 1; transform: translateY(0); }
@@ -108,21 +128,20 @@ const LandingPage = () => {
 
       {/* ==================== HERO SECTION (WHITE) ==================== */}
       <section className="min-h-screen relative flex items-center bg-white pt-20">
-        {/* Butterfly - positioned on right side */}
+        {/* Butterfly - positioned on right side with wing flapping */}
         <div 
           className="absolute z-10 pointer-events-none hidden lg:block"
           style={{
             top: '15%',
             right: '8%',
             width: 'clamp(200px, 28vw, 450px)',
-            animation: 'float 6s ease-in-out infinite, pulse-glow 4s ease-in-out infinite',
             transform: `translateY(${scrollY * 0.15}px)`,
           }}
         >
           <img 
             src="/butterfly.png" 
             alt="Titli"
-            className="w-full h-auto"
+            className="w-full h-auto butterfly-flap"
           />
         </div>
         
