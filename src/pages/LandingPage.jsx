@@ -53,24 +53,42 @@ const LandingPage = () => {
           50% { filter: drop-shadow(0 0 50px rgba(229, 9, 20, 0.6)); }
         }
         
-        @keyframes wing-flap {
+        @keyframes flap-left {
           0%, 100% { 
-            transform: perspective(400px) rotateY(0deg) translateY(0);
-          }
-          25% { 
-            transform: perspective(400px) rotateY(15deg) translateY(-10px) scaleX(0.95);
+            transform: perspective(200px) rotateY(0deg);
           }
           50% { 
-            transform: perspective(400px) rotateY(0deg) translateY(-20px);
-          }
-          75% { 
-            transform: perspective(400px) rotateY(-15deg) translateY(-10px) scaleX(0.95);
+            transform: perspective(200px) rotateY(50deg);
           }
         }
         
-        .butterfly-flap {
-          animation: wing-flap 2s ease-in-out infinite, pulse-glow 4s ease-in-out infinite;
-          transform-style: preserve-3d;
+        @keyframes flap-right {
+          0%, 100% { 
+            transform: perspective(200px) rotateY(0deg);
+          }
+          50% { 
+            transform: perspective(200px) rotateY(-50deg);
+          }
+        }
+        
+        .wing-left {
+          clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+          transform-origin: right center;
+          animation: flap-left 0.4s ease-in-out infinite;
+        }
+        
+        .wing-right {
+          clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
+          transform-origin: left center;
+          animation: flap-right 0.4s ease-in-out infinite;
+        }
+        
+        .butterfly-container {
+          animation: pulse-glow 4s ease-in-out infinite;
+        }
+        
+        .butterfly-float {
+          animation: float 4s ease-in-out infinite;
         }
         
         @keyframes fade-up {
@@ -130,7 +148,7 @@ const LandingPage = () => {
       <section className="min-h-screen relative flex items-center bg-white pt-20">
         {/* Butterfly - positioned on right side with wing flapping */}
         <div 
-          className="absolute z-10 pointer-events-none hidden lg:block"
+          className="absolute z-10 pointer-events-none hidden lg:block butterfly-float"
           style={{
             top: '15%',
             right: '8%',
@@ -138,11 +156,26 @@ const LandingPage = () => {
             transform: `translateY(${scrollY * 0.15}px)`,
           }}
         >
-          <img 
-            src="/butterfly.png" 
-            alt="Titli"
-            className="w-full h-auto butterfly-flap"
-          />
+          <div className="relative butterfly-container">
+            {/* Left Wing */}
+            <img 
+              src="/butterfly.png" 
+              alt=""
+              className="w-full h-auto wing-left absolute inset-0"
+            />
+            {/* Right Wing */}
+            <img 
+              src="/butterfly.png" 
+              alt=""
+              className="w-full h-auto wing-right absolute inset-0"
+            />
+            {/* Base image for sizing */}
+            <img 
+              src="/butterfly.png" 
+              alt="Titli"
+              className="w-full h-auto opacity-0"
+            />
+          </div>
         </div>
         
         {/* Main Content */}
