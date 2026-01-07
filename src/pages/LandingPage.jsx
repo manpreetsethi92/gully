@@ -132,6 +132,23 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
 
+  // Fix mobile Safari white space issue
+  useEffect(() => {
+    document.documentElement.style.backgroundColor = '#0a0a0a';
+    document.body.style.backgroundColor = '#0a0a0a';
+    document.documentElement.style.minHeight = '100%';
+    document.body.style.minHeight = '100%';
+    document.body.style.overscrollBehavior = 'none';
+    
+    return () => {
+      document.documentElement.style.backgroundColor = '';
+      document.body.style.backgroundColor = '';
+      document.documentElement.style.minHeight = '';
+      document.body.style.minHeight = '';
+      document.body.style.overscrollBehavior = '';
+    };
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -156,9 +173,10 @@ const LandingPage = () => {
   return (
     <div className="overflow-x-hidden bg-[#0a0a0a]">
       <style>{`
-        html, body {
-          background-color: #0a0a0a;
-          min-height: 100%;
+        html, body, #root {
+          background-color: #0a0a0a !important;
+          min-height: 100% !important;
+          overscroll-behavior: none !important;
         }
         
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
@@ -518,9 +536,8 @@ const LandingPage = () => {
             {/* Flapping Butterfly - responsive sizing */}
             <div className="mx-auto mb-12 flex justify-center">
               <div 
-                className="butterfly-wrapper butterfly-glow w-[280px] md:w-[480px]" 
+                className="butterfly-wrapper butterfly-glow w-[200px] h-[140px] md:w-[280px] md:h-[200px]" 
                 style={{ 
-                  paddingBottom: '50%', 
                   position: 'relative' 
                 }}
               >
@@ -557,21 +574,10 @@ const LandingPage = () => {
       </section>
 
       {/* ==================== FOOTER (DARK) ==================== */}
-      <footer className="py-10 md:py-16 border-t border-white/10 bg-[#0a0a0a]">
+      <footer className="py-8 md:py-12 border-t border-white/10 bg-[#0a0a0a]">
         <div className="max-w-[1800px] mx-auto px-8">
-          {/* Logo and tagline */}
-          <div className="flex flex-col items-center md:items-start mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
-              <span className="font-syne font-bold text-lg text-white">titli</span>
-            </div>
-            <p className="font-mono text-xs text-white/40 text-center md:text-left">
-              The modern way to find local help for anything.
-            </p>
-          </div>
-          
           {/* Bottom row with legal links and social */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-white/10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <p className="font-mono text-xs text-white/30 order-3 md:order-1">
               © 2025 Titli. All rights reserved.
             </p>
