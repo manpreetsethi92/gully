@@ -272,7 +272,18 @@ const AuthModal = ({ isOpen, onClose }) => {
             <div className="p-8">
               {step === "phone" && (
                 <div>
-                  <div className="text-3xl font-bold mb-1" style={{ color: '#E50914' }}>titly</div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M50 15 C35 15, 15 30, 15 50 C15 65, 25 75, 40 80 C45 81, 48 78, 50 75 C52 78, 55 81, 60 80 C75 75, 85 65, 85 50 C85 30, 65 15, 50 15" fill="#E50914"/>
+                      <path d="M50 25 C40 25, 25 35, 25 50 C25 60, 32 68, 42 72 C46 73, 48 70, 50 67 C52 70, 54 73, 58 72 C68 68, 75 60, 75 50 C75 35, 60 25, 50 25" fill="white"/>
+                      <circle cx="38" cy="45" r="5" fill="#E50914"/>
+                      <circle cx="62" cy="45" r="5" fill="#E50914"/>
+                      <path d="M50 30 L50 85" stroke="#E50914" strokeWidth="3" strokeLinecap="round"/>
+                      <path d="M50 30 C45 20, 40 15, 35 12" stroke="#E50914" strokeWidth="2" strokeLinecap="round"/>
+                      <path d="M50 30 C55 20, 60 15, 65 12" stroke="#E50914" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                    <span className="text-3xl font-bold" style={{ color: '#E50914' }}>titli</span>
+                  </div>
                   <h2 className="text-xl font-bold mb-1 mt-6">Get started</h2>
                   <p className="text-gray-500 text-sm mb-6">Enter your phone number to continue</p>
                   
