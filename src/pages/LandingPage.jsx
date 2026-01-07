@@ -1,29 +1,44 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../App";
-import { ArrowRight, Star, Sparkles, Heart, Zap, Music, Film, Palette, Mic, Camera, PenTool } from "lucide-react";
+import { ArrowRight, Star, Sparkles, Zap, Search, Users, Briefcase, Home, Car, Camera, Music, Code, Wrench, Heart, DollarSign, MapPin } from "lucide-react";
 import AuthModal from "../components/AuthModal";
 
-const WORDS = ["producer", "vocalist", "mentor", "investor", "designer", "filmmaker", "photographer"];
+const NEEDS = [
+  "a photographer for Saturday",
+  "someone to fix my sink",
+  "a vocal coach",
+  "a ride to the airport",
+  "a web developer",
+  "a DJ for my party",
+  "a dog walker",
+  "a guitar teacher",
+  "a moving helper",
+  "a personal trainer"
+];
+
 const CATEGORIES = [
-  { icon: Music, label: "Musicians", color: "#8B5CF6" },
-  { icon: Film, label: "Filmmakers", color: "#EC4899" },
-  { icon: Palette, label: "Designers", color: "#F59E0B" },
-  { icon: Mic, label: "Podcasters", color: "#10B981" },
-  { icon: Camera, label: "Photographers", color: "#3B82F6" },
-  { icon: PenTool, label: "Writers", color: "#EF4444" },
+  { icon: Briefcase, label: "Gigs", color: "#8B5CF6", count: "2.4k" },
+  { icon: Home, label: "Services", color: "#EC4899", count: "1.8k" },
+  { icon: Music, label: "Creative", color: "#F59E0B", count: "950" },
+  { icon: Code, label: "Tech", color: "#3B82F6", count: "1.2k" },
+  { icon: Wrench, label: "Trades", color: "#10B981", count: "800" },
+  { icon: Camera, label: "Events", color: "#EF4444", count: "650" },
+];
+
+const EXAMPLES = [
+  { need: "Need a photographer", match: "Sarah, 4.9★ photographer nearby", time: "2 min" },
+  { need: "Looking for a plumber", match: "Mike's Plumbing, available today", time: "5 min" },
+  { need: "Want guitar lessons", match: "Jazz guitarist, 10yrs experience", time: "3 min" },
 ];
 
 const LandingPage = () => {
-  const [currentWord, setCurrentWord] = useState(0);
+  const [currentNeed, setCurrentNeed] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [scrollY, setScrollY] = useState(0);
-  const heroRef = useRef(null);
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
 
-  // Track mouse for parallax
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePos({ x: e.clientX, y: e.clientY });
@@ -32,18 +47,10 @@ const LandingPage = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Track scroll
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Word rotation
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentWord((prev) => (prev + 1) % WORDS.length);
-    }, 2000);
+      setCurrentNeed((prev) => (prev + 1) % NEEDS.length);
+    }, 2500);
     return () => clearInterval(interval);
   }, []);
 
@@ -55,66 +62,31 @@ const LandingPage = () => {
     }
   }, [isAuthenticated, user, navigate]);
 
-  // Calculate parallax offset
-  const parallaxX = (mousePos.x - window.innerWidth / 2) / 50;
-  const parallaxY = (mousePos.y - window.innerHeight / 2) / 50;
+  const parallaxX = (mousePos.x - window.innerWidth / 2) / 60;
+  const parallaxY = (mousePos.y - window.innerHeight / 2) / 60;
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-[#FFFDF9] overflow-x-hidden">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
         
-        * { font-family: 'Outfit', sans-serif; }
-        .font-display { font-family: 'Fraunces', serif; }
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-serif { font-family: 'Instrument Serif', serif; }
         
         @keyframes float {
           0%, 100% { transform: translateY(0) rotate(-2deg); }
-          50% { transform: translateY(-25px) rotate(3deg); }
+          50% { transform: translateY(-20px) rotate(3deg); }
         }
         
-        @keyframes float-delayed {
-          0%, 100% { transform: translateY(0) rotate(2deg); }
-          50% { transform: translateY(-15px) rotate(-2deg); }
+        @keyframes bounce-in {
+          0% { transform: scale(0.9); opacity: 0; }
+          50% { transform: scale(1.02); }
+          100% { transform: scale(1); opacity: 1; }
         }
         
-        @keyframes pulse-ring {
-          0% { transform: scale(0.95); opacity: 1; }
-          100% { transform: scale(1.3); opacity: 0; }
-        }
-        
-        @keyframes shimmer {
-          0% { background-position: -200% center; }
-          100% { background-position: 200% center; }
-        }
-        
-        @keyframes bounce-soft {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
-        }
-        
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        @keyframes fade-in-up {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes scale-in {
-          from { opacity: 0; transform: scale(0.9); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        
-        @keyframes wiggle {
-          0%, 100% { transform: rotate(-3deg); }
-          50% { transform: rotate(3deg); }
-        }
-        
-        @keyframes gradient-flow {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+        @keyframes slide-up {
+          from { transform: translateY(20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
         }
         
         @keyframes typing {
@@ -122,15 +94,40 @@ const LandingPage = () => {
           to { width: 100%; }
         }
         
-        .animate-fade-in-up {
-          animation: fade-in-up 0.8s ease-out forwards;
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
         }
         
-        .animate-delay-1 { animation-delay: 0.1s; opacity: 0; }
-        .animate-delay-2 { animation-delay: 0.2s; opacity: 0; }
-        .animate-delay-3 { animation-delay: 0.3s; opacity: 0; }
-        .animate-delay-4 { animation-delay: 0.4s; opacity: 0; }
-        .animate-delay-5 { animation-delay: 0.5s; opacity: 0; }
+        @keyframes pulse-soft {
+          0%, 100% { transform: scale(1); opacity: 0.5; }
+          50% { transform: scale(1.1); opacity: 0.3; }
+        }
+        
+        @keyframes gradient-flow {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes shimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+        
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        
+        .animate-slide-up {
+          animation: slide-up 0.6s ease-out forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .delay-4 { animation-delay: 0.4s; opacity: 0; }
+        .delay-5 { animation-delay: 0.5s; opacity: 0; }
         
         .gradient-text {
           background: linear-gradient(135deg, #E50914 0%, #FF6B6B 50%, #FF8E53 100%);
@@ -140,9 +137,7 @@ const LandingPage = () => {
         }
         
         .gradient-btn {
-          background: linear-gradient(135deg, #E50914 0%, #FF4D4D 50%, #FF6B6B 100%);
-          background-size: 200% 200%;
-          animation: gradient-flow 3s ease infinite;
+          background: linear-gradient(135deg, #E50914 0%, #FF4D4D 100%);
           position: relative;
           overflow: hidden;
         }
@@ -159,363 +154,353 @@ const LandingPage = () => {
         }
         
         .card-hover {
-          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
         .card-hover:hover {
-          transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+          transform: translateY(-6px);
+          box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
         }
         
-        .glow-red {
-          filter: drop-shadow(0 0 30px rgba(229, 9, 20, 0.4)) drop-shadow(0 0 60px rgba(229, 9, 20, 0.2));
+        .glow {
+          filter: drop-shadow(0 0 30px rgba(229, 9, 20, 0.35));
+        }
+        
+        .search-box {
+          background: white;
+          border: 2px solid #f0f0f0;
+          transition: all 0.3s ease;
+        }
+        
+        .search-box:focus-within {
+          border-color: #E50914;
+          box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.1);
         }
         
         .blob {
           border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-          animation: blob 8s ease-in-out infinite;
+          animation: blob 10s ease-in-out infinite;
         }
         
         @keyframes blob {
           0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
           50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
         }
-        
-        .marquee {
-          animation: marquee 25s linear infinite;
-        }
-        
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        
-        .chat-bubble {
-          animation: fade-in-up 0.5s ease-out forwards, bounce-soft 3s ease-in-out infinite;
-        }
-        
-        .butterfly-trail {
-          position: absolute;
-          width: 20px;
-          height: 20px;
-          background: radial-gradient(circle, rgba(229, 9, 20, 0.3) 0%, transparent 70%);
-          border-radius: 50%;
-          pointer-events: none;
-          animation: fade-out 1s ease-out forwards;
-        }
-        
-        @keyframes fade-out {
-          to { opacity: 0; transform: scale(2); }
-        }
       `}</style>
 
-      {/* Animated Background Blobs */}
+      {/* Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div 
-          className="absolute w-[600px] h-[600px] blob opacity-[0.07]"
+          className="absolute w-[500px] h-[500px] blob opacity-[0.06]"
           style={{ 
             background: 'linear-gradient(135deg, #E50914, #FF6B6B)',
-            top: '-10%',
-            right: '-10%',
-            transform: `translate(${parallaxX * -2}px, ${parallaxY * -2}px)`,
+            top: '-5%',
+            right: '-5%',
+            transform: `translate(${parallaxX * -1}px, ${parallaxY * -1}px)`,
           }}
         />
         <div 
-          className="absolute w-[400px] h-[400px] blob opacity-[0.05]"
+          className="absolute w-[300px] h-[300px] blob opacity-[0.04]"
           style={{ 
             background: 'linear-gradient(135deg, #8B5CF6, #EC4899)',
-            bottom: '10%',
-            left: '-5%',
-            animationDelay: '-4s',
-            transform: `translate(${parallaxX * 2}px, ${parallaxY * 2}px)`,
+            bottom: '20%',
+            left: '-3%',
+            animationDelay: '-5s',
           }}
         />
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-100/50">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FFFDF9]/80 backdrop-blur-xl border-b border-gray-100/50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <a href="/" className="flex items-center gap-3 group">
-            <div className="relative">
-              <img 
-                src="/butterfly.png" 
-                alt="Titli" 
-                className="w-10 h-auto transition-transform duration-300 group-hover:scale-110"
-                style={{ filter: 'drop-shadow(0 4px 12px rgba(229, 9, 20, 0.3))' }}
-              />
-              <div className="absolute inset-0 bg-red-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
+            <img 
+              src="/butterfly.png" 
+              alt="Titli" 
+              className="w-10 h-auto transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
+              style={{ filter: 'drop-shadow(0 2px 8px rgba(229, 9, 20, 0.25))' }}
+            />
             <span className="text-xl font-bold text-gray-900">titli</span>
           </a>
           
-          <button
-            onClick={() => setShowAuthModal(true)}
-            className="text-sm font-medium text-gray-600 hover:text-[#E50914] transition-colors flex items-center gap-2"
-          >
-            Sign in <ArrowRight size={14} />
-          </button>
+          <div className="flex items-center gap-6">
+            <a href="#how" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors hidden sm:block">
+              How it works
+            </a>
+            <button
+              onClick={() => setShowAuthModal(true)}
+              className="text-sm font-semibold text-[#E50914] hover:text-red-700 transition-colors flex items-center gap-1"
+            >
+              Sign in <ArrowRight size={14} />
+            </button>
+          </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="min-h-screen flex items-center justify-center pt-20 pb-12 px-6 relative">
+      <section className="min-h-screen flex items-center pt-20 pb-16 px-6 relative">
         <div className="max-w-6xl mx-auto w-full">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             
             {/* Left Content */}
             <div className="text-center lg:text-left">
               {/* Badge */}
-              <div className="animate-fade-in-up animate-delay-1 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-50 to-orange-50 border border-red-100 mb-8">
-                <Sparkles size={14} className="text-[#E50914]" />
-                <span className="text-sm font-medium text-gray-700">500+ creatives connected this month</span>
+              <div className="animate-slide-up delay-1 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm mb-8">
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span className="text-sm text-gray-600">
+                  <strong className="text-gray-900">1,247</strong> people found help today
+                </span>
               </div>
               
               {/* Main Headline */}
-              <h1 className="animate-fade-in-up animate-delay-2 text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.1] mb-6">
-                Find your next
-                <br />
-                <span className="relative inline-block mt-2">
+              <h1 className="animate-slide-up delay-2 text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-[1.1] mb-6">
+                Need 
+                <span className="relative mx-3">
                   <span 
-                    key={currentWord}
-                    className="font-display italic gradient-text"
-                    style={{ 
-                      display: 'inline-block',
-                      animation: 'scale-in 0.4s ease-out'
-                    }}
+                    key={currentNeed}
+                    className="font-serif italic text-[#E50914] inline-block"
+                    style={{ animation: 'bounce-in 0.5s ease-out' }}
                   >
-                    {WORDS[currentWord]}
+                    {NEEDS[currentNeed]}
                   </span>
-                  <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 200 8" fill="none">
-                    <path d="M1 5.5C47 2 153 2 199 5.5" stroke="#E50914" strokeWidth="3" strokeLinecap="round" style={{ animation: 'wiggle 2s ease-in-out infinite' }}/>
-                  </svg>
                 </span>
+                ?
                 <br />
-                <span className="text-gray-400 font-normal">in one message.</span>
+                <span className="text-gray-400 font-semibold text-3xl sm:text-4xl lg:text-5xl mt-4 block">
+                  We'll find them.
+                </span>
               </h1>
               
               {/* Subtitle */}
-              <p className="animate-fade-in-up animate-delay-3 text-lg text-gray-500 max-w-md mx-auto lg:mx-0 mb-8 leading-relaxed">
-                Tell Taj who you need. Our AI matches you with verified creative professionals — no cold DMs, just warm intros.
+              <p className="animate-slide-up delay-3 text-lg text-gray-500 max-w-lg mx-auto lg:mx-0 mb-8 leading-relaxed">
+                The modern way to find local help. Tell us what you need, and we'll connect you with trusted people nearby — in minutes, not days.
               </p>
               
-              {/* CTA */}
-              <div className="animate-fade-in-up animate-delay-4 flex flex-col sm:flex-row items-center lg:items-start gap-4 mb-8">
-                <button 
-                  onClick={handleGetStarted}
-                  className="gradient-btn group px-8 py-4 rounded-2xl text-white font-semibold text-lg shadow-xl shadow-red-500/20 hover:shadow-2xl hover:shadow-red-500/30 transition-all duration-300 hover:scale-105 flex items-center gap-3"
-                >
-                  <span>Start free</span>
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </button>
-                <span className="text-sm text-gray-400 flex items-center gap-2">
-                  <Zap size={14} className="text-yellow-500" />
-                  Takes 30 seconds
-                </span>
+              {/* Search Box */}
+              <div className="animate-slide-up delay-4 mb-8">
+                <div className="search-box rounded-2xl p-2 flex items-center gap-3 max-w-lg mx-auto lg:mx-0 shadow-lg">
+                  <div className="flex-1 flex items-center gap-3 px-4">
+                    <Search size={20} className="text-gray-400" />
+                    <input 
+                      type="text"
+                      placeholder="What do you need help with?"
+                      className="w-full py-3 text-gray-900 placeholder-gray-400 outline-none bg-transparent"
+                    />
+                  </div>
+                  <button 
+                    onClick={handleGetStarted}
+                    className="gradient-btn px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2 hover:scale-105 transition-transform"
+                  >
+                    Find help
+                    <ArrowRight size={16} />
+                  </button>
+                </div>
               </div>
               
-              {/* Trust Row */}
-              <div className="animate-fade-in-up animate-delay-5 flex items-center justify-center lg:justify-start gap-4">
-                <div className="flex -space-x-3">
-                  {['🎵', '🎬', '🎨', '📸', '✍️'].map((emoji, i) => (
+              {/* Quick categories */}
+              <div className="animate-slide-up delay-5 flex flex-wrap justify-center lg:justify-start gap-2 mb-8">
+                <span className="text-sm text-gray-400">Popular:</span>
+                {["Photographers", "Handyman", "Tutors", "DJs", "Developers"].map((cat, i) => (
+                  <button 
+                    key={i}
+                    className="text-sm text-gray-600 hover:text-[#E50914] hover:bg-red-50 px-3 py-1 rounded-full transition-colors"
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              
+              {/* Trust */}
+              <div className="animate-slide-up delay-5 flex items-center justify-center lg:justify-start gap-4">
+                <div className="flex -space-x-2">
+                  {['👨‍🔧', '📸', '🎸', '💻', '🏋️'].map((emoji, i) => (
                     <div 
                       key={i}
-                      className="w-10 h-10 rounded-full bg-white border-2 border-white shadow-md flex items-center justify-center text-lg hover:scale-110 hover:z-10 transition-transform cursor-pointer"
-                      style={{ 
-                        animationDelay: `${i * 0.1}s`,
-                        animation: 'bounce-soft 2s ease-in-out infinite',
-                      }}
+                      className="w-9 h-9 rounded-full bg-white border-2 border-[#FFFDF9] shadow-sm flex items-center justify-center text-base"
                     >
                       {emoji}
                     </div>
                   ))}
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="flex">
-                    {[1,2,3,4,5].map((_, i) => (
-                      <Star key={i} size={14} fill="#FBBF24" color="#FBBF24" />
-                    ))}
-                  </div>
-                  <span className="text-sm text-gray-600 font-medium ml-1">4.9</span>
-                  <span className="text-sm text-gray-400">(500+ reviews)</span>
+                <div className="text-sm text-gray-500">
+                  <strong className="text-gray-900">4,500+</strong> verified providers
                 </div>
               </div>
             </div>
             
-            {/* Right Content - Phone + Butterfly */}
+            {/* Right Content - Visual */}
             <div className="relative flex justify-center lg:justify-end">
               {/* Butterfly */}
               <div 
-                className="absolute z-20 glow-red"
+                className="absolute z-20 glow"
                 style={{
-                  top: '-10%',
-                  right: '5%',
-                  width: 'clamp(120px, 20vw, 200px)',
+                  top: '-5%',
+                  right: '10%',
+                  width: 'clamp(100px, 18vw, 180px)',
                   animation: 'float 5s ease-in-out infinite',
                   transform: `translate(${parallaxX}px, ${parallaxY}px)`,
                 }}
               >
-                <img 
-                  src="/butterfly.png" 
-                  alt="Titli butterfly"
-                  className="w-full h-auto"
-                />
+                <img src="/butterfly.png" alt="Titli" className="w-full h-auto" />
               </div>
               
-              {/* Glowing ring behind phone */}
+              {/* Phone with chat */}
               <div 
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full opacity-20"
+                className="relative z-10 w-[280px] sm:w-[300px]"
                 style={{
-                  background: 'radial-gradient(circle, #E50914 0%, transparent 70%)',
-                  animation: 'pulse-ring 3s ease-out infinite',
-                }}
-              />
-              
-              {/* Phone */}
-              <div 
-                className="relative z-10 w-[280px] sm:w-[320px]"
-                style={{
-                  filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.2))',
-                  transform: `translate(${parallaxX * -0.5}px, ${parallaxY * -0.5}px)`,
+                  filter: 'drop-shadow(0 25px 50px rgba(0,0,0,0.15))',
+                  transform: `translate(${parallaxX * -0.3}px, ${parallaxY * -0.3}px)`,
                 }}
               >
-                <img 
-                  src="/phone-mockup.png" 
-                  alt="Titli chat"
-                  className="w-full h-auto"
-                />
+                <img src="/phone-mockup.png" alt="Titli app" className="w-full h-auto" />
                 
-                {/* Chat bubbles overlaid */}
+                {/* Overlay chat messages */}
                 <div className="absolute inset-0 top-[22%] left-[8%] right-[8%] bottom-[18%] flex flex-col justify-end p-3 overflow-hidden">
                   <div className="space-y-2">
-                    <div 
-                      className="chat-bubble self-start bg-gray-700 text-white text-xs px-3 py-2 rounded-2xl rounded-bl-sm max-w-[80%]"
-                      style={{ animationDelay: '0.5s' }}
-                    >
-                      Hey! Looking for a vocalist for your track? 🎤
+                    <div className="self-end bg-[#E50914] text-white text-xs px-3 py-2 rounded-2xl rounded-br-sm max-w-[85%]">
+                      I need a photographer for a birthday party this Saturday
                     </div>
-                    <div 
-                      className="chat-bubble self-end bg-blue-500 text-white text-xs px-3 py-2 rounded-2xl rounded-br-sm max-w-[80%]"
-                      style={{ animationDelay: '1s' }}
-                    >
-                      Yes! Someone with a soulful voice
+                    <div className="self-start bg-gray-200 text-gray-800 text-xs px-3 py-2 rounded-2xl rounded-bl-sm max-w-[85%]">
+                      Found 3 photographers available Saturday! 📸
                     </div>
-                    <div 
-                      className="chat-bubble self-start bg-gray-700 text-white text-xs px-3 py-2 rounded-2xl rounded-bl-sm max-w-[80%]"
-                      style={{ animationDelay: '1.5s' }}
-                    >
-                      Found 3 perfect matches! Here's Sarah ✨
+                    <div className="self-start bg-gray-200 text-gray-800 text-xs px-3 py-2 rounded-2xl rounded-bl-sm max-w-[85%]">
+                      Sarah (4.9★) is nearby and free. Want me to connect you?
+                    </div>
+                    <div className="self-end bg-[#E50914] text-white text-xs px-3 py-2 rounded-2xl rounded-br-sm">
+                      Yes please! 🙌
                     </div>
                   </div>
                 </div>
               </div>
               
-              {/* Floating testimonial card */}
+              {/* Floating match card */}
               <div 
-                className="absolute -left-8 bottom-20 bg-white rounded-2xl p-4 shadow-xl max-w-[180px] z-30 hidden lg:block"
-                style={{ animation: 'float-delayed 4s ease-in-out infinite' }}
+                className="absolute -left-4 lg:-left-12 top-1/3 bg-white rounded-2xl p-4 shadow-xl z-30 hidden sm:block max-w-[200px]"
+                style={{ animation: 'float 4s ease-in-out infinite', animationDelay: '1s' }}
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" />
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-lg">
+                    📸
+                  </div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-900">Sarah K.</p>
-                    <p className="text-[10px] text-gray-500">Music Producer</p>
+                    <p className="text-sm font-semibold text-gray-900">Sarah M.</p>
+                    <div className="flex items-center gap-1">
+                      <Star size={12} fill="#FBBF24" color="#FBBF24" />
+                      <span className="text-xs text-gray-500">4.9 · Photographer</span>
+                    </div>
                   </div>
                 </div>
-                <p className="text-xs text-gray-600">"Found my vocalist in 2 hours!"</p>
-                <div className="flex mt-2">
-                  {[1,2,3,4,5].map((_, i) => (
-                    <Star key={i} size={10} fill="#FBBF24" color="#FBBF24" />
-                  ))}
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <MapPin size={12} />
+                  <span>2.3 miles away</span>
+                  <span className="text-green-500 font-medium">Available</span>
                 </div>
               </div>
               
-              {/* Floating category pill */}
+              {/* Stats pill */}
               <div 
-                className="absolute -right-4 top-1/3 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-medium px-4 py-2 rounded-full shadow-lg z-30 hidden lg:flex items-center gap-2"
-                style={{ animation: 'bounce-soft 3s ease-in-out infinite' }}
+                className="absolute -right-2 bottom-1/4 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg z-30 hidden sm:flex items-center gap-2"
+                style={{ animation: 'float 3.5s ease-in-out infinite' }}
               >
-                <Music size={12} />
-                <span>Musicians</span>
+                <Zap size={14} />
+                <span>Matched in 2 min</span>
               </div>
             </div>
           </div>
         </div>
-        
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="text-xs text-gray-400 tracking-widest uppercase">Scroll</span>
-          <div className="w-5 h-8 rounded-full border-2 border-gray-300 flex justify-center pt-1">
-            <div className="w-1 h-2 bg-gray-400 rounded-full" style={{ animation: 'bounce-soft 1.5s ease-in-out infinite' }} />
-          </div>
-        </div>
       </section>
 
-      {/* Categories Marquee */}
-      <section className="py-8 bg-gray-50 overflow-hidden border-y border-gray-100">
-        <div className="marquee flex whitespace-nowrap">
+      {/* Categories Bar */}
+      <section className="py-6 bg-white border-y border-gray-100 overflow-hidden">
+        <div className="flex whitespace-nowrap" style={{ animation: 'marquee 30s linear infinite' }}>
           {[...CATEGORIES, ...CATEGORIES, ...CATEGORIES].map((cat, i) => (
-            <div key={i} className="flex items-center gap-3 mx-8">
-              <cat.icon size={20} style={{ color: cat.color }} />
-              <span className="text-lg font-medium text-gray-400">{cat.label}</span>
+            <div key={i} className="flex items-center gap-2 mx-6 px-4 py-2 rounded-full bg-gray-50">
+              <cat.icon size={16} style={{ color: cat.color }} />
+              <span className="text-sm font-medium text-gray-700">{cat.label}</span>
+              <span className="text-xs text-gray-400">{cat.count}</span>
             </div>
           ))}
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-24 px-6 bg-white">
+      <section id="how" className="py-24 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1 rounded-full bg-red-50 text-[#E50914] text-sm font-medium mb-4">
-              Simple as 1-2-3
+            <span className="inline-block px-4 py-1 rounded-full bg-red-50 text-[#E50914] text-sm font-semibold mb-4">
+              Simple & Fast
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              How Titli works
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Get help in 3 steps
             </h2>
+            <p className="text-gray-500 max-w-md mx-auto">
+              No endless scrolling through listings. Just tell us what you need.
+            </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                num: "01",
+                step: "01",
                 emoji: "💬",
-                title: "Message Taj",
-                desc: "Just describe who you need. Like texting a friend who knows everyone in the industry.",
+                title: "Tell us what you need",
+                desc: "Describe what you're looking for in plain English. Need a plumber? A photographer? A guitar teacher? Just ask.",
                 color: "from-blue-500 to-cyan-400"
               },
               {
-                num: "02",
-                emoji: "✨",
-                title: "Get Matched",
-                desc: "Our AI finds perfect matches from 500+ verified creatives. Usually within minutes.",
+                step: "02",
+                emoji: "🎯",
+                title: "We find the right people",
+                desc: "Our AI matches you with verified providers nearby. No fake profiles, no spam — just real people ready to help.",
                 color: "from-purple-500 to-pink-400"
               },
               {
-                num: "03",
+                step: "03",
                 emoji: "🤝",
-                title: "Connect",
-                desc: "We make warm intros. No awkward cold DMs. Just real conversations.",
+                title: "Connect instantly",
+                desc: "We introduce you directly. Chat, discuss details, and get it done. Most matches happen in under 5 minutes.",
                 color: "from-orange-500 to-red-400"
               }
-            ].map((step, idx) => (
-              <div 
-                key={idx}
-                className="card-hover relative bg-white rounded-3xl p-8 border border-gray-100 shadow-sm group"
-              >
-                {/* Number badge */}
-                <div 
-                  className={`absolute -top-4 -right-4 w-12 h-12 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-bold text-sm shadow-lg`}
-                >
-                  {step.num}
+            ].map((item, idx) => (
+              <div key={idx} className="card-hover relative bg-[#FFFDF9] rounded-3xl p-8 border border-gray-100">
+                <div className={`absolute -top-3 -right-3 w-10 h-10 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold text-xs shadow-lg`}>
+                  {item.step}
                 </div>
-                
-                {/* Emoji */}
-                <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">
-                  {step.emoji}
-                </div>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
-                <p className="text-gray-500 leading-relaxed">{step.desc}</p>
+                <div className="text-4xl mb-4">{item.emoji}</div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
+                <p className="text-gray-500 leading-relaxed text-sm">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Use Cases */}
+      <section className="py-24 px-6 bg-[#FFFDF9]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Whatever you need, we've got you
+            </h2>
+            <p className="text-gray-500">From everyday tasks to special occasions</p>
+          </div>
+          
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { emoji: "🔧", title: "Home Services", examples: "Plumbers, Electricians, Cleaners", bg: "bg-blue-50" },
+              { emoji: "📸", title: "Events", examples: "Photographers, DJs, Caterers", bg: "bg-pink-50" },
+              { emoji: "🎸", title: "Lessons", examples: "Music, Language, Fitness", bg: "bg-yellow-50" },
+              { emoji: "💻", title: "Tech Help", examples: "Developers, Designers, IT Support", bg: "bg-purple-50" },
+              { emoji: "🚗", title: "Transportation", examples: "Movers, Drivers, Delivery", bg: "bg-green-50" },
+              { emoji: "✨", title: "Personal", examples: "Stylists, Trainers, Coaches", bg: "bg-orange-50" },
+            ].map((cat, idx) => (
+              <div key={idx} className={`${cat.bg} rounded-2xl p-6 card-hover cursor-pointer`}>
+                <div className="text-3xl mb-3">{cat.emoji}</div>
+                <h3 className="font-bold text-gray-900 mb-1">{cat.title}</h3>
+                <p className="text-sm text-gray-500">{cat.examples}</p>
               </div>
             ))}
           </div>
@@ -523,68 +508,54 @@ const LandingPage = () => {
       </section>
 
       {/* Social Proof */}
-      <section className="py-24 px-6 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-24 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Loved by creatives
+              Real people, real results
             </h2>
-            <p className="text-gray-500 max-w-md mx-auto">
-              Join the community of artists, producers, and creators finding their perfect collaborators.
-            </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6">
             {[
               {
-                quote: "Found my vocalist in 2 hours. Taj understood exactly what I needed. This is magic.",
-                name: "Sarah K.",
-                role: "Music Producer",
-                emoji: "🎵",
-                gradient: "from-purple-100 to-pink-50"
+                quote: "Found a photographer for my daughter's quinceañera in 10 minutes. She was amazing and half the price of others!",
+                name: "Maria G.",
+                location: "Los Angeles",
+                emoji: "📸",
+                bg: "bg-gradient-to-br from-pink-50 to-rose-50"
               },
               {
-                quote: "The best networking tool for creatives. No more cold DMs that go nowhere. Ever.",
-                name: "Mike R.",
-                role: "Filmmaker",
-                emoji: "🎬",
-                gradient: "from-blue-100 to-cyan-50"
+                quote: "My sink was flooding at 9pm. Had a plumber at my door by 10. Titli literally saved my apartment.",
+                name: "James K.",
+                location: "Chicago",
+                emoji: "🔧",
+                bg: "bg-gradient-to-br from-blue-50 to-cyan-50"
               },
               {
-                quote: "Connected with 3 advisors who actually responded. Total game changer for my startup.",
-                name: "Priya S.",
-                role: "Founder",
-                emoji: "💼",
-                gradient: "from-orange-100 to-yellow-50"
+                quote: "Been looking for a good guitar teacher for months. Found one in my neighborhood through Titli. Now I can play!",
+                name: "Aisha T.",
+                location: "Austin",
+                emoji: "🎸",
+                bg: "bg-gradient-to-br from-yellow-50 to-orange-50"
               }
             ].map((t, idx) => (
-              <div 
-                key={idx}
-                className={`card-hover bg-gradient-to-br ${t.gradient} rounded-3xl p-8 relative overflow-hidden`}
-              >
-                {/* Background emoji */}
-                <div className="absolute -right-4 -bottom-4 text-8xl opacity-10">
-                  {t.emoji}
-                </div>
-                
+              <div key={idx} className={`${t.bg} rounded-3xl p-8 card-hover relative overflow-hidden`}>
+                <div className="absolute -right-4 -bottom-4 text-8xl opacity-10">{t.emoji}</div>
                 <div className="relative z-10">
                   <div className="flex gap-1 mb-4">
                     {[1,2,3,4,5].map((_, i) => (
                       <Star key={i} size={16} fill="#FBBF24" color="#FBBF24" />
                     ))}
                   </div>
-                  
-                  <p className="text-gray-700 leading-relaxed mb-6 font-medium">
-                    "{t.quote}"
-                  </p>
-                  
+                  <p className="text-gray-700 leading-relaxed mb-6">"{t.quote}"</p>
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-2xl">
+                    <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-xl">
                       {t.emoji}
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">{t.name}</p>
-                      <p className="text-sm text-gray-500">{t.role}</p>
+                      <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
+                      <p className="text-xs text-gray-500">{t.location}</p>
                     </div>
                   </div>
                 </div>
@@ -594,96 +565,71 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Final CTA */}
+      {/* CTA */}
       <section className="py-24 px-6 relative overflow-hidden">
-        {/* Background gradient */}
-        <div 
-          className="absolute inset-0 bg-gradient-to-br from-red-50 via-white to-orange-50"
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-red-50 via-[#FFFDF9] to-orange-50" />
         
         {/* Floating butterflies */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <img 
-            src="/butterfly.png" 
-            alt=""
-            className="absolute top-10 left-10 w-20 opacity-20"
-            style={{ animation: 'float 6s ease-in-out infinite' }}
-          />
-          <img 
-            src="/butterfly.png" 
-            alt=""
-            className="absolute bottom-20 right-20 w-16 opacity-15"
-            style={{ animation: 'float-delayed 5s ease-in-out infinite' }}
-          />
-        </div>
+        <img 
+          src="/butterfly.png" 
+          alt=""
+          className="absolute top-10 left-10 w-16 opacity-20"
+          style={{ animation: 'float 6s ease-in-out infinite' }}
+        />
+        <img 
+          src="/butterfly.png" 
+          alt=""
+          className="absolute bottom-10 right-10 w-12 opacity-15"
+          style={{ animation: 'float 5s ease-in-out infinite', animationDelay: '2s' }}
+        />
         
-        <div className="max-w-3xl mx-auto text-center relative z-10">
-          {/* Main butterfly */}
-          <div className="relative inline-block mb-8">
-            <img 
-              src="/butterfly.png" 
-              alt="Titli"
-              className="w-32 h-auto glow-red"
-              style={{ animation: 'float 4s ease-in-out infinite' }}
-            />
-            {/* Sparkles */}
-            <Sparkles 
-              className="absolute -top-2 -right-2 text-yellow-400" 
-              size={20}
-              style={{ animation: 'bounce-soft 2s ease-in-out infinite' }}
-            />
-            <Heart 
-              className="absolute -bottom-2 -left-2 text-pink-400" 
-              size={16}
-              fill="currentColor"
-              style={{ animation: 'bounce-soft 2s ease-in-out infinite', animationDelay: '0.5s' }}
-            />
-          </div>
+        <div className="max-w-2xl mx-auto text-center relative z-10">
+          <img 
+            src="/butterfly.png" 
+            alt="Titli"
+            className="w-24 h-auto mx-auto mb-8 glow"
+            style={{ animation: 'float 4s ease-in-out infinite' }}
+          />
           
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Ready to find your
+          <h2 className="text-3xl sm:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            Stop searching.
             <br />
-            <span className="font-display italic gradient-text">perfect match</span>?
+            <span className="font-serif italic gradient-text">Start finding.</span>
           </h2>
           
           <p className="text-lg text-gray-500 mb-10 max-w-md mx-auto">
-            Join 500+ creatives who stopped cold DMing and started connecting.
+            Join thousands who found the help they needed — photographers, plumbers, tutors, and more.
           </p>
           
           <button 
             onClick={handleGetStarted}
-            className="gradient-btn group px-10 py-5 rounded-2xl text-white font-semibold text-lg shadow-xl shadow-red-500/25 hover:shadow-2xl hover:shadow-red-500/40 transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto"
+            className="gradient-btn group px-10 py-5 rounded-2xl text-white font-semibold text-lg shadow-xl shadow-red-500/20 hover:shadow-2xl hover:shadow-red-500/30 transition-all duration-300 hover:scale-105 inline-flex items-center gap-3"
           >
-            <span>Get started — it's free</span>
+            Get started free
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </button>
           
-          <p className="mt-6 text-sm text-gray-400 flex items-center justify-center gap-2">
-            <Zap size={14} className="text-yellow-500" />
-            No credit card required
-          </p>
+          <p className="mt-6 text-sm text-gray-400">No credit card required</p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 bg-gray-50 border-t border-gray-100">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
-              <span className="font-bold text-lg text-gray-900">titli</span>
-            </div>
-            
-            <div className="flex items-center gap-8">
-              {["Privacy", "Terms", "Contact"].map((link, i) => (
-                <a key={i} href="#" className="text-sm text-gray-500 hover:text-[#E50914] transition-colors">
-                  {link}
-                </a>
-              ))}
-            </div>
-            
-            <p className="text-sm text-gray-400">© 2025 Titli</p>
+      <footer className="py-12 px-6 bg-white border-t border-gray-100">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
+            <span className="font-bold text-lg text-gray-900">titli</span>
           </div>
+          
+          <div className="flex items-center gap-8">
+            {["How it works", "Categories", "For Providers", "Privacy", "Terms"].map((link, i) => (
+              <a key={i} href="#" className="text-sm text-gray-500 hover:text-[#E50914] transition-colors">
+                {link}
+              </a>
+            ))}
+          </div>
+          
+          <p className="text-sm text-gray-400">© 2025 Titli</p>
         </div>
       </footer>
 
