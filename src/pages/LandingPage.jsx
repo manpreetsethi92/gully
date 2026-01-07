@@ -193,9 +193,9 @@ const LandingPage = () => {
         <div className="max-w-[1800px] mx-auto px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             {/* Left - Phone */}
-            <div className="relative lg:sticky lg:top-32">
+            <div className="relative lg:sticky lg:top-32 flex justify-center lg:justify-center">
               <div 
-                className="relative max-w-sm mx-auto lg:mx-0"
+                className="relative max-w-sm"
                 style={{ filter: 'drop-shadow(0 40px 80px rgba(0,0,0,0.5))' }}
               >
                 <img 
@@ -206,7 +206,7 @@ const LandingPage = () => {
               </div>
               
               {/* Decorative elements */}
-              <div className="absolute -bottom-10 -left-10 w-32 h-32 border border-[#E50914]/20 rounded-full hidden lg:block" />
+              <div className="absolute -bottom-10 left-0 w-32 h-32 border border-[#E50914]/20 rounded-full hidden lg:block" />
             </div>
             
             {/* Right - Steps */}
