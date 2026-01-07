@@ -14,7 +14,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #ffffff;
+  transition: background-color 0.3s ease;
 }
+
+/* Font utilities */
+.font-display { font-family: 'Playfair Display', serif; }
+.font-mono { font-family: 'Space Mono', monospace; }
+.font-syne { font-family: 'Syne', sans-serif; }
 
 @layer base {
   :root {
@@ -39,12 +45,41 @@ body {
     --ring: 358 84% 50%;
     --radius: 0.5rem;
     
-    --titly-red: #E50914;
-    --titly-black: #0f1419;
-    --titly-white: #ffffff;
-    --titly-gray: #536471;
-    --titly-light: #f7f9f9;
-    --titly-border: #eff3f4;
+    --titli-red: #E50914;
+    --titli-black: #0f1419;
+    --titli-white: #ffffff;
+    --titli-gray: #536471;
+    --titli-light: #f7f9f9;
+    --titli-border: #eff3f4;
+  }
+
+  /* Dark mode variables */
+  .dark {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 6%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 95%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 358 84% 50%;
+    
+    --titli-black: #ffffff;
+    --titli-white: #0a0a0a;
+    --titli-gray: #a0a0a0;
+    --titli-light: #151515;
+    --titli-border: #222222;
   }
 }
 
@@ -57,18 +92,249 @@ body {
   }
 }
 
-/* Font utility classes */
-.font-display {
-  font-family: 'Playfair Display', serif;
+/* ==================== DARK MODE GLOBAL OVERRIDES ==================== */
+
+/* Body background */
+.dark body,
+html.dark body {
+  background: #0a0a0a !important;
 }
 
-.font-mono {
-  font-family: 'Space Mono', monospace;
+/* Main content cards and containers */
+html.dark .bg-white,
+.dark .bg-white {
+  background-color: #111 !important;
 }
 
-.font-syne {
-  font-family: 'Syne', sans-serif;
+html.dark .bg-gray-50,
+.dark .bg-gray-50 {
+  background-color: #151515 !important;
 }
+
+html.dark .bg-gray-100,
+.dark .bg-gray-100 {
+  background-color: #1a1a1a !important;
+}
+
+/* Text colors */
+html.dark .text-gray-900,
+html.dark .text-gray-800,
+html.dark .text-gray-700,
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700 {
+  color: #f0f0f0 !important;
+}
+
+html.dark .text-gray-600,
+html.dark .text-gray-500,
+.dark .text-gray-600,
+.dark .text-gray-500 {
+  color: #a0a0a0 !important;
+}
+
+html.dark .text-gray-400,
+.dark .text-gray-400 {
+  color: #666666 !important;
+}
+
+html.dark .text-black,
+.dark .text-black {
+  color: #ffffff !important;
+}
+
+/* Borders */
+html.dark .border-gray-100,
+html.dark .border-gray-200,
+html.dark .border-gray-300,
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  border-color: #222 !important;
+}
+
+html.dark .divide-gray-100 > * + *,
+html.dark .divide-gray-200 > * + *,
+.dark .divide-gray-100 > * + *,
+.dark .divide-gray-200 > * + * {
+  border-color: #222 !important;
+}
+
+/* Hover states */
+html.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-50:hover {
+  background-color: #1a1a1a !important;
+}
+
+html.dark .hover\:bg-gray-100:hover,
+.dark .hover\:bg-gray-100:hover {
+  background-color: #222 !important;
+}
+
+/* Input fields */
+html.dark input,
+html.dark textarea,
+html.dark select,
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #151515 !important;
+  border-color: #333 !important;
+  color: #f0f0f0 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder,
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #666 !important;
+}
+
+html.dark input:focus,
+html.dark textarea:focus,
+.dark input:focus,
+.dark textarea:focus {
+  background-color: #1a1a1a !important;
+  border-color: #E50914 !important;
+}
+
+/* Buttons - secondary/outline */
+html.dark button.bg-white,
+html.dark .bg-white button,
+.dark button.bg-white,
+.dark .bg-white button {
+  background-color: #1a1a1a !important;
+  color: #f0f0f0 !important;
+}
+
+/* Cards with shadows */
+html.dark .shadow-sm,
+html.dark .shadow,
+.dark .shadow-sm,
+.dark .shadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Dialog/Modal backgrounds */
+html.dark [role="dialog"],
+html.dark .dialog-content,
+.dark [role="dialog"],
+.dark .dialog-content {
+  background-color: #111 !important;
+}
+
+/* Badge/Tag backgrounds */
+html.dark .rounded-full.bg-gray-100,
+html.dark .rounded-full.bg-gray-50,
+.dark .rounded-full.bg-gray-100,
+.dark .rounded-full.bg-gray-50 {
+  background-color: #222 !important;
+}
+
+/* Skill tags */
+html.dark .skill-tag,
+.dark .skill-tag {
+  background-color: #1a1a1a !important;
+  border-color: #333 !important;
+  color: #a0a0a0 !important;
+}
+
+html.dark .skill-tag:hover,
+.dark .skill-tag:hover {
+  border-color: #666 !important;
+  color: #f0f0f0 !important;
+}
+
+html.dark .skill-tag.selected,
+.dark .skill-tag.selected {
+  background-color: #f0f0f0 !important;
+  color: #0a0a0a !important;
+  border-color: #f0f0f0 !important;
+}
+
+/* Settings sections */
+html.dark .settings-section h2,
+.dark .settings-section h2 {
+  color: #f0f0f0 !important;
+}
+
+html.dark .settings-item,
+.dark .settings-item {
+  border-color: #222 !important;
+}
+
+html.dark .settings-item-info h3,
+.dark .settings-item-info h3 {
+  color: #f0f0f0 !important;
+}
+
+html.dark .settings-item-info p,
+.dark .settings-item-info p {
+  color: #888 !important;
+}
+
+html.dark .settings-tab,
+.dark .settings-tab {
+  background-color: #1a1a1a !important;
+  border-color: #333 !important;
+  color: #a0a0a0 !important;
+}
+
+html.dark .settings-tab.active,
+.dark .settings-tab.active {
+  background-color: #222 !important;
+  border-color: #f0f0f0 !important;
+  color: #f0f0f0 !important;
+}
+
+/* Content header */
+html.dark .content-header,
+.dark .content-header {
+  border-color: #222 !important;
+}
+
+html.dark .content-header h1,
+.dark .content-header h1 {
+  color: #f0f0f0 !important;
+}
+
+/* Empty state */
+html.dark .empty-state h3,
+.dark .empty-state h3 {
+  color: #f0f0f0 !important;
+}
+
+html.dark .empty-state p,
+.dark .empty-state p {
+  color: #888 !important;
+}
+
+/* Toggle switch */
+html.dark .toggle-switch,
+.dark .toggle-switch {
+  background: #333 !important;
+}
+
+/* Scrollbar in dark mode */
+html.dark ::-webkit-scrollbar-thumb,
+.dark ::-webkit-scrollbar-thumb {
+  background: #333;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover,
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+/* Ring/focus colors */
+html.dark .ring-gray-200,
+html.dark .focus\:ring-gray-200:focus,
+.dark .ring-gray-200,
+.dark .focus\:ring-gray-200:focus {
+  --tw-ring-color: #333 !important;
+}
+
+/* ==================== END DARK MODE OVERRIDES ==================== */
 
 /* Animations */
 @keyframes fadeIn {
@@ -128,7 +394,7 @@ body {
   width: 20px;
   height: 20px;
   border: 2px solid #f0f0f0;
-  border-top-color: var(--titly-red);
+  border-top-color: var(--titli-red);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -139,7 +405,7 @@ body {
 
 /* CTA Button */
 .cta-button {
-  background: var(--titly-red);
+  background: var(--titli-red);
   color: white;
   border: none;
   padding: 14px 28px;
@@ -167,7 +433,7 @@ body {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 16px;
-  color: var(--titly-black);
+  color: var(--titli-black);
 }
 
 .settings-item {
@@ -175,7 +441,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 16px 0;
-  border-bottom: 1px solid var(--titly-border);
+  border-bottom: 1px solid var(--titli-border);
 }
 
 .settings-item:last-child {
@@ -190,7 +456,7 @@ body {
 
 .settings-item-info p {
   font-size: 13px;
-  color: var(--titly-gray);
+  color: var(--titli-gray);
 }
 
 .settings-tabs {
@@ -204,14 +470,14 @@ body {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  border: 1px solid var(--titly-border);
+  border: 1px solid var(--titli-border);
   background: white;
   transition: all 0.15s ease;
 }
 
 .settings-tab.active {
-  background: var(--titly-light);
-  border-color: var(--titly-black);
+  background: var(--titli-light);
+  border-color: var(--titli-black);
 }
 
 /* Toggle Switch */
@@ -226,7 +492,7 @@ body {
 }
 
 .toggle-switch.active {
-  background: var(--titly-red);
+  background: var(--titli-red);
 }
 
 .toggle-switch::after {
@@ -260,32 +526,32 @@ body {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
-  border: 1px solid var(--titly-border);
+  border: 1px solid var(--titli-border);
   background: white;
-  color: var(--titly-gray);
+  color: var(--titli-gray);
 }
 
 .skill-tag:hover {
-  border-color: var(--titly-black);
-  color: var(--titly-black);
+  border-color: var(--titli-black);
+  color: var(--titli-black);
 }
 
 .skill-tag.selected {
-  background: var(--titly-black);
+  background: var(--titli-black);
   color: white;
-  border-color: var(--titly-black);
+  border-color: var(--titli-black);
 }
 
 /* Content Header */
 .content-header {
   padding: 24px 32px;
-  border-bottom: 1px solid var(--titly-border);
+  border-bottom: 1px solid var(--titli-border);
 }
 
 .content-header h1 {
   font-size: 22px;
   font-weight: 700;
-  color: var(--titly-black);
+  color: var(--titli-black);
   margin: 0;
 }
 
@@ -309,12 +575,12 @@ body {
 .empty-state h3 {
   font-size: 18px;
   font-weight: 600;
-  color: var(--titly-black);
+  color: var(--titli-black);
   margin-bottom: 8px;
 }
 
 .empty-state p {
-  color: var(--titly-gray);
+  color: var(--titli-gray);
   font-size: 14px;
 }
 
