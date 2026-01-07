@@ -102,7 +102,7 @@ const PhoneMockup = () => {
               style={{ 
                 maxWidth: '80%',
                 padding: '12px 16px',
-                fontSize: '14px',
+                fontSize: '16px',
                 lineHeight: 1.45,
                 color: '#fff',
                 alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
@@ -430,7 +430,7 @@ const LandingPage = () => {
             
             {/* Subheadline */}
             <p className="font-syne text-xl md:text-2xl text-gray-500 max-w-xl leading-relaxed mb-12 animate-fade-up-delay-2 lowercase">
-              tell us what you need. we'll connect you with trusted local pros — in minutes, not days.
+              text taj. we post your ad. get matched in minutes.
             </p>
             
             {/* CTA */}
