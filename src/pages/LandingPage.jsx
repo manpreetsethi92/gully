@@ -102,11 +102,11 @@ const PhoneMockup = () => {
               style={{ 
                 maxWidth: '80%',
                 padding: '10px 14px',
-                fontSize: '11px',
+                fontSize: '13px',
                 lineHeight: 1.4,
                 color: '#fff',
                 alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                backgroundColor: msg.sender === 'user' ? '#E50914' : '#374151',
+                backgroundColor: msg.sender === 'user' ? '#9B59B6' : '#3D3D4A',
                 borderRadius: msg.sender === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                 animation: 'message-pop 0.3s ease-out',
