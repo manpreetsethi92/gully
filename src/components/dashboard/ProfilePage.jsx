@@ -75,6 +75,7 @@ const ProfilePage = () => {
   const [previewPhoto, setPreviewPhoto] = useState(null);
   const [skillSearch, setSkillSearch] = useState("");
   const [showSkillDropdown, setShowSkillDropdown] = useState(false);
+  const [imageError, setImageError] = useState(false);
   
   const [formData, setFormData] = useState({
     name: user?.name || "",
@@ -184,7 +185,7 @@ const ProfilePage = () => {
   };
 
   const completionPercent = calculateCompletion();
-  const displayPhoto = user?.photo_url || null;
+  const displayPhoto = (!imageError && user?.photo_url) ? user.photo_url : null;
 
   return (
     <div>
@@ -223,6 +224,7 @@ const ProfilePage = () => {
                 src={displayPhoto} 
                 alt={user?.name}
                 className="w-28 h-28 rounded-full object-cover"
+                onError={() => setImageError(true)}
               />
             ) : (
               <div 
@@ -345,11 +347,12 @@ const ProfilePage = () => {
             {/* Profile Photo */}
             <div className="flex flex-col items-center">
               <div className="relative">
-                {previewPhoto || formData.photo_url ? (
+                {(previewPhoto || (formData.photo_url && !imageError)) ? (
                   <img 
                     src={previewPhoto || formData.photo_url} 
                     alt="Profile"
                     className="w-24 h-24 rounded-full object-cover"
+                    onError={() => setImageError(true)}
                   />
                 ) : (
                   <div 
