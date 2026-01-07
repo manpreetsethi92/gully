@@ -574,39 +574,18 @@ const LandingPage = () => {
       </section>
 
       {/* ==================== FOOTER (DARK) ==================== */}
-      <footer className="py-8 md:py-12 border-t border-white/10 bg-[#0a0a0a]">
+      <footer className="py-4 bg-[#0a0a0a]">
         <div className="max-w-[1800px] mx-auto px-8">
-          {/* Bottom row with legal links and social */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <p className="font-mono text-xs text-white/30 order-3 md:order-1">
-              © 2025 Titli. All rights reserved.
-            </p>
-            
-            {/* Legal links - inline */}
-            <div className="flex items-center gap-6 order-1 md:order-2">
-              {["terms", "privacy", "cookies"].map((link, idx) => (
-                <a 
-                  key={idx}
-                  href="#" 
-                  className="font-syne text-sm text-white/50 hover:text-[#E50914] transition-colors"
-                >
-                  {link}
-                </a>
-              ))}
-            </div>
-            
-            {/* Social links */}
-            <div className="flex items-center gap-6 order-2 md:order-3">
-              {["twitter", "instagram", "linkedin"].map((social, idx) => (
-                <a 
-                  key={idx}
-                  href="#" 
-                  className="font-mono text-xs text-white/30 hover:text-[#E50914] transition-colors"
-                >
-                  {social}
-                </a>
-              ))}
-            </div>
+          <div className="flex items-center justify-center gap-4 md:gap-8">
+            {["privacy", "terms", "cookies"].map((link, idx) => (
+              <a 
+                key={idx}
+                href="#" 
+                className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors"
+              >
+                {link}
+              </a>
+            ))}
           </div>
         </div>
       </footer>
