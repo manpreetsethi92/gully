@@ -37,9 +37,9 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen overflow-x-hidden">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
         
-        .font-display { font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif; }
+        .font-display { font-family: 'Playfair Display', serif; }
         .font-mono { font-family: 'Space Mono', monospace; }
         .font-syne { font-family: 'Syne', sans-serif; }
         
@@ -79,7 +79,7 @@ const LandingPage = () => {
           height: 100%;
           overflow: hidden;
           transform-origin: right center;
-          animation: flap-left 0.3s ease-in-out infinite;
+          animation: flap-left 0.6s ease-in-out infinite;
         }
         
         .wing-left img {
@@ -100,7 +100,7 @@ const LandingPage = () => {
           height: 100%;
           overflow: hidden;
           transform-origin: left center;
-          animation: flap-right 0.3s ease-in-out infinite;
+          animation: flap-right 0.6s ease-in-out infinite;
         }
         
         .wing-right img {
@@ -159,7 +159,7 @@ const LandingPage = () => {
               className="w-10 h-auto"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
-            <span className="font-syne font-bold text-xl tracking-tight text-white">TITLI</span>
+            <span className="font-syne font-bold text-xl tracking-tight text-white">titli</span>
           </a>
           <button
             onClick={() => setShowAuthModal(true)}
@@ -172,7 +172,7 @@ const LandingPage = () => {
 
       {/* ==================== HERO SECTION (WHITE) ==================== */}
       <section className="min-h-screen relative flex items-center bg-white pt-20">
-        {/* Butterfly - positioned on right side with wing flapping */}
+        {/* Static butterfly on hero - no flapping */}
         <div 
           className="absolute z-10 pointer-events-none hidden lg:block"
           style={{
@@ -181,16 +181,11 @@ const LandingPage = () => {
             width: 'clamp(200px, 28vw, 450px)',
           }}
         >
-          <div className="butterfly-wrapper butterfly-glow" style={{ width: '100%', paddingBottom: '70%', position: 'relative' }}>
-            {/* Left Wing */}
-            <div className="wing-left">
-              <img src="/butterfly.png" alt="" />
-            </div>
-            {/* Right Wing */}
-            <div className="wing-right">
-              <img src="/butterfly.png" alt="" />
-            </div>
-          </div>
+          <img 
+            src="/butterfly.png" 
+            alt="Titli"
+            className="w-full h-auto butterfly-glow"
+          />
         </div>
         
         {/* Main Content */}
@@ -198,14 +193,14 @@ const LandingPage = () => {
           <div className="max-w-4xl">
             {/* Eyebrow - BLACK */}
             <div className="animate-fade-up mb-8">
-              <span className="font-mono text-xs tracking-[0.3em] text-gray-900 uppercase">
-                Find anyone you need
+              <span className="font-mono text-xs tracking-[0.3em] text-gray-900 lowercase">
+                find anyone you need
               </span>
             </div>
             
             {/* Main Headline */}
-            <h1 className="font-display text-[clamp(3rem,10vw,9rem)] leading-[0.9] tracking-tight mb-8 animate-fade-up-delay-1 text-gray-900">
-              Need a
+            <h1 className="font-display text-[clamp(3rem,10vw,9rem)] leading-[0.9] tracking-tight mb-8 animate-fade-up-delay-1 text-gray-900 lowercase">
+              need a
               <br />
               <span className="relative inline-block">
                 <span 
@@ -219,25 +214,25 @@ const LandingPage = () => {
             </h1>
             
             {/* Subheadline */}
-            <p className="font-syne text-xl md:text-2xl text-gray-500 max-w-xl leading-relaxed mb-12 animate-fade-up-delay-2">
-              Tell us what you need. We'll connect you with trusted local pros — in minutes, not days.
+            <p className="font-syne text-xl md:text-2xl text-gray-500 max-w-xl leading-relaxed mb-12 animate-fade-up-delay-2 lowercase">
+              tell us what you need. we'll connect you with trusted local pros — in minutes, not days.
             </p>
             
             {/* CTA */}
             <div className="flex flex-col sm:flex-row items-start gap-6 animate-fade-up-delay-3">
               <button 
                 onClick={handleGetStarted}
-                className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16"
+                className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16 lowercase"
               >
-                <span className="relative z-10">Try us now</span>
+                <span className="relative z-10">try us now</span>
                 <ArrowRight 
                   className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white" 
                   size={20} 
                 />
               </button>
-              <div className="font-mono text-xs text-gray-400 flex items-center gap-2">
+              <div className="font-mono text-xs text-gray-400 flex items-center gap-2 lowercase">
                 <span className="w-8 h-px bg-gray-300" />
-                FREE TO START
+                free to start
               </div>
             </div>
           </div>
@@ -250,7 +245,7 @@ const LandingPage = () => {
         
         {/* Scroll indicator */}
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-          <span className="font-mono text-[10px] tracking-[0.2em] text-gray-400 uppercase">Scroll</span>
+          <span className="font-mono text-[10px] tracking-[0.2em] text-gray-400 lowercase">scroll</span>
           <div className="w-px h-12 bg-gradient-to-b from-gray-300 to-transparent" />
         </div>
       </section>
@@ -278,24 +273,24 @@ const LandingPage = () => {
             
             {/* Right - Steps */}
             <div className="space-y-20 pt-8 lg:pt-20">
-              <div className="font-mono text-xs tracking-[0.3em] text-[#E50914] mb-12 uppercase">
-                How it works
+              <div className="font-mono text-xs tracking-[0.3em] text-[#E50914] mb-12 lowercase">
+                how it works
               </div>
               
               {[
                 {
                   num: "01",
-                  title: "Message Taj",
+                  title: "message Taj",
                   desc: "Tell our AI concierge exactly who you're looking for. No forms. No filters. Just describe what you need in your own words."
                 },
                 {
                   num: "02", 
-                  title: "Get matched",
+                  title: "get matched",
                   desc: "Within minutes, Taj finds the perfect people from our network of verified professionals."
                 },
                 {
                   num: "03",
-                  title: "Connect",
+                  title: "connect",
                   desc: "We make the intro. You take it from there. Real conversations, real collaborations, real results."
                 }
               ].map((step, idx) => (
@@ -323,16 +318,16 @@ const LandingPage = () => {
         <div className="max-w-[1800px] mx-auto px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
             {[
-              { value: "4,500+", label: "Verified providers" },
-              { value: "17", label: "Categories" },
-              { value: "5min", label: "Average match time" },
-              { value: "94%", label: "Success rate" }
+              { value: "4,500+", label: "verified providers" },
+              { value: "17", label: "categories" },
+              { value: "5min", label: "average match time" },
+              { value: "94%", label: "success rate" }
             ].map((stat, idx) => (
               <div key={idx} className="text-center md:text-left">
                 <div className="font-display text-4xl md:text-6xl text-[#E50914] mb-2">
                   {stat.value}
                 </div>
-                <div className="font-mono text-xs tracking-[0.15em] text-gray-400 uppercase">
+                <div className="font-mono text-xs tracking-[0.15em] text-gray-400 lowercase">
                   {stat.label}
                 </div>
               </div>
@@ -351,8 +346,8 @@ const LandingPage = () => {
         />
         
         <div className="max-w-[1800px] mx-auto px-8 relative z-10">
-          <div className="font-mono text-xs tracking-[0.3em] text-[#E50914] mb-16 uppercase">
-            Real stories
+          <div className="font-mono text-xs tracking-[0.3em] text-[#E50914] mb-16 lowercase">
+            real stories
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -403,32 +398,35 @@ const LandingPage = () => {
         
         <div className="max-w-[1800px] mx-auto px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            {/* Butterfly */}
-            <img 
-              src="/butterfly.png" 
-              alt="Titli"
-              className="w-32 md:w-40 h-auto mx-auto mb-12"
-              style={{ 
-                animation: 'float 4s ease-in-out infinite',
-                filter: 'drop-shadow(0 0 40px rgba(229, 9, 20, 0.5))'
-              }}
-            />
+            {/* Flapping Butterfly */}
+            <div className="mx-auto mb-12" style={{ width: '160px' }}>
+              <div className="butterfly-wrapper butterfly-glow" style={{ width: '100%', paddingBottom: '70%', position: 'relative' }}>
+                {/* Left Wing */}
+                <div className="wing-left">
+                  <img src="/butterfly.png" alt="" />
+                </div>
+                {/* Right Wing */}
+                <div className="wing-right">
+                  <img src="/butterfly.png" alt="" />
+                </div>
+              </div>
+            </div>
             
-            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-8 text-white">
-              Let Titli take
+            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-8 text-white lowercase">
+              let Titli take
               <br />
               <span className="text-[#E50914]">you places</span>
             </h2>
             
-            <p className="font-syne text-xl text-white/50 mb-12 max-w-lg mx-auto">
-              Your next connection is one message away.
+            <p className="font-syne text-xl text-white/50 mb-12 max-w-lg mx-auto lowercase">
+              your next connection is one message away.
             </p>
             
             <button 
               onClick={handleGetStarted}
-              className="group inline-flex items-center gap-4 px-12 py-6 bg-[#E50914] font-syne font-semibold text-xl tracking-wide text-white hover:gap-6 transition-all duration-300"
+              className="group inline-flex items-center gap-4 px-12 py-6 bg-[#E50914] font-syne font-semibold text-xl tracking-wide text-white hover:gap-6 transition-all duration-300 lowercase"
             >
-              Get started
+              get started
               <ArrowUpRight size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </button>
           </div>
@@ -442,7 +440,7 @@ const LandingPage = () => {
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
-                <span className="font-syne font-bold text-lg text-white">TITLI</span>
+                <span className="font-syne font-bold text-lg text-white">titli</span>
               </div>
               <p className="font-mono text-xs text-white/40 leading-relaxed">
                 The modern way to find<br />local help for anything.
@@ -450,12 +448,12 @@ const LandingPage = () => {
             </div>
             
             {[
-              { title: "Categories", links: ["Home Services", "Events", "Lessons", "Tech"] },
-              { title: "Company", links: ["About", "Blog", "Careers"] },
-              { title: "Legal", links: ["Terms", "Privacy", "Cookies"] }
+              { title: "categories", links: ["home services", "events", "lessons", "tech"] },
+              { title: "company", links: ["about", "blog", "careers"] },
+              { title: "legal", links: ["terms", "privacy", "cookies"] }
             ].map((col, idx) => (
               <div key={idx}>
-                <h4 className="font-mono text-xs tracking-[0.15em] text-white/40 mb-6 uppercase">{col.title}</h4>
+                <h4 className="font-mono text-xs tracking-[0.15em] text-white/40 mb-6 lowercase">{col.title}</h4>
                 <ul className="space-y-3">
                   {col.links.map((link, i) => (
                     <li key={i}>
@@ -474,7 +472,7 @@ const LandingPage = () => {
               © 2025 Titli. All rights reserved.
             </p>
             <div className="flex items-center gap-6">
-              {["Twitter", "Instagram", "LinkedIn"].map((social, idx) => (
+              {["twitter", "instagram", "linkedin"].map((social, idx) => (
                 <a 
                   key={idx}
                   href="#" 
