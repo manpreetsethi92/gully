@@ -6,6 +6,121 @@ import AuthModal from "../components/AuthModal";
 
 const WORDS = ["photographer", "plumber", "developer", "designer", "tutor", "DJ", "trainer"];
 
+const CONVERSATIONS = [
+  [
+    { sender: "taj", text: "Gurbax mentioned he is looking for a singer to collab on his new EP. Interested?" },
+    { sender: "user", text: "yes, tell me more about him, what kind of songs does he make?" },
+    { sender: "taj", text: "Mostly electronic, house but he is open to other genres as well. You want to see his profile?" },
+    { sender: "user", text: "Yes, send it over" },
+    { sender: "taj", text: "Awesome, doing it asap" }
+  ],
+  [
+    { sender: "user", text: "I am a comedian traveling to NYC next weekend. Help me find a spot so I can do an open mic" },
+    { sender: "taj", text: "Sure, I have a few venues in mind, let me reach out to them and ask if they have any openings" },
+    { sender: "user", text: "Awesome thanks" },
+    { sender: "taj", text: "Sure thing!" }
+  ],
+  [
+    { sender: "user", text: "Looking for 10 users to try my new skincare product" },
+    { sender: "taj", text: "sure tell me more about these users" },
+    { sender: "user", text: "sure, must be influencers with at least 5K followers" },
+    { sender: "taj", text: "awesome here are 10 people you might like, lmk and I can message them for you!" }
+  ]
+];
+
+const PhoneMockup = () => {
+  const [convoIndex, setConvoIndex] = useState(0);
+  const [visibleMessages, setVisibleMessages] = useState([]);
+  const animationRef = React.useRef(null);
+
+  useEffect(() => {
+    if (animationRef.current) {
+      animationRef.current.forEach(id => clearTimeout(id));
+    }
+    
+    const timeoutIds = [];
+    animationRef.current = timeoutIds;
+    
+    setVisibleMessages([]);
+
+    const currentConvo = CONVERSATIONS[convoIndex];
+    let messageIndex = 0;
+    
+    const showNextMessage = () => {
+      if (messageIndex < currentConvo.length) {
+        const msgToAdd = currentConvo[messageIndex];
+        setVisibleMessages(prev => [...prev, msgToAdd]);
+        messageIndex++;
+        const id = setTimeout(showNextMessage, 1200);
+        timeoutIds.push(id);
+      } else {
+        const id1 = setTimeout(() => {
+          setConvoIndex((prev) => (prev + 1) % CONVERSATIONS.length);
+        }, 3500);
+        timeoutIds.push(id1);
+      }
+    };
+
+    const startId = setTimeout(showNextMessage, 600);
+    timeoutIds.push(startId);
+
+    return () => {
+      timeoutIds.forEach(id => clearTimeout(id));
+    };
+  }, [convoIndex]);
+
+  return (
+    <div 
+      className="relative z-10 max-w-sm"
+      style={{ filter: 'drop-shadow(0 40px 80px rgba(0,0,0,0.5))' }}
+    >
+      <img 
+        src="/phone-mockup.png" 
+        alt="Titli chat interface"
+        className="w-full h-auto"
+      />
+      
+      {/* Message bubbles overlay */}
+      <div 
+        style={{
+          position: 'absolute',
+          top: '18%',
+          left: '6%',
+          right: '6%',
+          bottom: '15%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          padding: '12px',
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {visibleMessages.map((msg, idx) => (
+            <div
+              key={`${convoIndex}-${idx}`}
+              style={{ 
+                maxWidth: '80%',
+                padding: '10px 14px',
+                fontSize: '11px',
+                lineHeight: 1.4,
+                color: '#fff',
+                alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                backgroundColor: msg.sender === 'user' ? '#E50914' : '#374151',
+                borderRadius: msg.sender === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                animation: 'message-pop 0.3s ease-out',
+              }}
+            >
+              {msg.text}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const LandingPage = () => {
   const [currentWord, setCurrentWord] = useState(0);
   const [scrollY, setScrollY] = useState(0);
@@ -121,6 +236,17 @@ const LandingPage = () => {
           }
           50% { 
             transform: translateY(-15px) rotate(var(--rotation, 0deg));
+          }
+        }
+        
+        @keyframes message-pop {
+          0% { 
+            opacity: 0;
+            transform: scale(0.8) translateY(10px);
+          }
+          100% { 
+            opacity: 1;
+            transform: scale(1) translateY(0);
           }
         }
         
@@ -261,82 +387,9 @@ const LandingPage = () => {
       <section className="py-32 relative bg-[#0a0a0a] overflow-hidden">
         <div className="max-w-[1800px] mx-auto px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
-            {/* Left - Phone with pop-out messages */}
+            {/* Left - Phone with animated messages */}
             <div className="relative lg:sticky lg:top-32 flex justify-center lg:justify-center">
-              
-              {/* Message bubble 1 - User message, pops out top-right */}
-              <div 
-                className="absolute z-20 hidden lg:block"
-                style={{
-                  top: '80px',
-                  right: '-30px',
-                  transform: 'perspective(500px) rotateY(-5deg)',
-                  animation: 'float-card 4s ease-in-out infinite',
-                }}
-              >
-                <div className="bg-[#E50914] rounded-2xl rounded-br-sm px-5 py-3 shadow-2xl max-w-[220px]">
-                  <p className="font-syne text-white text-sm">hey, I need a photographer for my daughter's birthday on Saturday</p>
-                </div>
-              </div>
-              
-              {/* Message bubble 2 - Taj response, pops out left */}
-              <div 
-                className="absolute z-20 hidden lg:block"
-                style={{
-                  top: '180px',
-                  left: '-50px',
-                  transform: 'perspective(500px) rotateY(5deg)',
-                  animation: 'float-card 4.5s ease-in-out infinite',
-                  animationDelay: '0.3s',
-                }}
-              >
-                <div className="bg-white rounded-2xl rounded-bl-sm px-5 py-3 shadow-2xl max-w-[240px]">
-                  <p className="font-syne text-gray-800 text-sm">found 3 photographers nearby! here's your best match:</p>
-                </div>
-              </div>
-              
-              {/* Match card - pops out bottom right */}
-              <div 
-                className="absolute z-20 hidden lg:block"
-                style={{
-                  bottom: '100px',
-                  right: '-60px',
-                  transform: 'perspective(500px) rotateY(-8deg) rotateX(3deg)',
-                  animation: 'float-card 5s ease-in-out infinite',
-                  animationDelay: '0.6s',
-                }}
-              >
-                <div className="bg-white rounded-2xl p-4 shadow-2xl" style={{ width: '200px' }}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-lg">
-                      📸
-                    </div>
-                    <div>
-                      <p className="font-syne font-semibold text-gray-900 text-sm">Sarah M.</p>
-                      <div className="flex items-center gap-1">
-                        <span className="text-yellow-500 text-xs">★★★★★</span>
-                        <span className="text-gray-400 text-xs">4.9</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                    <span className="text-xs text-gray-500">2.3 mi away</span>
-                    <span className="text-xs text-green-600 font-medium">available ✓</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* The Phone */}
-              <div 
-                className="relative z-10 max-w-sm"
-                style={{ filter: 'drop-shadow(0 40px 80px rgba(0,0,0,0.5))' }}
-              >
-                <img 
-                  src="/phone-mockup.png" 
-                  alt="Titli chat interface"
-                  className="w-full h-auto"
-                />
-              </div>
+              <PhoneMockup />
               
               {/* Decorative elements */}
               <div className="absolute -bottom-10 left-0 w-32 h-32 border border-[#E50914]/20 rounded-full hidden lg:block" />
