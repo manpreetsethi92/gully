@@ -6,7 +6,11 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Check, Instagram, Linkedin, Twitter, Film, Music, MapPin, ExternalLink, Camera, Search, X } from "lucide-react";
+import { Check, Instagram, Linkedin, Twitter, Film, Music, MapPin, ExternalLink, Camera, Search, X, Loader2 } from "lucide-react";
+
+// Cloudinary config
+const CLOUDINARY_CLOUD_NAME = "ds7znu6zd";
+const CLOUDINARY_UPLOAD_PRESET = "titli_uploads";
 
 // Expanded skills list - searchable
 const ALL_SKILLS = [
@@ -71,6 +75,7 @@ const ProfilePage = () => {
   const { user, token, updateUser } = useAuth();
   const [showEditModal, setShowEditModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const fileInputRef = useRef(null);
   const [previewPhoto, setPreviewPhoto] = useState(null);
   const [skillSearch, setSkillSearch] = useState("");
@@ -117,19 +122,56 @@ const ProfilePage = () => {
     setFormData({ ...formData, skills: formData.skills.filter(s => s !== skill) });
   };
 
-  const handlePhotoChange = (e) => {
+  // Upload image to Cloudinary
+  const uploadToCloudinary = async (file) => {
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+    uploadData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: 'POST',
+        body: uploadData
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error('Upload failed');
+    }
+    
+    const data = await response.json();
+    return data.secure_url;
+  };
+
+  const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Photo must be less than 5MB");
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error("Photo must be less than 10MB");
         return;
       }
+      
+      // Show preview immediately
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewPhoto(reader.result);
-        setFormData({ ...formData, photo_url: reader.result });
       };
       reader.readAsDataURL(file);
+      
+      // Upload to Cloudinary
+      setUploadingPhoto(true);
+      try {
+        const cloudinaryUrl = await uploadToCloudinary(file);
+        setFormData(prev => ({ ...prev, photo_url: cloudinaryUrl }));
+        toast.success("Photo uploaded!");
+      } catch (error) {
+        console.error("Upload error:", error);
+        toast.error("Failed to upload photo");
+        setPreviewPhoto(null);
+      } finally {
+        setUploadingPhoto(false);
+      }
     }
   };
 
@@ -137,6 +179,7 @@ const ProfilePage = () => {
     if (!formData.name.trim()) { toast.error("Name is required"); return; }
     if (!formData.bio.trim()) { toast.error("Bio is required"); return; }
     if (formData.skills.length === 0) { toast.error("Select at least one skill"); return; }
+    if (uploadingPhoto) { toast.error("Please wait for photo to finish uploading"); return; }
 
     setSaving(true);
     try {
@@ -362,12 +405,19 @@ const ProfilePage = () => {
                     {formData.name?.charAt(0).toUpperCase() || "?"}
                   </div>
                 )}
+                
+                {/* Upload button / loading state */}
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-white dark:bg-[#222] border-2 border-gray-100 dark:border-[#333] flex items-center justify-center shadow-sm hover:bg-gray-50 dark:hover:bg-[#333] transition-colors"
+                  disabled={uploadingPhoto}
+                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-white dark:bg-[#222] border-2 border-gray-100 dark:border-[#333] flex items-center justify-center shadow-sm hover:bg-gray-50 dark:hover:bg-[#333] transition-colors disabled:opacity-50"
                 >
-                  <Camera size={14} className="text-gray-600 dark:text-gray-300" />
+                  {uploadingPhoto ? (
+                    <Loader2 size={14} className="text-gray-600 dark:text-gray-300 animate-spin" />
+                  ) : (
+                    <Camera size={14} className="text-gray-600 dark:text-gray-300" />
+                  )}
                 </button>
                 <input
                   ref={fileInputRef}
@@ -377,7 +427,9 @@ const ProfilePage = () => {
                   className="hidden"
                 />
               </div>
-              <p className="text-xs text-gray-400 mt-2">Click camera to upload photo</p>
+              <p className="text-xs text-gray-400 mt-2">
+                {uploadingPhoto ? "Uploading..." : "Click camera to upload photo"}
+              </p>
             </div>
 
             {/* Name & Age */}
@@ -531,11 +583,11 @@ const ProfilePage = () => {
             {/* Save Button */}
             <button
               onClick={handleSave}
-              disabled={saving}
-              className="w-full h-11 rounded-2xl text-white font-semibold transition-all hover:shadow-lg hover:shadow-red-500/25"
+              disabled={saving || uploadingPhoto}
+              className="w-full h-11 rounded-2xl text-white font-semibold transition-all hover:shadow-lg hover:shadow-red-500/25 disabled:opacity-50"
               style={{ background: '#E50914' }}
             >
-              {saving ? 'Saving...' : 'Save changes'}
+              {saving ? 'Saving...' : uploadingPhoto ? 'Uploading photo...' : 'Save changes'}
             </button>
           </div>
         </DialogContent>
