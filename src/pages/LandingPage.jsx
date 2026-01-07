@@ -101,14 +101,18 @@ const PhoneMockup = () => {
               key={`${convoIndex}-${idx}`}
               style={{ 
                 maxWidth: '80%',
-                padding: '10px 14px',
-                fontSize: '13px',
-                lineHeight: 1.4,
+                padding: '12px 16px',
+                fontSize: '14px',
+                lineHeight: 1.45,
                 color: '#fff',
                 alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                backgroundColor: msg.sender === 'user' ? '#9B59B6' : '#3D3D4A',
-                borderRadius: msg.sender === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                background: msg.sender === 'user' 
+                  ? 'linear-gradient(135deg, #B06AB3 0%, #9B59B6 50%, #8E44AD 100%)' 
+                  : 'linear-gradient(135deg, #4A4A5A 0%, #3D3D4A 50%, #333340 100%)',
+                borderRadius: msg.sender === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                boxShadow: msg.sender === 'user' 
+                  ? '0 4px 15px rgba(155, 89, 182, 0.4)' 
+                  : '0 4px 15px rgba(0,0,0,0.3)',
                 animation: 'message-pop 0.3s ease-out',
               }}
             >
