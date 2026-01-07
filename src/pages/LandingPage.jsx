@@ -533,10 +533,10 @@ const LandingPage = () => {
         
         <div className="max-w-[1800px] mx-auto px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            {/* Flapping Butterfly - responsive sizing */}
+            {/* Flapping Butterfly - 2x bigger */}
             <div className="mx-auto mb-12 flex justify-center">
               <div 
-                className="butterfly-wrapper butterfly-glow w-[200px] h-[140px] md:w-[280px] md:h-[200px]" 
+                className="butterfly-wrapper butterfly-glow w-[400px] h-[280px] md:w-[560px] md:h-[400px]" 
                 style={{ 
                   position: 'relative' 
                 }}
