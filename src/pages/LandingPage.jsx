@@ -261,23 +261,54 @@ const LandingPage = () => {
       <section className="py-32 relative bg-[#0a0a0a] overflow-hidden">
         <div className="max-w-[1800px] mx-auto px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
-            {/* Left - Phone with floating cards */}
+            {/* Left - Phone with pop-out messages */}
             <div className="relative lg:sticky lg:top-32 flex justify-center lg:justify-center">
-              {/* Floating Profile Cards */}
               
-              {/* Card 1 - Top right, tilted */}
+              {/* Message bubble 1 - User message, pops out top-right */}
               <div 
                 className="absolute z-20 hidden lg:block"
                 style={{
-                  top: '-20px',
-                  right: '-60px',
-                  transform: 'rotate(12deg)',
+                  top: '80px',
+                  right: '-30px',
+                  transform: 'perspective(500px) rotateY(-5deg)',
                   animation: 'float-card 4s ease-in-out infinite',
                 }}
               >
-                <div className="bg-white rounded-2xl p-4 shadow-2xl" style={{ width: '180px' }}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-xl">
+                <div className="bg-[#E50914] rounded-2xl rounded-br-sm px-5 py-3 shadow-2xl max-w-[220px]">
+                  <p className="font-syne text-white text-sm">hey, I need a photographer for my daughter's birthday on Saturday</p>
+                </div>
+              </div>
+              
+              {/* Message bubble 2 - Taj response, pops out left */}
+              <div 
+                className="absolute z-20 hidden lg:block"
+                style={{
+                  top: '180px',
+                  left: '-50px',
+                  transform: 'perspective(500px) rotateY(5deg)',
+                  animation: 'float-card 4.5s ease-in-out infinite',
+                  animationDelay: '0.3s',
+                }}
+              >
+                <div className="bg-white rounded-2xl rounded-bl-sm px-5 py-3 shadow-2xl max-w-[240px]">
+                  <p className="font-syne text-gray-800 text-sm">found 3 photographers nearby! here's your best match:</p>
+                </div>
+              </div>
+              
+              {/* Match card - pops out bottom right */}
+              <div 
+                className="absolute z-20 hidden lg:block"
+                style={{
+                  bottom: '100px',
+                  right: '-60px',
+                  transform: 'perspective(500px) rotateY(-8deg) rotateX(3deg)',
+                  animation: 'float-card 5s ease-in-out infinite',
+                  animationDelay: '0.6s',
+                }}
+              >
+                <div className="bg-white rounded-2xl p-4 shadow-2xl" style={{ width: '200px' }}>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-lg">
                       📸
                     </div>
                     <div>
@@ -288,66 +319,10 @@ const LandingPage = () => {
                       </div>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500">Photographer</p>
-                  <p className="text-xs text-green-500 font-medium mt-1">Available now</p>
-                </div>
-              </div>
-              
-              {/* Card 2 - Left side, tilted other way */}
-              <div 
-                className="absolute z-20 hidden lg:block"
-                style={{
-                  top: '180px',
-                  left: '-80px',
-                  transform: 'rotate(-8deg)',
-                  animation: 'float-card 4.5s ease-in-out infinite',
-                  animationDelay: '0.5s',
-                }}
-              >
-                <div className="bg-white rounded-2xl p-4 shadow-2xl" style={{ width: '170px' }}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-xl">
-                      🔧
-                    </div>
-                    <div>
-                      <p className="font-syne font-semibold text-gray-900 text-sm">Mike R.</p>
-                      <div className="flex items-center gap-1">
-                        <span className="text-yellow-500 text-xs">★★★★★</span>
-                        <span className="text-gray-400 text-xs">4.8</span>
-                      </div>
-                    </div>
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                    <span className="text-xs text-gray-500">2.3 mi away</span>
+                    <span className="text-xs text-green-600 font-medium">available ✓</span>
                   </div>
-                  <p className="text-xs text-gray-500">Plumber</p>
-                  <p className="text-xs text-green-500 font-medium mt-1">2 miles away</p>
-                </div>
-              </div>
-              
-              {/* Card 3 - Bottom right */}
-              <div 
-                className="absolute z-20 hidden lg:block"
-                style={{
-                  bottom: '60px',
-                  right: '-40px',
-                  transform: 'rotate(6deg)',
-                  animation: 'float-card 5s ease-in-out infinite',
-                  animationDelay: '1s',
-                }}
-              >
-                <div className="bg-white rounded-2xl p-4 shadow-2xl" style={{ width: '165px' }}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-xl">
-                      🎸
-                    </div>
-                    <div>
-                      <p className="font-syne font-semibold text-gray-900 text-sm">Alex T.</p>
-                      <div className="flex items-center gap-1">
-                        <span className="text-yellow-500 text-xs">★★★★★</span>
-                        <span className="text-gray-400 text-xs">5.0</span>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-500">Guitar Teacher</p>
-                  <p className="text-xs text-blue-500 font-medium mt-1">$40/hour</p>
                 </div>
               </div>
               
