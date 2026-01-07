@@ -154,10 +154,11 @@ const LandingPage = () => {
   }, [isAuthenticated, user, navigate]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#0a0a0a]">
+    <div className="overflow-x-hidden bg-[#0a0a0a]">
       <style>{`
         html, body {
           background-color: #0a0a0a;
+          min-height: 100%;
         }
         
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
