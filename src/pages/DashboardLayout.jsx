@@ -142,7 +142,7 @@ const DashboardLayout = () => {
 
             <button
               onClick={handleStartTexting}
-              className="w-full mt-6 py-3.5 rounded-2xl text-white font-syne font-semibold text-[15px] transition-all hover:shadow-lg hover:shadow-red-500/25 bg-[#E50914]"
+              className="w-full mt-6 py-3.5 rounded-full text-white font-syne font-semibold text-[15px] transition-all hover:shadow-lg hover:shadow-red-500/25 bg-[#E50914]"
             >
               Message Taj
             </button>
