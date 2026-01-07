@@ -107,8 +107,8 @@ const ProfilePage = () => {
     : [];
 
   const addSkill = (skill) => {
-    if (formData.skills.length >= 5) {
-      toast.error("Maximum 5 skills");
+    if (formData.skills.length >= 10) {
+      toast.error("Maximum 10 skills");
       return;
     }
     if (!formData.skills.includes(skill)) {
@@ -178,7 +178,8 @@ const ProfilePage = () => {
   const handleSave = async () => {
     if (!formData.name.trim()) { toast.error("Name is required"); return; }
     if (!formData.bio.trim()) { toast.error("Bio is required"); return; }
-    if (formData.skills.length === 0) { toast.error("Select at least one skill"); return; }
+    if (formData.skills.length < 5) { toast.error("Select at least 5 skills"); return; }
+    if (formData.skills.length > 10) { toast.error("Maximum 10 skills"); return; }
     if (uploadingPhoto) { toast.error("Please wait for photo to finish uploading"); return; }
 
     setSaving(true);
@@ -481,7 +482,7 @@ const ProfilePage = () => {
             {/* Skills - Searchable */}
             <div>
               <Label className="text-xs font-semibold text-gray-500 mb-1.5 block">
-                5 SKILLS YOU WANT WORK IN ({formData.skills.length}/5)
+                SKILLS YOU WANT WORK IN ({formData.skills.length}/10) - Min 5
               </Label>
               
               {/* Selected Skills */}
@@ -506,7 +507,7 @@ const ProfilePage = () => {
               )}
               
               {/* Search Input */}
-              {formData.skills.length < 5 && (
+              {formData.skills.length < 10 && (
                 <div className="relative">
                   <div className="relative">
                     <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
