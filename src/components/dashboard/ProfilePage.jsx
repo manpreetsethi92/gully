@@ -190,7 +190,7 @@ const ProfilePage = () => {
   return (
     <div>
       {/* Header */}
-      <div className="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+      <div className="sticky top-0 bg-white/80 dark:bg-[#111]/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-100 dark:border-[#222] flex items-center justify-between">
         <h1 className="text-xl font-bold">Profile</h1>
         <button
           onClick={() => {
@@ -207,7 +207,7 @@ const ProfilePage = () => {
             setSkillSearch("");
             setShowEditModal(true);
           }}
-          className="px-4 py-2 rounded-2xl border border-gray-200 font-semibold text-sm hover:bg-gray-50 transition-colors"
+          className="px-4 py-2 rounded-2xl border border-gray-200 dark:border-[#333] font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors"
           data-testid="edit-profile-btn"
         >
           Edit profile
@@ -250,7 +250,7 @@ const ProfilePage = () => {
                     <MapPin size={16} />
                     <span>{user.location}</span>
                   </div>
-                  {user?.age && <span className="text-gray-300">•</span>}
+                  {user?.age && <span className="text-gray-300 dark:text-gray-600">•</span>}
                 </>
               )}
               {user?.age && <span>{user.age} years old</span>}
@@ -258,20 +258,20 @@ const ProfilePage = () => {
           )}
 
           {/* Bio */}
-          <div className="bg-gray-50 rounded-2xl p-4">
+          <div className="bg-gray-50 dark:bg-[#1a1a1a] rounded-2xl p-4">
             <h3 className="font-semibold text-xs text-gray-400 uppercase tracking-wide mb-2">About</h3>
             <p className="text-sm leading-relaxed">{user?.bio || "No bio yet"}</p>
           </div>
 
           {/* Skills */}
           {user?.skills?.length > 0 && (
-            <div className="bg-gray-50 rounded-2xl p-4">
+            <div className="bg-gray-50 dark:bg-[#1a1a1a] rounded-2xl p-4">
               <h3 className="font-semibold text-xs text-gray-400 uppercase tracking-wide mb-2">Skills</h3>
               <div className="flex flex-wrap gap-2">
                 {user.skills.map(skill => (
                   <span 
                     key={skill}
-                    className="px-3 py-1.5 bg-white rounded-full text-sm font-medium shadow-sm"
+                    className="px-3 py-1.5 bg-white dark:bg-[#222] rounded-full text-sm font-medium shadow-sm dark:shadow-none dark:border dark:border-[#333]"
                   >
                     {skill}
                   </span>
@@ -282,7 +282,7 @@ const ProfilePage = () => {
 
           {/* Social Links */}
           {activeSocials.length > 0 && (
-            <div className="bg-gray-50 rounded-2xl p-4">
+            <div className="bg-gray-50 dark:bg-[#1a1a1a] rounded-2xl p-4">
               <h3 className="font-semibold text-xs text-gray-400 uppercase tracking-wide mb-3">Links</h3>
               <div className="space-y-2">
                 {activeSocials.map(({ key, icon: Icon, label, color }) => (
@@ -291,7 +291,7 @@ const ProfilePage = () => {
                     href={user.social_links[key].startsWith('http') ? user.social_links[key] : `https://${user.social_links[key]}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-white transition-colors"
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-white dark:hover:bg-[#222] transition-colors"
                   >
                     <div 
                       className="w-9 h-9 rounded-full flex items-center justify-center"
@@ -303,7 +303,7 @@ const ProfilePage = () => {
                       <div className="font-medium text-sm">{label}</div>
                       <div className="text-gray-400 text-xs truncate">{user.social_links[key]}</div>
                     </div>
-                    <ExternalLink size={14} className="text-gray-300" />
+                    <ExternalLink size={14} className="text-gray-300 dark:text-gray-500" />
                   </a>
                 ))}
               </div>
@@ -311,14 +311,14 @@ const ProfilePage = () => {
           )}
 
           {/* Profile Completion */}
-          <div className="bg-gray-50 rounded-2xl p-4">
+          <div className="bg-gray-50 dark:bg-[#1a1a1a] rounded-2xl p-4">
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-semibold text-xs text-gray-400 uppercase tracking-wide">Profile Completion</h3>
               <span className="text-sm font-bold" style={{ color: completionPercent === 100 ? '#22c55e' : '#E50914' }}>
                 {completionPercent}%
               </span>
             </div>
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-2 bg-gray-200 dark:bg-[#333] rounded-full overflow-hidden">
               <div 
                 className="h-full rounded-full transition-all duration-500"
                 style={{ 
@@ -365,9 +365,9 @@ const ProfilePage = () => {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-white border-2 border-gray-100 flex items-center justify-center shadow-sm hover:bg-gray-50 transition-colors"
+                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-white dark:bg-[#222] border-2 border-gray-100 dark:border-[#333] flex items-center justify-center shadow-sm hover:bg-gray-50 dark:hover:bg-[#333] transition-colors"
                 >
-                  <Camera size={14} className="text-gray-600" />
+                  <Camera size={14} className="text-gray-600 dark:text-gray-300" />
                 </button>
                 <input
                   ref={fileInputRef}
@@ -438,13 +438,13 @@ const ProfilePage = () => {
                   {formData.skills.map(skill => (
                     <span 
                       key={skill}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-black text-white rounded-full text-sm font-medium"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-black dark:bg-white text-white dark:text-black rounded-full text-sm font-medium"
                     >
                       {skill}
                       <button 
                         type="button"
                         onClick={() => removeSkill(skill)}
-                        className="hover:bg-white/20 rounded-full p-0.5"
+                        className="hover:bg-white/20 dark:hover:bg-black/20 rounded-full p-0.5"
                       >
                         <X size={14} />
                       </button>
@@ -472,13 +472,13 @@ const ProfilePage = () => {
                   
                   {/* Dropdown */}
                   {showSkillDropdown && filteredSkills.length > 0 && (
-                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                    <div className="absolute z-50 w-full mt-1 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#333] rounded-xl shadow-lg max-h-48 overflow-y-auto">
                       {filteredSkills.map(skill => (
                         <button
                           key={skill}
                           type="button"
                           onClick={() => addSkill(skill)}
-                          className="w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 transition-colors first:rounded-t-xl last:rounded-b-xl"
+                          className="w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 dark:hover:bg-[#222] transition-colors first:rounded-t-xl last:rounded-b-xl"
                         >
                           {skill}
                         </button>
@@ -488,7 +488,7 @@ const ProfilePage = () => {
                   
                   {/* No results */}
                   {showSkillDropdown && skillSearch.trim() && filteredSkills.length === 0 && (
-                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg p-3">
+                    <div className="absolute z-50 w-full mt-1 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#333] rounded-xl shadow-lg p-3">
                       <p className="text-sm text-gray-500">No skills found for "{skillSearch}"</p>
                       <button
                         type="button"
