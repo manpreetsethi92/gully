@@ -138,14 +138,12 @@ const LandingPage = () => {
     document.body.style.backgroundColor = '#0a0a0a';
     document.documentElement.style.minHeight = '100%';
     document.body.style.minHeight = '100%';
-    document.body.style.overscrollBehavior = 'none';
     
     return () => {
       document.documentElement.style.backgroundColor = '';
       document.body.style.backgroundColor = '';
       document.documentElement.style.minHeight = '';
       document.body.style.minHeight = '';
-      document.body.style.overscrollBehavior = '';
     };
   }, []);
 
@@ -176,7 +174,6 @@ const LandingPage = () => {
         html, body, #root {
           background-color: #0a0a0a !important;
           min-height: 100% !important;
-          overscroll-behavior: none !important;
         }
         
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
