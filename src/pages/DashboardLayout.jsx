@@ -40,15 +40,20 @@ const DashboardLayout = () => {
 
   const currentPath = location.pathname.split("/").pop() || "opportunities";
 
-  // Apply dark mode to document
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    localStorage.setItem('titli-dark-mode', JSON.stringify(darkMode));
-  }, [darkMode]);
+ // Apply dark mode to document
+useEffect(() => {
+  if (darkMode) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+  localStorage.setItem('titli-dark-mode', JSON.stringify(darkMode));
+  
+  // Cleanup: remove dark mode when leaving dashboard
+  return () => {
+    document.documentElement.classList.remove('dark');
+  };
+}, [darkMode]);
 
   useEffect(() => {
     fetchStats();
