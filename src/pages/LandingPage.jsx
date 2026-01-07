@@ -37,16 +37,11 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen overflow-x-hidden">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
         
-        .font-display { font-family: 'Playfair Display', serif; }
+        .font-display { font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif; }
         .font-mono { font-family: 'Space Mono', monospace; }
         .font-syne { font-family: 'Syne', sans-serif; }
-        
-        @keyframes float {
-          0%, 100% { transform: translateY(0) rotate(-2deg); }
-          50% { transform: translateY(-25px) rotate(2deg); }
-        }
         
         @keyframes pulse-glow {
           0%, 100% { filter: drop-shadow(0 0 30px rgba(229, 9, 20, 0.4)); }
@@ -55,40 +50,71 @@ const LandingPage = () => {
         
         @keyframes flap-left {
           0%, 100% { 
-            transform: perspective(200px) rotateY(0deg);
+            transform: rotateY(0deg) scaleX(1);
           }
           50% { 
-            transform: perspective(200px) rotateY(50deg);
+            transform: rotateY(45deg) scaleX(0.85);
           }
         }
         
         @keyframes flap-right {
           0%, 100% { 
-            transform: perspective(200px) rotateY(0deg);
+            transform: rotateY(0deg) scaleX(1);
           }
           50% { 
-            transform: perspective(200px) rotateY(-50deg);
+            transform: rotateY(-45deg) scaleX(0.85);
           }
+        }
+        
+        .butterfly-wrapper {
+          position: relative;
+          perspective: 500px;
         }
         
         .wing-left {
-          clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 50%;
+          height: 100%;
+          overflow: hidden;
           transform-origin: right center;
-          animation: flap-left 0.4s ease-in-out infinite;
+          animation: flap-left 0.3s ease-in-out infinite;
+        }
+        
+        .wing-left img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 200%;
+          height: 100%;
+          object-fit: cover;
+          object-position: left center;
         }
         
         .wing-right {
-          clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 50%;
+          height: 100%;
+          overflow: hidden;
           transform-origin: left center;
-          animation: flap-right 0.4s ease-in-out infinite;
+          animation: flap-right 0.3s ease-in-out infinite;
         }
         
-        .butterfly-container {
+        .wing-right img {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 200%;
+          height: 100%;
+          object-fit: cover;
+          object-position: right center;
+        }
+        
+        .butterfly-glow {
           animation: pulse-glow 4s ease-in-out infinite;
-        }
-        
-        .butterfly-float {
-          animation: float 4s ease-in-out infinite;
         }
         
         @keyframes fade-up {
@@ -148,33 +174,22 @@ const LandingPage = () => {
       <section className="min-h-screen relative flex items-center bg-white pt-20">
         {/* Butterfly - positioned on right side with wing flapping */}
         <div 
-          className="absolute z-10 pointer-events-none hidden lg:block butterfly-float"
+          className="absolute z-10 pointer-events-none hidden lg:block"
           style={{
             top: '15%',
             right: '8%',
             width: 'clamp(200px, 28vw, 450px)',
-            transform: `translateY(${scrollY * 0.15}px)`,
           }}
         >
-          <div className="relative butterfly-container">
+          <div className="butterfly-wrapper butterfly-glow" style={{ width: '100%', paddingBottom: '70%', position: 'relative' }}>
             {/* Left Wing */}
-            <img 
-              src="/butterfly.png" 
-              alt=""
-              className="w-full h-auto wing-left absolute inset-0"
-            />
+            <div className="wing-left">
+              <img src="/butterfly.png" alt="" />
+            </div>
             {/* Right Wing */}
-            <img 
-              src="/butterfly.png" 
-              alt=""
-              className="w-full h-auto wing-right absolute inset-0"
-            />
-            {/* Base image for sizing */}
-            <img 
-              src="/butterfly.png" 
-              alt="Titli"
-              className="w-full h-auto opacity-0"
-            />
+            <div className="wing-right">
+              <img src="/butterfly.png" alt="" />
+            </div>
           </div>
         </div>
         
