@@ -71,10 +71,10 @@ const DashboardLayout = () => {
         <button onClick={() => setMobileMenuOpen(true)} className="p-2 -ml-2">
           <Menu size={24} />
         </button>
-        <Link to="/" className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <img src="/butterfly.png" alt="Titli" className="w-6 h-auto" />
           <span className="font-syne font-bold text-xl text-[#E50914]">titli</span>
-        </Link>
+        </div>
         <div className="w-10" />
       </header>
 
@@ -98,10 +98,10 @@ const DashboardLayout = () => {
 
           {/* Logo */}
           <div className="px-6 py-6">
-            <Link to="/" className="inline-flex items-center gap-3">
+            <div className="inline-flex items-center gap-3">
               <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
               <span className="font-syne font-bold text-2xl tracking-tight text-[#E50914]">titli</span>
-            </Link>
+            </div>
           </div>
 
           {/* Navigation */}
