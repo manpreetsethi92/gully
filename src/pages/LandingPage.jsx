@@ -1,56 +1,28 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../App";
-import { ArrowRight, Star, Sparkles, Zap, Search, Users, Briefcase, Home, Car, Camera, Music, Code, Wrench, Heart, DollarSign, MapPin } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import AuthModal from "../components/AuthModal";
 
-const NEEDS = [
-  "a photographer for Saturday",
-  "someone to fix my sink",
-  "a vocal coach",
-  "a ride to the airport",
-  "a web developer",
-  "a DJ for my party",
-  "a dog walker",
-  "a guitar teacher",
-  "a moving helper",
-  "a personal trainer"
-];
-
-const CATEGORIES = [
-  { icon: Briefcase, label: "Gigs", color: "#8B5CF6", count: "2.4k" },
-  { icon: Home, label: "Services", color: "#EC4899", count: "1.8k" },
-  { icon: Music, label: "Creative", color: "#F59E0B", count: "950" },
-  { icon: Code, label: "Tech", color: "#3B82F6", count: "1.2k" },
-  { icon: Wrench, label: "Trades", color: "#10B981", count: "800" },
-  { icon: Camera, label: "Events", color: "#EF4444", count: "650" },
-];
-
-const EXAMPLES = [
-  { need: "Need a photographer", match: "Sarah, 4.9★ photographer nearby", time: "2 min" },
-  { need: "Looking for a plumber", match: "Mike's Plumbing, available today", time: "5 min" },
-  { need: "Want guitar lessons", match: "Jazz guitarist, 10yrs experience", time: "3 min" },
-];
+const WORDS = ["photographer", "plumber", "developer", "designer", "tutor", "DJ", "trainer"];
 
 const LandingPage = () => {
-  const [currentNeed, setCurrentNeed] = useState(0);
+  const [currentWord, setCurrentWord] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentNeed((prev) => (prev + 1) % NEEDS.length);
-    }, 2500);
+      setCurrentWord((prev) => (prev + 1) % WORDS.length);
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
 
@@ -62,56 +34,23 @@ const LandingPage = () => {
     }
   }, [isAuthenticated, user, navigate]);
 
-  const parallaxX = (mousePos.x - window.innerWidth / 2) / 60;
-  const parallaxY = (mousePos.y - window.innerHeight / 2) / 60;
-
   return (
-    <div className="min-h-screen bg-[#FFFDF9] overflow-x-hidden">
+    <div className="bg-white text-gray-900 min-h-screen overflow-x-hidden">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
         
-        * { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-serif { font-family: 'Instrument Serif', serif; }
+        .font-display { font-family: 'Playfair Display', serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+        .font-syne { font-family: 'Syne', sans-serif; }
         
         @keyframes float {
           0%, 100% { transform: translateY(0) rotate(-2deg); }
-          50% { transform: translateY(-20px) rotate(3deg); }
+          50% { transform: translateY(-30px) rotate(2deg); }
         }
         
-        @keyframes bounce-in {
-          0% { transform: scale(0.9); opacity: 0; }
-          50% { transform: scale(1.02); }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        
-        @keyframes slide-up {
-          from { transform: translateY(20px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes typing {
-          from { width: 0; }
-          to { width: 100%; }
-        }
-        
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-        
-        @keyframes pulse-soft {
-          0%, 100% { transform: scale(1); opacity: 0.5; }
-          50% { transform: scale(1.1); opacity: 0.3; }
-        }
-        
-        @keyframes gradient-flow {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        
-        @keyframes shimmer {
-          0% { background-position: -200% center; }
-          100% { background-position: 200% center; }
+        @keyframes pulse-glow {
+          0%, 100% { filter: drop-shadow(0 0 40px rgba(229, 9, 20, 0.3)); }
+          50% { filter: drop-shadow(0 0 60px rgba(229, 9, 20, 0.5)); }
         }
         
         @keyframes marquee {
@@ -119,444 +58,304 @@ const LandingPage = () => {
           100% { transform: translateX(-50%); }
         }
         
-        .animate-slide-up {
-          animation: slide-up 0.6s ease-out forwards;
+        @keyframes fade-up {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         
-        .delay-1 { animation-delay: 0.1s; opacity: 0; }
-        .delay-2 { animation-delay: 0.2s; opacity: 0; }
-        .delay-3 { animation-delay: 0.3s; opacity: 0; }
-        .delay-4 { animation-delay: 0.4s; opacity: 0; }
-        .delay-5 { animation-delay: 0.5s; opacity: 0; }
+        .animate-fade-up {
+          animation: fade-up 1s ease-out forwards;
+        }
+        
+        .animate-fade-up-delay-1 {
+          animation: fade-up 1s ease-out 0.2s forwards;
+          opacity: 0;
+        }
+        
+        .animate-fade-up-delay-2 {
+          animation: fade-up 1s ease-out 0.4s forwards;
+          opacity: 0;
+        }
+        
+        .animate-fade-up-delay-3 {
+          animation: fade-up 1s ease-out 0.6s forwards;
+          opacity: 0;
+        }
+        
+        .text-stroke {
+          -webkit-text-stroke: 1.5px rgba(0,0,0,0.15);
+          color: transparent;
+        }
+        
+        .hover-lift {
+          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .hover-lift:hover {
+          transform: translateY(-8px);
+        }
         
         .gradient-text {
-          background: linear-gradient(135deg, #E50914 0%, #FF6B6B 50%, #FF8E53 100%);
+          background: linear-gradient(135deg, #E50914 0%, #ff6b6b 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
         }
-        
-        .gradient-btn {
-          background: linear-gradient(135deg, #E50914 0%, #FF4D4D 100%);
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .gradient-btn::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-          animation: shimmer 2s infinite;
-        }
-        
-        .card-hover {
-          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        .card-hover:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .glow {
-          filter: drop-shadow(0 0 30px rgba(229, 9, 20, 0.35));
-        }
-        
-        .search-box {
-          background: white;
-          border: 2px solid #f0f0f0;
-          transition: all 0.3s ease;
-        }
-        
-        .search-box:focus-within {
-          border-color: #E50914;
-          box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.1);
-        }
-        
-        .blob {
-          border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-          animation: blob 10s ease-in-out infinite;
-        }
-        
-        @keyframes blob {
-          0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-          50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
-        }
       `}</style>
 
-      {/* Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div 
-          className="absolute w-[500px] h-[500px] blob opacity-[0.06]"
-          style={{ 
-            background: 'linear-gradient(135deg, #E50914, #FF6B6B)',
-            top: '-5%',
-            right: '-5%',
-            transform: `translate(${parallaxX * -1}px, ${parallaxY * -1}px)`,
-          }}
-        />
-        <div 
-          className="absolute w-[300px] h-[300px] blob opacity-[0.04]"
-          style={{ 
-            background: 'linear-gradient(135deg, #8B5CF6, #EC4899)',
-            bottom: '20%',
-            left: '-3%',
-            animationDelay: '-5s',
-          }}
-        />
-      </div>
-
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FFFDF9]/80 backdrop-blur-xl border-b border-gray-100/50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-3 group">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+        <div className="max-w-[1800px] mx-auto px-8 py-5 flex items-center justify-between">
+          <a href="/" className="flex items-center gap-4">
             <img 
               src="/butterfly.png" 
               alt="Titli" 
-              className="w-10 h-auto transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
-              style={{ filter: 'drop-shadow(0 2px 8px rgba(229, 9, 20, 0.25))' }}
+              className="w-10 h-auto"
+              style={{ filter: 'drop-shadow(0 2px 8px rgba(229, 9, 20, 0.3))' }}
             />
-            <span className="text-xl font-bold text-gray-900">titli</span>
+            <span className="font-syne font-bold text-xl tracking-tight">TITLI</span>
           </a>
-          
-          <div className="flex items-center gap-6">
-            <a href="#how" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors hidden sm:block">
-              How it works
-            </a>
-            <button
-              onClick={() => setShowAuthModal(true)}
-              className="text-sm font-semibold text-[#E50914] hover:text-red-700 transition-colors flex items-center gap-1"
-            >
-              Sign in <ArrowRight size={14} />
-            </button>
-          </div>
+          <button
+            onClick={() => setShowAuthModal(true)}
+            className="font-mono text-sm tracking-wider text-gray-500 hover:text-[#E50914] transition-colors"
+          >
+            [ENTER]
+          </button>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center pt-20 pb-16 px-6 relative">
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            
-            {/* Left Content */}
-            <div className="text-center lg:text-left">
-              {/* Badge */}
-              <div className="animate-slide-up delay-1 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm mb-8">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                <span className="text-sm text-gray-600">
-                  <strong className="text-gray-900">1,247</strong> people found help today
-                </span>
-              </div>
-              
-              {/* Main Headline */}
-              <h1 className="animate-slide-up delay-2 text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-[1.1] mb-6">
-                Need 
-                <span className="relative mx-3">
-                  <span 
-                    key={currentNeed}
-                    className="font-serif italic text-[#E50914] inline-block"
-                    style={{ animation: 'bounce-in 0.5s ease-out' }}
-                  >
-                    {NEEDS[currentNeed]}
-                  </span>
-                </span>
-                ?
-                <br />
-                <span className="text-gray-400 font-semibold text-3xl sm:text-4xl lg:text-5xl mt-4 block">
-                  We'll find them.
-                </span>
-              </h1>
-              
-              {/* Subtitle */}
-              <p className="animate-slide-up delay-3 text-lg text-gray-500 max-w-lg mx-auto lg:mx-0 mb-8 leading-relaxed">
-                The modern way to find local help. Tell us what you need, and we'll connect you with trusted people nearby — in minutes, not days.
-              </p>
-              
-              {/* Search Box */}
-              <div className="animate-slide-up delay-4 mb-8">
-                <div className="search-box rounded-2xl p-2 flex items-center gap-3 max-w-lg mx-auto lg:mx-0 shadow-lg">
-                  <div className="flex-1 flex items-center gap-3 px-4">
-                    <Search size={20} className="text-gray-400" />
-                    <input 
-                      type="text"
-                      placeholder="What do you need help with?"
-                      className="w-full py-3 text-gray-900 placeholder-gray-400 outline-none bg-transparent"
-                    />
-                  </div>
-                  <button 
-                    onClick={handleGetStarted}
-                    className="gradient-btn px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2 hover:scale-105 transition-transform"
-                  >
-                    Find help
-                    <ArrowRight size={16} />
-                  </button>
-                </div>
-              </div>
-              
-              {/* Quick categories */}
-              <div className="animate-slide-up delay-5 flex flex-wrap justify-center lg:justify-start gap-2 mb-8">
-                <span className="text-sm text-gray-400">Popular:</span>
-                {["Photographers", "Handyman", "Tutors", "DJs", "Developers"].map((cat, i) => (
-                  <button 
-                    key={i}
-                    className="text-sm text-gray-600 hover:text-[#E50914] hover:bg-red-50 px-3 py-1 rounded-full transition-colors"
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-              
-              {/* Trust */}
-              <div className="animate-slide-up delay-5 flex items-center justify-center lg:justify-start gap-4">
-                <div className="flex -space-x-2">
-                  {['👨‍🔧', '📸', '🎸', '💻', '🏋️'].map((emoji, i) => (
-                    <div 
-                      key={i}
-                      className="w-9 h-9 rounded-full bg-white border-2 border-[#FFFDF9] shadow-sm flex items-center justify-center text-base"
-                    >
-                      {emoji}
-                    </div>
-                  ))}
-                </div>
-                <div className="text-sm text-gray-500">
-                  <strong className="text-gray-900">4,500+</strong> verified providers
-                </div>
-              </div>
+      <section className="min-h-screen relative flex items-center justify-center pt-20">
+        {/* Butterfly - Hero Element */}
+        <div 
+          className="absolute z-10 pointer-events-none"
+          style={{
+            top: '8%',
+            right: '8%',
+            width: 'clamp(180px, 25vw, 400px)',
+            animation: 'float 6s ease-in-out infinite, pulse-glow 4s ease-in-out infinite',
+            transform: `translateY(${scrollY * 0.2}px)`,
+          }}
+        >
+          <img 
+            src="/butterfly.png" 
+            alt="Titli - Your guide to finding help"
+            className="w-full h-auto"
+          />
+        </div>
+        
+        {/* Main Content */}
+        <div className="max-w-[1800px] mx-auto px-8 relative z-20">
+          <div className="max-w-5xl">
+            {/* Eyebrow */}
+            <div className="animate-fade-up mb-8">
+              <span className="font-mono text-xs tracking-[0.3em] text-[#E50914] uppercase">
+                Find anyone you need
+              </span>
             </div>
             
-            {/* Right Content - Visual */}
-            <div className="relative flex justify-center lg:justify-end">
-              {/* Butterfly */}
-              <div 
-                className="absolute z-20 glow"
-                style={{
-                  top: '-5%',
-                  right: '10%',
-                  width: 'clamp(100px, 18vw, 180px)',
-                  animation: 'float 5s ease-in-out infinite',
-                  transform: `translate(${parallaxX}px, ${parallaxY}px)`,
-                }}
+            {/* Main Headline */}
+            <h1 className="font-display text-[clamp(2.5rem,10vw,8rem)] leading-[0.95] tracking-tight mb-8 animate-fade-up-delay-1">
+              Need a
+              <br />
+              <span className="relative inline-block">
+                <span 
+                  className="text-[#E50914] transition-all duration-500"
+                  key={currentWord}
+                >
+                  {WORDS[currentWord]}
+                </span>
+                <span className="text-gray-900">?</span>
+              </span>
+            </h1>
+            
+            {/* Subheadline */}
+            <p className="font-syne text-xl md:text-2xl text-gray-500 max-w-xl leading-relaxed mb-12 animate-fade-up-delay-2">
+              Tell us what you need. We'll connect you with trusted local pros — in minutes, not days.
+            </p>
+            
+            {/* CTA */}
+            <div className="flex flex-col sm:flex-row items-start gap-6 animate-fade-up-delay-3">
+              <button 
+                onClick={handleGetStarted}
+                className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16"
               >
-                <img src="/butterfly.png" alt="Titli" className="w-full h-auto" />
-              </div>
-              
-              {/* Phone with chat */}
-              <div 
-                className="relative z-10 w-[280px] sm:w-[300px]"
-                style={{
-                  filter: 'drop-shadow(0 25px 50px rgba(0,0,0,0.15))',
-                  transform: `translate(${parallaxX * -0.3}px, ${parallaxY * -0.3}px)`,
-                }}
-              >
-                <img src="/phone-mockup.png" alt="Titli app" className="w-full h-auto" />
-                
-                {/* Overlay chat messages */}
-                <div className="absolute inset-0 top-[22%] left-[8%] right-[8%] bottom-[18%] flex flex-col justify-end p-3 overflow-hidden">
-                  <div className="space-y-2">
-                    <div className="self-end bg-[#E50914] text-white text-xs px-3 py-2 rounded-2xl rounded-br-sm max-w-[85%]">
-                      I need a photographer for a birthday party this Saturday
-                    </div>
-                    <div className="self-start bg-gray-200 text-gray-800 text-xs px-3 py-2 rounded-2xl rounded-bl-sm max-w-[85%]">
-                      Found 3 photographers available Saturday! 📸
-                    </div>
-                    <div className="self-start bg-gray-200 text-gray-800 text-xs px-3 py-2 rounded-2xl rounded-bl-sm max-w-[85%]">
-                      Sarah (4.9★) is nearby and free. Want me to connect you?
-                    </div>
-                    <div className="self-end bg-[#E50914] text-white text-xs px-3 py-2 rounded-2xl rounded-br-sm">
-                      Yes please! 🙌
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Floating match card */}
-              <div 
-                className="absolute -left-4 lg:-left-12 top-1/3 bg-white rounded-2xl p-4 shadow-xl z-30 hidden sm:block max-w-[200px]"
-                style={{ animation: 'float 4s ease-in-out infinite', animationDelay: '1s' }}
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-lg">
-                    📸
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">Sarah M.</p>
-                    <div className="flex items-center gap-1">
-                      <Star size={12} fill="#FBBF24" color="#FBBF24" />
-                      <span className="text-xs text-gray-500">4.9 · Photographer</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <MapPin size={12} />
-                  <span>2.3 miles away</span>
-                  <span className="text-green-500 font-medium">Available</span>
-                </div>
-              </div>
-              
-              {/* Stats pill */}
-              <div 
-                className="absolute -right-2 bottom-1/4 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg z-30 hidden sm:flex items-center gap-2"
-                style={{ animation: 'float 3.5s ease-in-out infinite' }}
-              >
-                <Zap size={14} />
-                <span>Matched in 2 min</span>
+                <span className="relative z-10">Find help now</span>
+                <ArrowRight 
+                  className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white" 
+                  size={20} 
+                />
+              </button>
+              <div className="font-mono text-xs text-gray-400 flex items-center gap-2">
+                <span className="w-8 h-px bg-gray-300" />
+                FREE TO START
               </div>
             </div>
           </div>
         </div>
+        
+        {/* Scroll indicator */}
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+          <span className="font-mono text-[10px] tracking-[0.2em] text-gray-400">SCROLL</span>
+          <div className="w-px h-12 bg-gradient-to-b from-gray-300 to-transparent" />
+        </div>
       </section>
 
-      {/* Categories Bar */}
-      <section className="py-6 bg-white border-y border-gray-100 overflow-hidden">
-        <div className="flex whitespace-nowrap" style={{ animation: 'marquee 30s linear infinite' }}>
-          {[...CATEGORIES, ...CATEGORIES, ...CATEGORIES].map((cat, i) => (
-            <div key={i} className="flex items-center gap-2 mx-6 px-4 py-2 rounded-full bg-gray-50">
-              <cat.icon size={16} style={{ color: cat.color }} />
-              <span className="text-sm font-medium text-gray-700">{cat.label}</span>
-              <span className="text-xs text-gray-400">{cat.count}</span>
+      {/* Marquee Section */}
+      <section className="py-6 border-y border-gray-200 overflow-hidden bg-gray-50">
+        <div 
+          className="flex whitespace-nowrap"
+          style={{ animation: 'marquee 30s linear infinite' }}
+        >
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="flex items-center gap-12 mx-6">
+              <span className="font-display text-3xl md:text-5xl text-stroke">Photographers</span>
+              <span className="text-[#E50914] text-2xl">✦</span>
+              <span className="font-display text-3xl md:text-5xl text-stroke">Plumbers</span>
+              <span className="text-[#E50914] text-2xl">✦</span>
+              <span className="font-display text-3xl md:text-5xl text-stroke">Developers</span>
+              <span className="text-[#E50914] text-2xl">✦</span>
+              <span className="font-display text-3xl md:text-5xl text-stroke">Tutors</span>
+              <span className="text-[#E50914] text-2xl">✦</span>
+              <span className="font-display text-3xl md:text-5xl text-stroke">Musicians</span>
+              <span className="text-[#E50914] text-2xl">✦</span>
+              <span className="font-display text-3xl md:text-5xl text-stroke">Trainers</span>
+              <span className="text-[#E50914] text-2xl">✦</span>
             </div>
           ))}
         </div>
       </section>
 
       {/* How It Works */}
-      <section id="how" className="py-24 px-6 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1 rounded-full bg-red-50 text-[#E50914] text-sm font-semibold mb-4">
-              Simple & Fast
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Get help in 3 steps
-            </h2>
-            <p className="text-gray-500 max-w-md mx-auto">
-              No endless scrolling through listings. Just tell us what you need.
-            </p>
+      <section className="py-32 relative bg-white">
+        <div className="max-w-[1800px] mx-auto px-8">
+          <div className="grid lg:grid-cols-2 gap-20 items-start">
+            {/* Left - Phone */}
+            <div className="relative lg:sticky lg:top-32">
+              <div 
+                className="relative max-w-sm mx-auto"
+                style={{ filter: 'drop-shadow(0 40px 80px rgba(0,0,0,0.12))' }}
+              >
+                <img 
+                  src="/phone-mockup.png" 
+                  alt="Titli chat interface"
+                  className="w-full h-auto"
+                />
+              </div>
+              
+              {/* Decorative elements */}
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 border border-[#E50914]/20 rounded-full" />
+              <div className="absolute -top-10 -right-10 w-20 h-20 bg-[#E50914]/5 rounded-full blur-2xl" />
+            </div>
+            
+            {/* Right - Steps */}
+            <div className="space-y-20 pt-12">
+              <div className="font-mono text-xs tracking-[0.3em] text-[#E50914] mb-12 uppercase">
+                How it works
+              </div>
+              
+              {[
+                {
+                  num: "01",
+                  title: "Tell us what you need",
+                  desc: "Describe what you're looking for in plain English. Need a photographer for Saturday? A plumber right now? A guitar teacher for your kid? Just ask."
+                },
+                {
+                  num: "02", 
+                  title: "We find the right people",
+                  desc: "Our AI matches you with verified local pros. No fake profiles, no spam — just real people who can actually help."
+                },
+                {
+                  num: "03",
+                  title: "Connect instantly",
+                  desc: "We make the intro. You chat directly, agree on details, and get it done. Most matches happen in under 5 minutes."
+                }
+              ].map((step, idx) => (
+                <div key={idx} className="group hover-lift">
+                  <div className="flex items-start gap-8">
+                    <span className="font-mono text-sm text-[#E50914]">{step.num}</span>
+                    <div>
+                      <h3 className="font-display text-3xl md:text-4xl mb-4 text-gray-900 group-hover:text-[#E50914] transition-colors">
+                        {step.title}
+                      </h3>
+                      <p className="font-syne text-lg text-gray-500 max-w-md leading-relaxed">
+                        {step.desc}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20 border-y border-gray-200 bg-gray-50">
+        <div className="max-w-[1800px] mx-auto px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
+            {[
+              { value: "4,500+", label: "Verified providers" },
+              { value: "17", label: "Categories" },
+              { value: "5min", label: "Average match time" },
+              { value: "94%", label: "Success rate" }
+            ].map((stat, idx) => (
+              <div key={idx} className="text-center md:text-left">
+                <div className="font-display text-4xl md:text-6xl text-[#E50914] mb-2">
+                  {stat.value}
+                </div>
+                <div className="font-mono text-xs tracking-[0.15em] text-gray-400 uppercase">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-32 relative overflow-hidden bg-white">
+        {/* Background butterfly */}
+        <img 
+          src="/butterfly.png" 
+          alt=""
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] opacity-[0.03] pointer-events-none"
+        />
+        
+        <div className="max-w-[1800px] mx-auto px-8 relative z-10">
+          <div className="font-mono text-xs tracking-[0.3em] text-[#E50914] mb-16 uppercase">
+            Real stories
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                step: "01",
-                emoji: "💬",
-                title: "Tell us what you need",
-                desc: "Describe what you're looking for in plain English. Need a plumber? A photographer? A guitar teacher? Just ask.",
-                color: "from-blue-500 to-cyan-400"
-              },
-              {
-                step: "02",
-                emoji: "🎯",
-                title: "We find the right people",
-                desc: "Our AI matches you with verified providers nearby. No fake profiles, no spam — just real people ready to help.",
-                color: "from-purple-500 to-pink-400"
-              },
-              {
-                step: "03",
-                emoji: "🤝",
-                title: "Connect instantly",
-                desc: "We introduce you directly. Chat, discuss details, and get it done. Most matches happen in under 5 minutes.",
-                color: "from-orange-500 to-red-400"
-              }
-            ].map((item, idx) => (
-              <div key={idx} className="card-hover relative bg-[#FFFDF9] rounded-3xl p-8 border border-gray-100">
-                <div className={`absolute -top-3 -right-3 w-10 h-10 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold text-xs shadow-lg`}>
-                  {item.step}
-                </div>
-                <div className="text-4xl mb-4">{item.emoji}</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-gray-500 leading-relaxed text-sm">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Use Cases */}
-      <section className="py-24 px-6 bg-[#FFFDF9]">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Whatever you need, we've got you
-            </h2>
-            <p className="text-gray-500">From everyday tasks to special occasions</p>
-          </div>
-          
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { emoji: "🔧", title: "Home Services", examples: "Plumbers, Electricians, Cleaners", bg: "bg-blue-50" },
-              { emoji: "📸", title: "Events", examples: "Photographers, DJs, Caterers", bg: "bg-pink-50" },
-              { emoji: "🎸", title: "Lessons", examples: "Music, Language, Fitness", bg: "bg-yellow-50" },
-              { emoji: "💻", title: "Tech Help", examples: "Developers, Designers, IT Support", bg: "bg-purple-50" },
-              { emoji: "🚗", title: "Transportation", examples: "Movers, Drivers, Delivery", bg: "bg-green-50" },
-              { emoji: "✨", title: "Personal", examples: "Stylists, Trainers, Coaches", bg: "bg-orange-50" },
-            ].map((cat, idx) => (
-              <div key={idx} className={`${cat.bg} rounded-2xl p-6 card-hover cursor-pointer`}>
-                <div className="text-3xl mb-3">{cat.emoji}</div>
-                <h3 className="font-bold text-gray-900 mb-1">{cat.title}</h3>
-                <p className="text-sm text-gray-500">{cat.examples}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Social Proof */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Real people, real results
-            </h2>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                quote: "Found a photographer for my daughter's quinceañera in 10 minutes. She was amazing and half the price of others!",
+                quote: "Found a photographer for my daughter's birthday in 10 minutes. She was amazing and half the price of others.",
                 name: "Maria G.",
-                location: "Los Angeles",
-                emoji: "📸",
-                bg: "bg-gradient-to-br from-pink-50 to-rose-50"
+                role: "Los Angeles"
               },
               {
                 quote: "My sink was flooding at 9pm. Had a plumber at my door by 10. Titli literally saved my apartment.",
                 name: "James K.",
-                location: "Chicago",
-                emoji: "🔧",
-                bg: "bg-gradient-to-br from-blue-50 to-cyan-50"
+                role: "Chicago"
               },
               {
                 quote: "Been looking for a good guitar teacher for months. Found one in my neighborhood through Titli. Now I can play!",
                 name: "Aisha T.",
-                location: "Austin",
-                emoji: "🎸",
-                bg: "bg-gradient-to-br from-yellow-50 to-orange-50"
+                role: "Austin"
               }
             ].map((t, idx) => (
-              <div key={idx} className={`${t.bg} rounded-3xl p-8 card-hover relative overflow-hidden`}>
-                <div className="absolute -right-4 -bottom-4 text-8xl opacity-10">{t.emoji}</div>
-                <div className="relative z-10">
-                  <div className="flex gap-1 mb-4">
-                    {[1,2,3,4,5].map((_, i) => (
-                      <Star key={i} size={16} fill="#FBBF24" color="#FBBF24" />
-                    ))}
-                  </div>
-                  <p className="text-gray-700 leading-relaxed mb-6">"{t.quote}"</p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-xl">
-                      {t.emoji}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
-                      <p className="text-xs text-gray-500">{t.location}</p>
-                    </div>
+              <div 
+                key={idx} 
+                className="group p-8 border border-gray-200 hover:border-[#E50914]/30 transition-all duration-500 hover-lift bg-white"
+              >
+                <p className="font-display text-xl leading-relaxed mb-8 text-gray-700 group-hover:text-gray-900 transition-colors">
+                  "{t.quote}"
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#E50914] to-[#ff6b6b]" />
+                  <div>
+                    <div className="font-syne font-semibold text-gray-900">{t.name}</div>
+                    <div className="font-mono text-xs text-gray-400">{t.role}</div>
                   </div>
                 </div>
               </div>
@@ -565,71 +364,98 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-red-50 via-[#FFFDF9] to-orange-50" />
-        
-        {/* Floating butterflies */}
-        <img 
-          src="/butterfly.png" 
-          alt=""
-          className="absolute top-10 left-10 w-16 opacity-20"
-          style={{ animation: 'float 6s ease-in-out infinite' }}
-        />
-        <img 
-          src="/butterfly.png" 
-          alt=""
-          className="absolute bottom-10 right-10 w-12 opacity-15"
-          style={{ animation: 'float 5s ease-in-out infinite', animationDelay: '2s' }}
+      {/* Final CTA */}
+      <section className="py-32 relative overflow-hidden bg-gray-50">
+        {/* Gradient orb */}
+        <div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full opacity-10 blur-[80px]"
+          style={{ background: 'radial-gradient(circle, #E50914 0%, transparent 70%)' }}
         />
         
-        <div className="max-w-2xl mx-auto text-center relative z-10">
-          <img 
-            src="/butterfly.png" 
-            alt="Titli"
-            className="w-24 h-auto mx-auto mb-8 glow"
-            style={{ animation: 'float 4s ease-in-out infinite' }}
-          />
-          
-          <h2 className="text-3xl sm:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Stop searching.
-            <br />
-            <span className="font-serif italic gradient-text">Start finding.</span>
-          </h2>
-          
-          <p className="text-lg text-gray-500 mb-10 max-w-md mx-auto">
-            Join thousands who found the help they needed — photographers, plumbers, tutors, and more.
-          </p>
-          
-          <button 
-            onClick={handleGetStarted}
-            className="gradient-btn group px-10 py-5 rounded-2xl text-white font-semibold text-lg shadow-xl shadow-red-500/20 hover:shadow-2xl hover:shadow-red-500/30 transition-all duration-300 hover:scale-105 inline-flex items-center gap-3"
-          >
-            Get started free
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </button>
-          
-          <p className="mt-6 text-sm text-gray-400">No credit card required</p>
+        <div className="max-w-[1800px] mx-auto px-8 relative z-10">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Butterfly */}
+            <img 
+              src="/butterfly.png" 
+              alt="Titli"
+              className="w-28 h-auto mx-auto mb-12"
+              style={{ 
+                animation: 'float 4s ease-in-out infinite',
+                filter: 'drop-shadow(0 0 30px rgba(229, 9, 20, 0.3))'
+              }}
+            />
+            
+            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-8 text-gray-900">
+              Stop searching.
+              <br />
+              <span className="text-[#E50914]">Start finding.</span>
+            </h2>
+            
+            <p className="font-syne text-xl text-gray-500 mb-12 max-w-lg mx-auto">
+              Whatever you need — we'll help you find it.
+            </p>
+            
+            <button 
+              onClick={handleGetStarted}
+              className="group inline-flex items-center gap-4 px-12 py-6 bg-[#E50914] font-syne font-semibold text-xl tracking-wide text-white hover:gap-6 transition-all duration-300"
+            >
+              Get started free
+              <ArrowUpRight size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </button>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 bg-white border-t border-gray-100">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
-            <span className="font-bold text-lg text-gray-900">titli</span>
-          </div>
-          
-          <div className="flex items-center gap-8">
-            {["How it works", "Categories", "For Providers", "Privacy", "Terms"].map((link, i) => (
-              <a key={i} href="#" className="text-sm text-gray-500 hover:text-[#E50914] transition-colors">
-                {link}
-              </a>
+      <footer className="py-16 border-t border-gray-200 bg-white">
+        <div className="max-w-[1800px] mx-auto px-8">
+          <div className="grid md:grid-cols-4 gap-12 mb-16">
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
+                <span className="font-syne font-bold text-lg">TITLI</span>
+              </div>
+              <p className="font-mono text-xs text-gray-400 leading-relaxed">
+                The modern way to find<br />local help for anything.
+              </p>
+            </div>
+            
+            {[
+              { title: "Categories", links: ["Home Services", "Events", "Lessons", "Tech"] },
+              { title: "Company", links: ["About", "Blog", "Careers"] },
+              { title: "Legal", links: ["Terms", "Privacy", "Cookies"] }
+            ].map((col, idx) => (
+              <div key={idx}>
+                <h4 className="font-mono text-xs tracking-[0.15em] text-gray-400 mb-6 uppercase">{col.title}</h4>
+                <ul className="space-y-3">
+                  {col.links.map((link, i) => (
+                    <li key={i}>
+                      <a href="#" className="font-syne text-gray-500 hover:text-[#E50914] transition-colors">
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
           
-          <p className="text-sm text-gray-400">© 2025 Titli</p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-gray-100">
+            <p className="font-mono text-xs text-gray-400">
+              © 2025 Titli. All rights reserved.
+            </p>
+            <div className="flex items-center gap-6">
+              {["Twitter", "Instagram", "LinkedIn"].map((social, idx) => (
+                <a 
+                  key={idx}
+                  href="#" 
+                  className="font-mono text-xs text-gray-400 hover:text-[#E50914] transition-colors"
+                >
+                  {social}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       </footer>
 
