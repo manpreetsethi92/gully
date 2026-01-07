@@ -154,8 +154,12 @@ const LandingPage = () => {
   }, [isAuthenticated, user, navigate]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden bg-[#0a0a0a]">
       <style>{`
+        html, body {
+          background-color: #0a0a0a;
+        }
+        
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
         
         .font-display { font-family: 'Playfair Display', serif; }
@@ -309,22 +313,6 @@ const LandingPage = () => {
 
       {/* ==================== HERO SECTION (WHITE) ==================== */}
       <section className="min-h-screen relative flex items-center bg-white pt-20">
-        {/* Static butterfly on hero - no flapping */}
-        <div 
-          className="absolute z-10 pointer-events-none hidden lg:block"
-          style={{
-            top: '15%',
-            right: '8%',
-            width: 'clamp(200px, 28vw, 450px)',
-          }}
-        >
-          <img 
-            src="/butterfly.png" 
-            alt="Titli"
-            className="w-full h-auto butterfly-glow"
-          />
-        </div>
-        
         {/* Main Content */}
         <div className="max-w-[1800px] mx-auto px-8 relative z-20 w-full">
           <div className="max-w-4xl">
@@ -526,9 +514,15 @@ const LandingPage = () => {
         
         <div className="max-w-[1800px] mx-auto px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            {/* Flapping Butterfly - centered on mobile */}
-            <div className="mx-auto mb-12 flex justify-center" style={{ width: '100%', maxWidth: '480px' }}>
-              <div className="butterfly-wrapper butterfly-glow" style={{ width: '280px', maxWidth: '100%', paddingBottom: '50%', position: 'relative' }}>
+            {/* Flapping Butterfly - responsive sizing */}
+            <div className="mx-auto mb-12 flex justify-center">
+              <div 
+                className="butterfly-wrapper butterfly-glow w-[280px] md:w-[480px]" 
+                style={{ 
+                  paddingBottom: '50%', 
+                  position: 'relative' 
+                }}
+              >
                 {/* Left Wing */}
                 <div className="wing-left">
                   <img src="/butterfly.png" alt="" />
