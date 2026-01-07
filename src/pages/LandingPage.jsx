@@ -517,18 +517,18 @@ const LandingPage = () => {
       </section>
 
       {/* ==================== FINAL CTA (DARK with glow) ==================== */}
-      <section className="py-32 relative overflow-hidden bg-[#0a0a0a]">
+      <section className="py-20 md:py-32 relative overflow-hidden bg-[#0a0a0a]">
         {/* Gradient glow behind butterfly */}
         <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-20 blur-[100px]"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] rounded-full opacity-20 blur-[100px]"
           style={{ background: 'radial-gradient(circle, #E50914 0%, transparent 70%)' }}
         />
         
         <div className="max-w-[1800px] mx-auto px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            {/* Flapping Butterfly */}
-            <div className="mx-auto mb-12" style={{ width: '480px' }}>
-              <div className="butterfly-wrapper butterfly-glow" style={{ width: '100%', paddingBottom: '70%', position: 'relative' }}>
+            {/* Flapping Butterfly - centered on mobile */}
+            <div className="mx-auto mb-12 flex justify-center" style={{ width: '100%', maxWidth: '480px' }}>
+              <div className="butterfly-wrapper butterfly-glow" style={{ width: '280px', maxWidth: '100%', paddingBottom: '50%', position: 'relative' }}>
                 {/* Left Wing */}
                 <div className="wing-left">
                   <img src="/butterfly.png" alt="" />
@@ -541,12 +541,12 @@ const LandingPage = () => {
             </div>
             
             <h2 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-8 text-white lowercase">
-              let Titli take
+              let titli take
               <br />
               <span className="text-[#E50914]">you places</span>
             </h2>
             
-            <p className="font-syne text-xl text-white/50 mb-12 max-w-lg mx-auto lowercase">
+            <p className="font-syne text-lg md:text-xl text-white/50 mb-12 max-w-lg mx-auto lowercase">
               your next connection is one message away.
             </p>
             
@@ -562,44 +562,40 @@ const LandingPage = () => {
       </section>
 
       {/* ==================== FOOTER (DARK) ==================== */}
-      <footer className="py-16 border-t border-white/10 bg-[#0a0a0a]">
+      <footer className="py-10 md:py-16 border-t border-white/10 bg-[#0a0a0a]">
         <div className="max-w-[1800px] mx-auto px-8">
-          <div className="grid md:grid-cols-4 gap-12 mb-16">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
-                <span className="font-syne font-bold text-lg text-white">titli</span>
-              </div>
-              <p className="font-mono text-xs text-white/40 leading-relaxed">
-                The modern way to find<br />local help for anything.
-              </p>
+          {/* Logo and tagline */}
+          <div className="flex flex-col items-center md:items-start mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
+              <span className="font-syne font-bold text-lg text-white">titli</span>
             </div>
-            
-            {[
-              { title: "categories", links: ["home services", "events", "lessons", "tech"] },
-              { title: "company", links: ["about", "blog", "careers"] },
-              { title: "legal", links: ["terms", "privacy", "cookies"] }
-            ].map((col, idx) => (
-              <div key={idx}>
-                <h4 className="font-mono text-xs tracking-[0.15em] text-white/40 mb-6 lowercase">{col.title}</h4>
-                <ul className="space-y-3">
-                  {col.links.map((link, i) => (
-                    <li key={i}>
-                      <a href="#" className="font-syne text-white/50 hover:text-[#E50914] transition-colors">
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            <p className="font-mono text-xs text-white/40 text-center md:text-left">
+              The modern way to find local help for anything.
+            </p>
           </div>
           
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10">
-            <p className="font-mono text-xs text-white/30">
+          {/* Bottom row with legal links and social */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-white/10">
+            <p className="font-mono text-xs text-white/30 order-3 md:order-1">
               © 2025 Titli. All rights reserved.
             </p>
-            <div className="flex items-center gap-6">
+            
+            {/* Legal links - inline */}
+            <div className="flex items-center gap-6 order-1 md:order-2">
+              {["terms", "privacy", "cookies"].map((link, idx) => (
+                <a 
+                  key={idx}
+                  href="#" 
+                  className="font-syne text-sm text-white/50 hover:text-[#E50914] transition-colors"
+                >
+                  {link}
+                </a>
+              ))}
+            </div>
+            
+            {/* Social links */}
+            <div className="flex items-center gap-6 order-2 md:order-3">
               {["twitter", "instagram", "linkedin"].map((social, idx) => (
                 <a 
                   key={idx}
