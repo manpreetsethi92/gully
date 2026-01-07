@@ -66,15 +66,20 @@ const DashboardLayout = () => {
 
   return (
     <div className="min-h-screen bg-white flex justify-center">
+      {/* Mobile Header */}
       <header className="fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:hidden z-50">
         <button onClick={() => setMobileMenuOpen(true)} className="p-2 -ml-2">
           <Menu size={24} />
         </button>
-        <div className="text-xl font-bold" style={{ color: '#E50914' }}>titly</div>
+        <Link to="/" className="flex items-center gap-2">
+          <img src="/butterfly.png" alt="Titli" className="w-6 h-auto" />
+          <span className="font-syne font-bold text-xl text-[#E50914]">titli</span>
+        </Link>
         <div className="w-10" />
       </header>
 
       <div className="flex w-full max-w-[1280px]">
+        {/* Sidebar */}
         <aside 
           className={`
             fixed lg:sticky top-0 left-0 h-screen z-50
@@ -91,12 +96,15 @@ const DashboardLayout = () => {
             <X size={20} />
           </button>
 
+          {/* Logo */}
           <div className="px-6 py-6">
-            <Link to="/" className="inline-block">
-              <span className="text-2xl font-bold tracking-tight" style={{ color: '#E50914' }}>titly</span>
+            <Link to="/" className="inline-flex items-center gap-3">
+              <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
+              <span className="font-syne font-bold text-2xl tracking-tight text-[#E50914]">titli</span>
             </Link>
           </div>
 
+          {/* Navigation */}
           <nav className="flex-1 flex flex-col justify-center px-4">
             {navItems.map((item) => {
               const isActive = currentPath === item.id;
@@ -115,18 +123,17 @@ const DashboardLayout = () => {
                     <item.icon 
                       size={22} 
                       strokeWidth={isActive ? 2.5 : 1.8}
-                      className={isActive ? 'text-red-600' : 'text-gray-700'}
+                      className={isActive ? 'text-[#E50914]' : 'text-gray-700'}
                     />
                     {item.count > 0 && (
                       <span 
-                        className="absolute -top-1 -right-1 min-w-[16px] h-[16px] flex items-center justify-center text-[10px] font-bold text-white rounded-full"
-                        style={{ background: '#E50914' }}
+                        className="absolute -top-1 -right-1 min-w-[16px] h-[16px] flex items-center justify-center text-[10px] font-bold text-white rounded-full bg-[#E50914]"
                       >
                         {item.count > 9 ? '9+' : item.count}
                       </span>
                     )}
                   </div>
-                  <span className={`text-[15px] ${isActive ? 'font-semibold text-gray-900' : 'font-medium text-gray-700'}`}>
+                  <span className={`font-syne text-[15px] ${isActive ? 'font-semibold text-gray-900' : 'font-medium text-gray-700'}`}>
                     {item.label}
                   </span>
                 </Link>
@@ -135,33 +142,34 @@ const DashboardLayout = () => {
 
             <button
               onClick={handleStartTexting}
-              className="w-full mt-6 py-3.5 rounded-2xl text-white font-semibold text-[15px] transition-all hover:shadow-lg hover:shadow-red-500/25"
-              style={{ background: '#E50914' }}
+              className="w-full mt-6 py-3.5 rounded-2xl text-white font-syne font-semibold text-[15px] transition-all hover:shadow-lg hover:shadow-red-500/25 bg-[#E50914]"
             >
               Message Taj
             </button>
           </nav>
 
+          {/* Profile Section */}
           <div className="p-4">
             <button 
               onClick={() => navigate("/app/profile")}
               className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-gray-50 transition-all"
             >
               <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-syne font-semibold text-sm flex-shrink-0"
                 style={{ background: 'linear-gradient(135deg, #E50914 0%, #ff4757 100%)' }}
               >
                 {user?.name?.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 text-left min-w-0">
-                <div className="font-semibold text-sm truncate">{user?.name}</div>
-                <div className="text-gray-500 text-xs truncate">{user?.phone}</div>
+                <div className="font-syne font-semibold text-sm truncate">{user?.name}</div>
+                <div className="font-mono text-gray-500 text-xs truncate">{user?.phone}</div>
               </div>
               <MoreHorizontal size={16} className="text-gray-400 flex-shrink-0" />
             </button>
           </div>
         </aside>
 
+        {/* Mobile Overlay */}
         {mobileMenuOpen && (
           <div 
             className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -169,6 +177,7 @@ const DashboardLayout = () => {
           />
         )}
 
+        {/* Main Content */}
         <main className="flex-1 min-h-screen border-r border-gray-100 pt-14 lg:pt-0 max-w-[600px]">
           <Routes>
             <Route index element={<OpportunitiesPage onRefresh={fetchStats} />} />
@@ -180,6 +189,7 @@ const DashboardLayout = () => {
           </Routes>
         </main>
 
+        {/* Right Sidebar */}
         <aside className="hidden xl:block w-[320px] px-5 py-4">
           <div className="sticky top-4">
             <div className="relative mb-5">
@@ -187,28 +197,28 @@ const DashboardLayout = () => {
               <input
                 type="text"
                 placeholder="Search"
-                className="w-full h-11 pl-11 pr-4 rounded-2xl bg-gray-100 border-0 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:bg-white transition-all"
+                className="w-full h-11 pl-11 pr-4 rounded-2xl bg-gray-100 border-0 font-syne text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:bg-white transition-all"
               />
             </div>
 
             <div className="bg-gray-50 rounded-2xl overflow-hidden">
-              <h2 className="font-bold text-lg px-4 pt-4 pb-2">What's happening</h2>
+              <h2 className="font-syne font-bold text-lg px-4 pt-4 pb-2">What's happening</h2>
               <TrendItem category="Music" title="Studio Sessions" posts="2,485" />
               <TrendItem category="Business" title="Startup Funding" posts="5,129" />
               <TrendItem category="Creative" title="NYC Creators" posts="1,847" />
               <TrendItem category="Tech" title="AI Tools" posts="12.4K" />
-              <button className="w-full px-4 py-3 text-left text-sm font-medium hover:bg-gray-100 transition-colors" style={{ color: '#E50914' }}>
+              <button className="w-full px-4 py-3 text-left font-syne text-sm font-medium hover:bg-gray-100 transition-colors text-[#E50914]">
                 Show more
               </button>
             </div>
 
-            <div className="mt-4 px-2 text-xs text-gray-400">
+            <div className="mt-4 px-2 font-mono text-xs text-gray-400">
               <div className="flex flex-wrap gap-x-3 gap-y-1">
                 <a href="#" className="hover:underline">Terms of Service</a>
                 <a href="#" className="hover:underline">Privacy Policy</a>
                 <a href="#" className="hover:underline">Contact Us</a>
               </div>
-              <p className="mt-2">© 2024 titly.social</p>
+              <p className="mt-2">© 2025 titli</p>
             </div>
           </div>
         </aside>
@@ -219,9 +229,9 @@ const DashboardLayout = () => {
 
 const TrendItem = ({ category, title, posts }) => (
   <div className="px-4 py-3 hover:bg-gray-100 transition-colors cursor-pointer">
-    <div className="text-xs text-gray-400 font-medium">{category}</div>
-    <div className="font-semibold text-sm">{title}</div>
-    <div className="text-xs text-gray-400">{posts} posts</div>
+    <div className="font-mono text-xs text-gray-400">{category}</div>
+    <div className="font-syne font-semibold text-sm">{title}</div>
+    <div className="font-mono text-xs text-gray-400">{posts} posts</div>
   </div>
 );
 

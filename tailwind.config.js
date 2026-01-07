@@ -14,6 +14,11 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        display: ['Playfair Display', 'serif'],
+        mono: ['Space Mono', 'monospace'],
+        syne: ['Syne', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -47,6 +52,9 @@ module.exports = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        titli: {
+          red: '#E50914',
         },
       },
       borderRadius: {
