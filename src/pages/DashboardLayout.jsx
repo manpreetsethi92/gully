@@ -125,8 +125,8 @@ const DashboardLayout = () => {
             <X size={20} className={darkMode ? 'text-white' : 'text-gray-900'} />
           </button>
 
-          {/* Logo + Dark Mode Toggle */}
-          <div className="px-6 py-6 flex items-center justify-between">
+          {/* Logo + Dark Mode Toggle - Added pt-12 for mobile safe area */}
+          <div className="px-6 py-6 pt-14 lg:pt-6 flex items-center justify-between">
             <div className="inline-flex items-center gap-3">
               <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
               <span className="font-syne font-bold text-2xl tracking-tight text-[#E50914]">titli</span>
@@ -186,8 +186,8 @@ const DashboardLayout = () => {
             </button>
           </nav>
 
-          {/* Profile Section */}
-          <div className="p-4">
+          {/* Profile Section - Added pb-20 for mobile safe area (URL bar) */}
+          <div className="p-4 pb-20 lg:pb-4">
             <button 
               onClick={() => navigate("/app/profile")}
               className={`w-full flex items-center gap-3 p-3 rounded-2xl transition-all ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
