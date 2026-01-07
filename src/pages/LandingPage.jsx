@@ -220,7 +220,7 @@ const LandingPage = () => {
             <div className="flex flex-col sm:flex-row items-start gap-6 animate-fade-up-delay-3">
               <button 
                 onClick={handleGetStarted}
-                className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16 lowercase rounded-xl"
+                className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16 lowercase rounded-full"
               >
                 <span className="relative z-10">try us now</span>
                 <ArrowRight 
@@ -422,7 +422,7 @@ const LandingPage = () => {
             
             <button 
               onClick={handleGetStarted}
-              className="group inline-flex items-center gap-4 px-12 py-6 bg-[#E50914] font-syne font-semibold text-xl tracking-wide text-white hover:gap-6 transition-all duration-300 lowercase rounded-xl"
+              className="group inline-flex items-center gap-4 px-12 py-6 bg-[#E50914] font-syne font-semibold text-xl tracking-wide text-white hover:gap-6 transition-all duration-300 lowercase rounded-full"
             >
               get started
               <ArrowUpRight size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
