@@ -8,7 +8,7 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { useAuth, API } from "../App";
-import { ArrowLeft, Phone, Shield, Check, Instagram, Linkedin, X, MessageCircle } from "lucide-react";
+import { ArrowLeft, Phone, Shield, Check, Instagram, Linkedin, X, MessageCircle, ChevronDown } from "lucide-react";
 import { sendOTP, verifyOTP, clearRecaptcha } from "../firebase";
 
 const SKILL_CATEGORIES = {
@@ -18,6 +18,29 @@ const SKILL_CATEGORIES = {
   other: ["Fitness Training", "Life Coaching", "Event Planning", "Teaching", "Public Speaking"]
 };
 
+const COUNTRY_CODES = [
+  { code: "+1", country: "US", flag: "🇺🇸" },
+  { code: "+1", country: "CA", flag: "🇨🇦" },
+  { code: "+44", country: "UK", flag: "🇬🇧" },
+  { code: "+91", country: "IN", flag: "🇮🇳" },
+  { code: "+61", country: "AU", flag: "🇦🇺" },
+  { code: "+49", country: "DE", flag: "🇩🇪" },
+  { code: "+33", country: "FR", flag: "🇫🇷" },
+  { code: "+81", country: "JP", flag: "🇯🇵" },
+  { code: "+86", country: "CN", flag: "🇨🇳" },
+  { code: "+52", country: "MX", flag: "🇲🇽" },
+  { code: "+55", country: "BR", flag: "🇧🇷" },
+  { code: "+34", country: "ES", flag: "🇪🇸" },
+  { code: "+39", country: "IT", flag: "🇮🇹" },
+  { code: "+82", country: "KR", flag: "🇰🇷" },
+  { code: "+31", country: "NL", flag: "🇳🇱" },
+  { code: "+46", country: "SE", flag: "🇸🇪" },
+  { code: "+41", country: "CH", flag: "🇨🇭" },
+  { code: "+65", country: "SG", flag: "🇸🇬" },
+  { code: "+971", country: "AE", flag: "🇦🇪" },
+  { code: "+972", country: "IL", flag: "🇮🇱" },
+];
+
 const TELEGRAM_BOT_URL = "https://t.me/titliworkBot?start=welcome";
 
 const AuthModal = ({ isOpen, onClose }) => {
@@ -26,6 +49,8 @@ const AuthModal = ({ isOpen, onClose }) => {
   
   const [step, setStep] = useState("phone");
   const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState("+1");
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
@@ -49,6 +74,15 @@ const AuthModal = ({ isOpen, onClose }) => {
     };
   }, []);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => setShowCountryDropdown(false);
+    if (showCountryDropdown) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [showCountryDropdown]);
+
   const resetAndClose = () => {
     setStep("phone");
     setPhone("");
@@ -64,27 +98,27 @@ const AuthModal = ({ isOpen, onClose }) => {
     onClose();
   };
 
-  const formatPhoneNumber = (phoneNum) => {
-    let cleaned = phoneNum.replace(/\D/g, '');
-    if (cleaned.length === 10) {
-      cleaned = '+1' + cleaned;
-    } else if (!cleaned.startsWith('+')) {
-      cleaned = '+' + cleaned;
-    }
-    return cleaned.startsWith('+') ? cleaned : '+' + cleaned;
+  const getFullPhoneNumber = () => {
+    const cleaned = phone.replace(/\D/g, '');
+    return `${countryCode}${cleaned}`;
+  };
+
+  const getSelectedCountry = () => {
+    return COUNTRY_CODES.find(c => c.code === countryCode) || COUNTRY_CODES[0];
   };
 
   const handleSendOTP = async (e) => {
     e.preventDefault();
-    if (!phone || phone.replace(/\D/g, '').length < 10) {
+    const cleaned = phone.replace(/\D/g, '');
+    if (!cleaned || cleaned.length < 7) {
       toast.error("Please enter a valid phone number");
       return;
     }
     
     setLoading(true);
     try {
-      const formattedPhone = formatPhoneNumber(phone);
-      const result = await sendOTP(formattedPhone);
+      const fullPhone = getFullPhoneNumber();
+      const result = await sendOTP(fullPhone);
       setConfirmationResult(result);
       setStep("otp");
       toast.success("OTP sent to your phone!");
@@ -93,7 +127,7 @@ const AuthModal = ({ isOpen, onClose }) => {
       clearRecaptcha();
       
       if (error.code === 'auth/invalid-phone-number') {
-        toast.error("Invalid phone number. Include country code (e.g., +1)");
+        toast.error("Invalid phone number. Please check and try again.");
       } else if (error.code === 'auth/too-many-requests') {
         toast.error("Too many attempts. Try again later.");
       } else if (error.code === 'auth/invalid-app-credential') {
@@ -123,11 +157,11 @@ const AuthModal = ({ isOpen, onClose }) => {
     setLoading(true);
     try {
       await verifyOTP(confirmationResult, otp);
-      const formattedPhone = formatPhoneNumber(phone);
+      const fullPhone = getFullPhoneNumber();
       
       try {
         const response = await axios.post(`${API}/auth/verify-otp`, { 
-          phone: formattedPhone, 
+          phone: fullPhone, 
           otp: otp
         });
         
@@ -166,56 +200,37 @@ const AuthModal = ({ isOpen, onClose }) => {
       setSelectedSkills(selectedSkills.filter(s => s !== skill));
     } else if (selectedSkills.length < 5) {
       setSelectedSkills([...selectedSkills, skill]);
-    } else {
-      toast.error("Maximum 5 skills");
     }
   };
 
-  // Check if at least one social link is provided
   const hasSocialLink = () => {
-    return socialLinks.instagram.trim() !== "" || socialLinks.linkedin.trim() !== "";
+    return socialLinks.instagram?.trim() || socialLinks.linkedin?.trim();
   };
 
   const handleCompleteProfile = async (e) => {
     e.preventDefault();
-    if (!name.trim()) { toast.error("Name is required"); return; }
-    if (!age || parseInt(age) < 13) { toast.error("Please enter a valid age"); return; }
-    
-    // REQUIRE Instagram OR LinkedIn
-    if (!hasSocialLink()) { 
-      toast.error("Please add your Instagram or LinkedIn to verify your profile"); 
-      return; 
+    if (!hasSocialLink()) {
+      toast.error("Please add your Instagram or LinkedIn to verify your profile");
+      return;
     }
     
-    if (!bio.trim()) { toast.error("Please add a short bio"); return; }
-    if (selectedSkills.length === 0) { toast.error("Select at least one skill"); return; }
-
     setLoading(true);
     try {
-      let authToken = token;
-      const formattedPhone = formatPhoneNumber(phone);
+      const fullPhone = getFullPhoneNumber();
+      const response = await axios.post(`${API}/auth/verify-otp`, {
+        phone: fullPhone,
+        otp: otp,
+        name: name.trim(),
+        age: parseInt(age) || null,
+        bio: bio.trim(),
+        skills: selectedSkills,
+        instagram: socialLinks.instagram?.trim() || null,
+        linkedin: socialLinks.linkedin?.trim() || null,
+        twitter: socialLinks.twitter?.trim() || null,
+        imdb: socialLinks.imdb?.trim() || null
+      });
       
-      if (!authToken) {
-        // Pass social links at signup for new users
-        const authResponse = await axios.post(`${API}/auth/verify-otp`, { 
-          phone: formattedPhone, 
-          otp: otp,
-          name: name.trim(), 
-          age: parseInt(age),
-          instagram: socialLinks.instagram.trim() || null,
-          linkedin: socialLinks.linkedin.trim() || null
-        });
-        authToken = authResponse.data.token;
-        login(authResponse.data.token, authResponse.data.user);
-      }
-
-      const response = await axios.put(
-        `${API}/users/me`,
-        { bio: bio.trim(), skills: selectedSkills, social_links: socialLinks },
-        { headers: { Authorization: `Bearer ${authToken}` } }
-      );
-      
-      login(authToken, response.data);
+      login(response.data.token, response.data.user);
       setShowSuccess(true);
     } catch (error) {
       toast.error(error.response?.data?.detail || "Failed to complete profile");
@@ -224,46 +239,25 @@ const AuthModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleStartTexting = () => {
-    window.open(TELEGRAM_BOT_URL, "_blank");
-    resetAndClose();
-    navigate("/app");
-    toast.success("Welcome to titly!");
-  };
-
   return (
-    <Dialog open={isOpen} onOpenChange={showSuccess ? undefined : resetAndClose}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden" hideCloseButton={showSuccess}>
-        {/* Invisible reCAPTCHA container - must exist in DOM before initializing verifier */}
+    <Dialog open={isOpen} onOpenChange={resetAndClose}>
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white rounded-2xl">
         <div id="recaptcha-container"></div>
-        
         <div className="relative">
-          {!showSuccess && (
-            <button onClick={resetAndClose} className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 z-10">
-              <X size={20} className="text-gray-500" />
-            </button>
-          )}
-
+          <button onClick={resetAndClose} className="absolute right-4 top-4 p-1 rounded-full hover:bg-gray-100 z-10">
+            <X size={20} className="text-gray-500" />
+          </button>
+          
           {showSuccess ? (
             <div className="p-8 text-center">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: 'linear-gradient(135deg, #E50914 0%, #ff4757 100%)' }}>
-                <MessageCircle size={40} className="text-white" />
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(229, 9, 20, 0.1)' }}>
+                <Check size={32} style={{ color: '#E50914' }} />
               </div>
-              <h2 className="text-2xl font-bold mb-2">You're all set! 🎉</h2>
-              <p className="text-gray-600 mb-4">Now let's get you connected!</p>
-              
-              <div className="bg-gray-50 rounded-2xl p-4 mb-6 text-left">
-                <h3 className="font-semibold text-sm mb-3" style={{ color: '#E50914' }}>Here's what happens next:</h3>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-start gap-2"><span className="font-bold text-gray-900">1.</span><span>Taj will ask a few quick questions</span></li>
-                  <li className="flex items-start gap-2"><span className="font-bold text-gray-900">2.</span><span>She'll match you with the right people</span></li>
-                  <li className="flex items-start gap-2"><span className="font-bold text-gray-900">3.</span><span>You'll get introduced immediately</span></li>
-                </ul>
-              </div>
-              
-              <button onClick={handleStartTexting} className="w-full h-14 rounded-full text-white font-semibold text-lg flex items-center justify-center gap-3" style={{ background: '#E50914' }}>
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="white">
-                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+              <h2 className="text-2xl font-bold mb-2">You're all set!</h2>
+              <p className="text-gray-500 mb-6">Message Taj to start connecting</p>
+              <button onClick={() => window.open(TELEGRAM_BOT_URL, '_blank')} className="w-full h-12 rounded-full text-white font-semibold flex items-center justify-center gap-2" style={{ background: '#E50914' }}>
+                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.24.37-.49 1.02-.74 3.99-1.74 6.65-2.89 7.99-3.45 3.81-1.6 4.6-1.87 5.12-1.88.11 0 .37.03.53.17.14.12.18.28.2.45-.01.06.01.24 0 .38z"/>
                 </svg>
                 Start Texting Taj
               </button>
@@ -282,11 +276,49 @@ const AuthModal = ({ isOpen, onClose }) => {
                   <form onSubmit={handleSendOTP}>
                     <div className="mb-4">
                       <Label className="text-xs font-medium text-gray-500 mb-1 block">PHONE NUMBER</Label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <Input type="tel" placeholder="+1 (555) 000-0000" value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-10 h-11" />
+                      <div className="flex gap-2">
+                        {/* Country Code Dropdown */}
+                        <div className="relative">
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); setShowCountryDropdown(!showCountryDropdown); }}
+                            className="h-11 px-3 flex items-center gap-1 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors min-w-[90px]"
+                          >
+                            <span className="text-lg">{getSelectedCountry().flag}</span>
+                            <span className="text-sm font-medium">{countryCode}</span>
+                            <ChevronDown size={14} className="text-gray-400" />
+                          </button>
+                          
+                          {showCountryDropdown && (
+                            <div className="absolute top-full left-0 mt-1 w-48 bg-white border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                              {COUNTRY_CODES.map((c, idx) => (
+                                <button
+                                  key={`${c.code}-${c.country}-${idx}`}
+                                  type="button"
+                                  onClick={() => { setCountryCode(c.code); setShowCountryDropdown(false); }}
+                                  className={`w-full px-3 py-2 flex items-center gap-2 hover:bg-gray-50 text-left ${countryCode === c.code && c.country === getSelectedCountry().country ? 'bg-gray-50' : ''}`}
+                                >
+                                  <span className="text-lg">{c.flag}</span>
+                                  <span className="text-sm">{c.country}</span>
+                                  <span className="text-sm text-gray-500 ml-auto">{c.code}</span>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* Phone Input */}
+                        <div className="relative flex-1">
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <Input 
+                            type="tel" 
+                            placeholder="(555) 000-0000" 
+                            value={phone} 
+                            onChange={(e) => setPhone(e.target.value)} 
+                            className="pl-10 h-11" 
+                          />
+                        </div>
                       </div>
-                      <p className="text-xs text-gray-400 mt-1">Include country code (e.g., +1 for US)</p>
                     </div>
                     <button type="submit" className="w-full h-11 rounded-full text-white font-semibold" style={{ background: '#E50914' }} disabled={loading}>
                       {loading ? <div className="spinner mx-auto" /> : "Continue"}
@@ -301,7 +333,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     <ArrowLeft size={16} /> Back
                   </button>
                   <h2 className="text-xl font-bold mb-1">Verify your number</h2>
-                  <p className="text-gray-500 text-sm mb-4">Enter the code sent to {phone}</p>
+                  <p className="text-gray-500 text-sm mb-4">Enter the code sent to {getFullPhoneNumber()}</p>
                   
                   <div className="p-2 rounded-lg mb-4 text-xs" style={{ background: '#e0f2fe' }}>
                     <Shield size={12} className="inline mr-1" style={{ color: '#0369a1' }} />
