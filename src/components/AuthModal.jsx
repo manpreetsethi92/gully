@@ -692,6 +692,12 @@ const AuthModal = ({ isOpen, onClose }) => {
                 </svg>
                 Start Texting Taj
               </button>
+              <button 
+                onClick={() => { resetAndClose(); navigate("/app"); }} 
+                className="w-full h-12 rounded-full font-semibold flex items-center justify-center gap-2 mt-3 border border-gray-300 hover:bg-gray-50"
+              >
+                Go to Dashboard
+              </button>
             </div>
           ) : (
             <div className="p-8">
