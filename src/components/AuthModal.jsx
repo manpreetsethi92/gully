@@ -211,10 +211,35 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
     const updatePosition = () => {
       if (isOpen && buttonRef.current) {
         const rect = buttonRef.current.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        // Calculate width - match input but constrain to viewport
+        let dropdownWidth = rect.width;
+        const minWidth = 280;
+        const maxWidth = Math.min(400, viewportWidth - 32); // 16px padding on each side
+        dropdownWidth = Math.max(minWidth, Math.min(dropdownWidth, maxWidth));
+        
+        // Calculate left position - keep within viewport
+        let leftPos = rect.left;
+        if (leftPos + dropdownWidth > viewportWidth - 16) {
+          leftPos = viewportWidth - dropdownWidth - 16;
+        }
+        if (leftPos < 16) {
+          leftPos = 16;
+        }
+        
+        // Calculate top position - flip to above if not enough space below
+        let topPos = rect.bottom + 4;
+        const dropdownHeight = 280; // approximate max height
+        if (topPos + dropdownHeight > viewportHeight && rect.top > dropdownHeight) {
+          topPos = rect.top - dropdownHeight - 4;
+        }
+        
         setPosition({
-          top: rect.bottom + 4,
-          left: rect.left,
-          width: rect.width
+          top: topPos,
+          left: leftPos,
+          width: dropdownWidth
         });
       }
     };
@@ -279,16 +304,20 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
       onMouseDown={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
       onWheel={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
       style={{
         position: 'fixed',
         top: position.top,
         left: position.left,
         width: position.width,
+        maxHeight: 'calc(100vh - 100px)',
         backgroundColor: '#fff',
         border: '1px solid #e5e7eb',
         borderRadius: '8px',
         boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
         zIndex: 99999,
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       {/* Search input */}
@@ -318,7 +347,7 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
       </div>
       
       {/* Country list */}
-      <div style={{ maxHeight: '200px', overflowY: 'auto', overflowX: 'hidden' }}>
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', WebkitOverflowScrolling: 'touch' }}>
         {filteredCountries.map((c, idx) => {
           const isSelected = c.code === selectedCode;
           return (
@@ -329,12 +358,17 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
                 e.stopPropagation();
                 onSelect(c.code);
               }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onSelect(c.code);
+              }}
               style={{
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
-                padding: '10px 12px',
+                padding: '12px',
                 fontSize: '14px',
                 textAlign: 'left',
                 backgroundColor: isSelected ? '#fef2f2' : 'white',
@@ -346,8 +380,8 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
               onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = isSelected ? '#fef2f2' : 'white'; }}
             >
               <span style={{ fontSize: '20px' }}>{c.flag}</span>
-              <span style={{ color: '#111827', flex: 1 }}>{c.country}</span>
-              <span style={{ color: '#9ca3af' }}>{c.code}</span>
+              <span style={{ color: '#111827', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.country}</span>
+              <span style={{ color: '#9ca3af', flexShrink: 0 }}>{c.code}</span>
             </div>
           );
         })}
