@@ -204,6 +204,7 @@ const TELEGRAM_BOT_URL = "https://t.me/titliworkBot?start=welcome";
 // Portal dropdown component
 const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries }) => {
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
+  const dropdownRef = useRef(null);
   
   useEffect(() => {
     if (isOpen && buttonRef.current) {
@@ -218,20 +219,28 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
 
   useEffect(() => {
     if (!isOpen) return;
-    const handleClick = (e) => {
-      if (!e.target.closest('.country-portal-dropdown')) {
+    
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target) && 
+          buttonRef.current && !buttonRef.current.contains(e.target)) {
         onClose();
       }
     };
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-  }, [isOpen, onClose]);
+    
+    // Use mousedown instead of click to handle before blur
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen, onClose, buttonRef]);
 
   if (!isOpen) return null;
 
+  const handleSelect = (code) => {
+    onSelect(code);
+  };
+
   return createPortal(
     <div 
-      className="country-portal-dropdown"
+      ref={dropdownRef}
       style={{
         position: 'fixed',
         top: position.top,
@@ -242,14 +251,12 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
         borderRadius: '8px',
         boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
         zIndex: 99999,
-        overflow: 'hidden'
       }}
-      onClick={(e) => e.stopPropagation()}
     >
       {/* Search input */}
       <div style={{ padding: '8px', borderBottom: '1px solid #f3f4f6' }}>
         <div style={{ position: 'relative' }}>
-          <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+          <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af', pointerEvents: 'none' }} />
           <input
             type="text"
             placeholder="Search country..."
@@ -264,23 +271,19 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
               fontSize: '14px',
               border: '1px solid #e5e7eb',
               borderRadius: '6px',
-              outline: 'none'
+              outline: 'none',
+              boxSizing: 'border-box'
             }}
           />
         </div>
       </div>
       
       {/* Country list */}
-      <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+      <div style={{ maxHeight: '200px', overflowY: 'auto', overflowX: 'hidden' }}>
         {filteredCountries.map((c, idx) => (
-          <button
+          <div
             key={`${c.code}-${c.country}-${idx}`}
-            type="button"
-            onMouseDown={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onSelect(c.code);
-            }}
+            onClick={() => handleSelect(c.code)}
             style={{
               width: '100%',
               display: 'flex',
@@ -289,17 +292,17 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
               padding: '10px 12px',
               fontSize: '14px',
               textAlign: 'left',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer'
+              backgroundColor: 'white',
+              cursor: 'pointer',
+              boxSizing: 'border-box'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
           >
             <span style={{ fontSize: '20px' }}>{c.flag}</span>
-            <span style={{ color: '#111827' }}>{c.country}</span>
-            <span style={{ marginLeft: 'auto', color: '#9ca3af' }}>{c.code}</span>
-          </button>
+            <span style={{ color: '#111827', flex: 1 }}>{c.country}</span>
+            <span style={{ color: '#9ca3af' }}>{c.code}</span>
+          </div>
         ))}
       </div>
     </div>,
