@@ -624,7 +624,7 @@ const LandingPage = () => {
             </div>
             
             <h2 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-4 md:mb-8 text-white lowercase">
-              let titli take
+              let titlii take
               <br />
               <span className="text-[#E50914]">you places</span>
             </h2>

@@ -301,7 +301,7 @@ useEffect(() => {
                 <a href="#" className="hover:underline">Privacy Policy</a>
                 <a href="#" className="hover:underline">Contact Us</a>
               </div>
-              <p className="mt-2">© 2025 titli</p>
+              <p className="mt-2">© 2025 titlii</p>
             </div>
           </div>
         </aside>
