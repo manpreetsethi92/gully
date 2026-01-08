@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
-import { Dialog, DialogContent } from "./ui/dialog";
+import { Dialog, DialogContent, DialogOverlay } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
@@ -569,6 +569,17 @@ const AuthModal = ({ isOpen, onClose }) => {
         if (!open) resetAndClose();
       }}
     >
+      {/* Custom overlay since modal={false} removes the default one */}
+      {isOpen && createPortal(
+        <div 
+          className="fixed inset-0 bg-black/80 z-[49]"
+          style={{ pointerEvents: showCountryDropdown ? 'none' : 'auto' }}
+          onClick={() => {
+            if (!showCountryDropdown) resetAndClose();
+          }}
+        />,
+        document.body
+      )}
       <DialogContent 
         className="sm:max-w-md p-0 overflow-hidden bg-white rounded-2xl [&>button]:hidden"
         onPointerDownOutside={(e) => {
