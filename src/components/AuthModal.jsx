@@ -37,8 +37,40 @@ const COUNTRY_CODES = [
   { code: "+46", country: "SE", flag: "🇸🇪" },
   { code: "+41", country: "CH", flag: "🇨🇭" },
   { code: "+65", country: "SG", flag: "🇸🇬" },
-  { code: "+971", country: "AE", flag: "🇦🇪" },
+  { code: "+971", country: "UAE", flag: "🇦🇪" },
   { code: "+972", country: "IL", flag: "🇮🇱" },
+  { code: "+92", country: "PK", flag: "🇵🇰" },
+  { code: "+63", country: "PH", flag: "🇵🇭" },
+  { code: "+66", country: "TH", flag: "🇹🇭" },
+  { code: "+84", country: "VN", flag: "🇻🇳" },
+  { code: "+62", country: "ID", flag: "🇮🇩" },
+  { code: "+60", country: "MY", flag: "🇲🇾" },
+  { code: "+64", country: "NZ", flag: "🇳🇿" },
+  { code: "+353", country: "IE", flag: "🇮🇪" },
+  { code: "+351", country: "PT", flag: "🇵🇹" },
+  { code: "+48", country: "PL", flag: "🇵🇱" },
+  { code: "+47", country: "NO", flag: "🇳🇴" },
+  { code: "+45", country: "DK", flag: "🇩🇰" },
+  { code: "+358", country: "FI", flag: "🇫🇮" },
+  { code: "+43", country: "AT", flag: "🇦🇹" },
+  { code: "+32", country: "BE", flag: "🇧🇪" },
+  { code: "+30", country: "GR", flag: "🇬🇷" },
+  { code: "+90", country: "TR", flag: "🇹🇷" },
+  { code: "+7", country: "RU", flag: "🇷🇺" },
+  { code: "+380", country: "UA", flag: "🇺🇦" },
+  { code: "+27", country: "ZA", flag: "🇿🇦" },
+  { code: "+234", country: "NG", flag: "🇳🇬" },
+  { code: "+20", country: "EG", flag: "🇪🇬" },
+  { code: "+254", country: "KE", flag: "🇰🇪" },
+  { code: "+966", country: "SA", flag: "🇸🇦" },
+  { code: "+974", country: "QA", flag: "🇶🇦" },
+  { code: "+965", country: "KW", flag: "🇰🇼" },
+  { code: "+973", country: "BH", flag: "🇧🇭" },
+  { code: "+968", country: "OM", flag: "🇴🇲" },
+  { code: "+54", country: "AR", flag: "🇦🇷" },
+  { code: "+56", country: "CL", flag: "🇨🇱" },
+  { code: "+57", country: "CO", flag: "🇨🇴" },
+  { code: "+51", country: "PE", flag: "🇵🇪" },
 ];
 
 const TELEGRAM_BOT_URL = "https://t.me/titliworkBot?start=welcome";
@@ -51,6 +83,7 @@ const AuthModal = ({ isOpen, onClose }) => {
   const [phone, setPhone] = useState("");
   const [countryCode, setCountryCode] = useState("+1");
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [countrySearch, setCountrySearch] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
@@ -282,7 +315,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                           <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); setShowCountryDropdown(!showCountryDropdown); }}
-                            className="h-11 px-3 flex items-center gap-1 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors min-w-[90px]"
+                            className="h-11 px-3 flex items-center gap-1 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors min-w-[80px]"
                           >
                             <span className="text-lg">{getSelectedCountry().flag}</span>
                             <span className="text-sm font-medium">{countryCode}</span>
@@ -290,19 +323,39 @@ const AuthModal = ({ isOpen, onClose }) => {
                           </button>
                           
                           {showCountryDropdown && (
-                            <div className="absolute top-full left-0 mt-1 w-48 bg-white border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
-                              {COUNTRY_CODES.map((c, idx) => (
-                                <button
-                                  key={`${c.code}-${c.country}-${idx}`}
-                                  type="button"
-                                  onClick={() => { setCountryCode(c.code); setShowCountryDropdown(false); }}
-                                  className={`w-full px-3 py-2 flex items-center gap-2 hover:bg-gray-50 text-left ${countryCode === c.code && c.country === getSelectedCountry().country ? 'bg-gray-50' : ''}`}
-                                >
-                                  <span className="text-lg">{c.flag}</span>
-                                  <span className="text-sm">{c.country}</span>
-                                  <span className="text-sm text-gray-500 ml-auto">{c.code}</span>
-                                </button>
-                              ))}
+                            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20" onClick={() => setShowCountryDropdown(false)}>
+                              <div className="bg-white rounded-xl shadow-2xl w-[280px] max-h-[400px] overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                                <div className="sticky top-0 bg-white border-b p-2">
+                                  <div className="relative">
+                                    <input
+                                      type="text"
+                                      placeholder="Search country..."
+                                      className="w-full px-3 py-2 pl-8 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                                      autoFocus
+                                      onChange={(e) => setCountrySearch(e.target.value)}
+                                    />
+                                    <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                  </div>
+                                </div>
+                                <div className="overflow-y-auto max-h-[340px]">
+                                  {COUNTRY_CODES
+                                    .filter(c => !countrySearch || c.country.toLowerCase().includes(countrySearch.toLowerCase()) || c.code.includes(countrySearch))
+                                    .map((c, idx) => (
+                                    <button
+                                      key={`${c.code}-${c.country}-${idx}`}
+                                      type="button"
+                                      onClick={() => { setCountryCode(c.code); setShowCountryDropdown(false); setCountrySearch(''); }}
+                                      className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-50 text-left border-b border-gray-100 ${countryCode === c.code && c.country === getSelectedCountry().country ? 'bg-gray-50' : ''}`}
+                                    >
+                                      <span className="text-xl">{c.flag}</span>
+                                      <span className="text-sm font-medium">{c.country}</span>
+                                      <span className="text-sm text-gray-400 ml-auto">{c.code}</span>
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
                           )}
                         </div>
