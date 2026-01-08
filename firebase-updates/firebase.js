@@ -14,19 +14,37 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
-export const setupRecaptcha = (containerId) => {
-  if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
-      size: 'invisible',
-      callback: () => {
-        console.log('reCAPTCHA verified');
-      },
-      'expired-callback': () => {
-        console.log('reCAPTCHA expired');
-        window.recaptchaVerifier = null;
-      }
-    });
+export const clearRecaptcha = () => {
+  if (window.recaptchaVerifier) {
+    try {
+      window.recaptchaVerifier.clear();
+    } catch (e) {
+      console.log('Recaptcha clear error:', e);
+    }
+    window.recaptchaVerifier = null;
   }
+  // Also remove the container contents in case it's stuck
+  const container = document.getElementById('recaptcha-container');
+  if (container) {
+    container.innerHTML = '';
+  }
+};
+
+export const setupRecaptcha = (containerId) => {
+  // Clear any existing recaptcha first
+  clearRecaptcha();
+  
+  window.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+    size: 'invisible',
+    callback: () => {
+      console.log('reCAPTCHA verified');
+    },
+    'expired-callback': () => {
+      console.log('reCAPTCHA expired');
+      clearRecaptcha();
+    }
+  });
+  
   return window.recaptchaVerifier;
 };
 
