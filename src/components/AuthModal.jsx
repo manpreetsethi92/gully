@@ -276,7 +276,11 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
           <button
             key={`${c.code}-${c.country}-${idx}`}
             type="button"
-            onClick={() => onSelect(c.code)}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onSelect(c.code);
+            }}
             style={{
               width: '100%',
               display: 'flex',
