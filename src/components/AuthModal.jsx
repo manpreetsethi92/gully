@@ -204,23 +204,33 @@ const TELEGRAM_BOT_URL = "https://t.me/titliworkBot?start=welcome";
 // Portal dropdown component
 const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries, selectedCode }) => {
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [isMobile, setIsMobile] = useState(false);
   const dropdownRef = useRef(null);
   
   // Calculate position
   useEffect(() => {
     const updatePosition = () => {
-      if (isOpen && buttonRef.current) {
+      const viewportWidth = window.innerWidth;
+      const mobile = viewportWidth < 640;
+      setIsMobile(mobile);
+      
+      if (mobile) {
+        // Mobile: full width at top of screen
+        setPosition({
+          top: 0,
+          left: 0,
+          width: viewportWidth
+        });
+      } else if (isOpen && buttonRef.current) {
+        // Desktop: below the input
         const rect = buttonRef.current.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
         
-        // Calculate width - match input but constrain to viewport
         let dropdownWidth = rect.width;
         const minWidth = 280;
-        const maxWidth = Math.min(400, viewportWidth - 32); // 16px padding on each side
+        const maxWidth = Math.min(400, viewportWidth - 32);
         dropdownWidth = Math.max(minWidth, Math.min(dropdownWidth, maxWidth));
         
-        // Calculate left position - keep within viewport
         let leftPos = rect.left;
         if (leftPos + dropdownWidth > viewportWidth - 16) {
           leftPos = viewportWidth - dropdownWidth - 16;
@@ -229,9 +239,8 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
           leftPos = 16;
         }
         
-        // Calculate top position - flip to above if not enough space below
         let topPos = rect.bottom + 4;
-        const dropdownHeight = 280; // approximate max height
+        const dropdownHeight = 280;
         if (topPos + dropdownHeight > viewportHeight && rect.top > dropdownHeight) {
           topPos = rect.top - dropdownHeight - 4;
         }
@@ -246,7 +255,6 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
     
     updatePosition();
     
-    // Recalculate on scroll/resize
     if (isOpen) {
       window.addEventListener('scroll', updatePosition, true);
       window.addEventListener('resize', updatePosition);
@@ -310,20 +318,20 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
         top: position.top,
         left: position.left,
         width: position.width,
-        maxHeight: 'calc(100vh - 100px)',
+        maxHeight: isMobile ? '50vh' : 'calc(100vh - 100px)',
         backgroundColor: '#fff',
-        border: '1px solid #e5e7eb',
-        borderRadius: '8px',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+        border: isMobile ? 'none' : '1px solid #e5e7eb',
+        borderRadius: isMobile ? '0 0 16px 16px' : '8px',
+        boxShadow: isMobile ? '0 4px 30px rgba(0,0,0,0.2)' : '0 4px 20px rgba(0,0,0,0.15)',
         zIndex: 99999,
         display: 'flex',
         flexDirection: 'column',
       }}
     >
       {/* Search input */}
-      <div style={{ padding: '8px', borderBottom: '1px solid #f3f4f6' }}>
+      <div style={{ padding: isMobile ? '12px 16px' : '8px', borderBottom: '1px solid #f3f4f6', flexShrink: 0 }}>
         <div style={{ position: 'relative' }}>
-          <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af', pointerEvents: 'none' }} />
+          <Search size={isMobile ? 18 : 16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af', pointerEvents: 'none' }} />
           <input
             type="text"
             placeholder="Search country..."
@@ -332,10 +340,10 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
             autoFocus
             style={{
               width: '100%',
-              height: '36px',
+              height: isMobile ? '40px' : '36px',
               paddingLeft: '36px',
               paddingRight: '12px',
-              fontSize: '14px',
+              fontSize: isMobile ? '16px' : '14px',
               border: '1px solid #e5e7eb',
               borderRadius: '6px',
               outline: 'none',
@@ -368,8 +376,8 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
-                padding: '12px',
-                fontSize: '14px',
+                padding: isMobile ? '14px 16px' : '12px',
+                fontSize: isMobile ? '15px' : '14px',
                 textAlign: 'left',
                 backgroundColor: isSelected ? '#fef2f2' : 'white',
                 cursor: 'pointer',
@@ -379,7 +387,7 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
               onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.backgroundColor = '#f3f4f6'; }}
               onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = isSelected ? '#fef2f2' : 'white'; }}
             >
-              <span style={{ fontSize: '20px' }}>{c.flag}</span>
+              <span style={{ fontSize: isMobile ? '22px' : '20px' }}>{c.flag}</span>
               <span style={{ color: '#111827', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.country}</span>
               <span style={{ color: '#9ca3af', flexShrink: 0 }}>{c.code}</span>
             </div>
