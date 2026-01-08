@@ -106,6 +106,14 @@ const AuthModal = ({ isOpen, onClose }) => {
     };
   }, []);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!showCountryDropdown) return;
+    const handleClick = () => setShowCountryDropdown(false);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [showCountryDropdown]);
+
   const resetAndClose = () => {
     setStep("phone");
     setPhone("");
@@ -131,6 +139,12 @@ const AuthModal = ({ isOpen, onClose }) => {
   const getSelectedCountry = () => {
     return COUNTRY_CODES.find(c => c.code === countryCode) || COUNTRY_CODES[0];
   };
+
+  const filteredCountries = COUNTRY_CODES.filter(c => 
+    !countrySearch || 
+    c.country.toLowerCase().includes(countrySearch.toLowerCase()) || 
+    c.code.includes(countrySearch)
+  );
 
   const handleSendOTP = async (e) => {
     e.preventDefault();
@@ -264,15 +278,9 @@ const AuthModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const filteredCountries = COUNTRY_CODES.filter(c => 
-    !countrySearch || 
-    c.country.toLowerCase().includes(countrySearch.toLowerCase()) || 
-    c.code.includes(countrySearch)
-  );
-
   return (
     <Dialog open={isOpen} onOpenChange={resetAndClose}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white rounded-2xl">
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white rounded-2xl [&>button]:hidden">
         <div id="recaptcha-container"></div>
         <div className="relative">
           <button onClick={resetAndClose} className="absolute right-4 top-4 p-1 rounded-full hover:bg-gray-100 z-10">
@@ -307,69 +315,75 @@ const AuthModal = ({ isOpen, onClose }) => {
                   <form onSubmit={handleSendOTP}>
                     <div className="mb-4">
                       <Label className="text-xs font-medium text-gray-500 mb-1 block">PHONE NUMBER</Label>
-                      <div className="flex gap-2">
-                        {/* Country Code Dropdown */}
-                        <div className="relative">
+                      
+                      {/* Phone input wrapper - position:relative for dropdown */}
+                      <div className="relative">
+                        <div className="flex border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-red-500 focus-within:border-transparent">
+                          {/* Country selector */}
                           <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); setShowCountryDropdown(!showCountryDropdown); }}
-                            className="h-11 px-3 flex items-center gap-1 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors min-w-[80px]"
+                            className="h-11 px-3 flex items-center gap-1.5 bg-gray-50 hover:bg-gray-100 transition-colors border-r shrink-0"
                           >
-                            <span className="text-lg">{getSelectedCountry().flag}</span>
-                            <span className="text-sm font-medium">{countryCode}</span>
+                            <span className="text-base">{getSelectedCountry().flag}</span>
+                            <span className="text-sm">{countryCode}</span>
                             <ChevronDown size={14} className="text-gray-400" />
                           </button>
                           
-                          {showCountryDropdown && (
-                            <div className="absolute left-0 top-full mt-1 w-64 bg-white border rounded-xl shadow-xl z-[100] overflow-hidden">
-                              <div className="p-2 border-b">
-                                <input
-                                  type="text"
-                                  placeholder="Search country..."
-                                  value={countrySearch}
-                                  className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                                  autoFocus
-                                  onClick={(e) => e.stopPropagation()}
-                                  onChange={(e) => setCountrySearch(e.target.value)}
-                                />
-                              </div>
-                              <div className="max-h-64 overflow-y-auto">
-                                {filteredCountries.map((c, idx) => (
-                                  <button
-                                    key={`${c.code}-${c.country}-${idx}`}
-                                    type="button"
-                                    onClick={(e) => { 
-                                      e.stopPropagation();
-                                      setCountryCode(c.code); 
-                                      setShowCountryDropdown(false); 
-                                      setCountrySearch(''); 
-                                    }}
-                                    className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-gray-50 text-left"
-                                  >
-                                    <span className="text-xl">{c.flag}</span>
-                                    <span className="text-sm">{c.country}</span>
-                                    <span className="text-sm text-gray-400 ml-auto">{c.code}</span>
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Phone Input */}
-                        <div className="relative flex-1">
-                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                          <Input 
-                            type="tel" 
-                            placeholder="(555) 000-0000" 
-                            value={phone} 
-                            onChange={(e) => setPhone(e.target.value)} 
-                            className="pl-10 h-11"
+                          {/* Phone input */}
+                          <input
+                            type="tel"
+                            placeholder="(555) 000-0000"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                             onClick={() => setShowCountryDropdown(false)}
+                            className="flex-1 h-11 px-3 text-sm outline-none bg-white"
                           />
                         </div>
+                        
+                        {/* Dropdown - absolute positioned below the input */}
+                        {showCountryDropdown && (
+                          <div 
+                            className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+                            style={{ zIndex: 9999 }}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {/* Search input */}
+                            <div className="p-2 border-b border-gray-100">
+                              <input
+                                type="text"
+                                placeholder="Search country..."
+                                value={countrySearch}
+                                onChange={(e) => setCountrySearch(e.target.value)}
+                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md outline-none focus:border-red-500"
+                                autoFocus
+                              />
+                            </div>
+                            
+                            {/* Country list */}
+                            <div className="max-h-48 overflow-y-auto">
+                              {filteredCountries.map((c, idx) => (
+                                <button
+                                  key={`${c.code}-${c.country}-${idx}`}
+                                  type="button"
+                                  onClick={() => { 
+                                    setCountryCode(c.code); 
+                                    setShowCountryDropdown(false); 
+                                    setCountrySearch(''); 
+                                  }}
+                                  className="w-full px-3 py-2.5 flex items-center gap-3 hover:bg-gray-50 text-left"
+                                >
+                                  <span className="text-lg">{c.flag}</span>
+                                  <span className="text-sm text-gray-900">{c.country}</span>
+                                  <span className="text-sm text-gray-400 ml-auto">{c.code}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
+                    
                     <button type="submit" className="w-full h-11 rounded-full text-white font-semibold" style={{ background: '#E50914' }} disabled={loading}>
                       {loading ? <div className="spinner mx-auto" /> : "Continue"}
                     </button>
