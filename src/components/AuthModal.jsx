@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -75,9 +76,112 @@ const COUNTRY_CODES = [
 
 const TELEGRAM_BOT_URL = "https://t.me/titliworkBot?start=welcome";
 
+// Portal dropdown component
+const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries }) => {
+  const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
+  
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: rect.width
+      });
+    }
+  }, [isOpen, buttonRef]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClick = (e) => {
+      if (!e.target.closest('.country-portal-dropdown')) {
+        onClose();
+      }
+    };
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return createPortal(
+    <div 
+      className="country-portal-dropdown"
+      style={{
+        position: 'fixed',
+        top: position.top,
+        left: position.left,
+        width: position.width,
+        backgroundColor: '#fff',
+        border: '1px solid #e5e7eb',
+        borderRadius: '8px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+        zIndex: 99999,
+        overflow: 'hidden'
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Search input */}
+      <div style={{ padding: '8px', borderBottom: '1px solid #f3f4f6' }}>
+        <div style={{ position: 'relative' }}>
+          <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+          <input
+            type="text"
+            placeholder="Search country..."
+            value={searchValue}
+            onChange={(e) => onSearchChange(e.target.value)}
+            autoFocus
+            style={{
+              width: '100%',
+              height: '36px',
+              paddingLeft: '36px',
+              paddingRight: '12px',
+              fontSize: '14px',
+              border: '1px solid #e5e7eb',
+              borderRadius: '6px',
+              outline: 'none'
+            }}
+          />
+        </div>
+      </div>
+      
+      {/* Country list */}
+      <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+        {filteredCountries.map((c, idx) => (
+          <button
+            key={`${c.code}-${c.country}-${idx}`}
+            type="button"
+            onClick={() => onSelect(c.code)}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '10px 12px',
+              fontSize: '14px',
+              textAlign: 'left',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+          >
+            <span style={{ fontSize: '20px' }}>{c.flag}</span>
+            <span style={{ color: '#111827' }}>{c.country}</span>
+            <span style={{ marginLeft: 'auto', color: '#9ca3af' }}>{c.code}</span>
+          </button>
+        ))}
+      </div>
+    </div>,
+    document.body
+  );
+};
+
 const AuthModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const phoneInputRef = useRef(null);
   
   const [step, setStep] = useState("phone");
   const [phone, setPhone] = useState("");
@@ -105,17 +209,6 @@ const AuthModal = ({ isOpen, onClose }) => {
       clearRecaptcha();
     };
   }, []);
-
-  useEffect(() => {
-    if (!showCountryDropdown) return;
-    const handleClick = (e) => {
-      if (!e.target.closest('.country-dropdown-container')) {
-        setShowCountryDropdown(false);
-      }
-    };
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-  }, [showCountryDropdown]);
 
   const resetAndClose = () => {
     setStep("phone");
@@ -281,6 +374,12 @@ const AuthModal = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleCountrySelect = (code) => {
+    setCountryCode(code);
+    setShowCountryDropdown(false);
+    setCountrySearch('');
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={resetAndClose}>
       <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white rounded-2xl [&>button]:hidden">
@@ -319,108 +418,43 @@ const AuthModal = ({ isOpen, onClose }) => {
                     <div className="mb-4">
                       <Label className="text-xs font-medium text-gray-500 mb-1 block">PHONE NUMBER</Label>
                       
-                      {/* PHONE INPUT WRAPPER - position:relative for dropdown positioning */}
-                      <div className="relative country-dropdown-container">
-                        {/* Combined input row */}
-                        <div className="flex h-11 border border-gray-300 rounded-lg overflow-hidden bg-white">
-                          {/* Country selector button */}
-                          <button
-                            type="button"
-                            onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                            className="flex items-center gap-1 px-3 bg-gray-50 hover:bg-gray-100 border-r border-gray-300 shrink-0"
-                          >
-                            <span className="text-base">{getSelectedCountry().flag}</span>
-                            <span className="text-sm font-medium text-gray-700">{countryCode}</span>
-                            <ChevronDown size={14} className="text-gray-400 ml-0.5" />
-                          </button>
-                          
-                          {/* Phone number input */}
-                          <input
-                            type="tel"
-                            placeholder="(555) 000-0000"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            onFocus={() => setShowCountryDropdown(false)}
-                            className="flex-1 px-3 text-sm outline-none"
-                          />
-                        </div>
+                      {/* Phone input row */}
+                      <div 
+                        ref={phoneInputRef}
+                        className="flex h-11 border border-gray-300 rounded-lg overflow-hidden bg-white"
+                      >
+                        {/* Country selector button */}
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setShowCountryDropdown(!showCountryDropdown); }}
+                          className="flex items-center gap-1 px-3 bg-gray-50 hover:bg-gray-100 border-r border-gray-300 shrink-0"
+                        >
+                          <span className="text-base">{getSelectedCountry().flag}</span>
+                          <span className="text-sm font-medium text-gray-700">{countryCode}</span>
+                          <ChevronDown size={14} className="text-gray-400 ml-0.5" />
+                        </button>
                         
-                        {/* DROPDOWN PANEL - absolute, full width, below input */}
-                        {showCountryDropdown && (
-                          <div 
-                            style={{
-                              position: 'absolute',
-                              top: '100%',
-                              left: 0,
-                              right: 0,
-                              marginTop: '4px',
-                              backgroundColor: '#fff',
-                              border: '1px solid #e5e7eb',
-                              borderRadius: '8px',
-                              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                              zIndex: 9999,
-                              overflow: 'hidden'
-                            }}
-                          >
-                            {/* SEARCH INPUT - inside dropdown */}
-                            <div style={{ padding: '8px', borderBottom: '1px solid #f3f4f6' }}>
-                              <div style={{ position: 'relative' }}>
-                                <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
-                                <input
-                                  type="text"
-                                  placeholder="Search country..."
-                                  value={countrySearch}
-                                  onChange={(e) => setCountrySearch(e.target.value)}
-                                  autoFocus
-                                  style={{
-                                    width: '100%',
-                                    height: '36px',
-                                    paddingLeft: '36px',
-                                    paddingRight: '12px',
-                                    fontSize: '14px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '6px',
-                                    outline: 'none'
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            
-                            {/* COUNTRY LIST - scrollable */}
-                            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                              {filteredCountries.map((c, idx) => (
-                                <button
-                                  key={`${c.code}-${c.country}-${idx}`}
-                                  type="button"
-                                  onClick={() => { 
-                                    setCountryCode(c.code); 
-                                    setShowCountryDropdown(false); 
-                                    setCountrySearch(''); 
-                                  }}
-                                  style={{
-                                    width: '100%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '12px',
-                                    padding: '10px 12px',
-                                    fontSize: '14px',
-                                    textAlign: 'left',
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer'
-                                  }}
-                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                                >
-                                  <span style={{ fontSize: '20px' }}>{c.flag}</span>
-                                  <span style={{ color: '#111827' }}>{c.country}</span>
-                                  <span style={{ marginLeft: 'auto', color: '#9ca3af' }}>{c.code}</span>
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+                        {/* Phone number input */}
+                        <input
+                          type="tel"
+                          placeholder="(555) 000-0000"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          onFocus={() => setShowCountryDropdown(false)}
+                          className="flex-1 px-3 text-sm outline-none"
+                        />
                       </div>
+
+                      {/* Portal-based dropdown */}
+                      <CountryDropdown
+                        isOpen={showCountryDropdown}
+                        onClose={() => setShowCountryDropdown(false)}
+                        onSelect={handleCountrySelect}
+                        buttonRef={phoneInputRef}
+                        searchValue={countrySearch}
+                        onSearchChange={setCountrySearch}
+                        filteredCountries={filteredCountries}
+                      />
                     </div>
                     
                     <button type="submit" className="w-full h-11 rounded-full text-white font-semibold" style={{ background: '#E50914' }} disabled={loading}>
