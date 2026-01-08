@@ -534,7 +534,15 @@ const AuthModal = ({ isOpen, onClose }) => {
           setStep("profile");
         }
       } catch (backendError) {
-        setStep("profile");
+        console.error("Backend verify-otp error:", backendError);
+        // Check if it's a "new user needs instagram/linkedin" error
+        const errorDetail = backendError.response?.data?.detail || "";
+        if (errorDetail.includes("Instagram or LinkedIn") || backendError.response?.status === 400) {
+          // New user - go to profile step to collect info
+          setStep("profile");
+        } else {
+          toast.error(errorDetail || "Failed to verify. Please try again.");
+        }
       }
     } catch (error) {
       console.error("OTP verification error:", error);
@@ -573,22 +581,40 @@ const AuthModal = ({ isOpen, onClose }) => {
     setLoading(true);
     try {
       const fullPhone = getFullPhoneNumber();
+      // First, create/get the user with verify-otp (only sends fields backend expects)
       const response = await axios.post(`${API}/auth/verify-otp`, {
         phone: fullPhone,
         otp: otp,
         name: name.trim(),
         age: parseInt(age) || null,
-        bio: bio.trim(),
-        skills: selectedSkills,
         instagram: socialLinks.instagram?.trim() || null,
-        linkedin: socialLinks.linkedin?.trim() || null,
-        twitter: socialLinks.twitter?.trim() || null,
-        imdb: socialLinks.imdb?.trim() || null
+        linkedin: socialLinks.linkedin?.trim() || null
       });
       
-      login(response.data.token, response.data.user);
+      // Then update profile with additional fields
+      const profileToken = response.data.token;
+      await axios.put(`${API}/users/me`, {
+        bio: bio.trim(),
+        skills: selectedSkills,
+        social_links: {
+          instagram: socialLinks.instagram?.trim() || null,
+          linkedin: socialLinks.linkedin?.trim() || null,
+          twitter: socialLinks.twitter?.trim() || null,
+          imdb: socialLinks.imdb?.trim() || null
+        }
+      }, {
+        headers: { Authorization: `Bearer ${profileToken}` }
+      });
+      
+      // Fetch updated user
+      const userResponse = await axios.get(`${API}/users/me`, {
+        headers: { Authorization: `Bearer ${profileToken}` }
+      });
+      
+      login(profileToken, userResponse.data);
       setShowSuccess(true);
     } catch (error) {
+      console.error("Profile completion error:", error);
       toast.error(error.response?.data?.detail || "Failed to complete profile");
     } finally {
       setLoading(false);
