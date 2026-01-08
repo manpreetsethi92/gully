@@ -8,7 +8,7 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { useAuth, API } from "../App";
-import { ArrowLeft, Phone, Shield, Check, Instagram, Linkedin, X, MessageCircle, ChevronDown } from "lucide-react";
+import { ArrowLeft, Phone, Shield, Check, Instagram, Linkedin, X, MessageCircle } from "lucide-react";
 import { sendOTP, verifyOTP, clearRecaptcha } from "../firebase";
 
 const SKILL_CATEGORIES = {
@@ -18,61 +18,6 @@ const SKILL_CATEGORIES = {
   other: ["Fitness Training", "Life Coaching", "Event Planning", "Teaching", "Public Speaking"]
 };
 
-const COUNTRY_CODES = [
-  { code: "+1", country: "US", flag: "🇺🇸" },
-  { code: "+1", country: "CA", flag: "🇨🇦" },
-  { code: "+44", country: "UK", flag: "🇬🇧" },
-  { code: "+91", country: "IN", flag: "🇮🇳" },
-  { code: "+61", country: "AU", flag: "🇦🇺" },
-  { code: "+49", country: "DE", flag: "🇩🇪" },
-  { code: "+33", country: "FR", flag: "🇫🇷" },
-  { code: "+81", country: "JP", flag: "🇯🇵" },
-  { code: "+86", country: "CN", flag: "🇨🇳" },
-  { code: "+52", country: "MX", flag: "🇲🇽" },
-  { code: "+55", country: "BR", flag: "🇧🇷" },
-  { code: "+34", country: "ES", flag: "🇪🇸" },
-  { code: "+39", country: "IT", flag: "🇮🇹" },
-  { code: "+82", country: "KR", flag: "🇰🇷" },
-  { code: "+31", country: "NL", flag: "🇳🇱" },
-  { code: "+46", country: "SE", flag: "🇸🇪" },
-  { code: "+41", country: "CH", flag: "🇨🇭" },
-  { code: "+65", country: "SG", flag: "🇸🇬" },
-  { code: "+971", country: "UAE", flag: "🇦🇪" },
-  { code: "+972", country: "IL", flag: "🇮🇱" },
-  { code: "+92", country: "PK", flag: "🇵🇰" },
-  { code: "+63", country: "PH", flag: "🇵🇭" },
-  { code: "+66", country: "TH", flag: "🇹🇭" },
-  { code: "+84", country: "VN", flag: "🇻🇳" },
-  { code: "+62", country: "ID", flag: "🇮🇩" },
-  { code: "+60", country: "MY", flag: "🇲🇾" },
-  { code: "+64", country: "NZ", flag: "🇳🇿" },
-  { code: "+353", country: "IE", flag: "🇮🇪" },
-  { code: "+351", country: "PT", flag: "🇵🇹" },
-  { code: "+48", country: "PL", flag: "🇵🇱" },
-  { code: "+47", country: "NO", flag: "🇳🇴" },
-  { code: "+45", country: "DK", flag: "🇩🇰" },
-  { code: "+358", country: "FI", flag: "🇫🇮" },
-  { code: "+43", country: "AT", flag: "🇦🇹" },
-  { code: "+32", country: "BE", flag: "🇧🇪" },
-  { code: "+30", country: "GR", flag: "🇬🇷" },
-  { code: "+90", country: "TR", flag: "🇹🇷" },
-  { code: "+7", country: "RU", flag: "🇷🇺" },
-  { code: "+380", country: "UA", flag: "🇺🇦" },
-  { code: "+27", country: "ZA", flag: "🇿🇦" },
-  { code: "+234", country: "NG", flag: "🇳🇬" },
-  { code: "+20", country: "EG", flag: "🇪🇬" },
-  { code: "+254", country: "KE", flag: "🇰🇪" },
-  { code: "+966", country: "SA", flag: "🇸🇦" },
-  { code: "+974", country: "QA", flag: "🇶🇦" },
-  { code: "+965", country: "KW", flag: "🇰🇼" },
-  { code: "+973", country: "BH", flag: "🇧🇭" },
-  { code: "+968", country: "OM", flag: "🇴🇲" },
-  { code: "+54", country: "AR", flag: "🇦🇷" },
-  { code: "+56", country: "CL", flag: "🇨🇱" },
-  { code: "+57", country: "CO", flag: "🇨🇴" },
-  { code: "+51", country: "PE", flag: "🇵🇪" },
-];
-
 const TELEGRAM_BOT_URL = "https://t.me/titliworkBot?start=welcome";
 
 const AuthModal = ({ isOpen, onClose }) => {
@@ -81,9 +26,6 @@ const AuthModal = ({ isOpen, onClose }) => {
   
   const [step, setStep] = useState("phone");
   const [phone, setPhone] = useState("");
-  const [countryCode, setCountryCode] = useState("+1");
-  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-  const [countrySearch, setCountrySearch] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
@@ -117,33 +59,31 @@ const AuthModal = ({ isOpen, onClose }) => {
     setSocialLinks({ instagram: "", linkedin: "", twitter: "", imdb: "" });
     setShowSuccess(false);
     setConfirmationResult(null);
-    setShowCountryDropdown(false);
-    setCountrySearch("");
     clearRecaptcha();
     onClose();
   };
 
-  const getFullPhoneNumber = () => {
-    const cleaned = phone.replace(/\D/g, '');
-    return `${countryCode}${cleaned}`;
-  };
-
-  const getSelectedCountry = () => {
-    return COUNTRY_CODES.find(c => c.code === countryCode) || COUNTRY_CODES[0];
+  const formatPhoneNumber = (phoneNum) => {
+    let cleaned = phoneNum.replace(/\D/g, '');
+    if (cleaned.length === 10) {
+      cleaned = '+1' + cleaned;
+    } else if (!cleaned.startsWith('+')) {
+      cleaned = '+' + cleaned;
+    }
+    return cleaned.startsWith('+') ? cleaned : '+' + cleaned;
   };
 
   const handleSendOTP = async (e) => {
     e.preventDefault();
-    const cleaned = phone.replace(/\D/g, '');
-    if (!cleaned || cleaned.length < 7) {
+    if (!phone || phone.replace(/\D/g, '').length < 10) {
       toast.error("Please enter a valid phone number");
       return;
     }
     
     setLoading(true);
     try {
-      const fullPhone = getFullPhoneNumber();
-      const result = await sendOTP(fullPhone);
+      const formattedPhone = formatPhoneNumber(phone);
+      const result = await sendOTP(formattedPhone);
       setConfirmationResult(result);
       setStep("otp");
       toast.success("OTP sent to your phone!");
@@ -152,7 +92,7 @@ const AuthModal = ({ isOpen, onClose }) => {
       clearRecaptcha();
       
       if (error.code === 'auth/invalid-phone-number') {
-        toast.error("Invalid phone number. Please check and try again.");
+        toast.error("Invalid phone number. Include country code (e.g., +1)");
       } else if (error.code === 'auth/too-many-requests') {
         toast.error("Too many attempts. Try again later.");
       } else if (error.code === 'auth/invalid-app-credential') {
@@ -182,11 +122,11 @@ const AuthModal = ({ isOpen, onClose }) => {
     setLoading(true);
     try {
       await verifyOTP(confirmationResult, otp);
-      const fullPhone = getFullPhoneNumber();
+      const formattedPhone = formatPhoneNumber(phone);
       
       try {
         const response = await axios.post(`${API}/auth/verify-otp`, { 
-          phone: fullPhone, 
+          phone: formattedPhone, 
           otp: otp
         });
         
@@ -241,9 +181,9 @@ const AuthModal = ({ isOpen, onClose }) => {
     
     setLoading(true);
     try {
-      const fullPhone = getFullPhoneNumber();
+      const formattedPhone = formatPhoneNumber(phone);
       const response = await axios.post(`${API}/auth/verify-otp`, {
-        phone: fullPhone,
+        phone: formattedPhone,
         otp: otp,
         name: name.trim(),
         age: parseInt(age) || null,
@@ -264,15 +204,9 @@ const AuthModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const filteredCountries = COUNTRY_CODES.filter(c => 
-    !countrySearch || 
-    c.country.toLowerCase().includes(countrySearch.toLowerCase()) || 
-    c.code.includes(countrySearch)
-  );
-
   return (
     <Dialog open={isOpen} onOpenChange={resetAndClose}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white rounded-2xl">
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white rounded-2xl [&>button]:hidden">
         <div id="recaptcha-container"></div>
         <div className="relative">
           <button onClick={resetAndClose} className="absolute right-4 top-4 p-1 rounded-full hover:bg-gray-100 z-10">
@@ -307,68 +241,11 @@ const AuthModal = ({ isOpen, onClose }) => {
                   <form onSubmit={handleSendOTP}>
                     <div className="mb-4">
                       <Label className="text-xs font-medium text-gray-500 mb-1 block">PHONE NUMBER</Label>
-                      <div className="flex gap-2">
-                        {/* Country Code Dropdown */}
-                        <div className="relative">
-                          <button
-                            type="button"
-                            onClick={(e) => { e.stopPropagation(); setShowCountryDropdown(!showCountryDropdown); }}
-                            className="h-11 px-3 flex items-center gap-1 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors min-w-[80px]"
-                          >
-                            <span className="text-lg">{getSelectedCountry().flag}</span>
-                            <span className="text-sm font-medium">{countryCode}</span>
-                            <ChevronDown size={14} className="text-gray-400" />
-                          </button>
-                          
-                          {showCountryDropdown && (
-                            <div className="absolute left-0 top-full mt-1 w-64 bg-white border rounded-xl shadow-xl z-[100] overflow-hidden">
-                              <div className="p-2 border-b">
-                                <input
-                                  type="text"
-                                  placeholder="Search country..."
-                                  value={countrySearch}
-                                  className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                                  autoFocus
-                                  onClick={(e) => e.stopPropagation()}
-                                  onChange={(e) => setCountrySearch(e.target.value)}
-                                />
-                              </div>
-                              <div className="max-h-64 overflow-y-auto">
-                                {filteredCountries.map((c, idx) => (
-                                  <button
-                                    key={`${c.code}-${c.country}-${idx}`}
-                                    type="button"
-                                    onClick={(e) => { 
-                                      e.stopPropagation();
-                                      setCountryCode(c.code); 
-                                      setShowCountryDropdown(false); 
-                                      setCountrySearch(''); 
-                                    }}
-                                    className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-gray-50 text-left"
-                                  >
-                                    <span className="text-xl">{c.flag}</span>
-                                    <span className="text-sm">{c.country}</span>
-                                    <span className="text-sm text-gray-400 ml-auto">{c.code}</span>
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Phone Input */}
-                        <div className="relative flex-1">
-                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                          <Input 
-                            type="tel" 
-                            placeholder="(555) 000-0000" 
-                            value={phone} 
-                            onChange={(e) => setPhone(e.target.value)} 
-                            className="pl-10 h-11"
-                            onClick={() => setShowCountryDropdown(false)}
-                          />
-                        </div>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <Input type="tel" placeholder="+1 (555) 000-0000" value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-10 h-11" />
                       </div>
+                      <p className="text-xs text-gray-400 mt-1">Include country code (e.g., +1 for US)</p>
                     </div>
                     <button type="submit" className="w-full h-11 rounded-full text-white font-semibold" style={{ background: '#E50914' }} disabled={loading}>
                       {loading ? <div className="spinner mx-auto" /> : "Continue"}
@@ -383,7 +260,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     <ArrowLeft size={16} /> Back
                   </button>
                   <h2 className="text-xl font-bold mb-1">Verify your number</h2>
-                  <p className="text-gray-500 text-sm mb-4">Enter the code sent to {getFullPhoneNumber()}</p>
+                  <p className="text-gray-500 text-sm mb-4">Enter the code sent to {phone}</p>
                   
                   <div className="p-2 rounded-lg mb-4 text-xs" style={{ background: '#e0f2fe' }}>
                     <Shield size={12} className="inline mr-1" style={{ color: '#0369a1' }} />
