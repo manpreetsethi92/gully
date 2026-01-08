@@ -439,9 +439,12 @@ const AuthModal = ({ isOpen, onClose }) => {
 
   const handleStartTexting = () => {
     window.open(TELEGRAM_BOT_URL, "_blank");
-    resetAndClose();
     navigate("/app");
     toast.success("Welcome to titlii!");
+    // Close modal after navigation is set
+    setTimeout(() => {
+      resetAndClose();
+    }, 100);
   };
 
   return (
