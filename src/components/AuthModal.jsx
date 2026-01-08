@@ -336,9 +336,9 @@ const AuthModal = ({ isOpen, onClose }) => {
         
         if (!response.data.is_new_user && response.data.user.profile_completed) {
           login(response.data.token, response.data.user);
-          resetAndClose();
           navigate("/app");
           toast.success("Welcome back!");
+          setTimeout(() => resetAndClose(), 100);
         } else {
           setToken(response.data.token);
           login(response.data.token, response.data.user);
