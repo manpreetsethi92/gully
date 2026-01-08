@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://titliwork-website.vercel.app/sitemap.xml
+Sitemap: https://titlii.social/sitemap.xml
 
 # Disallow admin/private paths
 Disallow: /api/

@@ -14,7 +14,7 @@ const OpportunitiesPage = ({ onRefresh }) => {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const [inviteLink] = useState("https://titliwork-website.vercel.app");
+  const [inviteLink] = useState("https://titlii.social");
 
   useEffect(() => {
     fetchOpportunities();
@@ -215,7 +215,7 @@ const OpportunitiesPage = ({ onRefresh }) => {
           <DialogHeader>
             <DialogTitle>Invite a friend</DialogTitle>
             <DialogDescription>
-              Share this link with friends to invite them to Titli
+              Share this link with friends to invite them to Titlii
             </DialogDescription>
           </DialogHeader>
           

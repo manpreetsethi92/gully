@@ -273,8 +273,8 @@ const AuthModal = ({ isOpen, onClose }) => {
               {step === "phone" && (
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
-                    <span className="font-syne font-bold text-3xl" style={{ color: '#E50914' }}>titli</span>
+                    <img src="/butterfly.png" alt="Titlii" className="w-8 h-auto" />
+                    <span className="font-syne font-bold text-3xl" style={{ color: '#E50914' }}>titlii</span>
                   </div>
                   <h2 className="text-xl font-bold mb-1 mt-6">Get started</h2>
                   <p className="text-gray-500 text-sm mb-6">Enter your phone number to continue</p>

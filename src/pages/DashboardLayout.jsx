@@ -95,8 +95,8 @@ useEffect(() => {
           <Menu size={24} className={darkMode ? 'text-white' : 'text-gray-900'} />
         </button>
         <div className="flex items-center gap-2">
-          <img src="/butterfly.png" alt="Titli" className="w-6 h-auto" />
-          <span className="font-syne font-bold text-xl text-[#E50914]">titli</span>
+          <img src="/butterfly.png" alt="Titlii" className="w-6 h-auto" />
+          <span className="font-syne font-bold text-xl text-[#E50914]">titlii</span>
         </div>
         <div className="flex items-center gap-1">
           <button 
@@ -133,8 +133,8 @@ useEffect(() => {
           {/* Logo + Dark Mode Toggle - Added pt-12 for mobile safe area */}
           <div className="px-6 py-6 pt-14 lg:pt-6 flex items-center justify-between">
             <div className="inline-flex items-center gap-3">
-              <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
-              <span className="font-syne font-bold text-2xl tracking-tight text-[#E50914]">titli</span>
+              <img src="/butterfly.png" alt="Titlii" className="w-8 h-auto" />
+              <span className="font-syne font-bold text-2xl tracking-tight text-[#E50914]">titlii</span>
             </div>
             <button
               onClick={() => setDarkMode(!darkMode)}

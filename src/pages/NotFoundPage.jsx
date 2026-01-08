@@ -15,7 +15,7 @@ const NotFoundPage = () => {
         <div className="mb-8 flex justify-center">
           <img 
             src="/butterfly.png" 
-            alt="Titli" 
+            alt="Titlii" 
             className="w-32 h-auto opacity-50"
           />
         </div>

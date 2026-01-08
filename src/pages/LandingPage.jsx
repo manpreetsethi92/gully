@@ -76,7 +76,7 @@ const PhoneMockup = () => {
     >
       <img 
         src="/phone-mockup.png" 
-        alt="Titli chat interface"
+        alt="Titlii chat interface"
         className="w-full h-auto"
       />
       
@@ -313,11 +313,11 @@ const LandingPage = () => {
           <a href="/" className="flex items-center gap-4">
             <img 
               src="/butterfly.png" 
-              alt="Titli" 
+              alt="Titlii" 
               className="w-10 h-auto"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
-            <span className="font-syne font-bold text-xl tracking-tight text-white">titli</span>
+            <span className="font-syne font-bold text-xl tracking-tight text-white">titlii</span>
           </a>
           
           {/* Desktop */}
@@ -359,8 +359,8 @@ const LandingPage = () => {
             
             {/* Logo */}
             <div className="flex items-center gap-3 mt-8 mb-12">
-              <img src="/butterfly.png" alt="Titli" className="w-8 h-auto" />
-              <span className="font-syne font-bold text-xl text-[#E50914]">titli</span>
+              <img src="/butterfly.png" alt="Titlii" className="w-8 h-auto" />
+              <span className="font-syne font-bold text-xl text-[#E50914]">titlii</span>
             </div>
             
             {/* Menu Items */}
@@ -564,12 +564,12 @@ const LandingPage = () => {
                 role: "Los Angeles"
               },
               {
-                quote: "My sink was flooding at 9pm. Had a plumber at my door by 10. Titli literally saved my apartment.",
+                quote: "My sink was flooding at 9pm. Had a plumber at my door by 10. Titlii literally saved my apartment.",
                 name: "James K.",
                 role: "Chicago"
               },
               {
-                quote: "Been looking for a good guitar teacher for months. Found one in my neighborhood through Titli.",
+                quote: "Been looking for a good guitar teacher for months. Found one in my neighborhood through Titlii.",
                 name: "Aisha T.",
                 role: "Austin"
               }
