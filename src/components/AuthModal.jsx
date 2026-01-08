@@ -276,6 +276,9 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
   return createPortal(
     <div 
       ref={dropdownRef}
+      onMouseDown={(e) => e.stopPropagation()}
+      onPointerDown={(e) => e.stopPropagation()}
+      onWheel={(e) => e.stopPropagation()}
       style={{
         position: 'fixed',
         top: position.top,
@@ -557,8 +560,25 @@ const AuthModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={resetAndClose}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white rounded-2xl [&>button]:hidden">
+    <Dialog 
+      open={isOpen} 
+      onOpenChange={(open) => {
+        // Don't close modal if dropdown is open (user is interacting with portal)
+        if (!open && showCountryDropdown) return;
+        resetAndClose();
+      }}
+    >
+      <DialogContent 
+        className="sm:max-w-md p-0 overflow-hidden bg-white rounded-2xl [&>button]:hidden"
+        onPointerDownOutside={(e) => {
+          // Prevent modal close when clicking dropdown (which is outside modal DOM)
+          if (showCountryDropdown) e.preventDefault();
+        }}
+        onInteractOutside={(e) => {
+          // Prevent any outside interaction from closing modal while dropdown open
+          if (showCountryDropdown) e.preventDefault();
+        }}
+      >
         <div id="recaptcha-container"></div>
         <div className="relative">
           <button onClick={resetAndClose} className="absolute right-4 top-4 p-1 rounded-full hover:bg-gray-100 z-10">
