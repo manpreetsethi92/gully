@@ -8,7 +8,7 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { useAuth, API } from "../App";
-import { ArrowLeft, Phone, Shield, Check, Instagram, Linkedin, X, MessageCircle, ChevronDown } from "lucide-react";
+import { ArrowLeft, Phone, Shield, Check, Instagram, Linkedin, X, MessageCircle, ChevronDown, Search } from "lucide-react";
 import { sendOTP, verifyOTP, clearRecaptcha } from "../firebase";
 
 const SKILL_CATEGORIES = {
@@ -106,10 +106,13 @@ const AuthModal = ({ isOpen, onClose }) => {
     };
   }, []);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     if (!showCountryDropdown) return;
-    const handleClick = () => setShowCountryDropdown(false);
+    const handleClick = (e) => {
+      if (!e.target.closest('.country-dropdown-container')) {
+        setShowCountryDropdown(false);
+      }
+    };
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
   }, [showCountryDropdown]);
@@ -316,52 +319,75 @@ const AuthModal = ({ isOpen, onClose }) => {
                     <div className="mb-4">
                       <Label className="text-xs font-medium text-gray-500 mb-1 block">PHONE NUMBER</Label>
                       
-                      {/* Phone input wrapper - position:relative for dropdown */}
-                      <div className="relative">
-                        <div className="flex border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-red-500 focus-within:border-transparent">
-                          {/* Country selector */}
+                      {/* PHONE INPUT WRAPPER - position:relative for dropdown positioning */}
+                      <div className="relative country-dropdown-container">
+                        {/* Combined input row */}
+                        <div className="flex h-11 border border-gray-300 rounded-lg overflow-hidden bg-white">
+                          {/* Country selector button */}
                           <button
                             type="button"
-                            onClick={(e) => { e.stopPropagation(); setShowCountryDropdown(!showCountryDropdown); }}
-                            className="h-11 px-3 flex items-center gap-1.5 bg-gray-50 hover:bg-gray-100 transition-colors border-r shrink-0"
+                            onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                            className="flex items-center gap-1 px-3 bg-gray-50 hover:bg-gray-100 border-r border-gray-300 shrink-0"
                           >
                             <span className="text-base">{getSelectedCountry().flag}</span>
-                            <span className="text-sm">{countryCode}</span>
-                            <ChevronDown size={14} className="text-gray-400" />
+                            <span className="text-sm font-medium text-gray-700">{countryCode}</span>
+                            <ChevronDown size={14} className="text-gray-400 ml-0.5" />
                           </button>
                           
-                          {/* Phone input */}
+                          {/* Phone number input */}
                           <input
                             type="tel"
                             placeholder="(555) 000-0000"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
-                            onClick={() => setShowCountryDropdown(false)}
-                            className="flex-1 h-11 px-3 text-sm outline-none bg-white"
+                            onFocus={() => setShowCountryDropdown(false)}
+                            className="flex-1 px-3 text-sm outline-none"
                           />
                         </div>
                         
-                        {/* Dropdown - absolute positioned below the input */}
+                        {/* DROPDOWN PANEL - absolute, full width, below input */}
                         {showCountryDropdown && (
                           <div 
-                            className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
-                            style={{ zIndex: 9999 }}
-                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                              position: 'absolute',
+                              top: '100%',
+                              left: 0,
+                              right: 0,
+                              marginTop: '4px',
+                              backgroundColor: '#fff',
+                              border: '1px solid #e5e7eb',
+                              borderRadius: '8px',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                              zIndex: 9999,
+                              overflow: 'hidden'
+                            }}
                           >
-                            {/* Search input */}
-                            <div className="p-2 border-b border-gray-100">
-                              <input
-                                type="text"
-                                placeholder="Search country..."
-                                value={countrySearch}
-                                onChange={(e) => setCountrySearch(e.target.value)}
-                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md outline-none focus:border-red-500"
-                                autoFocus
-                              />
+                            {/* SEARCH INPUT - inside dropdown */}
+                            <div style={{ padding: '8px', borderBottom: '1px solid #f3f4f6' }}>
+                              <div style={{ position: 'relative' }}>
+                                <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+                                <input
+                                  type="text"
+                                  placeholder="Search country..."
+                                  value={countrySearch}
+                                  onChange={(e) => setCountrySearch(e.target.value)}
+                                  autoFocus
+                                  style={{
+                                    width: '100%',
+                                    height: '36px',
+                                    paddingLeft: '36px',
+                                    paddingRight: '12px',
+                                    fontSize: '14px',
+                                    border: '1px solid #e5e7eb',
+                                    borderRadius: '6px',
+                                    outline: 'none'
+                                  }}
+                                />
+                              </div>
                             </div>
                             
-                            {/* Country list */}
-                            <div className="max-h-48 overflow-y-auto">
+                            {/* COUNTRY LIST - scrollable */}
+                            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
                               {filteredCountries.map((c, idx) => (
                                 <button
                                   key={`${c.code}-${c.country}-${idx}`}
@@ -371,11 +397,24 @@ const AuthModal = ({ isOpen, onClose }) => {
                                     setShowCountryDropdown(false); 
                                     setCountrySearch(''); 
                                   }}
-                                  className="w-full px-3 py-2.5 flex items-center gap-3 hover:bg-gray-50 text-left"
+                                  style={{
+                                    width: '100%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '12px',
+                                    padding: '10px 12px',
+                                    fontSize: '14px',
+                                    textAlign: 'left',
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer'
+                                  }}
+                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                                 >
-                                  <span className="text-lg">{c.flag}</span>
-                                  <span className="text-sm text-gray-900">{c.country}</span>
-                                  <span className="text-sm text-gray-400 ml-auto">{c.code}</span>
+                                  <span style={{ fontSize: '20px' }}>{c.flag}</span>
+                                  <span style={{ color: '#111827' }}>{c.country}</span>
+                                  <span style={{ marginLeft: 'auto', color: '#9ca3af' }}>{c.code}</span>
                                 </button>
                               ))}
                             </div>
@@ -442,7 +481,6 @@ const AuthModal = ({ isOpen, onClose }) => {
                       </div>
                     </div>
 
-                    {/* SOCIAL LINKS - REQUIRED */}
                     <div className="p-4 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(229, 9, 20, 0.05) 0%, rgba(255, 71, 87, 0.05) 100%)', border: '1px solid rgba(229, 9, 20, 0.2)' }}>
                       <Label className="text-xs font-medium mb-2 block" style={{ color: '#E50914' }}>
                         VERIFY YOUR PROFILE *
