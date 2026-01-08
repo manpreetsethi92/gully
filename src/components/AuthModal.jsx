@@ -562,21 +562,36 @@ const AuthModal = ({ isOpen, onClose }) => {
   return (
     <Dialog 
       open={isOpen} 
+      modal={false}
       onOpenChange={(open) => {
         // Don't close modal if dropdown is open (user is interacting with portal)
         if (!open && showCountryDropdown) return;
-        resetAndClose();
+        if (!open) resetAndClose();
       }}
     >
       <DialogContent 
         className="sm:max-w-md p-0 overflow-hidden bg-white rounded-2xl [&>button]:hidden"
         onPointerDownOutside={(e) => {
           // Prevent modal close when clicking dropdown (which is outside modal DOM)
-          if (showCountryDropdown) e.preventDefault();
+          if (showCountryDropdown) {
+            e.preventDefault();
+            return;
+          }
+          // Otherwise allow close
+          resetAndClose();
         }}
         onInteractOutside={(e) => {
           // Prevent any outside interaction from closing modal while dropdown open
-          if (showCountryDropdown) e.preventDefault();
+          if (showCountryDropdown) {
+            e.preventDefault();
+          }
+        }}
+        onEscapeKeyDown={(e) => {
+          // Close dropdown first, then modal
+          if (showCountryDropdown) {
+            e.preventDefault();
+            setShowCountryDropdown(false);
+          }
         }}
       >
         <div id="recaptcha-container"></div>
