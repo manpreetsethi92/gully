@@ -202,41 +202,76 @@ const COUNTRY_CODES = [
 const TELEGRAM_BOT_URL = "https://t.me/titliworkBot?start=welcome";
 
 // Portal dropdown component
-const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries }) => {
+const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries, selectedCode }) => {
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
   const dropdownRef = useRef(null);
   
+  // Calculate position
   useEffect(() => {
-    if (isOpen && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setPosition({
-        top: rect.bottom + 4,
-        left: rect.left,
-        width: rect.width
-      });
+    const updatePosition = () => {
+      if (isOpen && buttonRef.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        setPosition({
+          top: rect.bottom + 4,
+          left: rect.left,
+          width: rect.width
+        });
+      }
+    };
+    
+    updatePosition();
+    
+    // Recalculate on scroll/resize
+    if (isOpen) {
+      window.addEventListener('scroll', updatePosition, true);
+      window.addEventListener('resize', updatePosition);
+      return () => {
+        window.removeEventListener('scroll', updatePosition, true);
+        window.removeEventListener('resize', updatePosition);
+      };
     }
   }, [isOpen, buttonRef]);
 
+  // Handle click outside - but NOT for clicks inside dropdown
   useEffect(() => {
     if (!isOpen) return;
     
     const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target) && 
-          buttonRef.current && !buttonRef.current.contains(e.target)) {
-        onClose();
+      // Don't close if clicking inside dropdown
+      if (dropdownRef.current && dropdownRef.current.contains(e.target)) {
+        return;
       }
+      // Don't close if clicking the toggle button (it handles its own toggle)
+      if (buttonRef.current && buttonRef.current.contains(e.target)) {
+        return;
+      }
+      onClose();
     };
     
-    // Use mousedown instead of click to handle before blur
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    // Small delay to prevent immediate close
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('click', handleClickOutside, true);
+      document.addEventListener('touchend', handleClickOutside, true);
+    }, 10);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener('click', handleClickOutside, true);
+      document.removeEventListener('touchend', handleClickOutside, true);
+    };
   }, [isOpen, onClose, buttonRef]);
 
-  if (!isOpen) return null;
+  // Close on escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
 
-  const handleSelect = (code) => {
-    onSelect(code);
-  };
+  if (!isOpen) return null;
 
   return createPortal(
     <div 
@@ -274,36 +309,45 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
               outline: 'none',
               boxSizing: 'border-box'
             }}
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       </div>
       
       {/* Country list */}
       <div style={{ maxHeight: '200px', overflowY: 'auto', overflowX: 'hidden' }}>
-        {filteredCountries.map((c, idx) => (
-          <div
-            key={`${c.code}-${c.country}-${idx}`}
-            onClick={() => handleSelect(c.code)}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '10px 12px',
-              fontSize: '14px',
-              textAlign: 'left',
-              backgroundColor: 'white',
-              cursor: 'pointer',
-              boxSizing: 'border-box'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
-          >
-            <span style={{ fontSize: '20px' }}>{c.flag}</span>
-            <span style={{ color: '#111827', flex: 1 }}>{c.country}</span>
-            <span style={{ color: '#9ca3af' }}>{c.code}</span>
-          </div>
-        ))}
+        {filteredCountries.map((c, idx) => {
+          const isSelected = c.code === selectedCode;
+          return (
+            <div
+              key={`${c.code}-${c.country}-${idx}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onSelect(c.code);
+              }}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '10px 12px',
+                fontSize: '14px',
+                textAlign: 'left',
+                backgroundColor: isSelected ? '#fef2f2' : 'white',
+                cursor: 'pointer',
+                boxSizing: 'border-box',
+                borderLeft: isSelected ? '3px solid #E50914' : '3px solid transparent'
+              }}
+              onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.backgroundColor = '#f3f4f6'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = isSelected ? '#fef2f2' : 'white'; }}
+            >
+              <span style={{ fontSize: '20px' }}>{c.flag}</span>
+              <span style={{ color: '#111827', flex: 1 }}>{c.country}</span>
+              <span style={{ color: '#9ca3af' }}>{c.code}</span>
+            </div>
+          );
+        })}
       </div>
     </div>,
     document.body
@@ -572,7 +616,6 @@ const AuthModal = ({ isOpen, onClose }) => {
                           placeholder="(555) 000-0000"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          onFocus={() => setShowCountryDropdown(false)}
                           className="flex-1 px-3 text-sm outline-none"
                         />
                       </div>
@@ -586,6 +629,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                         searchValue={countrySearch}
                         onSearchChange={setCountrySearch}
                         filteredCountries={filteredCountries}
+                        selectedCode={countryCode}
                       />
                     </div>
                     
