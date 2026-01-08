@@ -29,8 +29,8 @@ const COUNTRY_CODES = [
   { code: "+33", country: "France", flag: "🇫🇷" },
   { code: "+81", country: "Japan", flag: "🇯🇵" },
   { code: "+86", country: "China", flag: "🇨🇳" },
-  { code: "+52", country: "Mexico", flag: "🇲🇽" },
   { code: "+55", country: "Brazil", flag: "🇧🇷" },
+  { code: "+52", country: "Mexico", flag: "🇲🇽" },
   { code: "+34", country: "Spain", flag: "🇪🇸" },
   { code: "+39", country: "Italy", flag: "🇮🇹" },
   { code: "+82", country: "South Korea", flag: "🇰🇷" },
@@ -39,360 +39,172 @@ const COUNTRY_CODES = [
   { code: "+41", country: "Switzerland", flag: "🇨🇭" },
   { code: "+65", country: "Singapore", flag: "🇸🇬" },
   { code: "+971", country: "UAE", flag: "🇦🇪" },
-  { code: "+972", country: "Israel", flag: "🇮🇱" },
-  { code: "+93", country: "Afghanistan", flag: "🇦🇫" },
-  { code: "+355", country: "Albania", flag: "🇦🇱" },
-  { code: "+213", country: "Algeria", flag: "🇩🇿" },
-  { code: "+376", country: "Andorra", flag: "🇦🇩" },
-  { code: "+244", country: "Angola", flag: "🇦🇴" },
-  { code: "+54", country: "Argentina", flag: "🇦🇷" },
-  { code: "+374", country: "Armenia", flag: "🇦🇲" },
-  { code: "+43", country: "Austria", flag: "🇦🇹" },
-  { code: "+994", country: "Azerbaijan", flag: "🇦🇿" },
-  { code: "+973", country: "Bahrain", flag: "🇧🇭" },
+  { code: "+966", country: "Saudi Arabia", flag: "🇸🇦" },
+  { code: "+27", country: "South Africa", flag: "🇿🇦" },
+  { code: "+234", country: "Nigeria", flag: "🇳🇬" },
+  { code: "+254", country: "Kenya", flag: "🇰🇪" },
+  { code: "+63", country: "Philippines", flag: "🇵🇭" },
+  { code: "+84", country: "Vietnam", flag: "🇻🇳" },
+  { code: "+66", country: "Thailand", flag: "🇹🇭" },
+  { code: "+60", country: "Malaysia", flag: "🇲🇾" },
+  { code: "+62", country: "Indonesia", flag: "🇮🇩" },
+  { code: "+48", country: "Poland", flag: "🇵🇱" },
+  { code: "+90", country: "Turkey", flag: "🇹🇷" },
+  { code: "+20", country: "Egypt", flag: "🇪🇬" },
+  { code: "+92", country: "Pakistan", flag: "🇵🇰" },
   { code: "+880", country: "Bangladesh", flag: "🇧🇩" },
-  { code: "+375", country: "Belarus", flag: "🇧🇾" },
+  { code: "+7", country: "Russia", flag: "🇷🇺" },
+  { code: "+380", country: "Ukraine", flag: "🇺🇦" },
   { code: "+32", country: "Belgium", flag: "🇧🇪" },
-  { code: "+501", country: "Belize", flag: "🇧🇿" },
-  { code: "+229", country: "Benin", flag: "🇧🇯" },
-  { code: "+975", country: "Bhutan", flag: "🇧🇹" },
-  { code: "+591", country: "Bolivia", flag: "🇧🇴" },
-  { code: "+387", country: "Bosnia", flag: "🇧🇦" },
-  { code: "+267", country: "Botswana", flag: "🇧🇼" },
-  { code: "+359", country: "Bulgaria", flag: "🇧🇬" },
-  { code: "+226", country: "Burkina Faso", flag: "🇧🇫" },
-  { code: "+257", country: "Burundi", flag: "🇧🇮" },
-  { code: "+855", country: "Cambodia", flag: "🇰🇭" },
-  { code: "+237", country: "Cameroon", flag: "🇨🇲" },
-  { code: "+238", country: "Cape Verde", flag: "🇨🇻" },
-  { code: "+236", country: "Central African Republic", flag: "🇨🇫" },
-  { code: "+235", country: "Chad", flag: "🇹🇩" },
+  { code: "+43", country: "Austria", flag: "🇦🇹" },
+  { code: "+47", country: "Norway", flag: "🇳🇴" },
+  { code: "+45", country: "Denmark", flag: "🇩🇰" },
+  { code: "+358", country: "Finland", flag: "🇫🇮" },
+  { code: "+353", country: "Ireland", flag: "🇮🇪" },
+  { code: "+351", country: "Portugal", flag: "🇵🇹" },
+  { code: "+30", country: "Greece", flag: "🇬🇷" },
+  { code: "+972", country: "Israel", flag: "🇮🇱" },
+  { code: "+64", country: "New Zealand", flag: "🇳🇿" },
+  { code: "+54", country: "Argentina", flag: "🇦🇷" },
   { code: "+56", country: "Chile", flag: "🇨🇱" },
   { code: "+57", country: "Colombia", flag: "🇨🇴" },
-  { code: "+269", country: "Comoros", flag: "🇰🇲" },
-  { code: "+242", country: "Congo", flag: "🇨🇬" },
-  { code: "+243", country: "Congo DR", flag: "🇨🇩" },
-  { code: "+506", country: "Costa Rica", flag: "🇨🇷" },
-  { code: "+385", country: "Croatia", flag: "🇭🇷" },
-  { code: "+53", country: "Cuba", flag: "🇨🇺" },
-  { code: "+357", country: "Cyprus", flag: "🇨🇾" },
-  { code: "+420", country: "Czech Republic", flag: "🇨🇿" },
-  { code: "+45", country: "Denmark", flag: "🇩🇰" },
-  { code: "+253", country: "Djibouti", flag: "🇩🇯" },
-  { code: "+593", country: "Ecuador", flag: "🇪🇨" },
-  { code: "+20", country: "Egypt", flag: "🇪🇬" },
-  { code: "+503", country: "El Salvador", flag: "🇸🇻" },
-  { code: "+240", country: "Equatorial Guinea", flag: "🇬🇶" },
-  { code: "+291", country: "Eritrea", flag: "🇪🇷" },
-  { code: "+372", country: "Estonia", flag: "🇪🇪" },
-  { code: "+268", country: "Eswatini", flag: "🇸🇿" },
-  { code: "+251", country: "Ethiopia", flag: "🇪🇹" },
-  { code: "+679", country: "Fiji", flag: "🇫🇯" },
-  { code: "+358", country: "Finland", flag: "🇫🇮" },
-  { code: "+241", country: "Gabon", flag: "🇬🇦" },
-  { code: "+220", country: "Gambia", flag: "🇬🇲" },
-  { code: "+995", country: "Georgia", flag: "🇬🇪" },
-  { code: "+233", country: "Ghana", flag: "🇬🇭" },
-  { code: "+30", country: "Greece", flag: "🇬🇷" },
-  { code: "+502", country: "Guatemala", flag: "🇬🇹" },
-  { code: "+224", country: "Guinea", flag: "🇬🇳" },
-  { code: "+592", country: "Guyana", flag: "🇬🇾" },
-  { code: "+509", country: "Haiti", flag: "🇭🇹" },
-  { code: "+504", country: "Honduras", flag: "🇭🇳" },
-  { code: "+852", country: "Hong Kong", flag: "🇭🇰" },
-  { code: "+36", country: "Hungary", flag: "🇭🇺" },
-  { code: "+354", country: "Iceland", flag: "🇮🇸" },
-  { code: "+62", country: "Indonesia", flag: "🇮🇩" },
-  { code: "+98", country: "Iran", flag: "🇮🇷" },
-  { code: "+964", country: "Iraq", flag: "🇮🇶" },
-  { code: "+353", country: "Ireland", flag: "🇮🇪" },
-  { code: "+225", country: "Ivory Coast", flag: "🇨🇮" },
-  { code: "+1876", country: "Jamaica", flag: "🇯🇲" },
-  { code: "+962", country: "Jordan", flag: "🇯🇴" },
-  { code: "+7", country: "Kazakhstan", flag: "🇰🇿" },
-  { code: "+254", country: "Kenya", flag: "🇰🇪" },
-  { code: "+965", country: "Kuwait", flag: "🇰🇼" },
-  { code: "+996", country: "Kyrgyzstan", flag: "🇰🇬" },
-  { code: "+856", country: "Laos", flag: "🇱🇦" },
-  { code: "+371", country: "Latvia", flag: "🇱🇻" },
-  { code: "+961", country: "Lebanon", flag: "🇱🇧" },
-  { code: "+266", country: "Lesotho", flag: "🇱🇸" },
-  { code: "+231", country: "Liberia", flag: "🇱🇷" },
-  { code: "+218", country: "Libya", flag: "🇱🇾" },
-  { code: "+423", country: "Liechtenstein", flag: "🇱🇮" },
-  { code: "+370", country: "Lithuania", flag: "🇱🇹" },
-  { code: "+352", country: "Luxembourg", flag: "🇱🇺" },
-  { code: "+853", country: "Macau", flag: "🇲🇴" },
-  { code: "+261", country: "Madagascar", flag: "🇲🇬" },
-  { code: "+265", country: "Malawi", flag: "🇲🇼" },
-  { code: "+60", country: "Malaysia", flag: "🇲🇾" },
-  { code: "+960", country: "Maldives", flag: "🇲🇻" },
-  { code: "+223", country: "Mali", flag: "🇲🇱" },
-  { code: "+356", country: "Malta", flag: "🇲🇹" },
-  { code: "+222", country: "Mauritania", flag: "🇲🇷" },
-  { code: "+230", country: "Mauritius", flag: "🇲🇺" },
-  { code: "+373", country: "Moldova", flag: "🇲🇩" },
-  { code: "+377", country: "Monaco", flag: "🇲🇨" },
-  { code: "+976", country: "Mongolia", flag: "🇲🇳" },
-  { code: "+382", country: "Montenegro", flag: "🇲🇪" },
-  { code: "+212", country: "Morocco", flag: "🇲🇦" },
-  { code: "+258", country: "Mozambique", flag: "🇲🇿" },
-  { code: "+95", country: "Myanmar", flag: "🇲🇲" },
-  { code: "+264", country: "Namibia", flag: "🇳🇦" },
-  { code: "+977", country: "Nepal", flag: "🇳🇵" },
-  { code: "+64", country: "New Zealand", flag: "🇳🇿" },
-  { code: "+505", country: "Nicaragua", flag: "🇳🇮" },
-  { code: "+227", country: "Niger", flag: "🇳🇪" },
-  { code: "+234", country: "Nigeria", flag: "🇳🇬" },
-  { code: "+850", country: "North Korea", flag: "🇰🇵" },
-  { code: "+389", country: "North Macedonia", flag: "🇲🇰" },
-  { code: "+47", country: "Norway", flag: "🇳🇴" },
-  { code: "+968", country: "Oman", flag: "🇴🇲" },
-  { code: "+92", country: "Pakistan", flag: "🇵🇰" },
-  { code: "+970", country: "Palestine", flag: "🇵🇸" },
-  { code: "+507", country: "Panama", flag: "🇵🇦" },
-  { code: "+675", country: "Papua New Guinea", flag: "🇵🇬" },
-  { code: "+595", country: "Paraguay", flag: "🇵🇾" },
-  { code: "+51", country: "Peru", flag: "🇵🇪" },
-  { code: "+63", country: "Philippines", flag: "🇵🇭" },
-  { code: "+48", country: "Poland", flag: "🇵🇱" },
-  { code: "+351", country: "Portugal", flag: "🇵🇹" },
-  { code: "+1787", country: "Puerto Rico", flag: "🇵🇷" },
-  { code: "+974", country: "Qatar", flag: "🇶🇦" },
-  { code: "+40", country: "Romania", flag: "🇷🇴" },
-  { code: "+7", country: "Russia", flag: "🇷🇺" },
-  { code: "+250", country: "Rwanda", flag: "🇷🇼" },
-  { code: "+966", country: "Saudi Arabia", flag: "🇸🇦" },
-  { code: "+221", country: "Senegal", flag: "🇸🇳" },
-  { code: "+381", country: "Serbia", flag: "🇷🇸" },
-  { code: "+232", country: "Sierra Leone", flag: "🇸🇱" },
-  { code: "+421", country: "Slovakia", flag: "🇸🇰" },
-  { code: "+386", country: "Slovenia", flag: "🇸🇮" },
-  { code: "+252", country: "Somalia", flag: "🇸🇴" },
-  { code: "+27", country: "South Africa", flag: "🇿🇦" },
-  { code: "+211", country: "South Sudan", flag: "🇸🇸" },
-  { code: "+94", country: "Sri Lanka", flag: "🇱🇰" },
-  { code: "+249", country: "Sudan", flag: "🇸🇩" },
-  { code: "+597", country: "Suriname", flag: "🇸🇷" },
-  { code: "+963", country: "Syria", flag: "🇸🇾" },
-  { code: "+886", country: "Taiwan", flag: "🇹🇼" },
-  { code: "+992", country: "Tajikistan", flag: "🇹🇯" },
-  { code: "+255", country: "Tanzania", flag: "🇹🇿" },
-  { code: "+66", country: "Thailand", flag: "🇹🇭" },
-  { code: "+670", country: "Timor-Leste", flag: "🇹🇱" },
-  { code: "+228", country: "Togo", flag: "🇹🇬" },
-  { code: "+676", country: "Tonga", flag: "🇹🇴" },
-  { code: "+1868", country: "Trinidad", flag: "🇹🇹" },
-  { code: "+216", country: "Tunisia", flag: "🇹🇳" },
-  { code: "+90", country: "Turkey", flag: "🇹🇷" },
-  { code: "+993", country: "Turkmenistan", flag: "🇹🇲" },
-  { code: "+256", country: "Uganda", flag: "🇺🇬" },
-  { code: "+380", country: "Ukraine", flag: "🇺🇦" },
-  { code: "+598", country: "Uruguay", flag: "🇺🇾" },
-  { code: "+998", country: "Uzbekistan", flag: "🇺🇿" },
-  { code: "+678", country: "Vanuatu", flag: "🇻🇺" },
-  { code: "+379", country: "Vatican City", flag: "🇻🇦" },
-  { code: "+58", country: "Venezuela", flag: "🇻🇪" },
-  { code: "+84", country: "Vietnam", flag: "🇻🇳" },
-  { code: "+967", country: "Yemen", flag: "🇾🇪" },
-  { code: "+260", country: "Zambia", flag: "🇿🇲" },
-  { code: "+263", country: "Zimbabwe", flag: "🇿🇼" },
+  { code: "+51", country: "Peru", flag: "🇵🇪" }
 ];
 
 const TELEGRAM_BOT_URL = "https://t.me/titliworkBot?start=welcome";
 
-// Portal dropdown component
+// Country dropdown component rendered via portal
 const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries, selectedCode }) => {
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
   const [isMobile, setIsMobile] = useState(false);
-  const dropdownRef = useRef(null);
   
-  // Calculate position
   useEffect(() => {
+    if (!isOpen || !buttonRef?.current) return;
+    
     const updatePosition = () => {
       const viewportWidth = window.innerWidth;
       const mobile = viewportWidth < 640;
       setIsMobile(mobile);
       
       if (mobile) {
-        // Mobile: full width at top of screen
         setPosition({
           top: 0,
           left: 0,
           width: viewportWidth
         });
-      } else if (isOpen && buttonRef.current) {
-        // Desktop: below the input
+      } else {
         const rect = buttonRef.current.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
+        const dropdownHeight = 320;
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
         
-        let dropdownWidth = rect.width;
-        const minWidth = 280;
-        const maxWidth = Math.min(400, viewportWidth - 32);
-        dropdownWidth = Math.max(minWidth, Math.min(dropdownWidth, maxWidth));
-        
-        let leftPos = rect.left;
-        if (leftPos + dropdownWidth > viewportWidth - 16) {
-          leftPos = viewportWidth - dropdownWidth - 16;
-        }
-        if (leftPos < 16) {
-          leftPos = 16;
+        let top;
+        if (spaceBelow >= dropdownHeight || spaceBelow >= spaceAbove) {
+          top = rect.bottom + 4;
+        } else {
+          top = rect.top - dropdownHeight - 4;
         }
         
-        let topPos = rect.bottom + 4;
-        const dropdownHeight = 280;
-        if (topPos + dropdownHeight > viewportHeight && rect.top > dropdownHeight) {
-          topPos = rect.top - dropdownHeight - 4;
+        let left = rect.left;
+        const dropdownWidth = Math.min(Math.max(rect.width, 280), 400);
+        if (left + dropdownWidth > viewportWidth - 16) {
+          left = viewportWidth - dropdownWidth - 16;
         }
         
         setPosition({
-          top: topPos,
-          left: leftPos,
+          top: Math.max(8, top),
+          left: Math.max(8, left),
           width: dropdownWidth
         });
       }
     };
     
     updatePosition();
-    
-    if (isOpen) {
-      window.addEventListener('scroll', updatePosition, true);
-      window.addEventListener('resize', updatePosition);
-      return () => {
-        window.removeEventListener('scroll', updatePosition, true);
-        window.removeEventListener('resize', updatePosition);
-      };
-    }
-  }, [isOpen, buttonRef]);
-
-  // Handle click outside - but NOT for clicks inside dropdown
-  useEffect(() => {
-    if (!isOpen) return;
-    
-    const handleClickOutside = (e) => {
-      // Don't close if clicking inside dropdown
-      if (dropdownRef.current && dropdownRef.current.contains(e.target)) {
-        return;
-      }
-      // Don't close if clicking the toggle button (it handles its own toggle)
-      if (buttonRef.current && buttonRef.current.contains(e.target)) {
-        return;
-      }
-      onClose();
-    };
-    
-    // Small delay to prevent immediate close
-    const timeoutId = setTimeout(() => {
-      document.addEventListener('click', handleClickOutside, true);
-      document.addEventListener('touchend', handleClickOutside, true);
-    }, 10);
+    window.addEventListener('resize', updatePosition);
+    window.addEventListener('scroll', updatePosition, true);
     
     return () => {
-      clearTimeout(timeoutId);
-      document.removeEventListener('click', handleClickOutside, true);
-      document.removeEventListener('touchend', handleClickOutside, true);
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
     };
-  }, [isOpen, onClose, buttonRef]);
-
-  // Close on escape key
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
-
+  }, [isOpen, buttonRef]);
+  
   if (!isOpen) return null;
-
+  
+  const mobileStyles = isMobile ? {
+    maxHeight: '50vh',
+    borderRadius: '0 0 16px 16px',
+    borderTop: 'none'
+  } : {};
+  
   return createPortal(
-    <div 
-      ref={dropdownRef}
+    <div
+      className="fixed inset-0 z-[99999]"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       onMouseDown={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
-      onWheel={(e) => e.stopPropagation()}
-      onTouchMove={(e) => e.stopPropagation()}
-      style={{
-        position: 'fixed',
-        top: position.top,
-        left: position.left,
-        width: position.width,
-        maxHeight: isMobile ? '50vh' : 'calc(100vh - 100px)',
-        backgroundColor: '#fff',
-        border: isMobile ? 'none' : '1px solid #e5e7eb',
-        borderRadius: isMobile ? '0 0 16px 16px' : '8px',
-        boxShadow: isMobile ? '0 4px 30px rgba(0,0,0,0.2)' : '0 4px 20px rgba(0,0,0,0.15)',
-        zIndex: 99999,
-        display: 'flex',
-        flexDirection: 'column',
-      }}
     >
-      {/* Search input */}
-      <div style={{ padding: isMobile ? '12px 16px' : '8px', borderBottom: '1px solid #f3f4f6', flexShrink: 0 }}>
-        <div style={{ position: 'relative' }}>
-          <Search size={isMobile ? 18 : 16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af', pointerEvents: 'none' }} />
-          <input
-            type="text"
-            placeholder="Search country..."
-            value={searchValue}
-            onChange={(e) => onSearchChange(e.target.value)}
-            autoFocus
-            style={{
-              width: '100%',
-              height: isMobile ? '40px' : '36px',
-              paddingLeft: '36px',
-              paddingRight: '12px',
-              fontSize: isMobile ? '16px' : '14px',
-              border: '1px solid #e5e7eb',
-              borderRadius: '6px',
-              outline: 'none',
-              boxSizing: 'border-box'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          />
+      <div
+        className="absolute bg-white border border-gray-200 shadow-2xl overflow-hidden"
+        style={{
+          top: position.top,
+          left: position.left,
+          width: position.width,
+          maxHeight: isMobile ? '50vh' : '320px',
+          borderRadius: isMobile ? '0 0 16px 16px' : '12px',
+          ...mobileStyles
+        }}
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        onWheel={(e) => e.stopPropagation()}
+      >
+        {/* Search */}
+        <div className="p-2 border-b border-gray-100 sticky top-0 bg-white">
+          <div className="relative">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search country..."
+              value={searchValue}
+              onChange={(e) => onSearchChange(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-gray-300"
+              style={{ height: isMobile ? '40px' : '36px', fontSize: isMobile ? '16px' : '14px' }}
+              autoFocus={!isMobile}
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+            />
+          </div>
         </div>
-      </div>
-      
-      {/* Country list */}
-      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', WebkitOverflowScrolling: 'touch' }}>
-        {filteredCountries.map((c, idx) => {
-          const isSelected = c.code === selectedCode;
-          return (
+        
+        {/* Country list */}
+        <div className="overflow-y-auto" style={{ maxHeight: isMobile ? 'calc(50vh - 60px)' : '260px' }}>
+          {filteredCountries.map((country, idx) => (
             <div
-              key={`${c.code}-${c.country}-${idx}`}
+              key={`${country.code}-${country.country}-${idx}`}
+              className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 transition-colors"
+              style={{ padding: isMobile ? '14px 16px' : '10px 12px' }}
               onClick={(e) => {
-                e.preventDefault();
                 e.stopPropagation();
-                onSelect(c.code);
+                e.preventDefault();
+                onSelect(country.code);
               }}
               onTouchEnd={(e) => {
-                e.preventDefault();
                 e.stopPropagation();
-                onSelect(c.code);
+                onSelect(country.code);
               }}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: isMobile ? '14px 16px' : '12px',
-                fontSize: isMobile ? '15px' : '14px',
-                textAlign: 'left',
-                backgroundColor: isSelected ? '#fef2f2' : 'white',
-                cursor: 'pointer',
-                boxSizing: 'border-box',
-                borderLeft: isSelected ? '3px solid #E50914' : '3px solid transparent'
-              }}
-              onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.backgroundColor = '#f3f4f6'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = isSelected ? '#fef2f2' : 'white'; }}
             >
-              <span style={{ fontSize: isMobile ? '22px' : '20px' }}>{c.flag}</span>
-              <span style={{ color: '#111827', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.country}</span>
-              <span style={{ color: '#9ca3af', flexShrink: 0 }}>{c.code}</span>
+              <span style={{ fontSize: isMobile ? '22px' : '20px' }}>{country.flag}</span>
+              <span className="flex-1 text-gray-700" style={{ fontSize: isMobile ? '15px' : '14px' }}>{country.country}</span>
+              <span className="text-gray-500 font-medium" style={{ fontSize: isMobile ? '15px' : '14px' }}>{country.code}</span>
+              {country.code === selectedCode && (
+                <Check size={16} className="text-red-500" />
+              )}
             </div>
-          );
-        })}
+          ))}
+        </div>
       </div>
     </div>,
     document.body
@@ -434,6 +246,7 @@ const AuthModal = ({ isOpen, onClose }) => {
   const resetAndClose = () => {
     setStep("phone");
     setPhone("");
+    setCountryCode("+1");
     setOtp("");
     setName("");
     setAge("");
@@ -535,10 +348,8 @@ const AuthModal = ({ isOpen, onClose }) => {
         }
       } catch (backendError) {
         console.error("Backend verify-otp error:", backendError);
-        // Check if it's a "new user needs instagram/linkedin" error
         const errorDetail = backendError.response?.data?.detail || "";
         if (errorDetail.includes("Instagram or LinkedIn") || backendError.response?.status === 400) {
-          // New user - go to profile step to collect info
           setStep("profile");
         } else {
           toast.error(errorDetail || "Failed to verify. Please try again.");
@@ -564,54 +375,53 @@ const AuthModal = ({ isOpen, onClose }) => {
       setSelectedSkills(selectedSkills.filter(s => s !== skill));
     } else if (selectedSkills.length < 5) {
       setSelectedSkills([...selectedSkills, skill]);
+    } else {
+      toast.error("Maximum 5 skills");
     }
   };
 
   const hasSocialLink = () => {
-    return socialLinks.instagram?.trim() || socialLinks.linkedin?.trim();
+    return socialLinks.instagram.trim() !== "" || socialLinks.linkedin.trim() !== "";
   };
 
   const handleCompleteProfile = async (e) => {
     e.preventDefault();
-    if (!hasSocialLink()) {
-      toast.error("Please add your Instagram or LinkedIn to verify your profile");
-      return;
+    if (!name.trim()) { toast.error("Name is required"); return; }
+    if (!age || parseInt(age) < 13) { toast.error("Please enter a valid age"); return; }
+    
+    if (!hasSocialLink()) { 
+      toast.error("Please add your Instagram or LinkedIn to verify your profile"); 
+      return; 
     }
     
+    if (!bio.trim()) { toast.error("Please add a short bio"); return; }
+    if (selectedSkills.length === 0) { toast.error("Select at least one skill"); return; }
+
     setLoading(true);
     try {
+      let authToken = token;
       const fullPhone = getFullPhoneNumber();
-      // First, create/get the user with verify-otp (only sends fields backend expects)
-      const response = await axios.post(`${API}/auth/verify-otp`, {
-        phone: fullPhone,
-        otp: otp,
-        name: name.trim(),
-        age: parseInt(age) || null,
-        instagram: socialLinks.instagram?.trim() || null,
-        linkedin: socialLinks.linkedin?.trim() || null
-      });
       
-      // Then update profile with additional fields
-      const profileToken = response.data.token;
-      await axios.put(`${API}/users/me`, {
-        bio: bio.trim(),
-        skills: selectedSkills,
-        social_links: {
-          instagram: socialLinks.instagram?.trim() || null,
-          linkedin: socialLinks.linkedin?.trim() || null,
-          twitter: socialLinks.twitter?.trim() || null,
-          imdb: socialLinks.imdb?.trim() || null
-        }
-      }, {
-        headers: { Authorization: `Bearer ${profileToken}` }
-      });
+      if (!authToken) {
+        const authResponse = await axios.post(`${API}/auth/verify-otp`, { 
+          phone: fullPhone, 
+          otp: otp,
+          name: name.trim(), 
+          age: parseInt(age),
+          instagram: socialLinks.instagram.trim() || null,
+          linkedin: socialLinks.linkedin.trim() || null
+        });
+        authToken = authResponse.data.token;
+        login(authResponse.data.token, authResponse.data.user);
+      }
+
+      const response = await axios.put(
+        `${API}/users/me`,
+        { bio: bio.trim(), skills: selectedSkills, social_links: socialLinks },
+        { headers: { Authorization: `Bearer ${authToken}` } }
+      );
       
-      // Fetch updated user
-      const userResponse = await axios.get(`${API}/users/me`, {
-        headers: { Authorization: `Bearer ${profileToken}` }
-      });
-      
-      login(profileToken, userResponse.data);
+      login(authToken, response.data);
       setShowSuccess(true);
     } catch (error) {
       console.error("Profile completion error:", error);
@@ -627,23 +437,29 @@ const AuthModal = ({ isOpen, onClose }) => {
     setCountrySearch('');
   };
 
+  const handleStartTexting = () => {
+    window.open(TELEGRAM_BOT_URL, "_blank");
+    resetAndClose();
+    navigate("/app");
+    toast.success("Welcome to titlii!");
+  };
+
   return (
     <Dialog 
       open={isOpen} 
       modal={false}
       onOpenChange={(open) => {
-        // Don't close modal if dropdown is open (user is interacting with portal)
+        if (showSuccess) return;
         if (!open && showCountryDropdown) return;
         if (!open) resetAndClose();
       }}
     >
-      {/* Custom overlay since modal={false} removes the default one */}
       {isOpen && createPortal(
         <div 
           className="fixed inset-0 bg-black/80 z-[49]"
           style={{ pointerEvents: showCountryDropdown ? 'none' : 'auto' }}
           onClick={() => {
-            if (!showCountryDropdown) resetAndClose();
+            if (!showCountryDropdown && !showSuccess) resetAndClose();
           }}
         />,
         document.body
@@ -651,22 +467,18 @@ const AuthModal = ({ isOpen, onClose }) => {
       <DialogContent 
         className="sm:max-w-md p-0 overflow-hidden bg-white rounded-2xl [&>button]:hidden"
         onPointerDownOutside={(e) => {
-          // Prevent modal close when clicking dropdown (which is outside modal DOM)
-          if (showCountryDropdown) {
+          if (showSuccess || showCountryDropdown) {
             e.preventDefault();
             return;
           }
-          // Otherwise allow close
           resetAndClose();
         }}
         onInteractOutside={(e) => {
-          // Prevent any outside interaction from closing modal while dropdown open
-          if (showCountryDropdown) {
+          if (showSuccess || showCountryDropdown) {
             e.preventDefault();
           }
         }}
         onEscapeKeyDown={(e) => {
-          // Close dropdown first, then modal
           if (showCountryDropdown) {
             e.preventDefault();
             setShowCountryDropdown(false);
@@ -675,28 +487,34 @@ const AuthModal = ({ isOpen, onClose }) => {
       >
         <div id="recaptcha-container"></div>
         <div className="relative">
-          <button onClick={resetAndClose} className="absolute right-4 top-4 p-1 rounded-full hover:bg-gray-100 z-10">
-            <X size={20} className="text-gray-500" />
-          </button>
+          {!showSuccess && (
+            <button onClick={resetAndClose} className="absolute right-4 top-4 p-1 rounded-full hover:bg-gray-100 z-10">
+              <X size={20} className="text-gray-500" />
+            </button>
+          )}
           
           {showSuccess ? (
             <div className="p-8 text-center">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(229, 9, 20, 0.1)' }}>
-                <Check size={32} style={{ color: '#E50914' }} />
+              <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: 'linear-gradient(135deg, #E50914 0%, #ff4757 100%)' }}>
+                <MessageCircle size={40} className="text-white" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">You're all set!</h2>
-              <p className="text-gray-500 mb-6">Message Taj to start connecting</p>
-              <button onClick={() => window.open(TELEGRAM_BOT_URL, '_blank')} className="w-full h-12 rounded-full text-white font-semibold flex items-center justify-center gap-2" style={{ background: '#E50914' }}>
-                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.24.37-.49 1.02-.74 3.99-1.74 6.65-2.89 7.99-3.45 3.81-1.6 4.6-1.87 5.12-1.88.11 0 .37.03.53.17.14.12.18.28.2.45-.01.06.01.24 0 .38z"/>
+              <h2 className="text-2xl font-bold mb-2">You're all set! 🎉</h2>
+              <p className="text-gray-600 mb-4">Now let's get you connected!</p>
+              
+              <div className="bg-gray-50 rounded-2xl p-4 mb-6 text-left">
+                <h3 className="font-semibold text-sm mb-3" style={{ color: '#E50914' }}>Here's what happens next:</h3>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-start gap-2"><span className="font-bold text-gray-900">1.</span><span>Taj will ask a few quick questions</span></li>
+                  <li className="flex items-start gap-2"><span className="font-bold text-gray-900">2.</span><span>She'll match you with the right people</span></li>
+                  <li className="flex items-start gap-2"><span className="font-bold text-gray-900">3.</span><span>You'll get introduced immediately</span></li>
+                </ul>
+              </div>
+              
+              <button onClick={handleStartTexting} className="w-full h-14 rounded-full text-white font-semibold text-lg flex items-center justify-center gap-3" style={{ background: '#E50914' }}>
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="white">
+                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
                 </svg>
                 Start Texting Taj
-              </button>
-              <button 
-                onClick={() => { resetAndClose(); navigate("/app"); }} 
-                className="w-full h-12 rounded-full font-semibold flex items-center justify-center gap-2 mt-3 border border-gray-300 hover:bg-gray-50"
-              >
-                Go to Dashboard
               </button>
             </div>
           ) : (
@@ -714,12 +532,10 @@ const AuthModal = ({ isOpen, onClose }) => {
                     <div className="mb-4">
                       <Label className="text-xs font-medium text-gray-500 mb-1 block">PHONE NUMBER</Label>
                       
-                      {/* Phone input row */}
                       <div 
                         ref={phoneInputRef}
                         className="flex h-11 border border-gray-300 rounded-lg overflow-hidden bg-white"
                       >
-                        {/* Country selector button */}
                         <button
                           type="button"
                           onClick={(e) => { e.stopPropagation(); setShowCountryDropdown(!showCountryDropdown); }}
@@ -730,7 +546,6 @@ const AuthModal = ({ isOpen, onClose }) => {
                           <ChevronDown size={14} className="text-gray-400 ml-0.5" />
                         </button>
                         
-                        {/* Phone number input */}
                         <input
                           type="tel"
                           placeholder="(555) 000-0000"
@@ -740,7 +555,6 @@ const AuthModal = ({ isOpen, onClose }) => {
                         />
                       </div>
 
-                      {/* Portal-based dropdown */}
                       <CountryDropdown
                         isOpen={showCountryDropdown}
                         onClose={() => setShowCountryDropdown(false)}
@@ -773,10 +587,12 @@ const AuthModal = ({ isOpen, onClose }) => {
                     <span style={{ color: '#0369a1' }}>Check your SMS for the verification code</span>
                   </div>
                   
-                  <div className="flex justify-center mb-4">
+                  <div className="flex justify-center mb-6">
                     <InputOTP maxLength={6} value={otp} onChange={setOtp}>
                       <InputOTPGroup>
-                        {[0,1,2,3,4,5].map(i => <InputOTPSlot key={i} index={i} className="w-10 h-12 text-lg" />)}
+                        {[0,1,2,3,4,5].map(i => (
+                          <InputOTPSlot key={i} index={i} className="w-10 h-12 text-lg" />
+                        ))}
                       </InputOTPGroup>
                     </InputOTP>
                   </div>
@@ -855,34 +671,24 @@ const AuthModal = ({ isOpen, onClose }) => {
                       <Label className="text-xs font-medium text-gray-500 mb-1 block">SKILLS ({selectedSkills.length}/5)</Label>
                       <div className="flex gap-1 mb-2 flex-wrap">
                         {Object.keys(SKILL_CATEGORIES).map(cat => (
-                          <button key={cat} type="button" onClick={() => setActiveCategory(cat)} className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${activeCategory === cat ? 'bg-black text-white' : 'bg-gray-100 text-gray-600'}`}>
-                            {cat}
+                          <button key={cat} type="button" onClick={() => setActiveCategory(cat)} className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${activeCategory === cat ? 'text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`} style={activeCategory === cat ? { background: '#E50914' } : {}}>
+                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
                           </button>
                         ))}
                       </div>
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1.5 p-2 border rounded-lg min-h-[80px] max-h-[120px] overflow-y-auto">
                         {SKILL_CATEGORIES[activeCategory].map(skill => (
-                          <button key={skill} type="button" onClick={() => toggleSkill(skill)} className={`px-2 py-1 rounded-full text-xs font-medium ${selectedSkills.includes(skill) ? 'bg-black text-white' : 'bg-gray-100 text-gray-700'}`}>
-                            {selectedSkills.includes(skill) && <Check size={10} className="inline mr-0.5" />}{skill}
+                          <button key={skill} type="button" onClick={() => toggleSkill(skill)} className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${selectedSkills.includes(skill) ? 'text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`} style={selectedSkills.includes(skill) ? { background: '#E50914' } : {}}>
+                            {selectedSkills.includes(skill) && <Check size={10} className="inline mr-1" />}
+                            {skill}
                           </button>
                         ))}
                       </div>
                     </div>
 
-                    <button 
-                      type="submit" 
-                      className="w-full h-11 rounded-full text-white font-semibold transition-opacity" 
-                      style={{ background: '#E50914', opacity: hasSocialLink() ? 1 : 0.5 }} 
-                      disabled={loading || !hasSocialLink()}
-                    >
+                    <button type="submit" className="w-full h-11 rounded-full text-white font-semibold" style={{ background: '#E50914' }} disabled={loading}>
                       {loading ? <div className="spinner mx-auto" /> : "Complete Profile"}
                     </button>
-                    
-                    {!hasSocialLink() && (
-                      <p className="text-xs text-center text-gray-400">
-                        Add Instagram or LinkedIn above to continue
-                      </p>
-                    )}
                   </form>
                 </div>
               )}
