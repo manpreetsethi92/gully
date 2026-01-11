@@ -8,6 +8,8 @@ import { Toaster } from "./components/ui/sonner";
 import LandingPage from "./pages/LandingPage";
 import DashboardLayout from "./pages/DashboardLayout";
 import NotFoundPage from "./pages/NotFoundPage";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 export const API = `${BACKEND_URL}/api`;
@@ -109,14 +111,16 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route 
-              path="/app/*" 
+            <Route
+              path="/app/*"
               element={
                 <ProtectedRoute>
                   <DashboardLayout />
                 </ProtectedRoute>
-              } 
+              }
             />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
