@@ -111,16 +111,16 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route
-              path="/app/*"
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route 
+              path="/app/*" 
               element={
                 <ProtectedRoute>
                   <DashboardLayout />
                 </ProtectedRoute>
-              }
+              } 
             />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsOfService />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
