@@ -229,6 +229,7 @@ const AuthModal = ({ isOpen, onClose }) => {
   
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
+  const [location, setLocation] = useState("");
   const [bio, setBio] = useState("");
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [activeCategory, setActiveCategory] = useState("creative");
@@ -251,6 +252,7 @@ const AuthModal = ({ isOpen, onClose }) => {
     setOtp("");
     setName("");
     setAge("");
+    setLocation("");
     setBio("");
     setSelectedSkills([]);
     setSocialLinks({ instagram: "", linkedin: "", twitter: "", imdb: "" });
@@ -389,6 +391,7 @@ const AuthModal = ({ isOpen, onClose }) => {
     e.preventDefault();
     if (!name.trim()) { toast.error("Name is required"); return; }
     if (!age || parseInt(age) < 13) { toast.error("Please enter a valid age"); return; }
+    if (!location.trim()) { toast.error("Please enter your location"); return; }
     
     if (!hasSocialLink()) { 
       toast.error("Please add your Instagram or LinkedIn to verify your profile"); 
@@ -418,7 +421,7 @@ const AuthModal = ({ isOpen, onClose }) => {
 
       const response = await axios.put(
         `${API}/users/me`,
-        { bio: bio.trim(), skills: selectedSkills, social_links: socialLinks },
+        { bio: bio.trim(), skills: selectedSkills, social_links: socialLinks, location: location.trim() },
         { headers: { Authorization: `Bearer ${authToken}` } }
       );
       
@@ -650,6 +653,11 @@ const AuthModal = ({ isOpen, onClose }) => {
                         <Label className="text-xs font-medium text-gray-500 mb-1 block">AGE</Label>
                         <Input type="number" value={age} onChange={(e) => setAge(e.target.value)} placeholder="25" min="13" className="h-10" />
                       </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-xs font-medium text-gray-500 mb-1 block">LOCATION *</Label>
+                      <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City, State (e.g., Dallas, TX)" className="h-10" />
                     </div>
 
                     <div className="p-4 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(229, 9, 20, 0.05) 0%, rgba(255, 71, 87, 0.05) 100%)', border: '1px solid rgba(229, 9, 20, 0.2)' }}>
