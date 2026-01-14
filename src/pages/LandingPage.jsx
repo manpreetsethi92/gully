@@ -396,6 +396,7 @@ const LandingPage = () => {
             <div className="flex gap-4 font-mono text-xs text-white/40">
               <a href="/privacy" className="hover:text-white/60">privacy</a>
               <a href="/terms" className="hover:text-white/60">terms</a>
+              <a href="mailto:taj@titlii.social" className="hover:text-white/60">contact</a>
             </div>
           </div>
         </div>
@@ -650,6 +651,7 @@ const LandingPage = () => {
           <div className="flex items-center justify-center gap-4 md:gap-8">
             <a href="/privacy" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">privacy</a>
             <a href="/terms" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">terms</a>
+            <a href="mailto:taj@titlii.social" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">contact</a>
           </div>
         </div>
       </footer>

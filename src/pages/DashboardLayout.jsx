@@ -305,11 +305,11 @@ useEffect(() => {
 
             <div className={`mt-4 px-2 font-mono text-xs ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
               <div className="flex flex-wrap gap-x-3 gap-y-1">
-                <a href="#" className="hover:underline">Terms of Service</a>
-                <a href="#" className="hover:underline">Privacy Policy</a>
-                <a href="#" className="hover:underline">Contact Us</a>
+                <a href="/terms" className="hover:underline">Terms of Service</a>
+                <a href="/privacy" className="hover:underline">Privacy Policy</a>
+                <a href="mailto:taj@titlii.social" className="hover:underline">Contact Us</a>
               </div>
-              <p className="mt-2">© 2025 titlii</p>
+              <p className="mt-2">© 2026 titlii</p>
             </div>
           </div>
         </aside>
