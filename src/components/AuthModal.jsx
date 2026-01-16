@@ -237,7 +237,35 @@ const AuthModal = ({ isOpen, onClose }) => {
     instagram: "", linkedin: "", twitter: "", imdb: ""
   });
   
+  const [linkedinVerified, setLinkedinVerified] = useState(false);
+  const [linkedinName, setLinkedinName] = useState("");
+  const [linkedinVerificationId, setLinkedinVerificationId] = useState("");
+  
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Check for LinkedIn OAuth callback in URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const linkedinVerifiedParam = params.get('linkedin_verified');
+    const verificationId = params.get('verification_id');
+    const linkedinNameParam = params.get('linkedin_name');
+    const linkedinError = params.get('linkedin_error');
+    
+    if (linkedinVerifiedParam === 'true' && verificationId) {
+      setLinkedinVerified(true);
+      setLinkedinVerificationId(verificationId);
+      if (linkedinNameParam) {
+        setLinkedinName(decodeURIComponent(linkedinNameParam));
+      }
+      setStep("profile");
+      // Clean URL
+      window.history.replaceState({}, '', window.location.pathname);
+      toast.success("LinkedIn verified!");
+    } else if (linkedinError) {
+      toast.error(`LinkedIn verification failed: ${linkedinError}`);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -256,6 +284,9 @@ const AuthModal = ({ isOpen, onClose }) => {
     setBio("");
     setSelectedSkills([]);
     setSocialLinks({ instagram: "", linkedin: "", twitter: "", imdb: "" });
+    setLinkedinVerified(false);
+    setLinkedinName("");
+    setLinkedinVerificationId("");
     setShowSuccess(false);
     setConfirmationResult(null);
     setShowCountryDropdown(false);
@@ -384,7 +415,17 @@ const AuthModal = ({ isOpen, onClose }) => {
   };
 
   const hasSocialLink = () => {
-    return socialLinks.instagram.trim() !== "" || socialLinks.linkedin.trim() !== "";
+    return linkedinVerified || socialLinks.instagram.trim() !== "";
+  };
+
+  const handleLinkedInVerify = async () => {
+    try {
+      const response = await axios.get(`${API}/auth/linkedin`);
+      window.location.href = response.data.auth_url;
+    } catch (error) {
+      console.error("LinkedIn auth error:", error);
+      toast.error("Failed to start LinkedIn verification");
+    }
   };
 
   const handleCompleteProfile = async (e) => {
@@ -393,8 +434,8 @@ const AuthModal = ({ isOpen, onClose }) => {
     if (!age || parseInt(age) < 13) { toast.error("Please enter a valid age"); return; }
     if (!location.trim()) { toast.error("Please enter your location"); return; }
     
-    if (!hasSocialLink()) { 
-      toast.error("Please add your Instagram or LinkedIn to verify your profile"); 
+    if (!linkedinVerified && !socialLinks.instagram.trim()) { 
+      toast.error("Please verify with LinkedIn or add your Instagram"); 
       return; 
     }
     
@@ -413,10 +454,23 @@ const AuthModal = ({ isOpen, onClose }) => {
           name: name.trim(), 
           age: parseInt(age),
           instagram: socialLinks.instagram.trim() || null,
-          linkedin: socialLinks.linkedin.trim() || null
+          linkedin: linkedinVerified ? "verified" : null
         });
         authToken = authResponse.data.token;
         login(authResponse.data.token, authResponse.data.user);
+      }
+
+      // If LinkedIn was verified via OAuth, link it to user
+      if (linkedinVerified && linkedinVerificationId) {
+        try {
+          await axios.post(
+            `${API}/auth/linkedin/use/${linkedinVerificationId}`,
+            {},
+            { headers: { Authorization: `Bearer ${authToken}` } }
+          );
+        } catch (err) {
+          console.error("Failed to link LinkedIn:", err);
+        }
       }
 
       const response = await axios.put(
@@ -664,32 +718,48 @@ const AuthModal = ({ isOpen, onClose }) => {
                       <Label className="text-xs font-medium mb-2 block" style={{ color: '#E50914' }}>
                         VERIFY YOUR PROFILE *
                       </Label>
-                      <p className="text-xs text-gray-500 mb-3">Add at least one so others can see your work</p>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Instagram size={16} className="text-pink-500 flex-shrink-0" />
-                          <Input 
-                            value={socialLinks.instagram} 
-                            onChange={(e) => setSocialLinks({...socialLinks, instagram: e.target.value})} 
-                            placeholder="Username or link (e.g., tajsethi_)" 
-                            className={`h-10 text-sm ${hasSocialLink() ? 'border-green-300' : ''}`}
-                          />
+                      <p className="text-xs text-gray-500 mb-3">Verify with LinkedIn or add your Instagram</p>
+                      
+                      {/* LinkedIn OAuth Button */}
+                      {linkedinVerified ? (
+                        <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-3">
+                          <div className="w-8 h-8 rounded-full bg-[#0077B5] flex items-center justify-center">
+                            <Linkedin size={16} className="text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-green-800">LinkedIn Verified</p>
+                            {linkedinName && <p className="text-xs text-green-600">{linkedinName}</p>}
+                          </div>
+                          <Check size={20} className="text-green-600" />
                         </div>
-                        <div className="flex items-center justify-center">
-                          <span className="text-xs text-gray-400 px-2">or</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Linkedin size={16} className="text-blue-600 flex-shrink-0" />
-                          <Input 
-                            value={socialLinks.linkedin} 
-                            onChange={(e) => setSocialLinks({...socialLinks, linkedin: e.target.value})} 
-                            placeholder="Username or link (e.g., taj-sethi)" 
-                            className={`h-10 text-sm ${hasSocialLink() ? 'border-green-300' : ''}`}
-                          />
-                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleLinkedInVerify}
+                          className="w-full flex items-center justify-center gap-2 p-3 bg-[#0077B5] hover:bg-[#006097] text-white rounded-lg font-medium transition-colors mb-3"
+                        >
+                          <Linkedin size={18} />
+                          Verify with LinkedIn
+                        </button>
+                      )}
+                      
+                      <div className="flex items-center justify-center mb-3">
+                        <span className="text-xs text-gray-400 px-2">or add Instagram (optional if LinkedIn verified)</span>
                       </div>
+                      
+                      {/* Instagram Input */}
+                      <div className="flex items-center gap-2">
+                        <Instagram size={16} className="text-pink-500 flex-shrink-0" />
+                        <Input 
+                          value={socialLinks.instagram} 
+                          onChange={(e) => setSocialLinks({...socialLinks, instagram: e.target.value})} 
+                          placeholder="Username or link (e.g., tajsethi_)" 
+                          className={`h-10 text-sm ${socialLinks.instagram.trim() ? 'border-green-300' : ''}`}
+                        />
+                      </div>
+                      
                       {hasSocialLink() && (
-                        <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
+                        <p className="text-xs text-green-600 mt-3 flex items-center gap-1">
                           <Check size={12} /> Profile verification ready
                         </p>
                       )}
