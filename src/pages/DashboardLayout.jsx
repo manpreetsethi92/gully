@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Routes, Route, useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth, API } from "../App";
 import axios from "axios";
@@ -40,6 +40,23 @@ const DashboardLayout = () => {
 
   const currentPath = location.pathname.split("/").pop() || "opportunities";
 
+  const fetchStats = useCallback(async () => {
+    try {
+      const [oppsRes, reqsRes, connsRes] = await Promise.all([
+        axios.get(`${API}/opportunities`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/requests`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/connections`, { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      setStats({ 
+        opportunities: oppsRes.data.length, 
+        requests: reqsRes.data.length,
+        connections: connsRes.data.filter(c => c.status === 'connected').length
+      });
+    } catch (error) {
+      console.error("Failed to fetch stats:", error);
+    }
+  }, [token]);
+
  // Apply dark mode to document
 useEffect(() => {
   if (darkMode) {
@@ -56,24 +73,8 @@ useEffect(() => {
 }, [darkMode]);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const [oppsRes, reqsRes, connsRes] = await Promise.all([
-          axios.get(`${API}/opportunities`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`${API}/requests`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`${API}/connections`, { headers: { Authorization: `Bearer ${token}` } })
-        ]);
-        setStats({ 
-          opportunities: oppsRes.data.length, 
-          requests: reqsRes.data.length,
-          connections: connsRes.data.filter(c => c.status === 'connected').length
-        });
-      } catch (error) {
-        console.error("Failed to fetch stats:", error);
-      }
-    };
     fetchStats();
-  }, [token]);
+  }, [fetchStats]);
 
   const navItems = [
     { id: "opportunities", label: "Opportunities", icon: Sparkles, count: stats.opportunities },

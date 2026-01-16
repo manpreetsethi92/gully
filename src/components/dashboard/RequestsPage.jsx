@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
@@ -17,21 +17,22 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
   const [matchesLoading, setMatchesLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
 
-  useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const response = await axios.get(`${API}/requests`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setRequests(response.data);
-      } catch (error) {
-        toast.error("Failed to fetch requests");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRequests();
+  const fetchRequests = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API}/requests`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setRequests(response.data);
+    } catch (error) {
+      toast.error("Failed to fetch requests");
+    } finally {
+      setLoading(false);
+    }
   }, [token]);
+
+  useEffect(() => {
+    fetchRequests();
+  }, [fetchRequests]);
 
   const fetchMatches = async (requestId) => {
     setMatchesLoading(true);
