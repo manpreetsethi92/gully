@@ -498,11 +498,12 @@ const AuthModal = ({ isOpen, onClose }) => {
   const handleStartTexting = (platform) => {
     const url = platform === 'whatsapp' ? WHATSAPP_BOT_URL : TELEGRAM_BOT_URL;
     window.open(url, "_blank");
-    navigate("/app");
-    toast.success("Welcome to titlii!");
-    // Close modal after navigation is set
+    
+    // Close modal first, then navigate
+    onClose();
     setTimeout(() => {
-      resetAndClose();
+      navigate("/app");
+      toast.success("Welcome to titlii!");
     }, 100);
   };
 
