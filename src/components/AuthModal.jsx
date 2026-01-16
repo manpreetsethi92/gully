@@ -476,7 +476,7 @@ const AuthModal = ({ isOpen, onClose }) => {
         { headers: { Authorization: `Bearer ${authToken}` } }
       );
       
-      login(authToken, response.data);
+      login(authToken, {...response.data, profile_completed: true});
       setShowSuccess(true);
     } catch (error) {
       console.error("Profile completion error:", error);
