@@ -370,9 +370,8 @@ const AuthModal = ({ isOpen, onClose }) => {
         
         if (!response.data.is_new_user && response.data.user.profile_completed) {
           login(response.data.token, response.data.user);
-          navigate("/app");
           toast.success("Welcome back!");
-          setTimeout(() => resetAndClose(), 100);
+          window.location.href = "/app";
         } else {
           setToken(response.data.token);
           login(response.data.token, response.data.user);
@@ -498,13 +497,9 @@ const AuthModal = ({ isOpen, onClose }) => {
   const handleStartTexting = (platform) => {
     const url = platform === 'whatsapp' ? WHATSAPP_BOT_URL : TELEGRAM_BOT_URL;
     window.open(url, "_blank");
-    
-    // Close modal first, then navigate
-    onClose();
-    setTimeout(() => {
-      navigate("/app");
-      toast.success("Welcome to titlii!");
-    }, 100);
+    toast.success("Welcome to titlii!");
+    // Force navigation with page reload to ensure clean state
+    window.location.href = "/app";
   };
 
   return (
