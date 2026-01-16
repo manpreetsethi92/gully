@@ -14,6 +14,21 @@ import TermsOfService from "./pages/TermsOfService";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 export const API = `${BACKEND_URL}/api`;
 
+// Global axios interceptor for 401 handling
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired or invalid - clear auth and redirect
+      localStorage.removeItem("titly_token");
+      if (window.location.pathname !== "/") {
+        window.location.href = "/";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Auth Context
 const AuthContext = createContext(null);
 

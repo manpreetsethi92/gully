@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "../../App";
-import { useNavigate } from "react-router-dom";
 import { ChevronRight, LogOut, Trash2 } from "lucide-react";
 
 const SettingsPage = () => {
   const { logout } = useAuth();
-  const navigate = useNavigate();
   const [primaryIntent, setPrimaryIntent] = useState("Professional");
   const [profileVisibility, setProfileVisibility] = useState(true);
   const [newOpportunities, setNewOpportunities] = useState(true);
@@ -14,8 +12,8 @@ const SettingsPage = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
     toast.success("Logged out");
+    window.location.href = "/";
   };
 
   return (

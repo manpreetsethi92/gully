@@ -131,7 +131,7 @@ const LandingPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
 
   // Fix mobile Safari white space issue
   useEffect(() => {
@@ -161,13 +161,29 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Auto-redirect if already authenticated
+  useEffect(() => {
+    if (!loading && isAuthenticated && user?.profile_completed) {
+      window.location.href = "/app";
+    }
+  }, [loading, isAuthenticated, user]);
+
+  // Show loading while checking auth
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
   const handleGetStarted = useCallback(() => {
     if (isAuthenticated && user?.profile_completed) {
-      navigate("/app");
+      window.location.href = "/app";
     } else {
       setShowAuthModal(true);
     }
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user]);
 
   return (
     <div className="overflow-x-hidden bg-[#0a0a0a]">
@@ -322,7 +338,7 @@ const LandingPage = () => {
           
           {/* Desktop */}
           <button
-            onClick={() => setShowAuthModal(true)}
+            onClick={handleGetStarted}
             className="hidden md:block font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
           >
             [ENTER]
@@ -385,7 +401,7 @@ const LandingPage = () => {
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                setShowAuthModal(true);
+                handleGetStarted();
               }}
               className="mt-auto mb-8 w-full py-4 rounded-full bg-[#E50914] text-white font-syne font-semibold text-base transition-all hover:shadow-lg hover:shadow-red-500/25"
             >
@@ -396,7 +412,6 @@ const LandingPage = () => {
             <div className="flex gap-4 font-mono text-xs text-white/40">
               <a href="/privacy" className="hover:text-white/60">privacy</a>
               <a href="/terms" className="hover:text-white/60">terms</a>
-              <a href="mailto:taj@titlii.social" className="hover:text-white/60">contact</a>
             </div>
           </div>
         </div>
@@ -649,9 +664,15 @@ const LandingPage = () => {
       <footer className="py-6 md:py-4 bg-[#0a0a0a]">
         <div className="max-w-[1800px] mx-auto px-8">
           <div className="flex items-center justify-center gap-4 md:gap-8">
-            <a href="/privacy" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">privacy</a>
-            <a href="/terms" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">terms</a>
-            <a href="mailto:taj@titlii.social" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">contact</a>
+            {["privacy", "terms", "cookies"].map((link, idx) => (
+              <a 
+                key={idx}
+                href="#" 
+                className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors"
+              >
+                {link}
+              </a>
+            ))}
           </div>
         </div>
       </footer>
