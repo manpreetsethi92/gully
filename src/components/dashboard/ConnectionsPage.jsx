@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { Users, MessageCircle, ExternalLink, Instagram, Linkedin, Twitter, Mail } from "lucide-react";
+import { Users, MessageCircle, ExternalLink, Instagram, Linkedin, Twitter } from "lucide-react";
 
 const TELEGRAM_BOT_URL = "https://t.me/titliworkBot?start=welcome";
 
@@ -12,21 +12,20 @@ const ConnectionsPage = ({ onRefresh }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchConnections = async () => {
+      try {
+        const response = await axios.get(`${API}/connections`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setConnections(response.data);
+      } catch (error) {
+        toast.error("Failed to fetch connections");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchConnections();
   }, [token]);
-
-  const fetchConnections = async () => {
-    try {
-      const response = await axios.get(`${API}/connections`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setConnections(response.data);
-    } catch (error) {
-      toast.error("Failed to fetch connections");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);

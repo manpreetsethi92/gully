@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../App";
 import { ArrowRight, ArrowUpRight, Menu, X } from "lucide-react";
 import AuthModal from "../components/AuthModal";
@@ -127,10 +126,8 @@ const PhoneMockup = () => {
 
 const LandingPage = () => {
   const [currentWord, setCurrentWord] = useState(0);
-  const [scrollY, setScrollY] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
   const { isAuthenticated, user, loading } = useAuth();
 
   // Fix mobile Safari white space issue
@@ -146,12 +143,6 @@ const LandingPage = () => {
       document.documentElement.style.minHeight = '';
       document.body.style.minHeight = '';
     };
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {

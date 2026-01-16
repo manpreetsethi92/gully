@@ -18,21 +18,20 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
   const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await axios.get(`${API}/requests`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setRequests(response.data);
+      } catch (error) {
+        toast.error("Failed to fetch requests");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchRequests();
   }, [token]);
-
-  const fetchRequests = async () => {
-    try {
-      const response = await axios.get(`${API}/requests`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setRequests(response.data);
-    } catch (error) {
-      toast.error("Failed to fetch requests");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchMatches = async (requestId) => {
     setMatchesLoading(true);

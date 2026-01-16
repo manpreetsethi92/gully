@@ -17,21 +17,20 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
   const [inviteLink] = useState("https://titlii.social");
 
   useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        const response = await axios.get(`${API}/opportunities`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setOpportunities(response.data);
+      } catch (error) {
+        toast.error("Failed to fetch opportunities");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchOpportunities();
   }, [token]);
-
-  const fetchOpportunities = async () => {
-    try {
-      const response = await axios.get(`${API}/opportunities`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setOpportunities(response.data);
-    } catch (error) {
-      toast.error("Failed to fetch opportunities");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleAction = async (opportunityId, action) => {
     setActionLoading(opportunityId);

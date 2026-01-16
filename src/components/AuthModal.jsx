@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { Dialog, DialogContent } from "./ui/dialog";
@@ -9,7 +8,7 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { useAuth, API } from "../App";
-import { ArrowLeft, Phone, Shield, Check, Instagram, Linkedin, X, MessageCircle, ChevronDown, Search } from "lucide-react";
+import { ArrowLeft, Shield, Check, Instagram, Linkedin, X, ChevronDown, Search } from "lucide-react";
 import { sendOTP, verifyOTP, clearRecaptcha } from "../firebase";
 
 const SKILL_CATEGORIES = {
@@ -213,7 +212,6 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
 };
 
 const AuthModal = ({ isOpen, onClose }) => {
-  const navigate = useNavigate();
   const { login } = useAuth();
   const phoneInputRef = useRef(null);
   

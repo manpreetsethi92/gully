@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Check, Instagram, Linkedin, Twitter, Film, Music, MapPin, ExternalLink, Camera, Search, X, Loader2 } from "lucide-react";
+import { Instagram, Linkedin, Twitter, Film, Music, MapPin, ExternalLink, Camera, Search, X, Loader2 } from "lucide-react";
 
 // Cloudinary config
 const CLOUDINARY_CLOUD_NAME = "ds7znu6zd";
