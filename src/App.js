@@ -53,10 +53,19 @@ const AuthProvider = ({ children }) => {
           const response = await axios.get(`${API}/users/me`, {
             headers: { Authorization: `Bearer ${token}` }
           });
-          setUser(response.data);
+          // Get stored user data to preserve profile_completed flag
+          const storedUser = JSON.parse(localStorage.getItem("titly_user") || "{}");
+          // Merge: backend data takes priority, but keep profile_completed if backend doesn't have it
+          const mergedUser = {
+            ...response.data,
+            profile_completed: response.data.profile_completed || storedUser.profile_completed || false
+          };
+          setUser(mergedUser);
+          localStorage.setItem("titly_user", JSON.stringify(mergedUser));
         } catch (error) {
           console.error("Failed to fetch user:", error);
           localStorage.removeItem("titly_token");
+          localStorage.removeItem("titly_user");
           setToken(null);
         }
       }
@@ -67,12 +76,14 @@ const AuthProvider = ({ children }) => {
 
   const login = (newToken, userData) => {
     localStorage.setItem("titly_token", newToken);
+    localStorage.setItem("titly_user", JSON.stringify(userData));
     setToken(newToken);
     setUser(userData);
   };
 
   const logout = () => {
     localStorage.removeItem("titly_token");
+    localStorage.removeItem("titly_user");
     setToken(null);
     setUser(null);
   };
