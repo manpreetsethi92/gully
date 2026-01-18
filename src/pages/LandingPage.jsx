@@ -127,6 +127,7 @@ const PhoneMockup = () => {
 const LandingPage = () => {
   const [currentWord, setCurrentWord] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState("signup"); // "signup" or "signin"
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isAuthenticated, user, loading } = useAuth();
 
@@ -160,13 +161,26 @@ const LandingPage = () => {
   }, [loading, isAuthenticated, user]);
 
   // useCallback MUST be before any early returns (React hooks rule)
-  const handleGetStarted = useCallback(() => {
+  const handleTryUsNow = useCallback(() => {
     if (isAuthenticated && user?.profile_completed) {
       window.location.href = "/app";
     } else {
+      setAuthMode("signup");
       setShowAuthModal(true);
     }
   }, [isAuthenticated, user]);
+
+  const handleSignIn = useCallback(() => {
+    if (isAuthenticated && user?.profile_completed) {
+      window.location.href = "/app";
+    } else {
+      setAuthMode("signin");
+      setShowAuthModal(true);
+    }
+  }, [isAuthenticated, user]);
+
+  // Legacy handler for backward compatibility
+  const handleGetStarted = handleTryUsNow;
 
   // Show loading while checking auth
   if (loading) {
@@ -329,12 +343,20 @@ const LandingPage = () => {
           </a>
           
           {/* Desktop */}
-          <button
-            onClick={handleGetStarted}
-            className="hidden md:block font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
-          >
-            [ENTER]
-          </button>
+          <div className="hidden md:flex items-center gap-4">
+            <button
+              onClick={handleTryUsNow}
+              className="px-5 py-2 bg-[#E50914] text-white font-syne font-semibold text-sm rounded-full hover:bg-[#c00812] transition-colors"
+            >
+              Try us now
+            </button>
+            <button
+              onClick={handleSignIn}
+              className="font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
+            >
+              SIGN IN
+            </button>
+          </div>
           
           {/* Mobile hamburger */}
           <button
@@ -393,7 +415,7 @@ const LandingPage = () => {
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                handleGetStarted();
+                handleTryUsNow();
               }}
               className="mt-auto mb-8 w-full py-4 rounded-full bg-[#E50914] text-white font-syne font-semibold text-base transition-all hover:shadow-lg hover:shadow-red-500/25"
             >
@@ -445,7 +467,7 @@ const LandingPage = () => {
             {/* CTA */}
             <div className="flex flex-col sm:flex-row items-start gap-6 animate-fade-up-delay-3">
               <button 
-                onClick={handleGetStarted}
+                onClick={handleTryUsNow}
                 className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16 lowercase rounded-full"
               >
                 <span className="relative z-10">try us now</span>
@@ -643,7 +665,7 @@ const LandingPage = () => {
             </p>
             
             <button 
-              onClick={handleGetStarted}
+              onClick={handleTryUsNow}
               className="group inline-flex items-center gap-4 px-10 py-5 md:px-12 md:py-6 bg-[#E50914] font-syne font-semibold text-lg md:text-xl tracking-wide text-white hover:gap-6 transition-all duration-300 lowercase rounded-full"
             >
               get started
@@ -666,7 +688,8 @@ const LandingPage = () => {
 
       <AuthModal 
         isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)} 
+        onClose={() => setShowAuthModal(false)}
+        mode={authMode}
       />
     </div>
   );
