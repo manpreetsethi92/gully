@@ -64,6 +64,7 @@ const COUNTRY_CODES = [
 
 // Country dropdown rendered via portal to escape Dialog
 const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries, selectedCode }) => {
+  console.log("CountryDropdown render, isOpen:", isOpen);
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
 
   useEffect(() => {
@@ -421,7 +422,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     <button
       ref={btnRef}
       type="button"
-      onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+      onClick={() => {
+        console.log("Country button clicked, current state:", showCountryDropdown);
+        setShowCountryDropdown(!showCountryDropdown);
+      }}
       className="flex items-center gap-1 px-3 h-11 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors min-w-[90px]"
     >
       <span className="text-lg">{getSelectedCountry().flag}</span>
