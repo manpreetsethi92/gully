@@ -382,6 +382,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   };
 
   const handleVerifyOTP = async () => {
+    console.log("handleVerifyOTP called, OTP length:", otp.length);
+    
     if (otp.length !== 6) {
       toast.error("Please enter the complete 6-digit code");
       return;
@@ -390,26 +392,40 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setLoading(true);
     try {
       const fullPhone = getFullPhoneNumber();
+      console.log("Calling verify-otp API with phone:", fullPhone);
       
         const response = await axios.post(`${API}/auth/verify-otp`, { 
         phone: fullPhone,
           otp: otp
         });
         
+      console.log("Verify OTP response:", {
+        hasToken: !!response.data.token,
+        hasUser: !!response.data.user,
+        profileCompleted: response.data.profile_completed,
+        isNewUser: response.data.is_new_user
+      });
+      
+      // Call login with token and user data
+      console.log("Calling login() with token and user");
           login(response.data.token, response.data.user);
-
+      
+      // Wait a moment for state to update
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      console.log("Closing modal and navigating");
+      onClose();
+      
+      // Navigate to dashboard (route is /app/* in App.js)
+      setTimeout(() => {
+        console.log("Navigating to /app (dashboard)");
+        navigate("/app", { replace: true });
+      }, 200);
+      
       if (response.data.profile_completed) {
           toast.success("Welcome back!");
-        onClose();
-        setTimeout(() => {
-          navigate("/app", { replace: true });
-        }, 100);
         } else {
         toast.info("Welcome! Let's complete your profile.");
-        onClose();
-        setTimeout(() => {
-          navigate("/app", { replace: true });
-        }, 100);
       }
     } catch (error) {
       console.error("Verify OTP error:", error);
@@ -733,7 +749,12 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   </div>
                   
                 <button
-                  onClick={handleVerifyOTP}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleVerifyOTP();
+                  }}
                   className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
                   style={{ background: '#E50914' }}
                   disabled={loading || otp.length !== 6}
