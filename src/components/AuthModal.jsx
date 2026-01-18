@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -8,7 +7,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { useAuth, API } from "../App";
-import { ArrowLeft, MessageCircle, Check, Instagram, Linkedin, ChevronDown, Search } from "lucide-react";
+import { ArrowLeft, MessageCircle, Check, Instagram, Linkedin, ChevronDown, Search, Mail } from "lucide-react";
 
 const COUNTRY_CODES = [
   { code: "+1", country: "United States", flag: "🇺🇸" },
@@ -62,141 +61,64 @@ const COUNTRY_CODES = [
   { code: "+51", country: "Peru", flag: "🇵🇪" }
 ];
 
-// Country dropdown component rendered via portal
-const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries, selectedCode }) => {
-  const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
-  const [isMobile, setIsMobile] = useState(false);
-  
+// Inline country dropdown (renders within dialog, no portal)
+const CountryDropdown = ({ isOpen, onClose, onSelect, searchValue, onSearchChange, filteredCountries, selectedCode }) => {
+  const dropdownRef = useRef(null);
+
   useEffect(() => {
-    if (!isOpen || !buttonRef?.current) return;
-    
-    const updatePosition = () => {
-      const viewportWidth = window.innerWidth;
-      const mobile = viewportWidth < 640;
-      setIsMobile(mobile);
-      
-      if (mobile) {
-        setPosition({
-          top: 0,
-          left: 0,
-          width: viewportWidth
-        });
-      } else {
-        const rect = buttonRef.current.getBoundingClientRect();
-        const dropdownHeight = 320;
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const spaceAbove = rect.top;
-        
-        let top;
-        if (spaceBelow >= dropdownHeight || spaceBelow >= spaceAbove) {
-          top = rect.bottom + 4;
-        } else {
-          top = rect.top - dropdownHeight - 4;
-        }
-        
-        let left = rect.left;
-        const dropdownWidth = Math.min(Math.max(rect.width, 280), 400);
-        if (left + dropdownWidth > viewportWidth - 16) {
-          left = viewportWidth - dropdownWidth - 16;
-        }
-        
-        setPosition({
-          top: Math.max(8, top),
-          left: Math.max(8, left),
-          width: dropdownWidth
-        });
+    if (!isOpen) return;
+
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        onClose();
       }
     };
-    
-    updatePosition();
-    window.addEventListener('resize', updatePosition);
-    window.addEventListener('scroll', updatePosition, true);
-    
-    return () => {
-      window.removeEventListener('resize', updatePosition);
-      window.removeEventListener('scroll', updatePosition, true);
-    };
-  }, [isOpen, buttonRef]);
-  
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
-  
-  const mobileStyles = isMobile ? {
-    maxHeight: '50vh',
-    borderRadius: '0 0 16px 16px',
-    borderTop: 'none'
-  } : {};
-  
-  return createPortal(
+
+  return (
     <div
-      className="fixed inset-0 z-[99999]"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-      onMouseDown={(e) => e.stopPropagation()}
-      onPointerDown={(e) => e.stopPropagation()}
+      ref={dropdownRef}
+      className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden"
+      style={{ maxHeight: '280px' }}
     >
-      <div
-        className="absolute bg-white border border-gray-200 shadow-2xl overflow-hidden"
-        style={{
-          top: position.top,
-          left: position.left,
-          width: position.width,
-          maxHeight: isMobile ? '50vh' : '320px',
-          borderRadius: isMobile ? '0 0 16px 16px' : '12px',
-          ...mobileStyles
-        }}
-        onClick={(e) => e.stopPropagation()}
-        onMouseDown={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
-        onWheel={(e) => e.stopPropagation()}
-      >
-        {/* Search */}
-        <div className="p-2 border-b border-gray-100 sticky top-0 bg-white">
-          <div className="relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search country..."
-              value={searchValue}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-gray-300"
-              style={{ height: isMobile ? '40px' : '36px', fontSize: isMobile ? '16px' : '14px' }}
-              autoFocus={!isMobile}
-              onClick={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-            />
-          </div>
-        </div>
-        
-        {/* Country list */}
-        <div className="overflow-y-auto" style={{ maxHeight: isMobile ? 'calc(50vh - 60px)' : '260px' }}>
-          {filteredCountries.map((country, idx) => (
-            <div
-              key={`${country.code}-${country.country}-${idx}`}
-              className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 transition-colors"
-              style={{ padding: isMobile ? '14px 16px' : '10px 12px' }}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                onSelect(country.code);
-              }}
-              onTouchEnd={(e) => {
-                e.stopPropagation();
-                onSelect(country.code);
-              }}
-            >
-              <span style={{ fontSize: isMobile ? '22px' : '20px' }}>{country.flag}</span>
-              <span className="flex-1 text-gray-700" style={{ fontSize: isMobile ? '15px' : '14px' }}>{country.country}</span>
-              <span className="text-gray-500 font-medium" style={{ fontSize: isMobile ? '15px' : '14px' }}>{country.code}</span>
-              {country.code === selectedCode && (
-                <Check size={16} className="text-red-500" />
-              )}
-            </div>
-          ))}
+      {/* Search */}
+      <div className="p-2 border-b border-gray-100 sticky top-0 bg-white">
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search country..."
+            value={searchValue}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-gray-300"
+            autoFocus
+          />
         </div>
       </div>
-    </div>,
-    document.body
+
+      {/* Country list */}
+      <div className="overflow-y-auto" style={{ maxHeight: '220px' }}>
+        {filteredCountries.map((country, idx) => (
+          <div
+            key={`${country.code}-${country.country}-${idx}`}
+            className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-50 transition-colors"
+            onClick={() => onSelect(country.code)}
+          >
+            <span className="text-lg">{country.flag}</span>
+            <span className="flex-1 text-sm text-gray-700">{country.country}</span>
+            <span className="text-sm text-gray-500 font-medium">{country.code}</span>
+            {country.code === selectedCode && (
+              <Check size={14} className="text-red-500" />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
@@ -215,7 +137,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const phoneInputRef = useRef(null);
-  const countryButtonRef = useRef(null);
 
   // Internal mode (can override prop for switching)
   const [internalMode, setInternalMode] = useState(mode);
@@ -230,6 +151,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   
   // Signup form state
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [instagram, setInstagram] = useState("");
   const [linkedin, setLinkedin] = useState("");
@@ -285,6 +207,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setCountryCode("+1");
     setOtp("");
     setName("");
+    setEmail("");
     setLocation("");
     setInstagram("");
     setLinkedin("");
@@ -331,38 +254,48 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     return instagram.trim() !== "" || linkedin.trim() !== "";
   };
 
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   // ========== SIGNUP FLOW (Try us now) ==========
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!name.trim()) {
       toast.error("Please enter your name");
       return;
     }
-    
+
     const cleaned = phone.replace(/\D/g, '');
     if (!cleaned || cleaned.length < 7) {
       toast.error("Please enter a valid phone number");
       return;
     }
-    
+
+    if (!email.trim() || !isValidEmail(email.trim())) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
     if (!location.trim()) {
       toast.error("Please enter your location");
       return;
     }
-    
+
     if (!hasSocialLink()) {
       toast.error("Please add your Instagram or LinkedIn");
       return;
     }
-    
+
     setLoading(true);
     try {
       const fullPhone = getFullPhoneNumber();
-      
+
       const response = await axios.post(`${API}/auth/signup`, {
         name: name.trim(),
         phone: fullPhone,
+        email: email.trim(),
         location: location.trim(),
         instagram: instagram.trim() || null,
         linkedin: linkedin.trim() || null
@@ -455,12 +388,11 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   // Phone input component (shared between flows)
   const PhoneInput = ({ onSubmit, buttonText }) => (
     <form onSubmit={onSubmit} className="space-y-4">
-      <div>
+      <div className="relative">
         <Label className="text-xs font-medium text-gray-500 mb-1 block">PHONE NUMBER</Label>
         <div className="flex gap-2">
           {/* Country Code Selector */}
           <button
-            ref={countryButtonRef}
             type="button"
             onClick={() => setShowCountryDropdown(!showCountryDropdown)}
             className="flex items-center gap-1 px-3 h-11 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors min-w-[90px]"
@@ -469,10 +401,9 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             <span className="text-sm font-medium">{countryCode}</span>
             <ChevronDown size={14} className="text-gray-400" />
           </button>
-          
+
           {/* Phone Input */}
           <Input
-            ref={phoneInputRef}
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -481,23 +412,22 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             autoComplete="tel"
           />
         </div>
-        
+
         <CountryDropdown
           isOpen={showCountryDropdown}
           onClose={() => { setShowCountryDropdown(false); setCountrySearch(''); }}
           onSelect={handleCountrySelect}
-          buttonRef={countryButtonRef}
           searchValue={countrySearch}
           onSearchChange={setCountrySearch}
           filteredCountries={filteredCountries}
           selectedCode={countryCode}
         />
       </div>
-      
-      <button 
-        type="submit" 
-        className="w-full h-11 rounded-full text-white font-semibold transition-opacity" 
-        style={{ background: '#E50914' }} 
+
+      <button
+        type="submit"
+        className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
+        style={{ background: '#E50914' }}
         disabled={loading}
       >
         {loading ? <div className="spinner mx-auto" /> : buttonText}
@@ -554,11 +484,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                 </div>
                 
                 {/* Phone */}
-                <div>
+                <div className="relative">
                   <Label className="text-xs font-medium text-gray-500 mb-1 block">WHATSAPP NUMBER</Label>
                   <div className="flex gap-2">
                     <button
-                      ref={countryButtonRef}
                       type="button"
                       onClick={() => setShowCountryDropdown(!showCountryDropdown)}
                       className="flex items-center gap-1 px-3 h-11 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors min-w-[90px]"
@@ -581,7 +510,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     isOpen={showCountryDropdown}
                     onClose={() => { setShowCountryDropdown(false); setCountrySearch(''); }}
                     onSelect={handleCountrySelect}
-                    buttonRef={countryButtonRef}
                     searchValue={countrySearch}
                     onSearchChange={setCountrySearch}
                     filteredCountries={filteredCountries}
@@ -604,17 +532,33 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   )}
                 </div>
 
+                {/* Email */}
+                <div>
+                  <Label className="text-xs font-medium text-gray-500 mb-1 block">EMAIL</Label>
+                  <div className="relative">
+                    <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="your@email.com"
+                      className="h-11 pl-10"
+                      autoComplete="email"
+                    />
+                  </div>
+                </div>
+
                 {/* Location */}
                 <div>
                   <Label className="text-xs font-medium text-gray-500 mb-1 block">LOCATION</Label>
-                  <Input 
-                    value={location} 
-                    onChange={(e) => setLocation(e.target.value)} 
-                    placeholder="City, State (e.g., Dallas, TX)" 
-                    className="h-11" 
+                  <Input
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="City, State (e.g., Dallas, TX)"
+                    className="h-11"
                   />
                 </div>
-                
+
                 {/* Social Links */}
                 <div className="p-4 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(229, 9, 20, 0.05) 0%, rgba(255, 71, 87, 0.05) 100%)', border: '1px solid rgba(229, 9, 20, 0.2)' }}>
                   <Label className="text-xs font-medium mb-2 block" style={{ color: '#E50914' }}>
