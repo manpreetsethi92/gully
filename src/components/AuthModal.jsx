@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, forwardRef } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -63,7 +63,7 @@ const COUNTRY_CODES = [
 ];
 
 // Country dropdown rendered via portal to escape Dialog
-const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries, selectedCode }) => {
+const CountryDropdown = forwardRef(({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries, selectedCode }, ref) => {
   console.log("CountryDropdown render, isOpen:", isOpen);
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
 
@@ -93,6 +93,7 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
 
   return createPortal(
     <div
+      ref={ref}
       className="fixed inset-0 z-[99999]"
       onClick={(e) => {
         e.stopPropagation();
@@ -156,7 +157,7 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
     </div>,
     document.body
   );
-};
+});
 
 /**
  * AuthModal - WhatsApp-first authentication
@@ -166,6 +167,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const navigate = useNavigate();
   const phoneInputRef = useRef(null);
   const countryButtonRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   // Internal mode (can override prop for switching)
   const [internalMode, setInternalMode] = useState(mode);
@@ -471,10 +473,22 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         <DialogContent
           className="sm:max-w-md p-0 gap-0 overflow-hidden z-50"
           onPointerDownOutside={(e) => {
-            if (showCountryDropdown) e.preventDefault();
+            if (
+              showCountryDropdown ||
+              dropdownRef.current?.contains(e.target) ||
+              countryButtonRef.current?.contains(e.target)
+            ) {
+              e.preventDefault();
+            }
           }}
           onInteractOutside={(e) => {
-            if (showCountryDropdown) e.preventDefault();
+            if (
+              showCountryDropdown ||
+              dropdownRef.current?.contains(e.target) ||
+              countryButtonRef.current?.contains(e.target)
+            ) {
+              e.preventDefault();
+            }
           }}
           onEscapeKeyDown={(e) => {
             if (showCountryDropdown) {
@@ -734,6 +748,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
 
       {/* Country dropdown portal - OUTSIDE Dialog */}
       <CountryDropdown
+        ref={dropdownRef}
         isOpen={showCountryDropdown}
         onClose={() => { setShowCountryDropdown(false); setCountrySearch(''); }}
         onSelect={handleCountrySelect}
