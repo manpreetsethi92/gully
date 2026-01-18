@@ -128,12 +128,31 @@ const AuthProvider = ({ children }) => {
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useAuth();
 
+  // Also check localStorage directly as fallback during initial load
+  const hasStoredAuth = () => {
+    const storedToken = localStorage.getItem("titly_token");
+    const storedUser = localStorage.getItem("titly_user");
+    if (storedToken && storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        return parsed.profile_completed === true;
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  };
+
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="spinner"></div>
-      </div>
-    );
+    // While loading, check localStorage to prevent flash redirect
+    if (hasStoredAuth()) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-white">
+          <div className="spinner"></div>
+        </div>
+      );
+    }
+    return <Navigate to="/" replace />;
   }
 
   if (!isAuthenticated || (user && !user.profile_completed)) {
