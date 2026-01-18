@@ -134,8 +134,8 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
             href={WHATSAPP_BOT_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-bold text-sm"
-            style={{ background: '#25D366' }}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-bold text-sm hover:opacity-90 transition-opacity"
+            style={{ background: '#E50914' }}
           >
             <MessageCircle size={18} />
             Message Taj to get more matches
