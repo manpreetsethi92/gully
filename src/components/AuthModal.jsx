@@ -368,7 +368,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       });
 
       setStep("otp");
-      toast.success("Code sent via WhatsApp!");
+      toast.success("Code sent via SMS!");
     } catch (error) {
       console.error("Send OTP error:", error);
       if (error.response?.status === 404) {
@@ -551,7 +551,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             ) : internalMode === "signup" ? (
               /* ========== SIGNUP MODE ========== */
               <div>
-                <h2 className="text-xl font-bold mb-1">Join Titlii</h2>
+                <h2 className="text-xl font-bold mb-1">Join titlii</h2>
                 <p className="text-gray-500 text-sm mb-6">Tell us a bit about yourself</p>
 
                 <form onSubmit={handleSignupSubmit} className="space-y-4">
@@ -561,7 +561,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     <Input
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="What should Taj call you?"
+                      placeholder="John Doe"
                       className="h-11"
                     />
               </div>
@@ -576,7 +576,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                         type="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="Phone number"
+                        placeholder="(000) 000-0000"
                         className="flex-1 h-11"
                         autoComplete="tel"
                       />
@@ -607,7 +607,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="your@email.com"
+                        placeholder="johndoe@company.com"
                         className="h-11 pl-10"
                         autoComplete="email"
                       />
@@ -691,7 +691,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                         type="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="Phone number"
+                        placeholder="(000) 000-0000"
                         className="flex-1 h-11"
                         autoComplete="tel"
                       />
