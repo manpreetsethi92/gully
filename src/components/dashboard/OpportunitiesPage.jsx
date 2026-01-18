@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "../ui/input";
 import { Sparkles, Check, X, Share2, Copy, MessageCircle } from "lucide-react";
 
-const TELEGRAM_BOT_URL = "https://t.me/titliworkBot?start=welcome";
+const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
 const OpportunitiesPage = ({ onRefresh, darkMode }) => {
   const { token } = useAuth();
@@ -131,11 +131,11 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
           <h2 className={`text-2xl font-bold mb-2 mt-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>No opportunities yet</h2>
           <p className={`mb-4 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>When someone's request matches your skills, it'll appear here.</p>
           <a
-            href={TELEGRAM_BOT_URL}
+            href={WHATSAPP_BOT_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-bold text-sm"
-            style={{ background: '#E50914' }}
+            style={{ background: '#25D366' }}
           >
             <MessageCircle size={18} />
             Message Taj to get more matches
