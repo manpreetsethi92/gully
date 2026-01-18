@@ -262,6 +262,11 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
 
+    if (phoneExists) {
+      toast.error("This phone number is already registered. Please sign in instead.");
+      return;
+    }
+
     if (!name.trim()) {
       toast.error("Please enter your name");
       return;
@@ -595,11 +600,11 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   )}
                 </div>
                 
-                <button 
-                  type="submit" 
-                  className="w-full h-11 rounded-full text-white font-semibold transition-opacity" 
-                  style={{ background: '#E50914' }} 
-                  disabled={loading}
+                <button
+                  type="submit"
+                  className="w-full h-11 rounded-full text-white font-semibold transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ background: '#E50914' }}
+                  disabled={loading || phoneExists}
                 >
                   {loading ? <div className="spinner mx-auto" /> : "Continue"}
                 </button>
