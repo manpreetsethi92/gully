@@ -431,280 +431,282 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && resetAndClose()} modal={false}>
-      {/* Custom backdrop with pointer-events handling */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/80 z-50"
-          style={{ pointerEvents: showCountryDropdown ? 'none' : 'auto' }}
-          onClick={() => !showCountryDropdown && resetAndClose()}
-        />
-      )}
+    <>
+      <Dialog open={isOpen} onOpenChange={(open) => !open && resetAndClose()} modal={false}>
+        {/* Custom backdrop with pointer-events handling */}
+        {isOpen && (
+          <div
+            className="fixed inset-0 bg-black/80 z-50"
+            style={{ pointerEvents: showCountryDropdown ? 'none' : 'auto' }}
+            onClick={() => !showCountryDropdown && resetAndClose()}
+          />
+        )}
 
-      <DialogContent
-        className="sm:max-w-md p-0 gap-0 overflow-hidden z-50"
-        onPointerDownOutside={(e) => {
-          if (showCountryDropdown) e.preventDefault();
-        }}
-        onInteractOutside={(e) => {
-          if (showCountryDropdown) e.preventDefault();
-        }}
-        onEscapeKeyDown={(e) => {
-          if (showCountryDropdown) {
-            e.preventDefault();
-            setShowCountryDropdown(false);
-          }
-        }}
-      >
-        <div className="p-8">
-          {/* Success Screen */}
-          {showSuccess && internalMode === "signup" ? (
-            <div className="text-center py-8">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
-                <MessageCircle size={40} className="text-green-600" />
+        <DialogContent
+          className="sm:max-w-md p-0 gap-0 overflow-hidden z-50"
+          onPointerDownOutside={(e) => {
+            if (showCountryDropdown) e.preventDefault();
+          }}
+          onInteractOutside={(e) => {
+            if (showCountryDropdown) e.preventDefault();
+          }}
+          onEscapeKeyDown={(e) => {
+            if (showCountryDropdown) {
+              e.preventDefault();
+              setShowCountryDropdown(false);
+            }
+          }}
+        >
+          <div className="p-8">
+            {/* Success Screen */}
+            {showSuccess && internalMode === "signup" ? (
+              <div className="text-center py-8">
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
+                  <MessageCircle size={40} className="text-green-600" />
+                </div>
+                <h2 className="text-2xl font-bold mb-2">You're all set!</h2>
+                <p className="text-gray-500 mb-6">
+                  Now text Taj on WhatsApp to find who you need!
+                </p>
+                <a
+                  href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20just%20signed%20up"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => resetAndClose()}
+                  className="block w-full h-12 rounded-full text-white font-semibold flex items-center justify-center gap-2"
+                  style={{ background: '#25D366' }}
+                >
+                  <MessageCircle size={20} />
+                  Text Taj now
+                </a>
               </div>
-              <h2 className="text-2xl font-bold mb-2">You're all set!</h2>
-              <p className="text-gray-500 mb-6">
-                Now text Taj on WhatsApp to find who you need!
-              </p>
-              <a
-                href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20just%20signed%20up"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => resetAndClose()}
-                className="block w-full h-12 rounded-full text-white font-semibold flex items-center justify-center gap-2"
-                style={{ background: '#25D366' }}
-              >
-                <MessageCircle size={20} />
-                Text Taj now
-              </a>
-            </div>
-          ) : internalMode === "signup" ? (
-            /* ========== SIGNUP MODE ========== */
-            <div>
-              <h2 className="text-xl font-bold mb-1">Join Titlii</h2>
-              <p className="text-gray-500 text-sm mb-6">Tell us a bit about yourself</p>
+            ) : internalMode === "signup" ? (
+              /* ========== SIGNUP MODE ========== */
+              <div>
+                <h2 className="text-xl font-bold mb-1">Join Titlii</h2>
+                <p className="text-gray-500 text-sm mb-6">Tell us a bit about yourself</p>
 
-              <form onSubmit={handleSignupSubmit} className="space-y-4">
-                {/* Name */}
-                <div>
-                  <Label className="text-xs font-medium text-gray-500 mb-1 block">YOUR NAME</Label>
-                  <Input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="What should Taj call you?"
-                    className="h-11"
-                  />
-                </div>
-
-                {/* Phone */}
-                <div>
-                  <Label className="text-xs font-medium text-gray-500 mb-1 block">WHATSAPP NUMBER</Label>
-                  <div className="flex gap-2">
-                    <CountryCodeButton btnRef={countryButtonRef} />
+                <form onSubmit={handleSignupSubmit} className="space-y-4">
+                  {/* Name */}
+                  <div>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">YOUR NAME</Label>
                     <Input
-                      ref={phoneInputRef}
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="Phone number"
-                      className="flex-1 h-11"
-                      autoComplete="tel"
-                    />
-                  </div>
-                  {phoneExists && (
-                    <p className="text-sm text-amber-600 mt-2">
-                      This number is already registered.{" "}
-                      <button
-                        type="button"
-                        onClick={switchToSignin}
-                        className="text-[#E50914] font-medium hover:underline"
-                      >
-                        Sign in instead?
-                      </button>
-                    </p>
-                  )}
-                  {phoneChecking && (
-                    <p className="text-xs text-gray-400 mt-1">Checking...</p>
-                  )}
-                </div>
-
-                {/* Email */}
-                <div>
-                  <Label className="text-xs font-medium text-gray-500 mb-1 block">EMAIL</Label>
-                  <div className="relative">
-                    <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <Input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      className="h-11 pl-10"
-                      autoComplete="email"
-                    />
-                  </div>
-                </div>
-
-                {/* Location */}
-                <div>
-                  <Label className="text-xs font-medium text-gray-500 mb-1 block">LOCATION</Label>
-                  <Input
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="City, State (e.g., Dallas, TX)"
-                    className="h-11"
-                  />
-                </div>
-
-                {/* Social Links */}
-                <div className="p-4 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(229, 9, 20, 0.05) 0%, rgba(255, 71, 87, 0.05) 100%)', border: '1px solid rgba(229, 9, 20, 0.2)' }}>
-                  <Label className="text-xs font-medium mb-2 block" style={{ color: '#E50914' }}>
-                    VERIFY YOUR PROFILE
-                  </Label>
-                  <p className="text-xs text-gray-500 mb-3">Add at least one social link so we can verify you're real</p>
-
-                  {/* Instagram */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <Instagram size={16} className="text-pink-500 flex-shrink-0" />
-                    <Input
-                      value={instagram}
-                      onChange={(e) => setInstagram(e.target.value)}
-                      placeholder="Instagram username"
-                      className={`h-10 text-sm ${instagram.trim() ? 'border-green-300' : ''}`}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="What should Taj call you?"
+                      className="h-11"
                     />
                   </div>
 
-                  {/* LinkedIn */}
-                  <div className="flex items-center gap-2">
-                    <Linkedin size={16} className="text-blue-600 flex-shrink-0" />
+                  {/* Phone */}
+                  <div>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">WHATSAPP NUMBER</Label>
+                    <div className="flex gap-2">
+                      <CountryCodeButton btnRef={countryButtonRef} />
+                      <Input
+                        ref={phoneInputRef}
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="Phone number"
+                        className="flex-1 h-11"
+                        autoComplete="tel"
+                      />
+                    </div>
+                    {phoneExists && (
+                      <p className="text-sm text-amber-600 mt-2">
+                        This number is already registered.{" "}
+                        <button
+                          type="button"
+                          onClick={switchToSignin}
+                          className="text-[#E50914] font-medium hover:underline"
+                        >
+                          Sign in instead?
+                        </button>
+                      </p>
+                    )}
+                    {phoneChecking && (
+                      <p className="text-xs text-gray-400 mt-1">Checking...</p>
+                    )}
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">EMAIL</Label>
+                    <div className="relative">
+                      <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <Input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="your@email.com"
+                        className="h-11 pl-10"
+                        autoComplete="email"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">LOCATION</Label>
                     <Input
-                      value={linkedin}
-                      onChange={(e) => setLinkedin(e.target.value)}
-                      placeholder="LinkedIn URL or username"
-                      className={`h-10 text-sm ${linkedin.trim() ? 'border-green-300' : ''}`}
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder="City, State (e.g., Dallas, TX)"
+                      className="h-11"
                     />
                   </div>
 
-                  {hasSocialLink() && (
-                    <p className="text-xs text-green-600 mt-3 flex items-center gap-1">
-                      <Check size={12} /> Ready to verify
-                    </p>
-                  )}
-                </div>
+                  {/* Social Links */}
+                  <div className="p-4 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(229, 9, 20, 0.05) 0%, rgba(255, 71, 87, 0.05) 100%)', border: '1px solid rgba(229, 9, 20, 0.2)' }}>
+                    <Label className="text-xs font-medium mb-2 block" style={{ color: '#E50914' }}>
+                      VERIFY YOUR PROFILE
+                    </Label>
+                    <p className="text-xs text-gray-500 mb-3">Add at least one social link so we can verify you're real</p>
 
-                <button
-                  type="submit"
-                  className="w-full h-11 rounded-full text-white font-semibold transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ background: '#E50914' }}
-                  disabled={loading || phoneExists}
-                >
-                  {loading ? <div className="spinner mx-auto" /> : "Continue"}
-                </button>
-              </form>
+                    {/* Instagram */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <Instagram size={16} className="text-pink-500 flex-shrink-0" />
+                      <Input
+                        value={instagram}
+                        onChange={(e) => setInstagram(e.target.value)}
+                        placeholder="Instagram username"
+                        className={`h-10 text-sm ${instagram.trim() ? 'border-green-300' : ''}`}
+                      />
+                    </div>
 
-              <p className="text-xs text-gray-400 text-center mt-4">
-                By continuing, you agree to our Terms of Service and Privacy Policy
-              </p>
-            </div>
-          ) : step === "phone" ? (
-            /* ========== SIGNIN - PHONE STEP ========== */
-            <div>
-              <h2 className="text-xl font-bold mb-1">Welcome back</h2>
-              <p className="text-gray-500 text-sm mb-6">Enter your phone number to sign in via WhatsApp</p>
+                    {/* LinkedIn */}
+                    <div className="flex items-center gap-2">
+                      <Linkedin size={16} className="text-blue-600 flex-shrink-0" />
+                      <Input
+                        value={linkedin}
+                        onChange={(e) => setLinkedin(e.target.value)}
+                        placeholder="LinkedIn URL or username"
+                        className={`h-10 text-sm ${linkedin.trim() ? 'border-green-300' : ''}`}
+                      />
+                    </div>
 
-              <form onSubmit={handleSendOTP} className="space-y-4">
-                <div>
-                  <Label className="text-xs font-medium text-gray-500 mb-1 block">PHONE NUMBER</Label>
-                  <div className="flex gap-2">
-                    <CountryCodeButton btnRef={countryButtonRef} />
-                    <Input
-                      ref={phoneInputRef}
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="Phone number"
-                      className="flex-1 h-11"
-                      autoComplete="tel"
-                    />
+                    {hasSocialLink() && (
+                      <p className="text-xs text-green-600 mt-3 flex items-center gap-1">
+                        <Check size={12} /> Ready to verify
+                      </p>
+                    )}
                   </div>
-                </div>
 
-                <button
-                  type="submit"
-                  className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
-                  style={{ background: '#E50914' }}
-                  disabled={loading}
-                >
-                  {loading ? <div className="spinner mx-auto" /> : "Send Code"}
-                </button>
-              </form>
-
-              <div className="mt-6 pt-4 border-t border-gray-100 text-center">
-                <p className="text-sm text-gray-500">
-                  Don't have an account?{" "}
                   <button
-                    onClick={() => {
-                      setInternalMode("signup");
-                      setStep("form");
-                    }}
-                    className="text-[#E50914] font-medium hover:underline"
+                    type="submit"
+                    className="w-full h-11 rounded-full text-white font-semibold transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ background: '#E50914' }}
+                    disabled={loading || phoneExists}
                   >
-                    Sign up
+                    {loading ? <div className="spinner mx-auto" /> : "Continue"}
                   </button>
+                </form>
+
+                <p className="text-xs text-gray-400 text-center mt-4">
+                  By continuing, you agree to our Terms of Service and Privacy Policy
                 </p>
               </div>
-            </div>
-          ) : (
-            /* ========== SIGNIN - OTP STEP ========== */
-            <div>
-              <button
-                onClick={() => { setStep("phone"); setOtp(""); }}
-                className="flex items-center gap-1 text-sm text-gray-500 mb-4 hover:text-gray-700"
-              >
-                <ArrowLeft size={16} /> Back
-              </button>
+            ) : step === "phone" ? (
+              /* ========== SIGNIN - PHONE STEP ========== */
+              <div>
+                <h2 className="text-xl font-bold mb-1">Welcome back</h2>
+                <p className="text-gray-500 text-sm mb-6">Enter your phone number to sign in via WhatsApp</p>
 
-              <h2 className="text-xl font-bold mb-1">Enter verification code</h2>
-              <p className="text-gray-500 text-sm mb-4">
-                We sent a code to your WhatsApp at {getFullPhoneNumber()}
-              </p>
+                <form onSubmit={handleSendOTP} className="space-y-4">
+                  <div>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">PHONE NUMBER</Label>
+                    <div className="flex gap-2">
+                      <CountryCodeButton btnRef={countryButtonRef} />
+                      <Input
+                        ref={phoneInputRef}
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="Phone number"
+                        className="flex-1 h-11"
+                        autoComplete="tel"
+                      />
+                    </div>
+                  </div>
 
-              <div className="p-3 rounded-lg mb-4 text-xs flex items-center gap-2" style={{ background: '#dcfce7' }}>
-                <MessageCircle size={14} className="text-green-600" />
-                <span className="text-green-700">Check your WhatsApp for the code</span>
+                  <button
+                    type="submit"
+                    className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
+                    style={{ background: '#E50914' }}
+                    disabled={loading}
+                  >
+                    {loading ? <div className="spinner mx-auto" /> : "Send Code"}
+                  </button>
+                </form>
+
+                <div className="mt-6 pt-4 border-t border-gray-100 text-center">
+                  <p className="text-sm text-gray-500">
+                    Don't have an account?{" "}
+                    <button
+                      onClick={() => {
+                        setInternalMode("signup");
+                        setStep("form");
+                      }}
+                      className="text-[#E50914] font-medium hover:underline"
+                    >
+                      Sign up
+                    </button>
+                  </p>
+                </div>
               </div>
+            ) : (
+              /* ========== SIGNIN - OTP STEP ========== */
+              <div>
+                <button
+                  onClick={() => { setStep("phone"); setOtp(""); }}
+                  className="flex items-center gap-1 text-sm text-gray-500 mb-4 hover:text-gray-700"
+                >
+                  <ArrowLeft size={16} /> Back
+                </button>
 
-              <div className="flex justify-center mb-6">
-                <InputOTP maxLength={6} value={otp} onChange={setOtp}>
-                  <InputOTPGroup>
-                    {[0, 1, 2, 3, 4, 5].map(i => (
-                      <InputOTPSlot key={i} index={i} className="w-10 h-12 text-lg" />
-                    ))}
-                  </InputOTPGroup>
-                </InputOTP>
+                <h2 className="text-xl font-bold mb-1">Enter verification code</h2>
+                <p className="text-gray-500 text-sm mb-4">
+                  We sent a code to your WhatsApp at {getFullPhoneNumber()}
+                </p>
+
+                <div className="p-3 rounded-lg mb-4 text-xs flex items-center gap-2" style={{ background: '#dcfce7' }}>
+                  <MessageCircle size={14} className="text-green-600" />
+                  <span className="text-green-700">Check your WhatsApp for the code</span>
+                </div>
+
+                <div className="flex justify-center mb-6">
+                  <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+                    <InputOTPGroup>
+                      {[0, 1, 2, 3, 4, 5].map(i => (
+                        <InputOTPSlot key={i} index={i} className="w-10 h-12 text-lg" />
+                      ))}
+                    </InputOTPGroup>
+                  </InputOTP>
+                </div>
+
+                <button
+                  onClick={handleVerifyOTP}
+                  className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
+                  style={{ background: '#E50914' }}
+                  disabled={loading || otp.length !== 6}
+                >
+                  {loading ? <div className="spinner mx-auto" /> : "Verify"}
+                </button>
+
+                <button
+                  onClick={() => { setStep("phone"); setOtp(""); }}
+                  className="w-full mt-3 text-sm text-gray-500 hover:text-gray-700"
+                >
+                  Didn't receive code? Try again
+                </button>
               </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
-              <button
-                onClick={handleVerifyOTP}
-                className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
-                style={{ background: '#E50914' }}
-                disabled={loading || otp.length !== 6}
-              >
-                {loading ? <div className="spinner mx-auto" /> : "Verify"}
-              </button>
-
-              <button
-                onClick={() => { setStep("phone"); setOtp(""); }}
-                className="w-full mt-3 text-sm text-gray-500 hover:text-gray-700"
-              >
-                Didn't receive code? Try again
-              </button>
-            </div>
-          )}
-        </div>
-      </DialogContent>
-
-      {/* Country dropdown portal */}
+      {/* Country dropdown portal - OUTSIDE Dialog */}
       <CountryDropdown
         isOpen={showCountryDropdown}
         onClose={() => { setShowCountryDropdown(false); setCountrySearch(''); }}
@@ -715,7 +717,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         filteredCountries={filteredCountries}
         selectedCode={countryCode}
       />
-    </Dialog>
+    </>
   );
 };
 
