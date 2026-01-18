@@ -371,7 +371,12 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       toast.success("Code sent via WhatsApp!");
     } catch (error) {
       console.error("Send OTP error:", error);
-      if (error.response?.status === 429) {
+      if (error.response?.status === 404) {
+        toast.error("No account found with this phone number. Please sign up first.");
+        // Switch to signup mode
+        setInternalMode("signup");
+        setStep("form");
+      } else if (error.response?.status === 429) {
         toast.error("Too many requests. Please wait a bit and try again.");
       } else {
         toast.error(error.response?.data?.detail || "Failed to send code. Please try again.");
