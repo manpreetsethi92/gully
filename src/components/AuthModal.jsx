@@ -434,7 +434,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       }}
       onTouchEnd={(e) => {
         e.stopPropagation();
-        e.preventDefault();
+    e.preventDefault();
         setShowCountryDropdown(prev => !prev);
       }}
       onMouseDown={(e) => e.stopPropagation()}
@@ -449,7 +449,14 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={(open) => !open && resetAndClose()} modal={false}>
+      <Dialog
+        open={isOpen}
+        modal={false}
+        onOpenChange={(open) => {
+          if (!open && showCountryDropdown) return;
+          if (!open) resetAndClose();
+        }}
+      >
         {/* Custom backdrop with pointer-events handling */}
         {isOpen && (
           <div
