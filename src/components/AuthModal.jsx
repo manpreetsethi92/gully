@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { Dialog, DialogContent } from "./ui/dialog";
@@ -213,6 +214,7 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, on
 
 const AuthModal = ({ isOpen, onClose }) => {
   const { login } = useAuth();
+  const navigate = useNavigate();
   const phoneInputRef = useRef(null);
   
   const [step, setStep] = useState("phone");
@@ -370,7 +372,11 @@ const AuthModal = ({ isOpen, onClose }) => {
           login(response.data.token, response.data.user);
           toast.success("Welcome back!");
           onClose();
-          window.location.href = "/app";
+          // Use navigate instead of window.location.href to avoid full page reload
+          // This ensures auth state is properly set before navigation
+          setTimeout(() => {
+            navigate("/app", { replace: true });
+          }, 100);
           return;
         } else {
           setToken(response.data.token);

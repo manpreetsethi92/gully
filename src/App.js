@@ -51,7 +51,7 @@ const AuthProvider = ({ children }) => {
     }
   };
   
-  const [user, setUser] = useState(getInitialUser);
+  const [user, setUser] = useState(() => getInitialUser());
   const [token, setToken] = useState(localStorage.getItem("titly_token"));
   const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -155,7 +155,13 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/" replace />;
   }
 
-  if (!isAuthenticated || (user && !user.profile_completed)) {
+  // Check localStorage as fallback if state isn't ready yet (e.g., after login)
+  // This handles the case where login() just updated localStorage but state hasn't propagated yet
+  const storedAuthComplete = hasStoredAuth();
+  const stateAuthComplete = isAuthenticated && user?.profile_completed;
+  
+  // Allow access if either state OR localStorage indicates valid auth
+  if (!storedAuthComplete && !stateAuthComplete) {
     return <Navigate to="/" replace />;
   }
 
