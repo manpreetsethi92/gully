@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -61,82 +62,109 @@ const COUNTRY_CODES = [
   { code: "+51", country: "Peru", flag: "🇵🇪" }
 ];
 
-// Inline country dropdown (renders within dialog, no portal)
-const CountryDropdown = ({ isOpen, onClose, onSelect, searchValue, onSearchChange, filteredCountries, selectedCode }) => {
-  const dropdownRef = useRef(null);
+// Country dropdown rendered via portal to escape Dialog
+const CountryDropdown = ({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries, selectedCode }) => {
+  const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !buttonRef?.current) return;
 
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        onClose();
-      }
+    const updatePosition = () => {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: Math.max(rect.width, 280)
+      });
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen, onClose]);
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    window.addEventListener('scroll', updatePosition, true);
+
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
+    };
+  }, [isOpen, buttonRef]);
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
-      ref={dropdownRef}
-      className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden"
-      style={{ maxHeight: '280px' }}
+      className="fixed inset-0 z-[99999]"
+      onClick={(e) => {
+        e.stopPropagation();
+        if (e.target === e.currentTarget) onClose();
+      }}
+      onMouseDown={(e) => e.stopPropagation()}
+      onPointerDown={(e) => e.stopPropagation()}
     >
-      {/* Search */}
-      <div className="p-2 border-b border-gray-100 sticky top-0 bg-white">
-        <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search country..."
-            value={searchValue}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-gray-300"
-            autoFocus
-          />
+      <div
+        className="absolute bg-white border border-gray-200 rounded-xl shadow-2xl overflow-hidden"
+        style={{
+          top: position.top,
+          left: position.left,
+          width: position.width,
+          maxHeight: '320px'
+        }}
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+      >
+        {/* Search */}
+        <div className="p-2 border-b border-gray-100 sticky top-0 bg-white">
+          <div className="relative">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search country..."
+              value={searchValue}
+              onChange={(e) => onSearchChange(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-gray-300"
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+
+        {/* Country list */}
+        <div className="overflow-y-auto" style={{ maxHeight: '260px' }}>
+          {filteredCountries.map((country, idx) => (
+            <div
+              key={`${country.code}-${country.country}-${idx}`}
+              className="flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                onSelect(country.code);
+              }}
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <span className="text-lg">{country.flag}</span>
+              <span className="flex-1 text-sm text-gray-700">{country.country}</span>
+              <span className="text-sm text-gray-500 font-medium">{country.code}</span>
+              {country.code === selectedCode && (
+                <Check size={14} className="text-red-500" />
+              )}
+            </div>
+          ))}
         </div>
       </div>
-
-      {/* Country list */}
-      <div className="overflow-y-auto" style={{ maxHeight: '220px' }}>
-        {filteredCountries.map((country, idx) => (
-          <div
-            key={`${country.code}-${country.country}-${idx}`}
-            className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-50 transition-colors"
-            onClick={() => onSelect(country.code)}
-          >
-            <span className="text-lg">{country.flag}</span>
-            <span className="flex-1 text-sm text-gray-700">{country.country}</span>
-            <span className="text-sm text-gray-500 font-medium">{country.code}</span>
-            {country.code === selectedCode && (
-              <Check size={14} className="text-red-500" />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
 /**
  * AuthModal - WhatsApp-first authentication
- * 
- * Props:
- * - isOpen: boolean
- * - onClose: function
- * - mode: "signup" | "signin" (default: "signup")
- * 
- * Flow A (signup): Form → Success screen ("Taj will text you!")
- * Flow B (signin): Phone → OTP via WhatsApp → Dashboard
  */
 const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const phoneInputRef = useRef(null);
+  const countryButtonRef = useRef(null);
 
   // Internal mode (can override prop for switching)
   const [internalMode, setInternalMode] = useState(mode);
@@ -148,17 +176,17 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
   // Signup form state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [instagram, setInstagram] = useState("");
   const [linkedin, setLinkedin] = useState("");
-  
+
   // OTP state (for signin)
   const [otp, setOtp] = useState("");
-  
+
   // Success state
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -174,6 +202,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       setShowSuccess(false);
       setOtp("");
       setPhoneExists(false);
+      setShowCountryDropdown(false);
     }
   }, [isOpen, mode]);
 
@@ -222,7 +251,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setPhoneExists(false);
     setInternalMode("signin");
     setStep("phone");
-    // Keep the phone number when switching
   };
 
   const getFullPhoneNumber = () => {
@@ -234,9 +262,9 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     return COUNTRY_CODES.find(c => c.code === countryCode) || COUNTRY_CODES[0];
   };
 
-  const filteredCountries = COUNTRY_CODES.filter(c => 
-    !countrySearch || 
-    c.country.toLowerCase().includes(countrySearch.toLowerCase()) || 
+  const filteredCountries = COUNTRY_CODES.filter(c =>
+    !countrySearch ||
+    c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
     c.code.includes(countrySearch)
   );
 
@@ -244,7 +272,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setCountryCode(code);
     setShowCountryDropdown(false);
     setCountrySearch('');
-    // Focus phone input after selection
     setTimeout(() => {
       phoneInputRef.current?.focus();
     }, 100);
@@ -258,7 +285,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  // ========== SIGNUP FLOW (Try us now) ==========
+  // ========== SIGNUP FLOW ==========
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
 
@@ -305,10 +332,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         instagram: instagram.trim() || null,
         linkedin: linkedin.trim() || null
       });
-      
+
       if (response.data.success) {
         setShowSuccess(true);
-        toast.success("Welcome to Titlii! 🦋");
+        toast.success("Welcome to Titlii!");
       }
     } catch (error) {
       console.error("Signup error:", error);
@@ -319,24 +346,24 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     }
   };
 
-  // ========== SIGNIN FLOW (Sign In) ==========
+  // ========== SIGNIN FLOW ==========
   const handleSendOTP = async (e) => {
     e.preventDefault();
-    
+
     const cleaned = phone.replace(/\D/g, '');
     if (!cleaned || cleaned.length < 7) {
       toast.error("Please enter a valid phone number");
       return;
     }
-    
+
     setLoading(true);
     try {
       const fullPhone = getFullPhoneNumber();
-      
+
       await axios.post(`${API}/auth/send-otp`, {
         phone: fullPhone
       });
-      
+
       setStep("otp");
       toast.success("Code sent via WhatsApp!");
     } catch (error) {
@@ -356,18 +383,18 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       toast.error("Please enter the complete 6-digit code");
       return;
     }
-    
+
     setLoading(true);
     try {
       const fullPhone = getFullPhoneNumber();
-      
+
       const response = await axios.post(`${API}/auth/verify-otp`, {
         phone: fullPhone,
         otp: otp
       });
-      
+
       login(response.data.token, response.data.user);
-      
+
       if (response.data.profile_completed) {
         toast.success("Welcome back!");
         onClose();
@@ -375,7 +402,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
           navigate("/app", { replace: true });
         }, 100);
       } else {
-        // Profile not complete - they should have gone through signup flow
         toast.info("Welcome! Let's complete your profile.");
         onClose();
         setTimeout(() => {
@@ -390,67 +416,54 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     }
   };
 
-  // Phone input component (shared between flows)
-  const PhoneInput = ({ onSubmit, buttonText }) => (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <div className="relative">
-        <Label className="text-xs font-medium text-gray-500 mb-1 block">PHONE NUMBER</Label>
-        <div className="flex gap-2">
-          {/* Country Code Selector */}
-          <button
-            type="button"
-            onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-            className="flex items-center gap-1 px-3 h-11 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors min-w-[90px]"
-          >
-            <span className="text-lg">{getSelectedCountry().flag}</span>
-            <span className="text-sm font-medium">{countryCode}</span>
-            <ChevronDown size={14} className="text-gray-400" />
-          </button>
-
-          {/* Phone Input */}
-          <Input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="Phone number"
-            className="flex-1 h-11"
-            autoComplete="tel"
-          />
-        </div>
-
-        <CountryDropdown
-          isOpen={showCountryDropdown}
-          onClose={() => { setShowCountryDropdown(false); setCountrySearch(''); }}
-          onSelect={handleCountrySelect}
-          searchValue={countrySearch}
-          onSearchChange={setCountrySearch}
-          filteredCountries={filteredCountries}
-          selectedCode={countryCode}
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
-        style={{ background: '#E50914' }}
-        disabled={loading}
-      >
-        {loading ? <div className="spinner mx-auto" /> : buttonText}
-      </button>
-    </form>
+  // Country code button component
+  const CountryCodeButton = ({ btnRef }) => (
+    <button
+      ref={btnRef}
+      type="button"
+      onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+      className="flex items-center gap-1 px-3 h-11 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors min-w-[90px]"
+    >
+      <span className="text-lg">{getSelectedCountry().flag}</span>
+      <span className="text-sm font-medium">{countryCode}</span>
+      <ChevronDown size={14} className="text-gray-400" />
+    </button>
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && resetAndClose()}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && resetAndClose()} modal={false}>
+      {/* Custom backdrop with pointer-events handling */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/80 z-50"
+          style={{ pointerEvents: showCountryDropdown ? 'none' : 'auto' }}
+          onClick={() => !showCountryDropdown && resetAndClose()}
+        />
+      )}
+
+      <DialogContent
+        className="sm:max-w-md p-0 gap-0 overflow-hidden z-50"
+        onPointerDownOutside={(e) => {
+          if (showCountryDropdown) e.preventDefault();
+        }}
+        onInteractOutside={(e) => {
+          if (showCountryDropdown) e.preventDefault();
+        }}
+        onEscapeKeyDown={(e) => {
+          if (showCountryDropdown) {
+            e.preventDefault();
+            setShowCountryDropdown(false);
+          }
+        }}
+      >
         <div className="p-8">
-          {/* Success Screen (after signup) */}
+          {/* Success Screen */}
           {showSuccess && internalMode === "signup" ? (
             <div className="text-center py-8">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
                 <MessageCircle size={40} className="text-green-600" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">You're all set! 🦋</h2>
+              <h2 className="text-2xl font-bold mb-2">You're all set!</h2>
               <p className="text-gray-500 mb-6">
                 Now text Taj on WhatsApp to find who you need!
               </p>
@@ -458,49 +471,37 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                 href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20just%20signed%20up"
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(e) => {
-                  // Ensure link opens properly
-                  window.open("https://wa.me/12134147369?text=Hi%20Taj!%20I%20just%20signed%20up", "_blank");
-                  resetAndClose();
-                }}
+                onClick={() => resetAndClose()}
                 className="block w-full h-12 rounded-full text-white font-semibold flex items-center justify-center gap-2"
                 style={{ background: '#25D366' }}
               >
                 <MessageCircle size={20} />
-                Text Taj now 🦋
+                Text Taj now
               </a>
             </div>
           ) : internalMode === "signup" ? (
-            /* ========== SIGNUP MODE (Try us now) ========== */
+            /* ========== SIGNUP MODE ========== */
             <div>
               <h2 className="text-xl font-bold mb-1">Join Titlii</h2>
-              <p className="text-gray-500 text-sm mb-6">Tell us a bit about yourself. Taj will call you to learn more!</p>
-              
+              <p className="text-gray-500 text-sm mb-6">Tell us a bit about yourself</p>
+
               <form onSubmit={handleSignupSubmit} className="space-y-4">
                 {/* Name */}
                 <div>
                   <Label className="text-xs font-medium text-gray-500 mb-1 block">YOUR NAME</Label>
-                  <Input 
-                    value={name} 
-                    onChange={(e) => setName(e.target.value)} 
-                    placeholder="What should Taj call you?" 
-                    className="h-11" 
+                  <Input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="What should Taj call you?"
+                    className="h-11"
                   />
                 </div>
-                
+
                 {/* Phone */}
-                <div className="relative">
+                <div>
                   <Label className="text-xs font-medium text-gray-500 mb-1 block">WHATSAPP NUMBER</Label>
                   <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                      className="flex items-center gap-1 px-3 h-11 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors min-w-[90px]"
-                    >
-                      <span className="text-lg">{getSelectedCountry().flag}</span>
-                      <span className="text-sm font-medium">{countryCode}</span>
-                      <ChevronDown size={14} className="text-gray-400" />
-                    </button>
+                    <CountryCodeButton btnRef={countryButtonRef} />
                     <Input
                       ref={phoneInputRef}
                       type="tel"
@@ -511,15 +512,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                       autoComplete="tel"
                     />
                   </div>
-                  <CountryDropdown
-                    isOpen={showCountryDropdown}
-                    onClose={() => { setShowCountryDropdown(false); setCountrySearch(''); }}
-                    onSelect={handleCountrySelect}
-                    searchValue={countrySearch}
-                    onSearchChange={setCountrySearch}
-                    filteredCountries={filteredCountries}
-                    selectedCode={countryCode}
-                  />
                   {phoneExists && (
                     <p className="text-sm text-amber-600 mt-2">
                       This number is already registered.{" "}
@@ -570,36 +562,36 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     VERIFY YOUR PROFILE
                   </Label>
                   <p className="text-xs text-gray-500 mb-3">Add at least one social link so we can verify you're real</p>
-                  
+
                   {/* Instagram */}
                   <div className="flex items-center gap-2 mb-3">
                     <Instagram size={16} className="text-pink-500 flex-shrink-0" />
-                    <Input 
-                      value={instagram} 
-                      onChange={(e) => setInstagram(e.target.value)} 
-                      placeholder="Instagram username" 
+                    <Input
+                      value={instagram}
+                      onChange={(e) => setInstagram(e.target.value)}
+                      placeholder="Instagram username"
                       className={`h-10 text-sm ${instagram.trim() ? 'border-green-300' : ''}`}
                     />
                   </div>
-                  
+
                   {/* LinkedIn */}
                   <div className="flex items-center gap-2">
                     <Linkedin size={16} className="text-blue-600 flex-shrink-0" />
-                    <Input 
-                      value={linkedin} 
-                      onChange={(e) => setLinkedin(e.target.value)} 
-                      placeholder="LinkedIn URL or username" 
+                    <Input
+                      value={linkedin}
+                      onChange={(e) => setLinkedin(e.target.value)}
+                      placeholder="LinkedIn URL or username"
                       className={`h-10 text-sm ${linkedin.trim() ? 'border-green-300' : ''}`}
                     />
                   </div>
-                  
+
                   {hasSocialLink() && (
                     <p className="text-xs text-green-600 mt-3 flex items-center gap-1">
                       <Check size={12} /> Ready to verify
                     </p>
                   )}
                 </div>
-                
+
                 <button
                   type="submit"
                   className="w-full h-11 rounded-full text-white font-semibold transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
@@ -609,51 +601,79 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   {loading ? <div className="spinner mx-auto" /> : "Continue"}
                 </button>
               </form>
-              
+
               <p className="text-xs text-gray-400 text-center mt-4">
                 By continuing, you agree to our Terms of Service and Privacy Policy
               </p>
             </div>
           ) : step === "phone" ? (
-            /* ========== SIGNIN MODE - PHONE STEP ========== */
+            /* ========== SIGNIN - PHONE STEP ========== */
             <div>
               <h2 className="text-xl font-bold mb-1">Welcome back</h2>
               <p className="text-gray-500 text-sm mb-6">Enter your phone number to sign in via WhatsApp</p>
-              
-              <PhoneInput onSubmit={handleSendOTP} buttonText="Send Code" />
-              
+
+              <form onSubmit={handleSendOTP} className="space-y-4">
+                <div>
+                  <Label className="text-xs font-medium text-gray-500 mb-1 block">PHONE NUMBER</Label>
+                  <div className="flex gap-2">
+                    <CountryCodeButton btnRef={countryButtonRef} />
+                    <Input
+                      ref={phoneInputRef}
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="Phone number"
+                      className="flex-1 h-11"
+                      autoComplete="tel"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
+                  style={{ background: '#E50914' }}
+                  disabled={loading}
+                >
+                  {loading ? <div className="spinner mx-auto" /> : "Send Code"}
+                </button>
+              </form>
+
               <div className="mt-6 pt-4 border-t border-gray-100 text-center">
                 <p className="text-sm text-gray-500">
                   Don't have an account?{" "}
-                  <button 
-                    onClick={() => resetAndClose()} 
+                  <button
+                    onClick={() => {
+                      setInternalMode("signup");
+                      setStep("form");
+                    }}
                     className="text-[#E50914] font-medium hover:underline"
                   >
-                    Try us now
+                    Sign up
                   </button>
                 </p>
               </div>
             </div>
           ) : (
-            /* ========== SIGNIN MODE - OTP STEP ========== */
+            /* ========== SIGNIN - OTP STEP ========== */
             <div>
-              <button 
-                onClick={() => { setStep("phone"); setOtp(""); }} 
+              <button
+                onClick={() => { setStep("phone"); setOtp(""); }}
                 className="flex items-center gap-1 text-sm text-gray-500 mb-4 hover:text-gray-700"
               >
                 <ArrowLeft size={16} /> Back
               </button>
-              
+
               <h2 className="text-xl font-bold mb-1">Enter verification code</h2>
               <p className="text-gray-500 text-sm mb-4">
                 We sent a code to your WhatsApp at {getFullPhoneNumber()}
               </p>
-              
+
               <div className="p-3 rounded-lg mb-4 text-xs flex items-center gap-2" style={{ background: '#dcfce7' }}>
                 <MessageCircle size={14} className="text-green-600" />
                 <span className="text-green-700">Check your WhatsApp for the code</span>
               </div>
-              
+
               <div className="flex justify-center mb-6">
                 <InputOTP maxLength={6} value={otp} onChange={setOtp}>
                   <InputOTPGroup>
@@ -663,18 +683,18 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   </InputOTPGroup>
                 </InputOTP>
               </div>
-              
-              <button 
-                onClick={handleVerifyOTP} 
-                className="w-full h-11 rounded-full text-white font-semibold transition-opacity" 
-                style={{ background: '#E50914' }} 
+
+              <button
+                onClick={handleVerifyOTP}
+                className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
+                style={{ background: '#E50914' }}
                 disabled={loading || otp.length !== 6}
               >
                 {loading ? <div className="spinner mx-auto" /> : "Verify"}
               </button>
-              
-              <button 
-                onClick={() => { setStep("phone"); setOtp(""); }} 
+
+              <button
+                onClick={() => { setStep("phone"); setOtp(""); }}
                 className="w-full mt-3 text-sm text-gray-500 hover:text-gray-700"
               >
                 Didn't receive code? Try again
@@ -683,6 +703,18 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
           )}
         </div>
       </DialogContent>
+
+      {/* Country dropdown portal */}
+      <CountryDropdown
+        isOpen={showCountryDropdown}
+        onClose={() => { setShowCountryDropdown(false); setCountrySearch(''); }}
+        onSelect={handleCountrySelect}
+        buttonRef={countryButtonRef}
+        searchValue={countrySearch}
+        onSearchChange={setCountrySearch}
+        filteredCountries={filteredCountries}
+        selectedCode={countryCode}
+      />
     </Dialog>
   );
 };
