@@ -132,15 +132,8 @@ const ProtectedRoute = ({ children }) => {
   const hasStoredAuth = () => {
     const storedToken = localStorage.getItem("titly_token");
     const storedUser = localStorage.getItem("titly_user");
-    if (storedToken && storedUser) {
-      try {
-        const parsed = JSON.parse(storedUser);
-        return parsed.profile_completed === true;
-      } catch {
-        return false;
-      }
-    }
-    return false;
+    // Allow access if user has token and user data (profile_completed can be false)
+    return !!(storedToken && storedUser);
   };
 
   if (loading) {
@@ -157,11 +150,12 @@ const ProtectedRoute = ({ children }) => {
 
   // Check localStorage as fallback if state isn't ready yet (e.g., after login)
   // This handles the case where login() just updated localStorage but state hasn't propagated yet
-  const storedAuthComplete = hasStoredAuth();
-  const stateAuthComplete = isAuthenticated && user?.profile_completed;
+  // Allow access if user is authenticated (has token and user), regardless of profile_completed
+  const storedAuth = hasStoredAuth();
+  const stateAuth = isAuthenticated && !!user;
   
-  // Allow access if either state OR localStorage indicates valid auth
-  if (!storedAuthComplete && !stateAuthComplete) {
+  // Allow access if either state OR localStorage indicates valid auth (user exists with token)
+  if (!storedAuth && !stateAuth) {
     return <Navigate to="/" replace />;
   }
 
