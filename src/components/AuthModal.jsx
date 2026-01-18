@@ -424,10 +424,19 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       type="button"
       onClick={(e) => {
         e.stopPropagation();
-    e.preventDefault();
-        console.log("Country button clicked, current state:", showCountryDropdown);
+        e.preventDefault();
         setShowCountryDropdown(!showCountryDropdown);
       }}
+      onTouchStart={(e) => {
+        e.stopPropagation();
+      }}
+      onTouchEnd={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setShowCountryDropdown(prev => !prev);
+      }}
+      onMouseDown={(e) => e.stopPropagation()}
+      onPointerDown={(e) => e.stopPropagation()}
       className="flex items-center gap-1 px-3 h-11 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors min-w-[90px]"
     >
       <span className="text-lg">{getSelectedCountry().flag}</span>
@@ -445,6 +454,17 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             className="fixed inset-0 bg-black/80 z-50"
             style={{ pointerEvents: showCountryDropdown ? 'none' : 'auto' }}
             onClick={() => !showCountryDropdown && resetAndClose()}
+            onTouchStart={(e) => {
+              if (showCountryDropdown) e.stopPropagation();
+            }}
+            onTouchEnd={(e) => {
+              if (showCountryDropdown) {
+                e.stopPropagation();
+                e.preventDefault();
+              } else {
+                resetAndClose();
+              }
+            }}
           />
         )}
 
