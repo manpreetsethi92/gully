@@ -658,7 +658,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
               /* ========== SIGNIN - PHONE STEP ========== */
               <div>
                 <h2 className="text-xl font-bold mb-1">Welcome back</h2>
-                <p className="text-gray-500 text-sm mb-6">Enter your phone number to sign in via WhatsApp</p>
+                <p className="text-gray-500 text-sm mb-6">Enter your phone number to sign in</p>
 
                 <form onSubmit={handleSendOTP} className="space-y-4">
                   <div>
@@ -714,12 +714,12 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
 
                 <h2 className="text-xl font-bold mb-1">Enter verification code</h2>
                 <p className="text-gray-500 text-sm mb-4">
-                  We sent a code to your WhatsApp at {getFullPhoneNumber()}
+                  We sent a code via SMS to {getFullPhoneNumber()}
                 </p>
 
                 <div className="p-3 rounded-lg mb-4 text-xs flex items-center gap-2" style={{ background: '#dcfce7' }}>
                   <MessageCircle size={14} className="text-green-600" />
-                  <span className="text-green-700">Check your WhatsApp for the code</span>
+                  <span className="text-green-700">Check your text messages for the code</span>
                   </div>
                   
                 <div className="flex justify-center mb-6">
