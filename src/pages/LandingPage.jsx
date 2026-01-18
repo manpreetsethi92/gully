@@ -179,9 +179,6 @@ const LandingPage = () => {
     }
   }, [isAuthenticated, user]);
 
-  // Legacy handler for backward compatibility
-  const handleGetStarted = handleTryUsNow;
-
   // Show loading while checking auth
   if (loading) {
     return (

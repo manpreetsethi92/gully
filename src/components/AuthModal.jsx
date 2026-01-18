@@ -8,7 +8,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { useAuth, API } from "../App";
-import { ArrowLeft, MessageCircle, Phone, Check, Instagram, Linkedin, ChevronDown, Search } from "lucide-react";
+import { ArrowLeft, MessageCircle, Check, Instagram, Linkedin, ChevronDown, Search } from "lucide-react";
 
 const COUNTRY_CODES = [
   { code: "+1", country: "United States", flag: "🇺🇸" },
