@@ -340,20 +340,12 @@ const LandingPage = () => {
           </a>
           
           {/* Desktop */}
-          <div className="hidden md:flex items-center gap-4">
-            <button
-              onClick={handleTryUsNow}
-              className="px-5 py-2 bg-[#E50914] text-white font-syne font-semibold text-sm rounded-full hover:bg-[#c00812] transition-colors"
-            >
-              Try us now
-            </button>
-            <button
-              onClick={handleSignIn}
-              className="font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
-            >
-              SIGN IN
-            </button>
-          </div>
+          <button
+            onClick={handleSignIn}
+            className="hidden md:block font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
+          >
+            SIGN IN
+          </button>
           
           {/* Mobile hamburger */}
           <button

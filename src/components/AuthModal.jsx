@@ -216,7 +216,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const navigate = useNavigate();
   const phoneInputRef = useRef(null);
   const countryButtonRef = useRef(null);
-  
+
+  // Internal mode (can override prop for switching)
+  const [internalMode, setInternalMode] = useState(mode);
+
   // Common state
   const [step, setStep] = useState(mode === "signin" ? "phone" : "form");
   const [phone, setPhone] = useState("");
@@ -237,16 +240,46 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   // Success state
   const [showSuccess, setShowSuccess] = useState(false);
 
+  // Phone check state
+  const [phoneExists, setPhoneExists] = useState(false);
+  const [phoneChecking, setPhoneChecking] = useState(false);
+
   // Reset when mode changes or modal opens
   useEffect(() => {
     if (isOpen) {
+      setInternalMode(mode);
       setStep(mode === "signin" ? "phone" : "form");
       setShowSuccess(false);
       setOtp("");
+      setPhoneExists(false);
     }
   }, [isOpen, mode]);
 
+  // Check phone when user types 10 digits (signup mode only)
+  useEffect(() => {
+    const cleaned = phone.replace(/\D/g, '');
+    if (internalMode === "signup" && cleaned.length >= 10) {
+      const checkPhone = async () => {
+        setPhoneChecking(true);
+        try {
+          const fullPhone = `${countryCode}${cleaned}`;
+          const response = await axios.get(`${API}/auth/check-phone?phone=${encodeURIComponent(fullPhone)}`);
+          setPhoneExists(response.data.exists);
+        } catch (error) {
+          console.error("Phone check error:", error);
+          setPhoneExists(false);
+        } finally {
+          setPhoneChecking(false);
+        }
+      };
+      checkPhone();
+    } else {
+      setPhoneExists(false);
+    }
+  }, [phone, countryCode, internalMode]);
+
   const resetAndClose = () => {
+    setInternalMode(mode);
     setStep(mode === "signin" ? "phone" : "form");
     setPhone("");
     setCountryCode("+1");
@@ -258,7 +291,15 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setShowSuccess(false);
     setShowCountryDropdown(false);
     setCountrySearch("");
+    setPhoneExists(false);
     onClose();
+  };
+
+  const switchToSignin = () => {
+    setPhoneExists(false);
+    setInternalMode("signin");
+    setStep("phone");
+    // Keep the phone number when switching
   };
 
   const getFullPhoneNumber = () => {
@@ -469,7 +510,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
         <div className="p-8">
           {/* Success Screen (after signup) */}
-          {showSuccess ? (
+          {showSuccess && internalMode === "signup" ? (
             <div className="text-center py-8">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
                 <MessageCircle size={40} className="text-green-600" />
@@ -482,20 +523,19 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                 href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20just%20signed%20up"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full h-12 rounded-full text-white font-semibold flex items-center justify-center gap-2 mb-4"
+                onClick={(e) => {
+                  // Ensure link opens properly
+                  window.open("https://wa.me/12134147369?text=Hi%20Taj!%20I%20just%20signed%20up", "_blank");
+                  resetAndClose();
+                }}
+                className="block w-full h-12 rounded-full text-white font-semibold flex items-center justify-center gap-2"
                 style={{ background: '#25D366' }}
               >
                 <MessageCircle size={20} />
                 Text Taj now 🦋
               </a>
-              <button
-                onClick={resetAndClose}
-                className="w-full text-sm text-gray-500 hover:text-gray-700"
-              >
-                Maybe later
-              </button>
             </div>
-          ) : mode === "signup" ? (
+          ) : internalMode === "signup" ? (
             /* ========== SIGNUP MODE (Try us now) ========== */
             <div>
               <h2 className="text-xl font-bold mb-1">Join Titlii</h2>
@@ -547,8 +587,23 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     filteredCountries={filteredCountries}
                     selectedCode={countryCode}
                   />
+                  {phoneExists && (
+                    <p className="text-sm text-amber-600 mt-2">
+                      This number is already registered.{" "}
+                      <button
+                        type="button"
+                        onClick={switchToSignin}
+                        className="text-[#E50914] font-medium hover:underline"
+                      >
+                        Sign in instead?
+                      </button>
+                    </p>
+                  )}
+                  {phoneChecking && (
+                    <p className="text-xs text-gray-400 mt-1">Checking...</p>
+                  )}
                 </div>
-                
+
                 {/* Location */}
                 <div>
                   <Label className="text-xs font-medium text-gray-500 mb-1 block">LOCATION</Label>
