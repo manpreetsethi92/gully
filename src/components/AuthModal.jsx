@@ -177,7 +177,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
   const [loading, setLoading] = useState(false);
-
+  
   // Signup form state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -356,7 +356,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       toast.error("Please enter a valid phone number");
       return;
     }
-
+    
     setLoading(true);
     try {
       const fullPhone = getFullPhoneNumber();
@@ -384,25 +384,25 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       toast.error("Please enter the complete 6-digit code");
       return;
     }
-
+    
     setLoading(true);
     try {
       const fullPhone = getFullPhoneNumber();
-
-      const response = await axios.post(`${API}/auth/verify-otp`, {
+      
+        const response = await axios.post(`${API}/auth/verify-otp`, { 
         phone: fullPhone,
-        otp: otp
-      });
-
-      login(response.data.token, response.data.user);
+          otp: otp
+        });
+        
+          login(response.data.token, response.data.user);
 
       if (response.data.profile_completed) {
-        toast.success("Welcome back!");
+          toast.success("Welcome back!");
         onClose();
         setTimeout(() => {
           navigate("/app", { replace: true });
         }, 100);
-      } else {
+        } else {
         toast.info("Welcome! Let's complete your profile.");
         onClose();
         setTimeout(() => {
@@ -422,7 +422,9 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     <button
       ref={btnRef}
       type="button"
-      onClick={() => {
+      onClick={(e) => {
+        e.stopPropagation();
+    e.preventDefault();
         console.log("Country button clicked, current state:", showCountryDropdown);
         setShowCountryDropdown(!showCountryDropdown);
       }}
@@ -500,8 +502,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                       placeholder="What should Taj call you?"
                       className="h-11"
                     />
-                  </div>
-
+              </div>
+              
                   {/* Phone */}
                   <div>
                     <Label className="text-xs font-medium text-gray-500 mb-1 block">WHATSAPP NUMBER</Label>
@@ -526,7 +528,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                           className="text-[#E50914] font-medium hover:underline"
                         >
                           Sign in instead?
-                        </button>
+              </button>
                       </p>
                     )}
                     {phoneChecking && (
@@ -548,10 +550,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                         autoComplete="email"
                       />
                     </div>
-                  </div>
+            </div>
 
                   {/* Location */}
-                  <div>
+                <div>
                     <Label className="text-xs font-medium text-gray-500 mb-1 block">LOCATION</Label>
                     <Input
                       value={location}
@@ -577,7 +579,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                         placeholder="Instagram username"
                         className={`h-10 text-sm ${instagram.trim() ? 'border-green-300' : ''}`}
                       />
-                    </div>
+                      </div>
 
                     {/* LinkedIn */}
                     <div className="flex items-center gap-2">
@@ -603,9 +605,9 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     style={{ background: '#E50914' }}
                     disabled={loading || phoneExists}
                   >
-                    {loading ? <div className="spinner mx-auto" /> : "Continue"}
-                  </button>
-                </form>
+                      {loading ? <div className="spinner mx-auto" /> : "Continue"}
+                    </button>
+                  </form>
 
                 <p className="text-xs text-gray-400 text-center mt-4">
                   By continuing, you agree to our Terms of Service and Privacy Policy
@@ -661,13 +663,13 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
               </div>
             ) : (
               /* ========== SIGNIN - OTP STEP ========== */
-              <div>
+                <div>
                 <button
                   onClick={() => { setStep("phone"); setOtp(""); }}
                   className="flex items-center gap-1 text-sm text-gray-500 mb-4 hover:text-gray-700"
                 >
-                  <ArrowLeft size={16} /> Back
-                </button>
+                    <ArrowLeft size={16} /> Back
+                  </button>
 
                 <h2 className="text-xl font-bold mb-1">Enter verification code</h2>
                 <p className="text-gray-500 text-sm mb-4">
@@ -677,38 +679,38 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                 <div className="p-3 rounded-lg mb-4 text-xs flex items-center gap-2" style={{ background: '#dcfce7' }}>
                   <MessageCircle size={14} className="text-green-600" />
                   <span className="text-green-700">Check your WhatsApp for the code</span>
-                </div>
-
+                  </div>
+                  
                 <div className="flex justify-center mb-6">
-                  <InputOTP maxLength={6} value={otp} onChange={setOtp}>
-                    <InputOTPGroup>
+                    <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+                      <InputOTPGroup>
                       {[0, 1, 2, 3, 4, 5].map(i => (
                         <InputOTPSlot key={i} index={i} className="w-10 h-12 text-lg" />
                       ))}
-                    </InputOTPGroup>
-                  </InputOTP>
-                </div>
-
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+                  
                 <button
                   onClick={handleVerifyOTP}
                   className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
                   style={{ background: '#E50914' }}
                   disabled={loading || otp.length !== 6}
                 >
-                  {loading ? <div className="spinner mx-auto" /> : "Verify"}
-                </button>
-
+                    {loading ? <div className="spinner mx-auto" /> : "Verify"}
+                  </button>
+                  
                 <button
                   onClick={() => { setStep("phone"); setOtp(""); }}
                   className="w-full mt-3 text-sm text-gray-500 hover:text-gray-700"
                 >
-                  Didn't receive code? Try again
-                </button>
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+                    Didn't receive code? Try again
+                  </button>
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
 
       {/* Country dropdown portal - OUTSIDE Dialog */}
       <CountryDropdown
