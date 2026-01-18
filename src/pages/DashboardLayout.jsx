@@ -32,6 +32,7 @@ const DashboardLayout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [stats, setStats] = useState({ opportunities: 0, requests: 0, connections: 0 });
+  const [trending, setTrending] = useState([]);
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('titli-dark-mode');
     return saved ? JSON.parse(saved) : false;
@@ -75,6 +76,20 @@ useEffect(() => {
   useEffect(() => {
     fetchStats();
   }, [fetchStats]);
+
+  useEffect(() => {
+    const fetchTrending = async () => {
+      try {
+        const response = await axios.get(`${API}/stats/trending`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setTrending(response.data.trending || []);
+      } catch (error) {
+        console.error("Failed to fetch trending:", error);
+      }
+    };
+    fetchTrending();
+  }, [token]);
 
   const navItems = [
     { id: "opportunities", label: "Opportunities", icon: Sparkles, count: stats.opportunities },
@@ -292,10 +307,19 @@ useEffect(() => {
 
             <div className={`rounded-2xl overflow-hidden ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
               <h2 className={`font-syne font-bold text-lg px-4 pt-4 pb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>What's happening</h2>
-              <TrendItem category="Music" title="Studio Sessions" posts="2,485" darkMode={darkMode} />
-              <TrendItem category="Business" title="Startup Funding" posts="5,129" darkMode={darkMode} />
-              <TrendItem category="Creative" title="NYC Creators" posts="1,847" darkMode={darkMode} />
-              <TrendItem category="Tech" title="AI Tools" posts="12.4K" darkMode={darkMode} />
+              {trending.length > 0 ? (
+                trending.map((item, index) => (
+                  <TrendItem
+                    key={index}
+                    category={item.category}
+                    title={item.title}
+                    posts={item.count}
+                    darkMode={darkMode}
+                  />
+                ))
+              ) : (
+                <TrendItem category="Loading..." title="..." posts="--" darkMode={darkMode} />
+              )}
               <button className={`w-full px-4 py-3 text-left font-syne text-sm font-medium transition-colors text-[#E50914] ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-100'}`}>
                 Show more
               </button>
@@ -371,7 +395,7 @@ const TrendItem = ({ category, title, posts, darkMode }) => (
   <div className={`px-4 py-3 cursor-pointer transition-colors ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-100'}`}>
     <div className={`font-mono text-xs ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>{category}</div>
     <div className={`font-syne font-semibold text-sm ${darkMode ? 'text-white' : 'text-gray-900'}`}>{title}</div>
-    <div className={`font-mono text-xs ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>{posts} posts</div>
+    <div className={`font-mono text-xs ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>{posts} jobs</div>
   </div>
 );
 
