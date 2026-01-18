@@ -41,7 +41,17 @@ export const useAuth = () => {
 };
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  // Initialize user from localStorage immediately to prevent redirect flash
+  const getInitialUser = () => {
+    try {
+      const stored = localStorage.getItem("titly_user");
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  };
+  
+  const [user, setUser] = useState(getInitialUser);
   const [token, setToken] = useState(localStorage.getItem("titly_token"));
   const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -67,7 +77,10 @@ const AuthProvider = ({ children }) => {
           localStorage.removeItem("titly_token");
           localStorage.removeItem("titly_user");
           setToken(null);
+          setUser(null);
         }
+      } else {
+        setUser(null);
       }
       setLoading(false);
     };
