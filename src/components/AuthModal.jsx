@@ -369,7 +369,9 @@ const AuthModal = ({ isOpen, onClose }) => {
         if (!response.data.is_new_user && response.data.user.profile_completed) {
           login(response.data.token, response.data.user);
           toast.success("Welcome back!");
+          onClose();
           window.location.href = "/app";
+          return;
         } else {
           setToken(response.data.token);
           login(response.data.token, response.data.user);
