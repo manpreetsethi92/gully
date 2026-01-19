@@ -107,9 +107,9 @@ const ConnectionsPage = ({ onRefresh, darkMode }) => {
                       <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         {connection.name}
                       </h3>
-                      {connection.instagram && (
+                      {(connection.instagram || connection.social_links?.instagram) && (
                         <a
-                          href={`https://instagram.com/${connection.instagram.replace('@', '')}`}
+                          href={`https://instagram.com/${(connection.instagram || connection.social_links?.instagram).replace('@', '')}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={`${darkMode ? 'text-white/40 hover:text-pink-400' : 'text-gray-400 hover:text-pink-500'}`}
@@ -118,9 +118,12 @@ const ConnectionsPage = ({ onRefresh, darkMode }) => {
                           <Instagram size={14} />
                         </a>
                       )}
-                      {connection.linkedin && (
+                      {(connection.linkedin || connection.social_links?.linkedin) && (
                         <a
-                          href={connection.linkedin.startsWith('http') ? connection.linkedin : `https://linkedin.com/in/${connection.linkedin}`}
+                          href={(() => {
+                            const linkedinValue = connection.linkedin || connection.social_links?.linkedin;
+                            return linkedinValue.startsWith('http') ? linkedinValue : `https://linkedin.com/in/${linkedinValue}`;
+                          })()}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={`${darkMode ? 'text-white/40 hover:text-blue-400' : 'text-gray-400 hover:text-blue-500'}`}
