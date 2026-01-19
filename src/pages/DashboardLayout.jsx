@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, Suspense, lazy } from "react";
 import { Routes, Route, useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth, API } from "../App";
 import axios from "axios";
-import { 
-  Sparkles, 
-  Send, 
-  Users, 
+import {
+  Sparkles,
+  Send,
+  Users,
   Settings as SettingsIcon,
   Menu,
   X,
@@ -16,11 +16,11 @@ import {
   Sun
 } from "lucide-react";
 
-import OpportunitiesPage from "../components/dashboard/OpportunitiesPage";
-import RequestsPage from "../components/dashboard/RequestsPage";
-import ConnectionsPage from "../components/dashboard/ConnectionsPage";
-import SettingsPage from "../components/dashboard/SettingsPage";
-import ProfilePage from "../components/dashboard/ProfilePage";
+const OpportunitiesPage = lazy(() => import("../components/dashboard/OpportunitiesPage"));
+const RequestsPage = lazy(() => import("../components/dashboard/RequestsPage"));
+const ConnectionsPage = lazy(() => import("../components/dashboard/ConnectionsPage"));
+const SettingsPage = lazy(() => import("../components/dashboard/SettingsPage"));
+const ProfilePage = lazy(() => import("../components/dashboard/ProfilePage"));
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
@@ -39,57 +39,45 @@ const DashboardLayout = () => {
 
   const currentPath = location.pathname.split("/").pop() || "opportunities";
 
-  const fetchStats = useCallback(async () => {
+  // Fetch all data in parallel on mount
+  const fetchAllData = useCallback(async () => {
     try {
-      const [oppsRes, reqsRes, connsRes] = await Promise.all([
+      const [oppsRes, reqsRes, connsRes, trendingRes] = await Promise.all([
         axios.get(`${API}/opportunities`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/requests`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/connections`, { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${API}/connections`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/stats/trending`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
-      setStats({ 
-        opportunities: oppsRes.data.length, 
+
+      setStats({
+        opportunities: oppsRes.data.length,
         requests: reqsRes.data.length,
         connections: connsRes.data.filter(c => c.status === 'connected').length
       });
+      setTrending(trendingRes.data.trending || []);
     } catch (error) {
-      console.error("Failed to fetch stats:", error);
+      console.error("Failed to fetch data:", error);
     }
   }, [token]);
 
- // Apply dark mode to document
-useEffect(() => {
-  if (darkMode) {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-  localStorage.setItem('titli-dark-mode', JSON.stringify(darkMode));
-  
-  // Cleanup: remove dark mode when leaving dashboard
-  return () => {
-    document.documentElement.classList.remove('dark');
-  };
-}, [darkMode]);
-
   useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
+    if (token) fetchAllData();
+  }, [token, fetchAllData]);
 
+  // Apply dark mode to document
   useEffect(() => {
-    const fetchTrending = async () => {
-      try {
-        const response = await axios.get(`${API}/stats/trending`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setTrending(response.data.trending || []);
-      } catch (error) {
-        console.error("Failed to fetch trending:", error);
-      }
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('titli-dark-mode', JSON.stringify(darkMode));
+
+    // Cleanup: remove dark mode when leaving dashboard
+    return () => {
+      document.documentElement.classList.remove('dark');
     };
-    if (token) {
-      fetchTrending();
-    }
-  }, [token]);
+  }, [darkMode]);
 
   const navItems = [
     { id: "opportunities", label: "Opportunities", icon: Sparkles, count: stats.opportunities },
@@ -237,14 +225,16 @@ useEffect(() => {
 
         {/* Main Content */}
         <main className={`flex-1 min-h-screen border-r pt-14 lg:pt-0 max-w-[600px] transition-colors duration-300 ${darkMode ? 'border-white/10 bg-[#0a0a0a]' : 'border-gray-100 bg-white'}`}>
-          <Routes>
-            <Route index element={<OpportunitiesPage onRefresh={fetchStats} darkMode={darkMode} />} />
-            <Route path="opportunities" element={<OpportunitiesPage onRefresh={fetchStats} darkMode={darkMode} />} />
-            <Route path="requests" element={<RequestsPage onRefresh={fetchStats} darkMode={darkMode} />} />
-            <Route path="connections" element={<ConnectionsPage onRefresh={fetchStats} darkMode={darkMode} />} />
-            <Route path="profile" element={<ProfilePage darkMode={darkMode} />} />
-            <Route path="settings" element={<SettingsPage darkMode={darkMode} />} />
-          </Routes>
+          <Suspense fallback={<div className="flex items-center justify-center h-64"><div className="spinner" /></div>}>
+            <Routes>
+              <Route index element={<OpportunitiesPage onRefresh={fetchAllData} darkMode={darkMode} />} />
+              <Route path="opportunities" element={<OpportunitiesPage onRefresh={fetchAllData} darkMode={darkMode} />} />
+              <Route path="requests" element={<RequestsPage onRefresh={fetchAllData} darkMode={darkMode} />} />
+              <Route path="connections" element={<ConnectionsPage onRefresh={fetchAllData} darkMode={darkMode} />} />
+              <Route path="profile" element={<ProfilePage darkMode={darkMode} />} />
+              <Route path="settings" element={<SettingsPage darkMode={darkMode} />} />
+            </Routes>
+          </Suspense>
         </main>
 
         {/* Right Sidebar */}
@@ -336,12 +326,12 @@ useEffect(() => {
   );
 };
 
-const TrendItem = ({ category, title, posts, darkMode }) => (
+const TrendItem = React.memo(({ category, title, posts, darkMode }) => (
   <div className={`px-4 py-3 cursor-pointer transition-colors ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-100'}`}>
     <div className={`font-mono text-xs ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>{category}</div>
     <div className={`font-syne font-semibold text-sm ${darkMode ? 'text-white' : 'text-gray-900'}`}>{title}</div>
     <div className={`font-mono text-xs ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>{posts} jobs</div>
   </div>
-);
+));
 
 export default DashboardLayout;
