@@ -195,12 +195,12 @@ const DashboardLayout = () => {
           </nav>
 
           {/* Profile Section - Added pb-20 for mobile safe area (URL bar) */}
-          <div className="p-4 pb-20 lg:pb-4">
-            <button 
+          <div className="p-4 lg:pb-4">
+            <button
               onClick={() => navigate("/app/profile")}
               className={`w-full flex items-center gap-3 p-3 rounded-2xl transition-all ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
             >
-              <div 
+              <div
                 className="w-10 h-10 rounded-full flex items-center justify-center text-white font-syne font-semibold text-sm flex-shrink-0"
                 style={{ background: 'linear-gradient(135deg, #E50914 0%, #ff4757 100%)' }}
               >
@@ -212,6 +212,18 @@ const DashboardLayout = () => {
               </div>
               <MoreHorizontal size={16} className={darkMode ? 'text-white/40' : 'text-gray-400'} />
             </button>
+          </div>
+
+          {/* Mobile Footer Links */}
+          <div className="px-6 pb-6 lg:hidden">
+            <div className="pt-4 border-t border-gray-100 dark:border-white/10">
+              <div className="flex flex-wrap gap-x-4 gap-y-2 font-mono text-xs text-gray-400">
+                <a href="/terms" className="hover:text-gray-600 dark:hover:text-white/60">Terms</a>
+                <a href="/privacy" className="hover:text-gray-600 dark:hover:text-white/60">Privacy</a>
+                <a href="mailto:taj@titlii.social" className="hover:text-gray-600 dark:hover:text-white/60">Contact</a>
+              </div>
+              <p className="mt-2 font-mono text-xs text-gray-400">© 2025 titlii</p>
+            </div>
           </div>
         </aside>
 
