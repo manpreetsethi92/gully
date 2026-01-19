@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { ArrowRight, ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import AuthModal from "../components/AuthModal";
 
 const WORDS = ["photographer", "plumber", "developer", "designer", "tutor", "DJ", "trainer"];
@@ -127,7 +127,7 @@ const LandingPage = () => {
   const [currentWord, setCurrentWord] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState("signup"); // "signup" or "signin"
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   // Fix mobile Safari white space issue
   useEffect(() => {
     document.documentElement.style.backgroundColor = '#0a0a0a';
@@ -319,79 +319,15 @@ const LandingPage = () => {
             SIGN IN
           </button>
           
-          {/* Mobile hamburger */}
+          {/* Mobile */}
           <button
-            onClick={() => setMobileMenuOpen(true)}
-            className="md:hidden text-white p-2 -mr-2"
+            onClick={handleSignIn}
+            className="md:hidden font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
           >
-            <Menu size={24} />
+            SIGN IN
           </button>
         </div>
       </nav>
-
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[100] md:hidden">
-          {/* Backdrop */}
-          <div 
-            className="absolute inset-0 bg-black/90 backdrop-blur-sm"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-          
-          {/* Menu Panel */}
-          <div className="absolute top-0 right-0 h-full w-[280px] bg-[#0a0a0a] border-l border-white/10 p-8 flex flex-col">
-            {/* Close button */}
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              className="self-end text-white/70 hover:text-white p-2 -mr-2 -mt-2"
-            >
-              <X size={24} />
-            </button>
-            
-            {/* Logo */}
-            <div className="flex items-center gap-3 mt-8 mb-12">
-              <img src="/butterfly.png" alt="Titlii" className="w-8 h-auto" />
-              <span className="font-syne font-bold text-xl text-[#E50914]">titlii</span>
-            </div>
-            
-            {/* Menu Items */}
-            <div className="flex flex-col gap-6">
-              <a 
-                href="#how-it-works" 
-                onClick={() => setMobileMenuOpen(false)}
-                className="font-syne text-lg text-white/70 hover:text-white transition-colors lowercase"
-              >
-                how it works
-              </a>
-              <a 
-                href="#testimonials" 
-                onClick={() => setMobileMenuOpen(false)}
-                className="font-syne text-lg text-white/70 hover:text-white transition-colors lowercase"
-              >
-                testimonials
-              </a>
-            </div>
-            
-            {/* CTA Button */}
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                handleTryUsNow();
-              }}
-              className="mt-auto mb-8 w-full py-4 rounded-full bg-[#E50914] text-white font-syne font-semibold text-base transition-all hover:shadow-lg hover:shadow-red-500/25"
-            >
-              get started
-            </button>
-            
-            {/* Footer links */}
-            <div className="flex gap-4 font-mono text-xs text-white/40">
-              <a href="/privacy" className="hover:text-white/60">privacy</a>
-              <a href="/terms" className="hover:text-white/60">terms</a>
-              <a href="mailto:taj@titlii.social" className="hover:text-white/60">contact</a>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ==================== HERO SECTION (WHITE) ==================== */}
       <section className="min-h-screen relative flex items-center bg-white pt-20">
