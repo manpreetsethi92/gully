@@ -547,7 +547,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                 <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
                   <MessageCircle size={40} className="text-green-600" />
                 </div>
-                <h2 className="text-2xl font-bold mb-2">You're all set!</h2>
+                <h2 className="font-syne text-2xl font-bold mb-2">You're all set!</h2>
                 <p className="text-gray-500 mb-6">
                   Now text Taj on WhatsApp to find who you need!
                 </p>
@@ -566,7 +566,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             ) : internalMode === "signup" ? (
               /* ========== SIGNUP MODE ========== */
               <div>
-                <h2 className="text-xl font-bold mb-1">Join titlii</h2>
+                <h2 className="font-syne text-xl font-bold mb-1">Join <span className="text-[#E50914]">titlii</span></h2>
                 <p className="text-gray-500 text-sm mb-6">Tell us a bit about yourself</p>
 
                 <form onSubmit={handleSignupSubmit} className="space-y-4">
@@ -693,7 +693,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             ) : step === "phone" ? (
               /* ========== SIGNIN - PHONE STEP ========== */
               <div>
-                <h2 className="text-xl font-bold mb-1">Welcome back</h2>
+                <h2 className="font-syne text-xl font-bold mb-1">Welcome back</h2>
                 <p className="text-gray-500 text-sm mb-6">Enter your phone number to sign in</p>
 
                 <form onSubmit={handleSendOTP} className="space-y-4">
@@ -748,7 +748,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     <ArrowLeft size={16} /> Back
                   </button>
 
-                <h2 className="text-xl font-bold mb-1">Enter verification code</h2>
+                <h2 className="font-syne text-xl font-bold mb-1">Enter verification code</h2>
                 <p className="text-gray-500 text-sm mb-4">
                   We sent a code via SMS to {getFullPhoneNumber()}
                 </p>
