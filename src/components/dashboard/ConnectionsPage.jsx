@@ -203,18 +203,6 @@ const ConnectionsPage = ({ onRefresh, darkMode }) => {
                           </div>
                         </div>
                       )}
-
-                      {/* Action button */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.open(`https://wa.me/12134147369?text=Hi Taj! I want to reconnect with ${connection.name}`, '_blank');
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#E50914] text-white text-sm font-medium hover:bg-[#c5080f] transition-colors"
-                      >
-                        <MessageCircle size={14} />
-                        Message via Taj
-                      </button>
                     </div>
                   </div>
                 )}
