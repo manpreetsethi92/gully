@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useAuth } from "../App";
 import { ArrowRight, ArrowUpRight, Menu, X } from "lucide-react";
 import AuthModal from "../components/AuthModal";
 
@@ -129,15 +128,13 @@ const LandingPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState("signup"); // "signup" or "signin"
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isAuthenticated, user, loading } = useAuth();
-
   // Fix mobile Safari white space issue
   useEffect(() => {
     document.documentElement.style.backgroundColor = '#0a0a0a';
     document.body.style.backgroundColor = '#0a0a0a';
     document.documentElement.style.minHeight = '100%';
     document.body.style.minHeight = '100%';
-    
+
     return () => {
       document.documentElement.style.backgroundColor = '';
       document.body.style.backgroundColor = '';
@@ -153,56 +150,15 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Auto-redirect if already authenticated (context-based)
-  useEffect(() => {
-    if (!loading && isAuthenticated && user?.profile_completed) {
-      window.location.href = "/app";
-    }
-  }, [loading, isAuthenticated, user]);
-
-  // Safari fix: Also check localStorage directly on mount
-  useEffect(() => {
-    const storedToken = localStorage.getItem("titly_token");
-    const storedUser = localStorage.getItem("titly_user");
-    if (storedToken && storedUser) {
-      try {
-        const userData = JSON.parse(storedUser);
-        if (userData?.profile_completed) {
-          window.location.href = "/app";
-        }
-      } catch {
-        // Invalid stored user, ignore
-      }
-    }
+  const handleTryUsNow = useCallback(() => {
+    setAuthMode("signup");
+    setShowAuthModal(true);
   }, []);
 
-  // useCallback MUST be before any early returns (React hooks rule)
-  const handleTryUsNow = useCallback(() => {
-    if (isAuthenticated && user?.profile_completed) {
-      window.location.href = "/app";
-    } else {
-      setAuthMode("signup");
-      setShowAuthModal(true);
-    }
-  }, [isAuthenticated, user]);
-
   const handleSignIn = useCallback(() => {
-    if (isAuthenticated && user?.profile_completed) {
-      window.location.href = "/app";
-    } else {
-      setAuthMode("signin");
-      setShowAuthModal(true);
-    }
-  }, [isAuthenticated, user]);
-
-  // Show loading while checking auth
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
-        <div className="spinner"></div>
-      </div>
-    );
-  }
+    setAuthMode("signin");
+    setShowAuthModal(true);
+  }, []);
 
   return (
     <div className="overflow-x-hidden bg-[#0a0a0a]">

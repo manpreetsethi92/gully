@@ -41,90 +41,62 @@ export const useAuth = () => {
 };
 
 const AuthProvider = ({ children }) => {
-  // Read from localStorage SYNCHRONOUSLY on initial render
-  const [token, setToken] = useState(() => {
-    return localStorage.getItem("titly_token");
-  });
-
-  const [user, setUser] = useState(() => {
-    try {
-      const stored = localStorage.getItem("titly_user");
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  });
-
-  const [loading, setLoading] = useState(() => {
-    // Only show loading if we have a token but need to verify it
-    return !!localStorage.getItem("titly_token");
-  });
-
+  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
+  // Hydrate auth from localStorage AFTER mount (Safari bfcache fix)
   useEffect(() => {
-    const fetchUser = async () => {
-      if (token) {
+    const hydrateAuth = () => {
+      const storedToken = localStorage.getItem("titly_token");
+      const storedUser = localStorage.getItem("titly_user");
+
+      if (storedToken && storedUser) {
         try {
-          const response = await axios.get(`${API}/users/me`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          // Get stored user data to preserve profile_completed flag
-          const storedUser = JSON.parse(localStorage.getItem("titly_user") || "{}");
-          // Merge: backend data takes priority, but keep profile_completed if backend doesn't have it
-          const mergedUser = {
-            ...response.data,
-            profile_completed: response.data.profile_completed || storedUser.profile_completed || false
-          };
-          setUser(mergedUser);
-          localStorage.setItem("titly_user", JSON.stringify(mergedUser));
-        } catch (error) {
-          console.error("Failed to fetch user:", error);
+          setToken(storedToken);
+          setUser(JSON.parse(storedUser));
+        } catch {
           localStorage.removeItem("titly_token");
           localStorage.removeItem("titly_user");
           setToken(null);
           setUser(null);
         }
-      } else {
-        setUser(null);
       }
       setLoading(false);
     };
-    fetchUser();
-  }, [token]);
 
-  // Sync auth state across tabs (fixes Safari multi-tab issue)
+    // Safari needs a tick after page restore
+    setTimeout(hydrateAuth, 0);
+  }, []);
+
+  // Verify token with backend after hydration
   useEffect(() => {
-    const handleStorageChange = (e) => {
-      if (e.key === 'titly_token') {
-        if (e.newValue) {
-          setToken(e.newValue);
-          const storedUser = localStorage.getItem('titly_user');
-          if (storedUser) {
-            try {
-              setUser(JSON.parse(storedUser));
-            } catch {}
-          }
-        } else {
+    const verifyToken = async () => {
+      if (token) {
+        try {
+          const response = await axios.get(`${API}/users/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setUser(prev => ({
+            ...response.data,
+            profile_completed: response.data.profile_completed || prev?.profile_completed || false
+          }));
+          localStorage.setItem("titly_user", JSON.stringify(response.data));
+        } catch (error) {
+          console.error("Token verification failed:", error);
+          localStorage.removeItem("titly_token");
+          localStorage.removeItem("titly_user");
           setToken(null);
           setUser(null);
         }
       }
-
-      if (e.key === 'titly_user') {
-        if (e.newValue) {
-          try {
-            setUser(JSON.parse(e.newValue));
-          } catch {}
-        } else {
-          setUser(null);
-        }
-      }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+    if (!loading && token) {
+      verifyToken();
+    }
+  }, [token, loading]);
 
   const login = (newToken, userData) => {
     localStorage.setItem("titly_token", newToken);
@@ -142,77 +114,84 @@ const AuthProvider = ({ children }) => {
 
   const updateUser = (userData) => {
     setUser(userData);
+    localStorage.setItem("titly_user", JSON.stringify(userData));
   };
 
   const openAuthModal = () => setShowAuthModal(true);
   const closeAuthModal = () => setShowAuthModal(false);
 
-  const value = {
-    user,
-    token,
-    loading,
-    login,
-    logout,
-    updateUser,
-    isAuthenticated: !!token && !!user,
-    showAuthModal,
-    openAuthModal,
-    closeAuthModal
-  };
+  const isAuthenticated = !!token && !!user;
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{
+      user,
+      token,
+      loading,
+      login,
+      logout,
+      updateUser,
+      isAuthenticated,
+      showAuthModal,
+      openAuthModal,
+      closeAuthModal
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-// Protected Route
+// Protected Route - simplified (router blocks until auth hydrated)
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
-
-  // Check localStorage directly as fallback (Safari fix)
-  const hasLocalAuth = () => {
-    const storedToken = localStorage.getItem("titly_token");
-    const storedUser = localStorage.getItem("titly_user");
-    return !!(storedToken && storedUser);
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="spinner" />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated && !hasLocalAuth()) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? children : <Navigate to="/" replace />;
 };
 
 function App() {
   return (
     <AuthProvider>
-      <div className="app-container">
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route 
-              path="/app/*" 
-              element={
-                <ProtectedRoute>
-                  <DashboardLayout />
-                </ProtectedRoute>
-              } 
-            />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </BrowserRouter>
-        <Toaster position="top-center" richColors />
-      </div>
+      <AppRoutes />
     </AuthProvider>
   );
 }
+
+// Separate component to access useAuth
+const AppRoutes = () => {
+  const { loading, isAuthenticated } = useAuth();
+
+  // Block everything until auth is hydrated
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#1a1a1a]">
+        <div className="spinner" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="app-container">
+      <BrowserRouter>
+        <Routes>
+          {/* Redirect to dashboard if authenticated */}
+          <Route
+            path="/"
+            element={isAuthenticated ? <Navigate to="/app" replace /> : <LandingPage />}
+          />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route
+            path="/app/*"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
+      <Toaster position="top-center" richColors />
+    </div>
+  );
+};
 
 export default App;
