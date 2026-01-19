@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Send, Clock, Users, CheckCircle, MessageCircle, Eye, Sparkles, Check, X } from "lucide-react";
+import { Send, Users, MessageCircle, Check, X } from "lucide-react";
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
@@ -92,26 +92,6 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
     const days = Math.floor(hours / 24);
     if (days < 7) return `${days}d`;
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
-
-  // Clean up request text
-  const getCleanRequest = (title, description) => {
-    const text = description || title || "";
-    const firstSentence = text.split(/[.!?]/)[0];
-    if (firstSentence.length <= 100) {
-      return firstSentence.trim();
-    }
-    return text.substring(0, 100).trim() + "...";
-  };
-
-  const getStatusInfo = (status) => {
-    switch (status) {
-      case "matching": return { icon: <Sparkles size={12} />, label: "Finding", color: "text-amber-600 bg-amber-50" };
-      case "awaiting_approval": return { icon: <Eye size={12} />, label: "Review", color: "text-blue-600 bg-blue-50" };
-      case "in_progress": return { icon: <Clock size={12} />, label: "Waiting", color: "text-amber-600 bg-amber-50" };
-      case "completed": return { icon: <CheckCircle size={12} />, label: "Done", color: "text-green-600 bg-green-50" };
-      default: return { icon: <Clock size={12} />, label: status, color: "text-gray-600 bg-gray-50" };
-    }
   };
 
   const getMatchStatus = (status) => {
