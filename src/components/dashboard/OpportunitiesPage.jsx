@@ -307,19 +307,31 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                   "{selectedOpportunity.request_description || selectedOpportunity.request_title}"
                 </p>
 
-                {/* Budget/Timeline placeholder */}
-                {(selectedOpportunity.budget || selectedOpportunity.timeline) && (
-                  <div className="flex gap-4 mt-4">
-                    {selectedOpportunity.budget && (
-                      <div className={`flex items-center gap-2 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
-                        <span className="text-green-500 font-medium">$</span>
-                        <span>{selectedOpportunity.budget}</span>
+                {/* Budget / Timeline / Work Type / Location */}
+                {(selectedOpportunity.budget_display || selectedOpportunity.timeline_display || selectedOpportunity.work_type || selectedOpportunity.location) && (
+                  <div className={`grid grid-cols-2 gap-3 mt-4 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                    {selectedOpportunity.budget_display && (
+                      <div>
+                        <span className={`text-xs uppercase ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>Budget</span>
+                        <p className="text-sm font-medium">{selectedOpportunity.budget_display}</p>
                       </div>
                     )}
-                    {selectedOpportunity.timeline && (
-                      <div className={`flex items-center gap-2 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
-                        <span>Timeline:</span>
-                        <span>{selectedOpportunity.timeline}</span>
+                    {selectedOpportunity.timeline_display && (
+                      <div>
+                        <span className={`text-xs uppercase ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>Timeline</span>
+                        <p className="text-sm font-medium">{selectedOpportunity.timeline_display}</p>
+                      </div>
+                    )}
+                    {selectedOpportunity.work_type && (
+                      <div>
+                        <span className={`text-xs uppercase ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>Type</span>
+                        <p className="text-sm font-medium">{selectedOpportunity.work_type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+                      </div>
+                    )}
+                    {selectedOpportunity.location && (
+                      <div>
+                        <span className={`text-xs uppercase ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>Location</span>
+                        <p className="text-sm font-medium">{selectedOpportunity.location}</p>
                       </div>
                     )}
                   </div>

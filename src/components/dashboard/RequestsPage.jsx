@@ -171,64 +171,86 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
           <p className={darkMode ? 'text-white/50' : 'text-gray-500'}>Message Taj to create your first request</p>
         </div>
       ) : (
-        <div className={`divide-y ${darkMode ? 'divide-white/10' : 'divide-gray-100'}`}>
+        <div>
           {requests.map((request) => {
-            const status = getStatusInfo(request.status);
             const hasMatches = request.matches_count > 0;
-            
+
             return (
-              <article 
-                key={request.id} 
-                className={`px-4 py-4 transition-colors cursor-pointer ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
+              <div
+                key={request.id}
+                className={`p-4 border-b cursor-pointer transition-colors ${darkMode ? 'border-white/10 hover:bg-white/5' : 'border-gray-100 hover:bg-gray-50'}`}
                 onClick={() => hasMatches && handleViewMatches(request)}
               >
-                <div className="flex items-start gap-3">
-                  {/* Status indicator */}
-                  <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                    request.status === 'awaiting_approval' ? 'bg-blue-500' :
-                    request.status === 'completed' ? 'bg-green-500' :
-                    'bg-amber-500'
-                  }`} />
+                {/* Row 1: Time + Category + Status + Match Count */}
+                <div className="flex items-center gap-2 flex-wrap mb-2">
+                  <span className={`w-2 h-2 rounded-full ${request.status === 'matching' ? 'bg-yellow-500' : request.status === 'done' || request.status === 'completed' ? 'bg-green-500' : 'bg-blue-500'}`}></span>
+                  <span className={`text-sm ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                    {formatDate(request.created_at)}
+                  </span>
 
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    {/* Header row */}
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-sm ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
-                        {formatDate(request.created_at)}
-                      </span>
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${darkMode ? 'bg-white/10 text-white/60' : status.color}`}>
-                        {status.icon}
-                        {status.label}
-                      </span>
-                      {hasMatches && (
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${darkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-50 text-purple-600'}`}>
-                          <Users size={12} />
-                          {request.matches_count}
-                        </span>
-                      )}
-                    </div>
+                  {/* Category Badge */}
+                  {request.category && request.category !== 'other' && request.category !== 'community' && (
+                    <span className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'}`}>
+                      {request.category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </span>
+                  )}
 
-                    {/* Request text */}
-                    <p className={`text-[15px] leading-relaxed ${darkMode ? 'text-white/90' : 'text-gray-800'}`}>
-                      "{getCleanRequest(request.title, request.description)}"
-                    </p>
+                  {/* Status Badge */}
+                  <span className={`px-2 py-0.5 text-xs rounded-full ${
+                    request.status === 'review' || request.status === 'awaiting_approval'
+                      ? (darkMode ? 'bg-green-500/20 text-green-300' : 'bg-green-100 text-green-700')
+                      : (darkMode ? 'bg-white/10 text-white/60' : 'bg-gray-100 text-gray-600')
+                  }`}>
+                    {request.status === 'awaiting_approval' ? 'Review' : request.status?.charAt(0).toUpperCase() + request.status?.slice(1)}
+                  </span>
 
-                    {/* View matches link */}
-                    {hasMatches && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleViewMatches(request);
-                        }}
-                        className="mt-2 text-sm font-medium text-[#E50914] hover:underline"
-                      >
-                        View matches →
-                      </button>
+                  {/* Match Count */}
+                  {hasMatches && (
+                    <span className={`text-sm ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                      {request.matches_count} matches
+                    </span>
+                  )}
+                </div>
+
+                {/* Row 2: Request Title */}
+                <p className={`text-[15px] leading-relaxed ${darkMode ? 'text-white/90' : 'text-gray-800'}`}>
+                  "{request.title}"
+                </p>
+
+                {/* Row 3: Budget / Timeline / Location (if any exist) */}
+                {(request.budget_display || request.timeline_display || request.location) && (
+                  <div className={`flex items-center gap-3 mt-2 text-sm ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                    {request.budget_display && (
+                      <span>{request.budget_display}</span>
+                    )}
+                    {request.budget_display && (request.timeline_display || request.location) && (
+                      <span>·</span>
+                    )}
+                    {request.timeline_display && (
+                      <span>{request.timeline_display}</span>
+                    )}
+                    {request.timeline_display && request.location && (
+                      <span>·</span>
+                    )}
+                    {request.location && (
+                      <span>{request.location}</span>
                     )}
                   </div>
-                </div>
-              </article>
+                )}
+
+                {/* Row 4: View matches link */}
+                {hasMatches && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleViewMatches(request);
+                    }}
+                    className="mt-3 text-sm font-medium text-red-500 hover:text-red-400"
+                  >
+                    View matches →
+                  </button>
+                )}
+              </div>
             );
           })}
         </div>
@@ -238,11 +260,20 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
       <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
         <DialogContent className={`sm:max-w-md max-h-[80vh] overflow-hidden flex flex-col ${darkMode ? 'bg-[#111] border-white/10' : ''}`}>
           <DialogHeader>
-            <DialogTitle className={darkMode ? 'text-white' : ''}>Matches</DialogTitle>
+            <DialogTitle className={darkMode ? 'text-white' : 'text-gray-900'}>Matches</DialogTitle>
             {selectedRequest && (
-              <p className={`text-sm mt-1 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
-                "{getCleanRequest(selectedRequest.title, selectedRequest.description)}"
-              </p>
+              <div className={darkMode ? 'text-white/70' : 'text-gray-600'}>
+                <p className="text-sm">"{selectedRequest.title}"</p>
+                {(selectedRequest.budget_display || selectedRequest.timeline_display || selectedRequest.location) && (
+                  <div className="flex items-center gap-2 mt-1 text-sm">
+                    {selectedRequest.budget_display && <span>{selectedRequest.budget_display}</span>}
+                    {selectedRequest.budget_display && (selectedRequest.timeline_display || selectedRequest.location) && <span>·</span>}
+                    {selectedRequest.timeline_display && <span>{selectedRequest.timeline_display}</span>}
+                    {selectedRequest.timeline_display && selectedRequest.location && <span>·</span>}
+                    {selectedRequest.location && <span>{selectedRequest.location}</span>}
+                  </div>
+                )}
+              </div>
             )}
           </DialogHeader>
           
@@ -310,17 +341,24 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                               {match.matched_user.skills.slice(0, 3).map((skill, idx) => (
                                 <span
                                   key={idx}
-                                  className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-white/10 text-white/60' : 'bg-gray-100 text-gray-600'}`}
+                                  className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-white/10 text-white/70' : 'bg-gray-200 text-gray-700'}`}
                                 >
                                   {skill}
                                 </span>
                               ))}
                               {match.matched_user.skills.length > 3 && (
-                                <span className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-white/5 text-white/40' : 'bg-gray-50 text-gray-400'}`}>
+                                <span className={`text-xs ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
                                   +{match.matched_user.skills.length - 3}
                                 </span>
                               )}
                             </div>
+                          )}
+
+                          {/* Match Reason */}
+                          {match.match_reason && (
+                            <p className={`text-xs mt-2 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
+                              Matched: {match.match_reason}
+                            </p>
                           )}
                         </div>
 
