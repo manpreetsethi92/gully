@@ -96,7 +96,7 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
   return (
     <div>
       {/* Header */}
-      <div className={`sticky top-0 z-10 px-4 py-3 border-b flex items-center justify-between backdrop-blur-md ${darkMode ? 'bg-[#0a0a0a]/80 border-white/10' : 'bg-white/80 border-gray-100'}`}>
+      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b flex items-center justify-between ${darkMode ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-gray-100'}`}>
         <h1 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Opportunities</h1>
         <button
           onClick={() => setShowInviteModal(true)}

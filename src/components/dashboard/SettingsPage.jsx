@@ -36,8 +36,9 @@ const SettingsPage = ({ darkMode }) => {
 
   return (
     <div>
-      <div className="content-header">
-        <h1 className={darkMode ? 'text-white' : ''}>Settings</h1>
+      {/* Header */}
+      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-gray-100'}`}>
+        <h1 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Settings</h1>
       </div>
 
       <div className="content-body" style={{ maxWidth: 600 }}>

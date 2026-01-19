@@ -52,7 +52,7 @@ const ConnectionsPage = ({ onRefresh }) => {
   return (
     <div>
       {/* Header */}
-      <div className="sticky top-0 bg-white/80 dark:bg-[#111]/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-100 dark:border-[#222]">
+      <div className="sticky top-14 lg:top-0 z-40 px-4 py-3 border-b bg-white dark:bg-[#0a0a0a] border-gray-100 dark:border-white/10">
         <h1 className="text-xl font-bold">Connections</h1>
         {connections.length > 0 && (
           <p className="text-sm text-gray-500">{connections.length} connection{connections.length !== 1 ? 's' : ''}</p>
