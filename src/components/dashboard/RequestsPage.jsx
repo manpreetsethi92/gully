@@ -262,24 +262,33 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                 {matches.map((match) => {
                   const status = getMatchStatus(match.status);
                   const canAct = match.status === 'suggested';
-                  
+
                   return (
-                    <div 
+                    <div
                       key={match.id}
                       className={`rounded-xl p-4 ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}
                     >
-                      <div className="flex items-center gap-3">
-                        {/* Avatar */}
-                        <div 
-                          className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
-                          style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
-                        >
-                          {match.matched_user?.name?.charAt(0).toUpperCase() || '?'}
-                        </div>
-                        
-                        {/* Name + Status */}
+                      <div className="flex items-start gap-3">
+                        {/* Avatar - with photo support */}
+                        {match.matched_user?.photo_url || match.matched_user?.photo || match.matched_user?.avatar ? (
+                          <img
+                            src={match.matched_user.photo_url || match.matched_user.photo || match.matched_user.avatar}
+                            alt={match.matched_user.name}
+                            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                          />
+                        ) : (
+                          <div
+                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+                            style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+                          >
+                            {match.matched_user?.name?.charAt(0).toUpperCase() || '?'}
+                          </div>
+                        )}
+
+                        {/* Info */}
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
+                          {/* Name + Status */}
+                          <div className="flex items-center gap-2 flex-wrap">
                             <span className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                               {match.matched_user?.name || 'Unknown'}
                             </span>
@@ -287,16 +296,37 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                               {status.label}
                             </span>
                           </div>
-                          {match.match_reason && (
-                            <p className={`text-xs mt-0.5 ${darkMode ? 'text-white/40' : 'text-gray-500'}`}>
-                              {match.match_reason}
+
+                          {/* Location */}
+                          {match.matched_user?.location && (
+                            <p className={`text-sm mt-1 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                              {match.matched_user.location}
                             </p>
+                          )}
+
+                          {/* Skills as tags - max 3 */}
+                          {match.matched_user?.skills && match.matched_user.skills.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 mt-2">
+                              {match.matched_user.skills.slice(0, 3).map((skill, idx) => (
+                                <span
+                                  key={idx}
+                                  className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-white/10 text-white/60' : 'bg-gray-100 text-gray-600'}`}
+                                >
+                                  {skill}
+                                </span>
+                              ))}
+                              {match.matched_user.skills.length > 3 && (
+                                <span className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-white/5 text-white/40' : 'bg-gray-50 text-gray-400'}`}>
+                                  +{match.matched_user.skills.length - 3}
+                                </span>
+                              )}
+                            </div>
                           )}
                         </div>
 
-                        {/* Actions */}
+                        {/* Actions - only if status is suggested */}
                         {canAct && (
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 flex-shrink-0">
                             <button
                               onClick={() => handleMatchAction(match.id, 'approve')}
                               disabled={actionLoading === match.id}
