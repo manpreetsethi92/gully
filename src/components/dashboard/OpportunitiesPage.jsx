@@ -161,9 +161,9 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
             >
               <div className="flex gap-3">
                 {/* Avatar - Use photo if available */}
-                {opp.from_user?.profile_photo_url || opp.from_user?.photo || opp.from_user?.avatar ? (
+                {opp.from_user?.photo_url || opp.from_user?.photo || opp.from_user?.avatar ? (
                   <img
-                    src={opp.from_user.profile_photo_url || opp.from_user.photo || opp.from_user.avatar}
+                    src={opp.from_user.photo_url || opp.from_user.photo || opp.from_user.avatar}
                     alt={opp.from_user.name}
                     className="w-12 h-12 rounded-full object-cover flex-shrink-0"
                   />
@@ -239,9 +239,9 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
               {/* Header with photo and basic info */}
               <div className={`flex flex-col items-center text-center pb-4 border-b ${darkMode ? 'border-white/10' : 'border-gray-100'}`}>
                 {/* Large photo */}
-                {selectedOpportunity.from_user?.profile_photo_url || selectedOpportunity.from_user?.photo || selectedOpportunity.from_user?.avatar ? (
+                {selectedOpportunity.from_user?.photo_url || selectedOpportunity.from_user?.photo || selectedOpportunity.from_user?.avatar ? (
                   <img
-                    src={selectedOpportunity.from_user.profile_photo_url || selectedOpportunity.from_user.photo || selectedOpportunity.from_user.avatar}
+                    src={selectedOpportunity.from_user.photo_url || selectedOpportunity.from_user.photo || selectedOpportunity.from_user.avatar}
                     alt={selectedOpportunity.from_user.name}
                     className="w-20 h-20 rounded-full object-cover mb-3"
                   />
