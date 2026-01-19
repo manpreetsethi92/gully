@@ -192,6 +192,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   // Signup form state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [location, setLocation] = useState("");
   const [instagram, setInstagram] = useState("");
   const [linkedin, setLinkedin] = useState("");
@@ -258,6 +259,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setLocation("");
     setInstagram("");
     setLinkedin("");
+    setAgreedToTerms(false);
     setShowSuccess(false);
     setShowCountryDropdown(false);
     setCountrySearch("");
@@ -676,19 +678,30 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     )}
                   </div>
 
+                  <label className="flex items-start gap-3 mt-5 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={agreedToTerms}
+                      onChange={(e) => setAgreedToTerms(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 rounded border-gray-300 text-[#E50914] focus:ring-[#E50914] accent-[#E50914]"
+                    />
+                    <span className="text-xs text-gray-500">
+                      I agree to the{" "}
+                      <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#E50914] hover:underline">Terms of Service</a>
+                      {" "}and{" "}
+                      <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#E50914] hover:underline">Privacy Policy</a>
+                    </span>
+                  </label>
+
                   <button
                     type="submit"
                     className="w-full h-11 rounded-full text-white font-semibold transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ background: '#E50914' }}
-                    disabled={loading || phoneExists}
+                    disabled={loading || phoneExists || !agreedToTerms}
                   >
-                      {loading ? <div className="spinner mx-auto" /> : "Continue"}
-                    </button>
-                  </form>
-
-                <p className="text-xs text-gray-400 text-center mt-4">
-                  By continuing, you agree to our Terms of Service and Privacy Policy
-                </p>
+                    {loading ? <div className="spinner mx-auto" /> : "Continue"}
+                  </button>
+                </form>
               </div>
             ) : step === "phone" ? (
               /* ========== SIGNIN - PHONE STEP ========== */
