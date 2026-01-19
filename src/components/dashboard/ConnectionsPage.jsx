@@ -88,15 +88,18 @@ const ConnectionsPage = ({ onRefresh, darkMode }) => {
                   onClick={() => toggleExpand(conn.id)}
                 >
                   {/* Avatar */}
-                  {connection.photo || connection.avatar || connection.profile_photo ? (
+                  {connection.photo_url ? (
                     <img
-                      src={connection.photo || connection.avatar || connection.profile_photo}
-                      alt={connection.name}
+                      src={connection.photo_url}
+                      alt={connection.name || 'User'}
                       className="w-12 h-12 rounded-full object-cover flex-shrink-0"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white font-semibold flex-shrink-0">
-                      {connection.name?.charAt(0).toUpperCase()}
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+                      style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+                    >
+                      {connection.name?.charAt(0).toUpperCase() || "?"}
                     </div>
                   )}
 
@@ -149,13 +152,13 @@ const ConnectionsPage = ({ onRefresh, darkMode }) => {
                       {(connection.skills || []).slice(0, 3).map((skill, idx) => (
                         <span
                           key={idx}
-                          className={`px-2 py-0.5 text-xs rounded-full border ${darkMode ? 'text-white/70 bg-white/10 border-white/10' : 'text-gray-700 bg-gray-100 border-gray-200'}`}
+                          className={`px-2.5 py-1 text-xs rounded-full border ${darkMode ? 'bg-white/10 text-white/80 border-white/20' : 'bg-gray-100 text-gray-700 border-gray-200'}`}
                         >
                           {skill}
                         </span>
                       ))}
                       {(connection.skills || []).length > 3 && (
-                        <span className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                        <span className={`px-2.5 py-1 text-xs rounded-full border ${darkMode ? 'bg-white/10 text-white/80 border-white/20' : 'bg-gray-100 text-gray-700 border-gray-200'}`}>
                           +{connection.skills.length - 3}
                         </span>
                       )}
@@ -195,7 +198,7 @@ const ConnectionsPage = ({ onRefresh, darkMode }) => {
                             {(connection.skills || []).map((skill, idx) => (
                               <span
                                 key={idx}
-                                className={`px-2 py-0.5 text-xs rounded-full border ${darkMode ? 'text-white/70 bg-white/10 border-white/10' : 'text-gray-700 bg-gray-100 border-gray-200'}`}
+                                className={`px-2.5 py-1 text-xs rounded-full border ${darkMode ? 'bg-white/10 text-white/80 border-white/20' : 'bg-gray-100 text-gray-700 border-gray-200'}`}
                               >
                                 {skill}
                               </span>
