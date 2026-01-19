@@ -566,7 +566,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             ) : internalMode === "signup" ? (
               /* ========== SIGNUP MODE ========== */
               <div>
-                <h2 className="text-xl font-bold mb-1">Join titlii</h2>
+                <h2 className="text-xl font-bold mb-1">Join <span className="font-syne text-[#E50914]">titlii</span></h2>
                 <p className="text-gray-500 text-sm mb-6">Tell us a bit about yourself</p>
 
                 <form onSubmit={handleSignupSubmit} className="space-y-4">
