@@ -365,7 +365,11 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                     setSelectedOpportunity(null);
                   }}
                   disabled={actionLoading === selectedOpportunity.id}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full font-semibold border transition-colors ${darkMode ? 'border-white/20 text-white/70 hover:bg-white/10' : 'border-gray-300 text-gray-600 hover:bg-gray-100'}`}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full font-semibold border transition-colors ${
+                    darkMode
+                      ? 'border-white/30 text-white hover:bg-white/10'
+                      : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                  }`}
                 >
                   <X size={18} />
                   Decline
@@ -376,7 +380,11 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                     setSelectedOpportunity(null);
                   }}
                   disabled={actionLoading === selectedOpportunity.id}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full font-semibold transition-colors bg-white text-black hover:bg-gray-100"
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full font-semibold transition-colors ${
+                    darkMode
+                      ? 'bg-white text-black hover:bg-gray-200'
+                      : 'bg-black text-white hover:bg-gray-800'
+                  }`}
                 >
                   <Check size={18} />
                   Accept
