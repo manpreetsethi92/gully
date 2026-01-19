@@ -376,7 +376,7 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                     setSelectedOpportunity(null);
                   }}
                   disabled={actionLoading === selectedOpportunity.id}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-white font-semibold bg-[#22c55e] hover:bg-[#16a34a] transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full font-semibold transition-colors bg-white text-black hover:bg-gray-100"
                 >
                   <Check size={18} />
                   Accept
