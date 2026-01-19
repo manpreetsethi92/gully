@@ -87,6 +87,39 @@ const AuthProvider = ({ children }) => {
     fetchUser();
   }, [token]);
 
+  // Sync auth state across tabs (fixes Safari multi-tab issue)
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'titly_token') {
+        if (e.newValue) {
+          setToken(e.newValue);
+          const storedUser = localStorage.getItem('titly_user');
+          if (storedUser) {
+            try {
+              setUser(JSON.parse(storedUser));
+            } catch {}
+          }
+        } else {
+          setToken(null);
+          setUser(null);
+        }
+      }
+
+      if (e.key === 'titly_user') {
+        if (e.newValue) {
+          try {
+            setUser(JSON.parse(e.newValue));
+          } catch {}
+        } else {
+          setUser(null);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const login = (newToken, userData) => {
     localStorage.setItem("titly_token", newToken);
     localStorage.setItem("titly_user", JSON.stringify(userData));
