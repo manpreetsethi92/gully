@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, forwardRef } from "react";
+import { useState, useEffect, useRef, forwardRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -61,6 +61,15 @@ const COUNTRY_CODES = [
   { code: "+57", country: "Colombia", flag: "🇨🇴" },
   { code: "+51", country: "Peru", flag: "🇵🇪" }
 ];
+
+// Debounce utility
+const debounce = (func, wait) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+};
 
 // Country dropdown rendered via portal to escape Dialog
 const CountryDropdown = forwardRef(({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries, selectedCode }, ref) => {
@@ -209,28 +218,34 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     }
   }, [isOpen, mode]);
 
+  // Debounced phone check function
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkPhoneDebounced = useCallback(
+    debounce(async (fullPhone) => {
+      try {
+        const response = await axios.get(`${API}/auth/check-phone?phone=${encodeURIComponent(fullPhone)}`);
+        setPhoneExists(response.data.exists);
+      } catch (error) {
+        console.error("Phone check error:", error);
+        setPhoneExists(false);
+      } finally {
+        setPhoneChecking(false);
+      }
+    }, 500),
+    []
+  );
+
   // Check phone when user types 10 digits (signup mode only)
   useEffect(() => {
     const cleaned = phone.replace(/\D/g, '');
     if (internalMode === "signup" && cleaned.length >= 10) {
-      const checkPhone = async () => {
-        setPhoneChecking(true);
-        try {
-          const fullPhone = `${countryCode}${cleaned}`;
-          const response = await axios.get(`${API}/auth/check-phone?phone=${encodeURIComponent(fullPhone)}`);
-          setPhoneExists(response.data.exists);
-        } catch (error) {
-          console.error("Phone check error:", error);
-          setPhoneExists(false);
-        } finally {
-          setPhoneChecking(false);
-        }
-      };
-      checkPhone();
+      setPhoneChecking(true);
+      const fullPhone = `${countryCode}${cleaned}`;
+      checkPhoneDebounced(fullPhone);
     } else {
       setPhoneExists(false);
     }
-  }, [phone, countryCode, internalMode]);
+  }, [phone, countryCode, internalMode, checkPhoneDebounced]);
 
   const resetAndClose = () => {
     setInternalMode(mode);
