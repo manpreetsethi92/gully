@@ -160,11 +160,11 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
               className={`px-4 py-5 cursor-pointer transition-colors ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
             >
               <div className="flex gap-3">
-                {/* Avatar - Use photo if available */}
-                {opp.from_user?.photo_url || opp.from_user?.photo || opp.from_user?.avatar ? (
+                {/* Avatar - Use photo if available, else initial */}
+                {opp.from_user?.photo_url ? (
                   <img
-                    src={opp.from_user.photo_url || opp.from_user.photo || opp.from_user.avatar}
-                    alt={opp.from_user.name}
+                    src={opp.from_user.photo_url}
+                    alt={opp.from_user?.name || 'User'}
                     className="w-12 h-12 rounded-full object-cover flex-shrink-0"
                   />
                 ) : (

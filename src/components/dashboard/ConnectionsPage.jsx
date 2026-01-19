@@ -139,7 +139,7 @@ const ConnectionsPage = ({ onRefresh, darkMode }) => {
 
                     {/* Bio - 1 line */}
                     {connection.bio && (
-                      <p className={`text-sm mt-1 line-clamp-1 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                      <p className={`text-sm mt-1 line-clamp-1 ${darkMode ? 'text-white/80' : 'text-gray-600'}`}>
                         {connection.bio}
                       </p>
                     )}
@@ -149,13 +149,13 @@ const ConnectionsPage = ({ onRefresh, darkMode }) => {
                       {(connection.skills || []).slice(0, 3).map((skill, idx) => (
                         <span
                           key={idx}
-                          className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-white/10 text-white/60' : 'bg-gray-100 text-gray-600'}`}
+                          className={`px-2 py-0.5 text-xs rounded-full border ${darkMode ? 'text-white/70 bg-white/10 border-white/10' : 'text-gray-700 bg-gray-100 border-gray-200'}`}
                         >
                           {skill}
                         </span>
                       ))}
                       {(connection.skills || []).length > 3 && (
-                        <span className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-white/5 text-white/40' : 'bg-gray-50 text-gray-400'}`}>
+                        <span className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
                           +{connection.skills.length - 3}
                         </span>
                       )}
@@ -174,15 +174,15 @@ const ConnectionsPage = ({ onRefresh, darkMode }) => {
                   <div className={`px-4 pb-4 pt-0 border-t ${darkMode ? 'border-white/5' : 'border-gray-100'}`}>
                     <div className="pl-15 ml-12">
                       {/* Connection date */}
-                      <div className={`flex items-center gap-2 text-xs mb-3 mt-3 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
+                      <div className={`flex items-center gap-2 text-xs mb-3 mt-3 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
                         <Calendar size={12} />
                         <span>Connected {new Date(conn.created_at || conn.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                       </div>
 
                       {/* Original request */}
                       {conn.request_title && (
-                        <div className={`text-sm mb-3 p-3 rounded-lg ${darkMode ? 'bg-white/5 text-white/70' : 'bg-gray-50 text-gray-600'}`}>
-                          <span className={`text-xs font-medium block mb-1 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>Connected for:</span>
+                        <div className={`text-sm mb-3 p-3 rounded-lg ${darkMode ? 'bg-white/5 text-white/80' : 'bg-gray-50 text-gray-700'}`}>
+                          <span className={`text-xs font-medium block mb-1 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>Connected for:</span>
                           {conn.request_title}
                         </div>
                       )}
@@ -190,12 +190,12 @@ const ConnectionsPage = ({ onRefresh, darkMode }) => {
                       {/* All skills */}
                       {(connection.skills || []).length > 3 && (
                         <div className="mb-3">
-                          <span className={`text-xs font-medium block mb-2 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>All skills:</span>
+                          <span className={`text-xs font-medium block mb-2 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>All skills:</span>
                           <div className="flex flex-wrap gap-1.5">
                             {(connection.skills || []).map((skill, idx) => (
                               <span
                                 key={idx}
-                                className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-white/10 text-white/60' : 'bg-gray-100 text-gray-600'}`}
+                                className={`px-2 py-0.5 text-xs rounded-full border ${darkMode ? 'text-white/70 bg-white/10 border-white/10' : 'text-gray-700 bg-gray-100 border-gray-200'}`}
                               >
                                 {skill}
                               </span>
