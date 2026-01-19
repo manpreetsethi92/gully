@@ -349,8 +349,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         phone: fullPhone,
         email: email.trim(),
         location: location.trim(),
-        instagram: instagram.trim() || null,
-        linkedin: linkedin.trim() || null
+        social_links: {
+          instagram: instagram.trim() || null,
+          linkedin: linkedin.trim() || null
+        }
       });
 
       if (response.data.success) {
