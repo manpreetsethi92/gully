@@ -153,12 +153,28 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Auto-redirect if already authenticated
+  // Auto-redirect if already authenticated (context-based)
   useEffect(() => {
     if (!loading && isAuthenticated && user?.profile_completed) {
       window.location.href = "/app";
     }
   }, [loading, isAuthenticated, user]);
+
+  // Safari fix: Also check localStorage directly on mount
+  useEffect(() => {
+    const storedToken = localStorage.getItem("titly_token");
+    const storedUser = localStorage.getItem("titly_user");
+    if (storedToken && storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        if (userData?.profile_completed) {
+          window.location.href = "/app";
+        }
+      } catch {
+        // Invalid stored user, ignore
+      }
+    }
+  }, []);
 
   // useCallback MUST be before any early returns (React hooks rule)
   const handleTryUsNow = useCallback(() => {

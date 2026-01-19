@@ -41,19 +41,25 @@ export const useAuth = () => {
 };
 
 const AuthProvider = ({ children }) => {
-  // Initialize user from localStorage immediately to prevent redirect flash
-  const getInitialUser = () => {
+  // Read from localStorage SYNCHRONOUSLY on initial render
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem("titly_token");
+  });
+
+  const [user, setUser] = useState(() => {
     try {
       const stored = localStorage.getItem("titly_user");
       return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
     }
-  };
-  
-  const [user, setUser] = useState(() => getInitialUser());
-  const [token, setToken] = useState(localStorage.getItem("titly_token"));
-  const [loading, setLoading] = useState(true);
+  });
+
+  const [loading, setLoading] = useState(() => {
+    // Only show loading if we have a token but need to verify it
+    return !!localStorage.getItem("titly_token");
+  });
+
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
@@ -159,36 +165,24 @@ const AuthProvider = ({ children }) => {
 
 // Protected Route
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading, user } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
 
-  // Also check localStorage directly as fallback during initial load
-  const hasStoredAuth = () => {
+  // Check localStorage directly as fallback (Safari fix)
+  const hasLocalAuth = () => {
     const storedToken = localStorage.getItem("titly_token");
     const storedUser = localStorage.getItem("titly_user");
-    // Allow access if user has token and user data (profile_completed can be false)
     return !!(storedToken && storedUser);
   };
 
   if (loading) {
-    // While loading, check localStorage to prevent flash redirect
-    if (hasStoredAuth()) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-white">
-          <div className="spinner"></div>
-        </div>
-      );
-    }
-    return <Navigate to="/" replace />;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="spinner" />
+      </div>
+    );
   }
 
-  // Check localStorage as fallback if state isn't ready yet (e.g., after login)
-  // This handles the case where login() just updated localStorage but state hasn't propagated yet
-  // Allow access if user is authenticated (has token and user), regardless of profile_completed
-  const storedAuth = hasStoredAuth();
-  const stateAuth = isAuthenticated && !!user;
-  
-  // Allow access if either state OR localStorage indicates valid auth (user exists with token)
-  if (!storedAuth && !stateAuth) {
+  if (!isAuthenticated && !hasLocalAuth()) {
     return <Navigate to="/" replace />;
   }
 
