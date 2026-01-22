@@ -10,7 +10,6 @@ import {
   Menu,
   X,
   MoreHorizontal,
-  Search,
   Bell,
   Moon,
   Sun
@@ -253,16 +252,8 @@ const DashboardLayout = () => {
         <aside className="hidden xl:block w-[320px] px-5 py-4">
           <div className="sticky top-4">
             {/* Notification Bell for Desktop */}
-            <div className="flex items-center justify-between mb-5">
-              <div className="relative flex-1 mr-3">
-                <Search size={16} className={`absolute left-4 top-1/2 -translate-y-1/2 ${darkMode ? 'text-white/40' : 'text-gray-400'}`} />
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className={`w-full h-11 pl-11 pr-4 rounded-2xl border-0 font-syne text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all ${darkMode ? 'bg-white/10 text-white placeholder-white/40 focus:bg-white/15' : 'bg-gray-100 focus:bg-white'}`}
-                />
-              </div>
-              <button 
+            <div className="flex items-center justify-end mb-5">
+              <button
                 onClick={() => setShowNotifications(!showNotifications)}
                 className={`p-2.5 rounded-full relative ${darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}
               >
