@@ -11,7 +11,7 @@ const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 const getSourceLogo = (source) => {
   const logos = {
     reddit: "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
-    twitter: "https://abs.twimg.com/responsive-web/client-web/icon-ios.b1fc7275.png",
+    twitter: "https://abs.twimg.com/favicons/twitter.3.ico",
     facebook: "https://www.facebook.com/images/fb_icon_325x325.png",
     craigslist: "https://www.craigslist.org/favicon.ico",
     linkedin: "https://cdn-icons-png.flaticon.com/512/174/174857.png"
