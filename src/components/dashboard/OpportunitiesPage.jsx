@@ -52,7 +52,7 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
   const handleAction = async (opportunityId, action, isExternal = false) => {
     setActionLoading(opportunityId);
     try {
-      const response = await axios.post(
+      await axios.post(
         `${API}/opportunities/${opportunityId}/action`,
         { action },
         { headers: { Authorization: `Bearer ${token}` } }
