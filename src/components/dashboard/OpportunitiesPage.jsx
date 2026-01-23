@@ -14,7 +14,7 @@ const getSourceLogo = (source) => {
     reddit: "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
     twitter: "https://abs.twimg.com/responsive-web/client-web/icon-ios.b1fc7275.png",
     facebook: "https://www.facebook.com/images/fb_icon_325x325.png",
-    craigslist: "https://www.craigslist.org/images/peace.jpg",
+    craigslist: "https://www.craigslist.org/favicon.ico",
     linkedin: "https://cdn-icons-png.flaticon.com/512/174/174857.png"
   };
   const sourceLower = (source || "").toLowerCase();
