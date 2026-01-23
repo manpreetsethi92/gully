@@ -13,7 +13,8 @@ import {
   Search,
   Bell,
   Moon,
-  Sun
+  Sun,
+  Bookmark
 } from "lucide-react";
 
 const OpportunitiesPage = lazy(() => import("../components/dashboard/OpportunitiesPage"));
@@ -21,6 +22,7 @@ const RequestsPage = lazy(() => import("../components/dashboard/RequestsPage"));
 const ConnectionsPage = lazy(() => import("../components/dashboard/ConnectionsPage"));
 const SettingsPage = lazy(() => import("../components/dashboard/SettingsPage"));
 const ProfilePage = lazy(() => import("../components/dashboard/ProfilePage"));
+const SavedJobsPage = lazy(() => import("../components/dashboard/SavedJobsPage"));
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
@@ -29,7 +31,7 @@ const DashboardLayout = () => {
   const location = useLocation();
   const { user, token } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [stats, setStats] = useState({ opportunities: 0, requests: 0, connections: 0 });
+  const [stats, setStats] = useState({ opportunities: 0, requests: 0, connections: 0, savedJobs: 0 });
   const [trending, setTrending] = useState([]);
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('titli-dark-mode');
@@ -42,17 +44,19 @@ const DashboardLayout = () => {
   // Fetch all data in parallel on mount
   const fetchAllData = useCallback(async () => {
     try {
-      const [oppsRes, reqsRes, connsRes, trendingRes] = await Promise.all([
+      const [oppsRes, reqsRes, connsRes, trendingRes, savedJobsRes] = await Promise.all([
         axios.get(`${API}/opportunities`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/requests`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/connections`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/stats/trending`, { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${API}/stats/trending`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/saved-jobs`, { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: [] }))
       ]);
 
       setStats({
         opportunities: oppsRes.data.length,
         requests: reqsRes.data.length,
-        connections: connsRes.data.filter(c => c.status === 'connected').length
+        connections: connsRes.data.filter(c => c.status === 'connected').length,
+        savedJobs: savedJobsRes.data.length
       });
       setTrending(trendingRes.data.trending || []);
     } catch (error) {
@@ -81,6 +85,7 @@ const DashboardLayout = () => {
 
   const navItems = [
     { id: "opportunities", label: "Opportunities", icon: Sparkles, count: stats.opportunities },
+    { id: "saved-jobs", label: "Saved Jobs", icon: Bookmark, count: stats.savedJobs },
     { id: "requests", label: "My Requests", icon: Send, count: stats.requests },
     { id: "connections", label: "Connections", icon: Users, count: stats.connections },
     { id: "settings", label: "Settings", icon: SettingsIcon }
@@ -241,6 +246,7 @@ const DashboardLayout = () => {
             <Routes>
               <Route index element={<OpportunitiesPage onRefresh={fetchAllData} darkMode={darkMode} />} />
               <Route path="opportunities" element={<OpportunitiesPage onRefresh={fetchAllData} darkMode={darkMode} />} />
+              <Route path="saved-jobs" element={<SavedJobsPage onRefresh={fetchAllData} darkMode={darkMode} />} />
               <Route path="requests" element={<RequestsPage onRefresh={fetchAllData} darkMode={darkMode} />} />
               <Route path="connections" element={<ConnectionsPage onRefresh={fetchAllData} darkMode={darkMode} />} />
               <Route path="profile" element={<ProfilePage darkMode={darkMode} />} />
