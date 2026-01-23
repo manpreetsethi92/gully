@@ -4,9 +4,25 @@ import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../ui/dialog";
 import { Input } from "../ui/input";
-import { Sparkles, Check, X, Share2, Copy, MessageCircle } from "lucide-react";
+import { Sparkles, Check, X, Share2, Copy, MessageCircle, ExternalLink, Bookmark } from "lucide-react";
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
+
+// Source logo helper
+const getSourceLogo = (source) => {
+  const logos = {
+    reddit: "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
+    twitter: "https://abs.twimg.com/responsive-web/client-web/icon-ios.b1fc7275.png",
+    facebook: "https://www.facebook.com/images/fb_icon_325x325.png",
+    craigslist: "https://www.craigslist.org/images/peace.jpg",
+    linkedin: "https://cdn-icons-png.flaticon.com/512/174/174857.png"
+  };
+  const sourceLower = (source || "").toLowerCase();
+  for (const [key, url] of Object.entries(logos)) {
+    if (sourceLower.includes(key)) return url;
+  }
+  return null;
+};
 
 const OpportunitiesPage = ({ onRefresh, darkMode }) => {
   const { token } = useAuth();
@@ -33,10 +49,10 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
     fetchOpportunities();
   }, [token]);
 
-  const handleAction = async (opportunityId, action) => {
+  const handleAction = async (opportunityId, action, isExternal = false) => {
     setActionLoading(opportunityId);
     try {
-      await axios.post(
+      const response = await axios.post(
         `${API}/opportunities/${opportunityId}/action`,
         { action },
         { headers: { Authorization: `Bearer ${token}` } }
@@ -45,7 +61,19 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
       setOpportunities(opportunities.filter(o => o.id !== opportunityId));
 
       if (action === "accept") {
-        toast.success("You're connected! Check your Connections page.");
+        if (isExternal) {
+          // External/scraped job - show special toast with link to saved jobs
+          toast.success(
+            <div className="flex flex-col gap-1">
+              <span className="font-semibold">Job saved!</span>
+              <span className="text-sm opacity-80">Check your WhatsApp for the apply link. Also in Saved Jobs.</span>
+            </div>,
+            { duration: 5000 }
+          );
+        } else {
+          // Internal connection
+          toast.success("You're connected! Check your Connections page.");
+        }
       } else {
         toast.success("Declined");
       }
@@ -82,6 +110,11 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
       return firstSentence.trim();
     }
     return text.substring(0, 120).trim() + "...";
+  };
+
+  // Check if opportunity is external (scraped job)
+  const isExternalOpportunity = (opp) => {
+    return opp.from_user?.id === "" || !opp.from_user?.id;
   };
 
   // Verified badge component
@@ -153,81 +186,108 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
         </div>
       ) : (
         <div className={`divide-y ${darkMode ? 'divide-white/10' : 'divide-gray-100'}`}>
-          {opportunities.map((opp) => (
-            <article
-              key={opp.id}
-              onClick={() => setSelectedOpportunity(opp)}
-              className={`px-4 py-5 cursor-pointer transition-colors ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
-            >
-              <div className="flex gap-3">
-                {/* Avatar - Use photo if available, else initial */}
-                {opp.from_user?.photo_url ? (
-                  <img
-                    src={opp.from_user.photo_url}
-                    alt={opp.from_user?.name || 'User'}
-                    className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                  />
-                ) : (
-                  <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
-                    style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
-                  >
-                    {opp.from_user?.name?.charAt(0).toUpperCase() || "?"}
-                  </div>
-                )}
-
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  {/* Row 1: Name + Verified badge + Time */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`font-bold text-[15px] ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                      {opp.from_user?.name || 'Someone'}
-                    </span>
-                    {hasVerifiedSocial(opp.from_user) && <VerifiedBadge />}
-                    <span className={`text-sm ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
-                      · {formatDate(opp.created_at)}
-                    </span>
-                  </div>
-
-                  {/* Row 2: Location */}
-                  {opp.from_user?.location && (
-                    <p className={`text-sm mt-0.5 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
-                      {opp.from_user.location}
-                    </p>
-                  )}
-
-                  {/* Row 3: Request preview */}
-                  <p className={`mt-2 text-[15px] line-clamp-2 ${darkMode ? 'text-white/90' : 'text-gray-800'}`}>
-                    "{getCleanRequest(opp.request_title, opp.request_description)}"
-                  </p>
-
-                  {/* Row 4: Matched skills tags */}
-                  {opp.matched_skills && opp.matched_skills.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                      {opp.matched_skills.slice(0, 3).map((skill, i) => (
-                        <span
-                          key={i}
-                          className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'}`}
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                      {opp.matched_skills.length > 3 && (
-                        <span className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-white/5 text-white/40' : 'bg-gray-100 text-gray-500'}`}>
-                          +{opp.matched_skills.length - 3}
-                        </span>
-                      )}
+          {opportunities.map((opp) => {
+            const isExternal = isExternalOpportunity(opp);
+            return (
+              <article
+                key={opp.id}
+                onClick={() => setSelectedOpportunity(opp)}
+                className={`px-4 py-5 cursor-pointer transition-colors ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
+              >
+                <div className="flex gap-3">
+                  {/* Avatar - Handle external jobs differently */}
+                  {isExternal ? (
+                    getSourceLogo(opp.from_user?.name) ? (
+                      <img
+                        src={getSourceLogo(opp.from_user?.name)}
+                        alt={opp.from_user?.name}
+                        className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                      />
+                    ) : (
+                      <div
+                        className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+                        style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
+                      >
+                        <ExternalLink size={20} />
+                      </div>
+                    )
+                  ) : opp.from_user?.photo_url ? (
+                    <img
+                      src={opp.from_user.photo_url}
+                      alt={opp.from_user?.name || 'User'}
+                      className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+                      style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+                    >
+                      {opp.from_user?.name?.charAt(0).toUpperCase() || "?"}
                     </div>
                   )}
 
-                  {/* Row 5: Tap hint */}
-                  <p className={`text-xs mt-3 ${darkMode ? 'text-white/30' : 'text-gray-400'}`}>
-                    Tap to view details
-                  </p>
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    {/* Row 1: Name + Verified badge + Time + External indicator */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`font-bold text-[15px] ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        {opp.from_user?.name || 'Someone'}
+                      </span>
+                      {isExternal && (
+                        <span className={`px-1.5 py-0.5 text-[10px] font-semibold rounded ${darkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-700'}`}>
+                          SCRAPED
+                        </span>
+                      )}
+                      {!isExternal && hasVerifiedSocial(opp.from_user) && <VerifiedBadge />}
+                      <span className={`text-sm ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
+                        · {formatDate(opp.created_at)}
+                      </span>
+                    </div>
+
+                    {/* Row 2: Location */}
+                    {opp.from_user?.location && (
+                      <p className={`text-sm mt-0.5 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                        {opp.from_user.location}
+                      </p>
+                    )}
+
+                    {/* Row 3: Request preview */}
+                    <p className={`mt-2 text-[15px] line-clamp-2 ${darkMode ? 'text-white/90' : 'text-gray-800'}`}>
+                      "{getCleanRequest(opp.request_title, opp.request_description)}"
+                    </p>
+
+                    {/* Row 4: Matched skills tags */}
+                    {opp.matched_skills && opp.matched_skills.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-3">
+                        {opp.matched_skills.slice(0, 3).map((skill, i) => (
+                          <span
+                            key={i}
+                            className={`px-2 py-0.5 text-xs rounded-full ${
+                              isExternal 
+                                ? (darkMode ? 'bg-green-500/20 text-green-300' : 'bg-green-100 text-green-700')
+                                : (darkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700')
+                            }`}
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                        {opp.matched_skills.length > 3 && (
+                          <span className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-white/5 text-white/40' : 'bg-gray-100 text-gray-500'}`}>
+                            +{opp.matched_skills.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Row 5: Tap hint */}
+                    <p className={`text-xs mt-3 ${darkMode ? 'text-white/30' : 'text-gray-400'}`}>
+                      Tap to view details
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       )}
 
@@ -239,7 +299,22 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
               {/* Header with photo and basic info */}
               <div className={`flex flex-col items-center text-center pb-4 border-b ${darkMode ? 'border-white/10' : 'border-gray-100'}`}>
                 {/* Large photo */}
-                {selectedOpportunity.from_user?.photo_url || selectedOpportunity.from_user?.photo || selectedOpportunity.from_user?.avatar ? (
+                {isExternalOpportunity(selectedOpportunity) ? (
+                  getSourceLogo(selectedOpportunity.from_user?.name) ? (
+                    <img
+                      src={getSourceLogo(selectedOpportunity.from_user?.name)}
+                      alt={selectedOpportunity.from_user?.name}
+                      className="w-20 h-20 rounded-full object-cover mb-3"
+                    />
+                  ) : (
+                    <div
+                      className="w-20 h-20 rounded-full flex items-center justify-center text-white text-2xl font-bold mb-3"
+                      style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
+                    >
+                      <ExternalLink size={32} />
+                    </div>
+                  )
+                ) : selectedOpportunity.from_user?.photo_url || selectedOpportunity.from_user?.photo || selectedOpportunity.from_user?.avatar ? (
                   <img
                     src={selectedOpportunity.from_user.photo_url || selectedOpportunity.from_user.photo || selectedOpportunity.from_user.avatar}
                     alt={selectedOpportunity.from_user.name}
@@ -254,12 +329,17 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                   </div>
                 )}
 
-                {/* Name + verified */}
-                <div className="flex items-center gap-2">
+                {/* Name + verified + external badge */}
+                <div className="flex items-center gap-2 flex-wrap justify-center">
                   <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                     {selectedOpportunity.from_user?.name}
                   </h2>
-                  {hasVerifiedSocial(selectedOpportunity.from_user) && <VerifiedBadge className="w-5 h-5" />}
+                  {isExternalOpportunity(selectedOpportunity) && (
+                    <span className={`px-2 py-0.5 text-xs font-semibold rounded ${darkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-700'}`}>
+                      SCRAPED JOB
+                    </span>
+                  )}
+                  {!isExternalOpportunity(selectedOpportunity) && hasVerifiedSocial(selectedOpportunity.from_user) && <VerifiedBadge className="w-5 h-5" />}
                 </div>
 
                 {/* Location */}
@@ -269,39 +349,41 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                   </p>
                 )}
 
-                {/* Social links */}
-                <div className="flex gap-3 mt-3">
-                  {selectedOpportunity.from_user?.social_links?.instagram && (
-                    <a
-                      href={`https://instagram.com/${selectedOpportunity.from_user.social_links.instagram.replace('@', '')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white"
-                    >
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                      </svg>
-                    </a>
-                  )}
-                  {selectedOpportunity.from_user?.social_links?.linkedin && (
-                    <a
-                      href={selectedOpportunity.from_user.social_links.linkedin.startsWith('http') ? selectedOpportunity.from_user.social_links.linkedin : `https://linkedin.com/in/${selectedOpportunity.from_user.social_links.linkedin}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-full bg-[#0077b5] text-white"
-                    >
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                      </svg>
-                    </a>
-                  )}
-                </div>
+                {/* Social links - only for non-external */}
+                {!isExternalOpportunity(selectedOpportunity) && (
+                  <div className="flex gap-3 mt-3">
+                    {selectedOpportunity.from_user?.social_links?.instagram && (
+                      <a
+                        href={`https://instagram.com/${selectedOpportunity.from_user.social_links.instagram.replace('@', '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                      </a>
+                    )}
+                    {selectedOpportunity.from_user?.social_links?.linkedin && (
+                      <a
+                        href={selectedOpportunity.from_user.social_links.linkedin.startsWith('http') ? selectedOpportunity.from_user.social_links.linkedin : `https://linkedin.com/in/${selectedOpportunity.from_user.social_links.linkedin}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-full bg-[#0077b5] text-white"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* The Opportunity Section */}
               <div className={`py-4 border-b ${darkMode ? 'border-white/10' : 'border-gray-100'}`}>
                 <h3 className={`text-xs font-semibold uppercase tracking-wider mb-3 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
-                  The Opportunity
+                  {isExternalOpportunity(selectedOpportunity) ? 'Job Details' : 'The Opportunity'}
                 </h3>
                 <p className={`text-[15px] leading-relaxed ${darkMode ? 'text-white/90' : 'text-gray-800'}`}>
                   "{selectedOpportunity.request_description || selectedOpportunity.request_title}"
@@ -342,13 +424,17 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
               {selectedOpportunity.matched_skills && selectedOpportunity.matched_skills.length > 0 && (
                 <div className={`py-4 border-b ${darkMode ? 'border-white/10' : 'border-gray-100'}`}>
                   <h3 className={`text-xs font-semibold uppercase tracking-wider mb-3 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
-                    Why You Matched
+                    {isExternalOpportunity(selectedOpportunity) ? 'Skills Required' : 'Why You Matched'}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {selectedOpportunity.matched_skills.map((skill, i) => (
                       <span
                         key={i}
-                        className={`px-3 py-1 text-sm rounded-full ${darkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'}`}
+                        className={`px-3 py-1 text-sm rounded-full ${
+                          isExternalOpportunity(selectedOpportunity)
+                            ? (darkMode ? 'bg-green-500/20 text-green-300' : 'bg-green-100 text-green-700')
+                            : (darkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700')
+                        }`}
                       >
                         {skill}
                       </span>
@@ -357,8 +443,8 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                 </div>
               )}
 
-              {/* About Section */}
-              {selectedOpportunity.from_user?.bio && (
+              {/* About Section - only for non-external */}
+              {!isExternalOpportunity(selectedOpportunity) && selectedOpportunity.from_user?.bio && (
                 <div className={`py-4 border-b ${darkMode ? 'border-white/10' : 'border-gray-100'}`}>
                   <h3 className={`text-xs font-semibold uppercase tracking-wider mb-3 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
                     About {selectedOpportunity.from_user.name?.split(' ')[0]}
@@ -369,11 +455,22 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                 </div>
               )}
 
+              {/* External job notice */}
+              {isExternalOpportunity(selectedOpportunity) && (
+                <div className={`py-4 border-b ${darkMode ? 'border-white/10' : 'border-gray-100'}`}>
+                  <div className={`p-3 rounded-xl ${darkMode ? 'bg-green-500/10' : 'bg-green-50'}`}>
+                    <p className={`text-sm ${darkMode ? 'text-green-300' : 'text-green-700'}`}>
+                      <strong>📱 Tip:</strong> When you save this job, we'll send the full details and apply link to your WhatsApp!
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => {
-                    handleAction(selectedOpportunity.id, "decline");
+                    handleAction(selectedOpportunity.id, "decline", isExternalOpportunity(selectedOpportunity));
                     setSelectedOpportunity(null);
                   }}
                   disabled={actionLoading === selectedOpportunity.id}
@@ -384,22 +481,33 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                   }`}
                 >
                   <X size={18} />
-                  Decline
+                  {isExternalOpportunity(selectedOpportunity) ? 'Pass' : 'Decline'}
                 </button>
                 <button
                   onClick={() => {
-                    handleAction(selectedOpportunity.id, "accept");
+                    handleAction(selectedOpportunity.id, "accept", isExternalOpportunity(selectedOpportunity));
                     setSelectedOpportunity(null);
                   }}
                   disabled={actionLoading === selectedOpportunity.id}
                   className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full font-semibold transition-colors ${
-                    darkMode
-                      ? 'bg-white text-black hover:bg-gray-200'
-                      : 'bg-black text-white hover:bg-gray-800'
+                    isExternalOpportunity(selectedOpportunity)
+                      ? 'bg-green-500 text-white hover:bg-green-600'
+                      : (darkMode
+                          ? 'bg-white text-black hover:bg-gray-200'
+                          : 'bg-black text-white hover:bg-gray-800')
                   }`}
                 >
-                  <Check size={18} />
-                  Accept
+                  {isExternalOpportunity(selectedOpportunity) ? (
+                    <>
+                      <Bookmark size={18} />
+                      Save Job
+                    </>
+                  ) : (
+                    <>
+                      <Check size={18} />
+                      Accept
+                    </>
+                  )}
                 </button>
               </div>
             </>
