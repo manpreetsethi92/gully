@@ -178,7 +178,7 @@ const ProfilePage = () => {
   const handleSave = async () => {
     if (!formData.name.trim()) { toast.error("Name is required"); return; }
     if (!formData.bio.trim()) { toast.error("Bio is required"); return; }
-    if (formData.skills.length < 5) { toast.error("Select at least 5 skills"); return; }
+    if (formData.skills.length < 1) { toast.error("Select at least 1 skill"); return; }
     if (formData.skills.length > 10) { toast.error("Maximum 10 skills"); return; }
     if (uploadingPhoto) { toast.error("Please wait for photo to finish uploading"); return; }
 
