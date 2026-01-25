@@ -112,6 +112,25 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
     return text.substring(0, 120).trim() + "...";
   };
 
+  // Calculate expiration display for Track B opportunities
+  const getExpirationDisplay = (expiresAt) => {
+    if (!expiresAt) return null;
+    const now = new Date();
+    const expires = new Date(expiresAt);
+    const diff = expires - now;
+
+    if (diff <= 0) return { text: 'Expired', color: 'red' };
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(hours / 24);
+
+    if (days > 3) return { text: `${days}d left`, color: 'green' };
+    if (days >= 2) return { text: `${days}d left`, color: 'yellow' };
+    if (days === 1) return { text: '1d left', color: 'yellow' };
+    if (hours > 0) return { text: `${hours}h left`, color: 'red' };
+    return { text: 'Expiring soon', color: 'red' };
+  };
+
   // Check if opportunity is external (scraped job)
   const isExternalOpportunity = (opp) => {
     return opp.from_user?.id === "" || !opp.from_user?.id;
@@ -228,7 +247,7 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    {/* Row 1: Name + Verified badge + Time + External indicator */}
+                    {/* Row 1: Name + Verified badge + Time + Expiration + External indicator */}
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className={`font-bold text-[15px] ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         {opp.from_user?.name || 'Someone'}
@@ -242,6 +261,21 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                       <span className={`text-sm ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
                         · {formatDate(opp.created_at)}
                       </span>
+                      {/* Expiration countdown for Track B opportunities */}
+                      {opp.expires_at && (() => {
+                        const expiry = getExpirationDisplay(opp.expires_at);
+                        if (!expiry) return null;
+                        const colorClass = expiry.color === 'green'
+                          ? (darkMode ? 'text-green-400' : 'text-green-600')
+                          : expiry.color === 'yellow'
+                            ? (darkMode ? 'text-yellow-400' : 'text-yellow-600')
+                            : (darkMode ? 'text-red-400' : 'text-red-600');
+                        return (
+                          <span className={`text-sm font-medium ${colorClass}`}>
+                            · {expiry.text}
+                          </span>
+                        );
+                      })()}
                     </div>
 
                     {/* Row 2: Location */}
@@ -348,6 +382,22 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                     {selectedOpportunity.from_user.location}
                   </p>
                 )}
+
+                {/* Expiration countdown */}
+                {selectedOpportunity.expires_at && (() => {
+                  const expiry = getExpirationDisplay(selectedOpportunity.expires_at);
+                  if (!expiry) return null;
+                  const bgClass = expiry.color === 'green'
+                    ? (darkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-700')
+                    : expiry.color === 'yellow'
+                      ? (darkMode ? 'bg-yellow-500/20 text-yellow-400' : 'bg-yellow-100 text-yellow-700')
+                      : (darkMode ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-700');
+                  return (
+                    <div className={`mt-2 px-3 py-1 rounded-full text-xs font-semibold inline-block ${bgClass}`}>
+                      {expiry.text}
+                    </div>
+                  );
+                })()}
 
                 {/* Social links - only for non-external */}
                 {!isExternalOpportunity(selectedOpportunity) && (
