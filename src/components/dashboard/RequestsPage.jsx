@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Send, Users, MessageCircle, Check, X } from "lucide-react";
+import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck } from "lucide-react";
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
@@ -15,6 +15,10 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
   const [matches, setMatches] = useState([]);
   const [matchesLoading, setMatchesLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
+  const [applicants, setApplicants] = useState([]);
+  const [applicantsLoading, setApplicantsLoading] = useState(false);
+  const [showApplicants, setShowApplicants] = useState(false);
+  const [closeLoading, setCloseLoading] = useState(null);
 
   const fetchRequests = useCallback(async () => {
     try {
@@ -50,6 +54,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
 
   const handleViewMatches = (request) => {
     setSelectedRequest(request);
+    setShowApplicants(false);
     fetchMatches(request.id);
   };
 
@@ -61,25 +66,108 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
         { action },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      setMatches(matches.map(m => 
-        m.id === matchId 
+
+      setMatches(matches.map(m =>
+        m.id === matchId
           ? { ...m, status: action === 'approve' ? 'outreach_sent' : 'rejected' }
           : m
       ));
-      
+
       if (action === 'approve') {
         toast.success("Taj will reach out to them!");
       } else {
         toast.success("Skipped");
       }
-      
+
       fetchRequests();
     } catch (error) {
       toast.error("Action failed");
     } finally {
       setActionLoading(null);
     }
+  };
+
+  const fetchApplicants = async (requestId) => {
+    setApplicantsLoading(true);
+    try {
+      const response = await axios.get(`${API}/requests/${requestId}/applicants`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setApplicants(response.data);
+    } catch (error) {
+      toast.error("Failed to fetch applicants");
+      setApplicants([]);
+    } finally {
+      setApplicantsLoading(false);
+    }
+  };
+
+  const handleViewApplicants = (request) => {
+    setSelectedRequest(request);
+    setShowApplicants(true);
+    fetchApplicants(request.id);
+  };
+
+  const handleApplicantAction = async (requestId, userId, action) => {
+    setActionLoading(userId);
+    try {
+      await axios.post(
+        `${API}/requests/${requestId}/applicants/${userId}/${action}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setApplicants(applicants.filter(a => a.user.id !== userId));
+
+      if (action === 'approve') {
+        toast.success("Connected! Check your Connections page.");
+      } else {
+        toast.success("Declined");
+      }
+
+      fetchRequests();
+    } catch (error) {
+      toast.error("Action failed");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleClosePost = async (requestId) => {
+    setCloseLoading(requestId);
+    try {
+      await axios.post(
+        `${API}/requests/${requestId}/close`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Post closed");
+      fetchRequests();
+      setSelectedRequest(null);
+    } catch (error) {
+      toast.error("Failed to close post");
+    } finally {
+      setCloseLoading(null);
+    }
+  };
+
+  // Calculate expiration display
+  const getExpirationDisplay = (expiresAt) => {
+    if (!expiresAt) return null;
+    const now = new Date();
+    const expires = new Date(expiresAt);
+    const diff = expires - now;
+
+    if (diff <= 0) return { text: 'Expired', color: 'red' };
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(hours / 24);
+
+    if (days > 3) return { text: `${days}d left`, color: 'green' };
+    if (days >= 2) return { text: `${days}d left`, color: 'yellow' };
+    if (days === 1) return { text: '1d left', color: 'yellow' };
+    if (hours > 0) return { text: `${hours}h left`, color: 'red' };
+    return { text: 'Expiring soon', color: 'red' };
   };
 
   const formatDate = (dateStr) => {
@@ -154,16 +242,25 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
         <div>
           {requests.map((request) => {
             const hasMatches = request.matches_count > 0;
+            const hasApplicants = request.applicants_count > 0;
+            const expiry = getExpirationDisplay(request.expires_at);
+            const isExpired = request.status === 'expired';
+            const isClosed = request.status === 'closed';
 
             return (
               <div
                 key={request.id}
-                className={`p-4 border-b cursor-pointer transition-colors ${darkMode ? 'border-white/10 hover:bg-white/5' : 'border-gray-100 hover:bg-gray-50'}`}
-                onClick={() => hasMatches && handleViewMatches(request)}
+                className={`p-4 border-b transition-colors ${darkMode ? 'border-white/10 hover:bg-white/5' : 'border-gray-100 hover:bg-gray-50'} ${(hasMatches || hasApplicants) ? 'cursor-pointer' : ''}`}
+                onClick={() => hasMatches ? handleViewMatches(request) : hasApplicants ? handleViewApplicants(request) : null}
               >
-                {/* Row 1: Time + Category + Status + Match Count */}
+                {/* Row 1: Time + Category + Status + Match Count + Expiration */}
                 <div className="flex items-center gap-2 flex-wrap mb-2">
-                  <span className={`w-2 h-2 rounded-full ${request.status === 'matching' ? 'bg-yellow-500' : request.status === 'done' || request.status === 'completed' ? 'bg-green-500' : 'bg-blue-500'}`}></span>
+                  <span className={`w-2 h-2 rounded-full ${
+                    isExpired || isClosed ? 'bg-gray-400' :
+                    request.status === 'matching' ? 'bg-yellow-500' :
+                    request.status === 'done' || request.status === 'completed' ? 'bg-green-500' :
+                    'bg-blue-500'
+                  }`}></span>
                   <span className={`text-sm ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
                     {formatDate(request.created_at)}
                   </span>
@@ -177,11 +274,13 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
 
                   {/* Status Badge */}
                   <span className={`px-2 py-0.5 text-xs rounded-full ${
+                    isExpired ? (darkMode ? 'bg-gray-500/20 text-gray-400' : 'bg-gray-100 text-gray-500') :
+                    isClosed ? (darkMode ? 'bg-gray-500/20 text-gray-400' : 'bg-gray-100 text-gray-500') :
                     request.status === 'review' || request.status === 'awaiting_approval'
                       ? (darkMode ? 'bg-green-500/20 text-green-300' : 'bg-green-100 text-green-700')
                       : (darkMode ? 'bg-white/10 text-white/60' : 'bg-gray-100 text-gray-600')
                   }`}>
-                    {request.status === 'awaiting_approval' ? 'Review' : request.status?.charAt(0).toUpperCase() + request.status?.slice(1)}
+                    {isExpired ? 'Expired' : isClosed ? 'Closed' : request.status === 'awaiting_approval' ? 'Review' : request.status?.charAt(0).toUpperCase() + request.status?.slice(1)}
                   </span>
 
                   {/* Match Count */}
@@ -190,10 +289,29 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                       {request.matches_count} matches
                     </span>
                   )}
+
+                  {/* Applicants Count */}
+                  {hasApplicants && (
+                    <span className={`text-sm font-medium ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>
+                      {request.applicants_count} applicant{request.applicants_count > 1 ? 's' : ''}
+                    </span>
+                  )}
+
+                  {/* Expiration countdown */}
+                  {!isExpired && !isClosed && expiry && (
+                    <span className={`text-sm font-medium flex items-center gap-1 ${
+                      expiry.color === 'green' ? (darkMode ? 'text-green-400' : 'text-green-600') :
+                      expiry.color === 'yellow' ? (darkMode ? 'text-yellow-400' : 'text-yellow-600') :
+                      (darkMode ? 'text-red-400' : 'text-red-600')
+                    }`}>
+                      <Clock size={12} />
+                      {expiry.text}
+                    </span>
+                  )}
                 </div>
 
                 {/* Row 2: Request Title */}
-                <p className={`text-[15px] leading-relaxed ${darkMode ? 'text-white/90' : 'text-gray-800'}`}>
+                <p className={`text-[15px] leading-relaxed ${isExpired || isClosed ? (darkMode ? 'text-white/50' : 'text-gray-500') : (darkMode ? 'text-white/90' : 'text-gray-800')}`}>
                   "{request.title}"
                 </p>
 
@@ -218,18 +336,46 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                   </div>
                 )}
 
-                {/* Row 4: View matches link */}
-                {hasMatches && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleViewMatches(request);
-                    }}
-                    className="mt-3 text-sm font-medium text-red-500 hover:text-red-400"
-                  >
-                    View matches →
-                  </button>
-                )}
+                {/* Row 4: Action buttons */}
+                <div className="flex items-center gap-3 mt-3">
+                  {hasMatches && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleViewMatches(request);
+                      }}
+                      className="text-sm font-medium text-red-500 hover:text-red-400"
+                    >
+                      View matches →
+                    </button>
+                  )}
+                  {hasApplicants && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleViewApplicants(request);
+                      }}
+                      className={`text-sm font-medium ${darkMode ? 'text-purple-400 hover:text-purple-300' : 'text-purple-600 hover:text-purple-500'}`}
+                    >
+                      View applicants →
+                    </button>
+                  )}
+                  {!isExpired && !isClosed && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm('Are you sure you want to close this post?')) {
+                          handleClosePost(request.id);
+                        }
+                      }}
+                      disabled={closeLoading === request.id}
+                      className={`text-sm font-medium flex items-center gap-1 ${darkMode ? 'text-white/40 hover:text-white/60' : 'text-gray-400 hover:text-gray-600'}`}
+                    >
+                      <XCircle size={14} />
+                      Close post
+                    </button>
+                  )}
+                </div>
               </div>
             );
           })}
@@ -237,7 +383,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
       )}
 
       {/* Matches Modal */}
-      <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
+      <Dialog open={!!selectedRequest && !showApplicants} onOpenChange={() => setSelectedRequest(null)}>
         <DialogContent className={`sm:max-w-md max-h-[80vh] overflow-hidden flex flex-col ${darkMode ? 'bg-[#111] border-white/10' : ''}`}>
           <DialogHeader>
             <DialogTitle className={darkMode ? 'text-white' : 'text-gray-900'}>Matches</DialogTitle>
@@ -256,7 +402,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
               </div>
             )}
           </DialogHeader>
-          
+
           <div className="flex-1 overflow-y-auto py-4 -mx-6 px-6">
             {matchesLoading ? (
               <div className="flex items-center justify-center py-10">
@@ -361,6 +507,142 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                             </button>
                           </div>
                         )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Applicants Modal */}
+      <Dialog open={!!selectedRequest && showApplicants} onOpenChange={() => { setSelectedRequest(null); setShowApplicants(false); }}>
+        <DialogContent className={`sm:max-w-md max-h-[80vh] overflow-hidden flex flex-col ${darkMode ? 'bg-[#111] border-white/10' : ''}`}>
+          <DialogHeader>
+            <DialogTitle className={`flex items-center gap-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              <UserCheck size={20} className="text-purple-500" />
+              Interested Professionals
+            </DialogTitle>
+            {selectedRequest && (
+              <div className={darkMode ? 'text-white/70' : 'text-gray-600'}>
+                <p className="text-sm">"{selectedRequest.title}"</p>
+                <p className={`text-xs mt-1 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                  These professionals want to connect with you!
+                </p>
+              </div>
+            )}
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto py-4 -mx-6 px-6">
+            {applicantsLoading ? (
+              <div className="flex items-center justify-center py-10">
+                <div className="spinner"></div>
+              </div>
+            ) : applicants.length === 0 ? (
+              <div className="text-center py-10">
+                <UserCheck size={40} className={`mx-auto mb-3 ${darkMode ? 'text-white/20' : 'text-gray-300'}`} />
+                <p className={darkMode ? 'text-white/50' : 'text-gray-500'}>No applicants yet</p>
+                <p className={`text-sm mt-1 ${darkMode ? 'text-white/30' : 'text-gray-400'}`}>Wait for professionals to express interest</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {applicants.map((applicant) => {
+                  const user = applicant.user;
+
+                  return (
+                    <div
+                      key={applicant.opportunity_id}
+                      className={`rounded-xl p-4 ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        {/* Avatar */}
+                        {user?.photo_url || user?.photo || user?.avatar ? (
+                          <img
+                            src={user.photo_url || user.photo || user.avatar}
+                            alt={user.name}
+                            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                          />
+                        ) : (
+                          <div
+                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+                            style={{ background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)' }}
+                          >
+                            {user?.name?.charAt(0).toUpperCase() || '?'}
+                          </div>
+                        )}
+
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          {/* Name */}
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                              {user?.name || 'Unknown'}
+                            </span>
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${darkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'}`}>
+                              Interested
+                            </span>
+                          </div>
+
+                          {/* Location */}
+                          {user?.location && (
+                            <p className={`text-sm mt-1 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                              {user.location}
+                            </p>
+                          )}
+
+                          {/* Skills as tags - max 3 */}
+                          {user?.skills && user.skills.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 mt-2">
+                              {user.skills.slice(0, 3).map((skill, idx) => (
+                                <span
+                                  key={idx}
+                                  className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'}`}
+                                >
+                                  {skill}
+                                </span>
+                              ))}
+                              {user.skills.length > 3 && (
+                                <span className={`text-xs ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                                  +{user.skills.length - 3}
+                                </span>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Bio preview */}
+                          {user?.bio && (
+                            <p className={`text-xs mt-2 line-clamp-2 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
+                              {user.bio}
+                            </p>
+                          )}
+
+                          {/* Applied at */}
+                          {applicant.applied_at && (
+                            <p className={`text-xs mt-2 ${darkMode ? 'text-white/30' : 'text-gray-400'}`}>
+                              Applied {formatDate(applicant.applied_at)}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex gap-2 flex-shrink-0">
+                          <button
+                            onClick={() => handleApplicantAction(selectedRequest.id, user.id, 'approve')}
+                            disabled={actionLoading === user.id}
+                            className="w-9 h-9 rounded-full flex items-center justify-center bg-purple-500 text-white hover:bg-purple-600 transition-colors"
+                          >
+                            <Check size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleApplicantAction(selectedRequest.id, user.id, 'decline')}
+                            disabled={actionLoading === user.id}
+                            className={`w-9 h-9 rounded-full flex items-center justify-center border transition-colors ${darkMode ? 'border-white/20 text-white/60 hover:bg-white/10' : 'border-gray-300 text-gray-500 hover:bg-gray-100'}`}
+                          >
+                            <X size={18} />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
