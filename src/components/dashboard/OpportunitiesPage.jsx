@@ -252,11 +252,6 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                       <span className={`font-bold text-[15px] ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         {opp.from_user?.name || 'Someone'}
                       </span>
-                      {isExternal && (
-                        <span className={`px-1.5 py-0.5 text-[10px] font-semibold rounded ${darkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-700'}`}>
-                          SCRAPED
-                        </span>
-                      )}
                       {!isExternal && hasVerifiedSocial(opp.from_user) && <VerifiedBadge />}
                       <span className={`text-sm ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
                         · {formatDate(opp.created_at)}
@@ -368,11 +363,6 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                   <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                     {selectedOpportunity.from_user?.name}
                   </h2>
-                  {isExternalOpportunity(selectedOpportunity) && (
-                    <span className={`px-2 py-0.5 text-xs font-semibold rounded ${darkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-700'}`}>
-                      SCRAPED JOB
-                    </span>
-                  )}
                   {!isExternalOpportunity(selectedOpportunity) && hasVerifiedSocial(selectedOpportunity.from_user) && <VerifiedBadge className="w-5 h-5" />}
                 </div>
 
