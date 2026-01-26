@@ -143,8 +143,9 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
     </svg>
   );
 
-  const hasVerifiedSocial = (user) => {
-    return user?.social_links?.linkedin || user?.social_links?.instagram;
+  // Check if user has verified badge (paid subscription)
+  const isUserVerified = (user) => {
+    return user?.is_verified === true;
   };
 
   if (loading) {
@@ -252,7 +253,7 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                       <span className={`font-bold text-[15px] ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         {opp.from_user?.name || 'Someone'}
                       </span>
-                      {!isExternal && hasVerifiedSocial(opp.from_user) && <VerifiedBadge />}
+                      {!isExternal && isUserVerified(opp.from_user) && <VerifiedBadge />}
                       <span className={`text-sm ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
                         · {formatDate(opp.created_at)}
                       </span>
@@ -363,7 +364,7 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
                   <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                     {selectedOpportunity.from_user?.name}
                   </h2>
-                  {!isExternalOpportunity(selectedOpportunity) && hasVerifiedSocial(selectedOpportunity.from_user) && <VerifiedBadge className="w-5 h-5" />}
+                  {!isExternalOpportunity(selectedOpportunity) && isUserVerified(selectedOpportunity.from_user) && <VerifiedBadge className="w-5 h-5" />}
                 </div>
 
                 {/* Location */}

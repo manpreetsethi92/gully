@@ -1,14 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import axios from "axios";
-import { LogOut, Trash2 } from "lucide-react";
+import { LogOut, Trash2, Crown, CheckCircle, Zap, ExternalLink } from "lucide-react";
 
 const SettingsPage = ({ darkMode }) => {
   const { logout, token } = useAuth();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [subscription, setSubscription] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [upgrading, setUpgrading] = useState(false);
+
+  useEffect(() => {
+    fetchSubscriptionStatus();
+  }, []);
+
+  const fetchSubscriptionStatus = async () => {
+    try {
+      const response = await axios.get(`${API}/subscription/status`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSubscription(response.data);
+    } catch (error) {
+      console.error("Failed to fetch subscription:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpgrade = async (plan) => {
+    setUpgrading(true);
+    try {
+      const response = await axios.post(
+        `${API}/subscription/checkout`,
+        null,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { plan }
+        }
+      );
+      // Redirect to Stripe checkout
+      window.location.href = response.data.checkout_url;
+    } catch (error) {
+      console.error("Failed to start checkout:", error);
+      toast.error("Failed to start checkout");
+      setUpgrading(false);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    try {
+      const response = await axios.post(
+        `${API}/subscription/portal`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      window.location.href = response.data.portal_url;
+    } catch (error) {
+      console.error("Failed to open portal:", error);
+      toast.error("Failed to open subscription portal");
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -34,6 +88,16 @@ const SettingsPage = ({ darkMode }) => {
     }
   };
 
+  const getTierDisplay = (tier) => {
+    switch (tier) {
+      case "pro": return { label: "Pro", color: "text-purple-500", bg: "bg-purple-500/10" };
+      case "verified": return { label: "Verified", color: "text-blue-500", bg: "bg-blue-500/10" };
+      default: return { label: "Free", color: "text-gray-500", bg: "bg-gray-500/10" };
+    }
+  };
+
+  const tierDisplay = subscription ? getTierDisplay(subscription.tier) : getTierDisplay("free");
+
   return (
     <div>
       {/* Header */}
@@ -42,6 +106,129 @@ const SettingsPage = ({ darkMode }) => {
       </div>
 
       <div className="content-body" style={{ maxWidth: 600 }}>
+        {/* Subscription Section */}
+        <div className="settings-section">
+          <h2 className={darkMode ? 'text-white' : ''}>Subscription</h2>
+
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="spinner"></div>
+            </div>
+          ) : (
+            <>
+              {/* Current Plan */}
+              <div className={`p-4 rounded-xl mb-4 ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm font-medium ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                      Your Plan
+                    </span>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${tierDisplay.color} ${tierDisplay.bg}`}>
+                      {tierDisplay.label}
+                    </span>
+                  </div>
+                  {subscription?.is_verified && (
+                    <div className="flex items-center gap-1 text-blue-500">
+                      <CheckCircle size={16} />
+                      <span className="text-xs font-medium">Verified</span>
+                    </div>
+                  )}
+                </div>
+
+                {subscription?.subscription_status === "active" && subscription?.subscription_expires_at && (
+                  <p className={`text-xs ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
+                    Renews {new Date(subscription.subscription_expires_at).toLocaleDateString()}
+                  </p>
+                )}
+
+                {subscription?.subscription_status === "canceled" && (
+                  <p className={`text-xs text-amber-500`}>
+                    Cancels at end of billing period
+                  </p>
+                )}
+              </div>
+
+              {/* Usage Stats */}
+              <div className={`p-4 rounded-xl mb-4 ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
+                <h3 className={`text-sm font-medium mb-3 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                  Today's Usage
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className={darkMode ? 'text-white/80' : 'text-gray-700'}>Requests</span>
+                      <span className={darkMode ? 'text-white/60' : 'text-gray-500'}>
+                        {subscription?.requests?.used || 0} / {subscription?.requests?.limit || 1000}
+                      </span>
+                    </div>
+                    <div className={`h-2 rounded-full ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}>
+                      <div
+                        className="h-full rounded-full bg-purple-500"
+                        style={{
+                          width: `${Math.min(100, ((subscription?.requests?.used || 0) / (subscription?.requests?.limit || 1000)) * 100)}%`
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className={darkMode ? 'text-white/80' : 'text-gray-700'}>Job Alerts</span>
+                      <span className={darkMode ? 'text-white/60' : 'text-gray-500'}>
+                        {subscription?.scraped_jobs?.used || 0} / {subscription?.scraped_jobs?.limit || 15}
+                      </span>
+                    </div>
+                    <div className={`h-2 rounded-full ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}>
+                      <div
+                        className="h-full rounded-full bg-blue-500"
+                        style={{
+                          width: `${Math.min(100, ((subscription?.scraped_jobs?.used || 0) / (subscription?.scraped_jobs?.limit || 15)) * 100)}%`
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <p className={`text-xs mt-3 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
+                  Resets at midnight UTC
+                </p>
+              </div>
+
+              {/* Upgrade Buttons - Only show if show_pricing_ui is true */}
+              {subscription?.show_pricing_ui && subscription?.tier === "free" && (
+                <div className="space-y-3">
+                  <button
+                    onClick={() => handleUpgrade("pro_monthly")}
+                    disabled={upgrading}
+                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-purple-500 text-white font-semibold hover:from-purple-700 hover:to-purple-600 transition-all"
+                  >
+                    <Crown size={18} />
+                    Upgrade to Pro - ${subscription?.pricing?.pro_monthly}/mo
+                  </button>
+                  <button
+                    onClick={() => handleUpgrade("verified_monthly")}
+                    disabled={upgrading}
+                    className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition-all ${darkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                  >
+                    <CheckCircle size={18} />
+                    Get Verified - ${subscription?.pricing?.verified_monthly}/mo
+                  </button>
+                </div>
+              )}
+
+              {/* Manage Subscription - Show if subscribed */}
+              {subscription?.tier !== "free" && subscription?.subscription_status === "active" && (
+                <button
+                  onClick={handleManageSubscription}
+                  className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition-all ${darkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                >
+                  <ExternalLink size={18} />
+                  Manage Subscription
+                </button>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Account Section */}
         <div className="settings-section">
           <h2 className={darkMode ? 'text-white' : ''}>Account</h2>
 
