@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck } from "lucide-react";
+import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck, BadgeCheck } from "lucide-react";
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
@@ -451,8 +451,11 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                         <div className="flex-1 min-w-0">
                           {/* Name + Status */}
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            <span className={`font-semibold flex items-center gap-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                               {match.matched_user?.name || 'Unknown'}
+                              {match.matched_user?.is_verified && (
+                                <BadgeCheck size={14} className="text-blue-500" fill="currentColor" strokeWidth={0} />
+                              )}
                             </span>
                             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${darkMode ? 'bg-white/10 text-white/60' : status.color}`}>
                               {status.label}
@@ -582,8 +585,11 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                         <div className="flex-1 min-w-0">
                           {/* Name */}
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            <span className={`font-semibold flex items-center gap-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                               {user?.name || 'Unknown'}
+                              {user?.is_verified && (
+                                <BadgeCheck size={14} className="text-blue-500" fill="currentColor" strokeWidth={0} />
+                              )}
                             </span>
                             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${darkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'}`}>
                               Interested

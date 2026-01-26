@@ -14,7 +14,10 @@ import {
   Bell,
   Moon,
   Sun,
-  Bookmark
+  Bookmark,
+  Zap,
+  Crown,
+  BadgeCheck
 } from "lucide-react";
 
 const OpportunitiesPage = lazy(() => import("../components/dashboard/OpportunitiesPage"));
@@ -38,18 +41,20 @@ const DashboardLayout = () => {
     return saved ? JSON.parse(saved) : false;
   });
   const [showNotifications, setShowNotifications] = useState(false);
+  const [subscription, setSubscription] = useState(null);
 
   const currentPath = location.pathname.split("/").pop() || "opportunities";
 
   // Fetch all data in parallel on mount
   const fetchAllData = useCallback(async () => {
     try {
-      const [oppsRes, reqsRes, connsRes, trendingRes, savedJobsRes] = await Promise.all([
+      const [oppsRes, reqsRes, connsRes, trendingRes, savedJobsRes, subRes] = await Promise.all([
         axios.get(`${API}/opportunities`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/requests`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/connections`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/stats/trending`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/saved-jobs`, { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: [] }))
+        axios.get(`${API}/saved-jobs`, { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: [] })),
+        axios.get(`${API}/subscription/status`, { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: null }))
       ]);
 
       setStats({
@@ -59,6 +64,7 @@ const DashboardLayout = () => {
         savedJobs: savedJobsRes.data.length
       });
       setTrending(trendingRes.data.trending || []);
+      if (subRes.data) setSubscription(subRes.data);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -212,7 +218,10 @@ const DashboardLayout = () => {
                 {user?.name?.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 text-left min-w-0">
-                <div className={`font-syne font-semibold text-sm truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>{user?.name}</div>
+                <div className={`font-syne font-semibold text-sm truncate flex items-center gap-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                  {user?.name}
+                  {user?.is_verified && <BadgeCheck size={14} className="text-blue-500 flex-shrink-0" fill="currentColor" strokeWidth={0} />}
+                </div>
                 <div className={`font-mono text-xs truncate ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>{user?.phone}</div>
               </div>
               <MoreHorizontal size={16} className={darkMode ? 'text-white/40' : 'text-gray-400'} />
@@ -303,6 +312,71 @@ const DashboardLayout = () => {
                   <div className="px-4 py-6 text-center">
                     <p className={`font-syne text-sm ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>No new notifications</p>
                   </div>
+                )}
+              </div>
+            )}
+
+            {/* Usage Stats */}
+            {subscription && (
+              <div className={`rounded-2xl overflow-hidden mb-5 ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
+                <div className="px-4 pt-4 pb-2 flex items-center justify-between">
+                  <h2 className={`font-syne font-bold text-lg ${darkMode ? 'text-white' : 'text-gray-900'}`}>Today's Usage</h2>
+                  {subscription.tier !== 'free' && (
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${subscription.tier === 'pro' ? 'text-purple-500 bg-purple-500/10' : 'text-blue-500 bg-blue-500/10'}`}>
+                      {subscription.tier === 'pro' ? 'Pro' : 'Verified'}
+                    </span>
+                  )}
+                </div>
+                <div className="px-4 pb-4 space-y-3">
+                  {/* Requests Usage */}
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className={`flex items-center gap-1.5 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                        <Zap size={14} />
+                        Requests
+                      </span>
+                      <span className={`font-mono text-xs ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                        {subscription.requests?.used || 0} / {subscription.requests?.limit || 1000}
+                      </span>
+                    </div>
+                    <div className={`h-1.5 rounded-full ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}>
+                      <div
+                        className="h-full rounded-full bg-purple-500 transition-all"
+                        style={{
+                          width: `${Math.min(100, ((subscription.requests?.used || 0) / (subscription.requests?.limit || 1000)) * 100)}%`
+                        }}
+                      />
+                    </div>
+                  </div>
+                  {/* Job Alerts Usage */}
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className={`flex items-center gap-1.5 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                        <Sparkles size={14} />
+                        Job Alerts
+                      </span>
+                      <span className={`font-mono text-xs ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                        {subscription.scraped_jobs?.used || 0} / {subscription.scraped_jobs?.limit || 15}
+                      </span>
+                    </div>
+                    <div className={`h-1.5 rounded-full ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}>
+                      <div
+                        className="h-full rounded-full bg-blue-500 transition-all"
+                        style={{
+                          width: `${Math.min(100, ((subscription.scraped_jobs?.used || 0) / (subscription.scraped_jobs?.limit || 15)) * 100)}%`
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                {subscription.tier === 'free' && subscription.show_pricing_ui && (
+                  <Link
+                    to="/app/settings"
+                    className={`flex items-center justify-center gap-2 py-3 text-sm font-semibold border-t transition-colors ${darkMode ? 'border-white/10 text-purple-400 hover:bg-white/5' : 'border-gray-200 text-purple-600 hover:bg-gray-100'}`}
+                  >
+                    <Crown size={16} />
+                    Upgrade to Pro
+                  </Link>
                 )}
               </div>
             )}

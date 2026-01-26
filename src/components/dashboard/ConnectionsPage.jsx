@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { Users, MessageCircle, Instagram, Linkedin, ChevronDown, Calendar } from "lucide-react";
+import { Users, MessageCircle, Instagram, Linkedin, ChevronDown, Calendar, BadgeCheck } from "lucide-react";
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
@@ -107,8 +107,11 @@ const ConnectionsPage = ({ onRefresh, darkMode }) => {
                   <div className="flex-1 min-w-0">
                     {/* Name + socials + badge */}
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <h3 className={`font-semibold flex items-center gap-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         {connection.name}
+                        {connection.is_verified && (
+                          <BadgeCheck size={16} className="text-blue-500" fill="currentColor" strokeWidth={0} />
+                        )}
                       </h3>
                       {(connection.instagram || connection.social_links?.instagram) && (
                         <a

@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Instagram, Linkedin, Twitter, Film, Music, MapPin, ExternalLink, Camera, Search, X, Loader2 } from "lucide-react";
+import { Instagram, Linkedin, Twitter, Film, Music, MapPin, ExternalLink, Camera, Search, X, Loader2, BadgeCheck } from "lucide-react";
 
 // Cloudinary config
 const CLOUDINARY_CLOUD_NAME = "ds7znu6zd";
@@ -279,7 +279,12 @@ const ProfilePage = () => {
               </div>
             )}
           </div>
-          <h2 className="text-2xl font-bold">{user?.name}</h2>
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-2xl font-bold">{user?.name}</h2>
+            {user?.is_verified && (
+              <BadgeCheck size={22} className="text-blue-500" fill="currentColor" strokeWidth={0} />
+            )}
+          </div>
           <p className="text-gray-500 text-sm">{user?.phone}</p>
         </div>
 

@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
 import { Toaster } from "./components/ui/sonner";
+import UpgradeModal from "./components/UpgradeModal";
 
 // Pages
 import LandingPage from "./pages/LandingPage";
@@ -14,7 +15,13 @@ import TermsOfService from "./pages/TermsOfService";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 export const API = `${BACKEND_URL}/api`;
 
-// Global axios interceptor for 401 handling
+// Global handler for 429 rate limit - will be set by AuthProvider
+let showUpgradeModalHandler = null;
+export const setUpgradeModalHandler = (handler) => {
+  showUpgradeModalHandler = handler;
+};
+
+// Global axios interceptor for 401 and 429 handling
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -23,6 +30,13 @@ axios.interceptors.response.use(
       localStorage.removeItem("titly_token");
       if (window.location.pathname !== "/") {
         window.location.href = "/";
+      }
+    } else if (error.response?.status === 429) {
+      // Rate limit reached - show upgrade modal
+      const detail = error.response?.data?.detail || "";
+      const limitType = detail.includes("scraped job") ? "scraped_jobs" : "requests";
+      if (showUpgradeModalHandler) {
+        showUpgradeModalHandler(limitType);
       }
     }
     return Promise.reject(error);
@@ -45,6 +59,17 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeLimitType, setUpgradeLimitType] = useState("requests");
+
+  // Set up the global handler for 429 responses
+  useEffect(() => {
+    setUpgradeModalHandler((limitType) => {
+      setUpgradeLimitType(limitType);
+      setShowUpgradeModal(true);
+    });
+    return () => setUpgradeModalHandler(null);
+  }, []);
 
   // Hydrate auth from localStorage AFTER mount (Safari bfcache fix)
   useEffect(() => {
@@ -119,6 +144,7 @@ const AuthProvider = ({ children }) => {
 
   const openAuthModal = () => setShowAuthModal(true);
   const closeAuthModal = () => setShowAuthModal(false);
+  const closeUpgradeModal = () => setShowUpgradeModal(false);
 
   const isAuthenticated = !!token && !!user;
 
@@ -133,7 +159,10 @@ const AuthProvider = ({ children }) => {
       isAuthenticated,
       showAuthModal,
       openAuthModal,
-      closeAuthModal
+      closeAuthModal,
+      showUpgradeModal,
+      upgradeLimitType,
+      closeUpgradeModal
     }}>
       {children}
     </AuthContext.Provider>
@@ -156,7 +185,7 @@ function App() {
 
 // Separate component to access useAuth
 const AppRoutes = () => {
-  const { loading, isAuthenticated } = useAuth();
+  const { loading, isAuthenticated, showUpgradeModal, upgradeLimitType, closeUpgradeModal } = useAuth();
 
   // Block everything until auth is hydrated
   if (loading) {
@@ -190,6 +219,11 @@ const AppRoutes = () => {
         </Routes>
       </BrowserRouter>
       <Toaster position="top-center" richColors />
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={closeUpgradeModal}
+        limitType={upgradeLimitType}
+      />
     </div>
   );
 };
