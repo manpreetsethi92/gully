@@ -360,7 +360,12 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                       View applicants →
                     </button>
                   )}
-                  {!isExpired && !isClosed && (
+                  {isClosed ? (
+                    <span className={`text-sm font-medium flex items-center gap-1 ${darkMode ? 'text-white/30' : 'text-gray-400'}`}>
+                      <Check size={14} />
+                      Closed
+                    </span>
+                  ) : !isExpired && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
