@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import axios from "axios";
-import { LogOut, Trash2, Crown, CheckCircle, Zap, ExternalLink } from "lucide-react";
+import { LogOut, Trash2, Crown, CheckCircle, ExternalLink } from "lucide-react";
 
 const SettingsPage = ({ darkMode }) => {
   const { logout, token } = useAuth();
@@ -13,11 +13,7 @@ const SettingsPage = ({ darkMode }) => {
   const [loading, setLoading] = useState(true);
   const [upgrading, setUpgrading] = useState(false);
 
-  useEffect(() => {
-    fetchSubscriptionStatus();
-  }, []);
-
-  const fetchSubscriptionStatus = async () => {
+  const fetchSubscriptionStatus = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/subscription/status`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -28,7 +24,11 @@ const SettingsPage = ({ darkMode }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    fetchSubscriptionStatus();
+  }, [fetchSubscriptionStatus]);
 
   const handleUpgrade = async (plan) => {
     setUpgrading(true);
