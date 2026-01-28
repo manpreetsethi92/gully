@@ -550,10 +550,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                 </div>
                 <h2 className="text-2xl font-bold mb-2">You're all set!</h2>
                 <p className="text-gray-500 mb-6">
-                  Now text Taj on WhatsApp to find who you need!
+                  Check your WhatsApp - we just sent you a message with next steps!
                 </p>
                 <a
-                  href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20just%20signed%20up"
+                  href="https://wa.me/12134147369"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => resetAndClose()}
@@ -561,7 +561,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   style={{ background: '#25D366' }}
                 >
                   <MessageCircle size={20} />
-                  Text Taj now
+                  Open WhatsApp
                 </a>
               </div>
             ) : internalMode === "signup" ? (
