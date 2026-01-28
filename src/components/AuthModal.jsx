@@ -353,8 +353,11 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       });
 
       if (response.data.success) {
-        // Auto-login with token from signup
-        login(response.data.token, response.data.user);
+        // Store token/user for later - don't call login() yet to prevent auto-navigation
+        window.__pendingAuth = {
+          token: response.data.token,
+          user: response.data.user
+        };
 
         setShowSuccess(true);
         toast.success("Welcome to Titlii!");
@@ -557,6 +560,11 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                 </p>
                 <button
                   onClick={() => {
+                    // Now do the login after user clicks button
+                    if (window.__pendingAuth) {
+                      login(window.__pendingAuth.token, window.__pendingAuth.user);
+                      delete window.__pendingAuth;
+                    }
                     onClose();
                     navigate('/app');
                   }}
