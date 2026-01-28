@@ -344,15 +344,12 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     try {
       const fullPhone = getFullPhoneNumber();
 
-      const response = await axios.post(`${API}/auth/signup`, {
+      const response = await axios.post(`${API}/auth/signup-and-call`, {
         name: name.trim(),
         phone: fullPhone,
-        email: email.trim(),
         location: location.trim(),
-        social_links: {
-          instagram: instagram.trim() || null,
-          linkedin: linkedin.trim() || null
-        }
+        instagram: instagram.trim() || "",
+        linkedin: linkedin.trim() || ""
       });
 
       if (response.data.success) {
