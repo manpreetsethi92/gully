@@ -353,6 +353,9 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       });
 
       if (response.data.success) {
+        // Auto-login with token from signup
+        login(response.data.token, response.data.user);
+
         setShowSuccess(true);
         toast.success("Welcome to Titlii!");
       }
@@ -554,8 +557,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                 </p>
                 <button
                   onClick={() => {
-                    resetAndClose();
-                    window.location.href = '/app';
+                    onClose();
+                    navigate('/app');
                   }}
                   className="w-full h-12 rounded-full text-white font-semibold"
                   style={{ background: '#E50914' }}
