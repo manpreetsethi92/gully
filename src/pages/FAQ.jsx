@@ -25,7 +25,7 @@ const FAQ = () => {
         },
         {
           q: "What cities are you in?",
-          a: "All major US markets including Los Angeles, New York, San Francisco, Austin, Dallas, Miami, Chicago, Seattle, Denver, Atlanta, Nashville, and more. We also support remote work."
+          a: "Worldwide! We started in major US cities like LA, NYC, Austin, and Miami, but Titlii works anywhere. If there's a creative professional in your area, we can match you."
         }
       ]
     },
@@ -63,11 +63,7 @@ const FAQ = () => {
         },
         {
           q: "How much does it cost to join?",
-          a: "Free to join and get matched. Optional: Verification ($4.99/mo) gets you priority in matching and a verified badge. Premium ($12.99/mo) gives you unlimited access and additional features."
-        },
-        {
-          q: "What does verification mean?",
-          a: "Verified professionals get a badge on their profile, priority placement in matches, and more visibility to people posting requests. It signals you're serious and trustworthy."
+          a: "Free to join and get matched."
         },
         {
           q: "How do I get more matches?",
@@ -96,7 +92,7 @@ const FAQ = () => {
         },
         {
           q: "How do I contact support?",
-          a: "Just text Taj and say \"I need help\" or email us at support@titlii.social. We're a small team and we actually respond."
+          a: "Just text Taj and say \"I need help\" or email us at taj@titlii.social. We're a small team and we actually respond."
         }
       ]
     }
@@ -144,7 +140,7 @@ const FAQ = () => {
             <h2 className="text-2xl font-semibold mb-4">Still have questions?</h2>
             <p className="text-gray-600 mb-6">Text Taj on WhatsApp or reach out to our team</p>
             <a 
-              href="mailto:support@titlii.social"
+              href="mailto:taj@titlii.social"
               className="inline-block px-6 py-3 rounded-full text-white font-medium transition-colors"
               style={{ backgroundColor: '#E50914' }}
             >
