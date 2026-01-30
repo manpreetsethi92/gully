@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import AuthModal from "../components/AuthModal";
 
-const WORDS = ["photographer", "plumber", "developer", "designer", "tutor", "DJ", "gig", "clients", "opportunities"];
+const WORDS = ["photographer", "gig", "videographer", "mentor", "designer", "clients", "editor", "beta testers", "producer", "collab"];
 
 const CONVERSATIONS = [
   [
