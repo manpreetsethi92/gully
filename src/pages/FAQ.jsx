@@ -25,7 +25,7 @@ const FAQ = () => {
         },
         {
           q: "What cities are you in?",
-          a: "Worldwide! We started in major US cities like LA, NYC, Austin, and Miami, but Titlii works anywhere. If there's a creative professional in your area, we can match you."
+          a: "Worldwide. Whether you're in LA, London, or Lagos - Taj has access to our entire network of creative professionals and opportunities. We match based on your skills and location."
         }
       ]
     },
@@ -92,7 +92,7 @@ const FAQ = () => {
         },
         {
           q: "How do I contact support?",
-          a: "Just text Taj and say \"I need help\" or email us at taj@titlii.social. We're a small team and we actually respond."
+          a: "Text Taj at +1 213-414-7369 on WhatsApp and say \"I need help\", or email taj@titlii.social. We're a small team and we actually respond."
         }
       ]
     }
