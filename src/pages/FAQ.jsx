@@ -25,7 +25,7 @@ const FAQ = () => {
         },
         {
           q: "What cities are you in?",
-          a: "Worldwide. Whether you're in LA, London, or Lagos - Taj has access to our entire network of creative professionals and opportunities. We match based on your skills and location."
+          a: "Worldwide. Taj has access to our entire network of creative professionals, no matter where you are. If you're looking for work or looking to hire, we'll match you."
         }
       ]
     },
