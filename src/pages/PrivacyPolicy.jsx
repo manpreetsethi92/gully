@@ -26,11 +26,11 @@ const PrivacyPolicy = () => {
         <div className="max-w-4xl mx-auto prose prose-gray">
           <h1 className="text-4xl font-bold mb-2">Privacy Policy</h1>
           <p className="text-gray-500 mb-8">titlii.social — A Service of Made of Drama Studios Inc.</p>
-          <p className="text-sm text-gray-400 mb-8">Last Updated: January 8, 2026</p>
+          <p className="text-sm text-gray-400 mb-8">Last Updated: January 28, 2026</p>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
-            <p>Made of Drama Studios Inc. ("Company," "we," "our," or "us"), based in Dallas, Texas, operates Titlii (titlii.social). This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use our website, Telegram bot, mobile applications, and related services ("Services").</p>
+            <p>Made of Drama Studios Inc. ("Company," "we," "our," or "us"), a Texas corporation with its principal place of business in Dallas, Texas, operates Titlii (titlii.social). This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use our website, WhatsApp bot, voice services, mobile applications, and related services ("Services").</p>
             <p>By using our Services, you consent to the practices described in this Privacy Policy. If you do not agree, do not use our Services.</p>
           </section>
 
@@ -43,8 +43,8 @@ const PrivacyPolicy = () => {
               <li>Profile Information: Professional skills, experience, portfolio links, profile photos</li>
               <li>Preferences: Location, availability, work types, budget/rate information</li>
               <li>Content: Job postings, work requests, messages, feedback</li>
-              <li>Verification Information: Identity verification documents</li>
-              <li>Communications: Support inquiries, feedback</li>
+              <li>Verification Information: Identity verification documents (if submitted)</li>
+              <li>Communications: Support inquiries, feedback, voice call recordings (with notice)</li>
             </ul>
 
             <h3 className="text-xl font-medium mb-3">2.2 Information Collected Automatically</h3>
@@ -59,13 +59,24 @@ const PrivacyPolicy = () => {
             <h3 className="text-xl font-medium mb-3">2.3 Information from Third Parties</h3>
             <ul className="list-disc pl-6 mb-4">
               <li>Firebase: Authentication data</li>
-              <li>Telegram: User ID, username, bot interactions</li>
+              <li>WhatsApp/Twilio: User ID, phone number, message interactions</li>
               <li>LinkedIn: Publicly available professional information</li>
               <li>Public Job Boards: Aggregated postings from Reddit, X, Craigslist, Facebook</li>
             </ul>
 
-            <h3 className="text-xl font-medium mb-3">2.4 Cookies and Tracking Technologies</h3>
-            <p>We use cookies, web beacons, and similar technologies. You can control cookies through browser settings, but disabling them may limit functionality.</p>
+            <h3 className="text-xl font-medium mb-3">2.4 Passive Professionals and Pre-Populated Profiles</h3>
+            <p>To expand our network and provide better matching, we may create preliminary profile entries using publicly available professional information (e.g., from LinkedIn or professional directories). These "passive professional" profiles contain only publicly available data and are used to facilitate potential matches.</p>
+            <p>If you discover a pre-populated profile based on your public information, you may:</p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Claim and complete the profile to become an active user</li>
+              <li>Request access to see what information we have</li>
+              <li>Request correction of inaccurate information</li>
+              <li>Request removal of your profile entirely</li>
+            </ul>
+            <p>Contact privacy@titlii.social with subject "Passive Profile Request" to exercise these rights.</p>
+
+            <h3 className="text-xl font-medium mb-3">2.5 Cookies and Tracking Technologies</h3>
+            <p>We use cookies, web beacons, and similar technologies for essential functionality, analytics, and (where permitted) advertising. You can control cookies through browser settings, but disabling them may limit functionality. We only use advertising-related cookies where legally allowed and with appropriate consent.</p>
           </section>
 
           <section className="mb-8">
@@ -77,7 +88,7 @@ const PrivacyPolicy = () => {
               <li>Contents of messages you send through our platform</li>
             </ul>
             <p>We use sensitive personal information only for purposes permitted by law, such as providing our Services and ensuring security. We do not use sensitive personal information for purposes beyond what is necessary to provide the Services or for purposes that are not reasonably expected.</p>
-            <p>California residents have the right to limit the use and disclosure of their sensitive personal information. See Section 10 for details.</p>
+            <p>California residents have the right to limit the use and disclosure of their sensitive personal information. See Section 11 for details.</p>
           </section>
 
           <section className="mb-8">
@@ -88,14 +99,14 @@ const PrivacyPolicy = () => {
               <li>Creating and managing your account</li>
               <li>Powering our AI-driven matching algorithm</li>
               <li>Connecting you with opportunities and professionals</li>
-              <li>Calculating credibility scores</li>
+              <li>Calculating credibility and trust scores</li>
               <li>Personalizing your experience</li>
               <li>Improving our Services</li>
             </ul>
 
             <h3 className="text-xl font-medium mb-3">4.2 Communication</h3>
             <ul className="list-disc pl-6 mb-4">
-              <li>Match notifications and opportunity alerts</li>
+              <li>Match notifications and opportunity alerts via WhatsApp</li>
               <li>Customer support</li>
               <li>Service announcements</li>
               <li>Marketing communications (with consent where required)</li>
@@ -104,9 +115,18 @@ const PrivacyPolicy = () => {
             <h3 className="text-xl font-medium mb-3">4.3 Safety and Security</h3>
             <ul className="list-disc pl-6 mb-4">
               <li>Detecting and preventing fraud, abuse, and security threats</li>
-              <li>Maintaining blacklists and decline backoff protections</li>
+              <li>Maintaining trust scores, blacklists, and decline backoff protections</li>
               <li>Enforcing Terms of Service</li>
               <li>Complying with legal obligations</li>
+            </ul>
+
+            <h3 className="text-xl font-medium mb-3">4.4 Legal Bases for Processing (GDPR)</h3>
+            <p>For users in the EEA, UK, or other jurisdictions requiring legal bases, we process your data based on:</p>
+            <ul className="list-disc pl-6 mb-4">
+              <li><strong>Contract:</strong> Running your account, matching, communications, and delivering the Services you requested</li>
+              <li><strong>Legitimate Interests:</strong> Improving algorithms, preventing fraud, analytics, platform safety, and business operations</li>
+              <li><strong>Consent:</strong> Marketing emails, precise location data, certain cookies, and optional features</li>
+              <li><strong>Legal Obligation:</strong> Tax records, fraud prevention, responding to legal requests</li>
             </ul>
           </section>
 
@@ -119,51 +139,80 @@ const PrivacyPolicy = () => {
               <li>Expand skill descriptions for better matching</li>
               <li>Generate personalized outreach content</li>
               <li>Score and rank potential matches</li>
-              <li>Provide intelligent conversation assistance</li>
+              <li>Provide intelligent conversation assistance through our AI concierge, Taj</li>
             </ul>
 
             <h3 className="text-xl font-medium mb-3">5.2 Matching Algorithm Factors</h3>
             <p>Our algorithm considers: skills alignment, location groupings, verification levels, credibility scores, industry alignment, work type preferences, availability, budget compatibility, user activity patterns, and new user boosts.</p>
 
-            <h3 className="text-xl font-medium mb-3">5.3 Your Rights Regarding AI Processing</h3>
+            <h3 className="text-xl font-medium mb-3">5.3 Nature of AI Decisions</h3>
+            <p><strong>Match recommendations and suggestions are not legal or similarly significant automated decisions.</strong> They are recommendations only—you always choose whether to act on them. No employment, legal, financial, or other significant decisions are made solely by automated means without human involvement.</p>
+
+            <h3 className="text-xl font-medium mb-3">5.4 Your Rights Regarding AI Processing</h3>
             <p>You may request information about automated decision-making logic and request human review of certain decisions. Contact privacy@titlii.social.</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">6. How We Share Your Information</h2>
+            <h2 className="text-2xl font-semibold mb-4">6. Trust Scores and Safety Signals</h2>
+            <p>To protect our community, we maintain internal trust scores and risk indicators based on user behavior. These systems help us identify and address harmful activity.</p>
             
-            <h3 className="text-xl font-medium mb-3">6.1 With Other Users</h3>
+            <h3 className="text-xl font-medium mb-3">6.1 What We Track</h3>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Response rates and engagement patterns</li>
+              <li>No-shows or ghosting behavior after confirmed connections</li>
+              <li>Spam or abuse reports from other users</li>
+              <li>Account verification status</li>
+              <li>Profile completeness and activity levels</li>
+            </ul>
+
+            <h3 className="text-xl font-medium mb-3">6.2 How Scores Are Used</h3>
+            <p>Trust scores are internal and not publicly displayed. They may affect:</p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Match ranking and visibility in search results</li>
+              <li>Access to certain features</li>
+              <li>Account standing and suspension decisions</li>
+            </ul>
+
+            <h3 className="text-xl font-medium mb-3">6.3 Contesting Decisions</h3>
+            <p>If you believe your trust score or any related decision is incorrect, you may contact support@titlii.social to understand the decision and request review. We will investigate and correct any errors.</p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">7. How We Share Your Information</h2>
+            
+            <h3 className="text-xl font-medium mb-3">7.1 With Other Users</h3>
             <p>When matched, we share relevant profile information (name, skills, location, portfolio, availability). You control your public profile content.</p>
 
-            <h3 className="text-xl font-medium mb-3">6.2 With Service Providers</h3>
+            <h3 className="text-xl font-medium mb-3">7.2 With Service Providers</h3>
             <ul className="list-disc pl-6 mb-4">
               <li>MongoDB Atlas (database hosting)</li>
               <li>Firebase (authentication)</li>
               <li>Vercel (frontend hosting)</li>
               <li>Railway (backend hosting)</li>
               <li>Anthropic (AI processing)</li>
-              <li>Telegram (bot messaging)</li>
+              <li>Twilio (WhatsApp messaging and voice)</li>
+              <li>Vapi (voice AI services)</li>
               <li>Apify (web scraping for job aggregation)</li>
               <li>n8n (automation workflows)</li>
             </ul>
-            <p>These providers are contractually obligated to protect your information.</p>
+            <p>These providers are contractually obligated to protect your information and only use it for the services they provide to us.</p>
 
-            <h3 className="text-xl font-medium mb-3">6.3 For Legal Reasons</h3>
+            <h3 className="text-xl font-medium mb-3">7.3 For Legal Reasons</h3>
             <p>We may disclose information to comply with laws, enforce our Terms, protect rights/property/safety, or prevent fraud.</p>
 
-            <h3 className="text-xl font-medium mb-3">6.4 Business Transfers</h3>
+            <h3 className="text-xl font-medium mb-3">7.4 Business Transfers</h3>
             <p>In mergers, acquisitions, or asset sales, your information may be transferred. We will notify you.</p>
 
-            <h3 className="text-xl font-medium mb-3">6.5 Sale/Sharing of Personal Information</h3>
+            <h3 className="text-xl font-medium mb-3">7.5 Sale/Sharing of Personal Information</h3>
             <p><strong>WE DO NOT SELL YOUR PERSONAL INFORMATION.</strong> We have not sold personal information in the preceding 12 months.</p>
-            <p>We may share personal information with service providers and business partners for cross-context behavioral advertising. California residents can opt out - see Section 10.</p>
+            <p>We may share personal information with service providers and business partners for cross-context behavioral advertising. California residents can opt out—see Section 11.</p>
 
-            <h3 className="text-xl font-medium mb-3">6.6 Categories Disclosed in Past 12 Months</h3>
-            <p>For business purposes, we have disclosed: Identifiers, professional information, internet activity, geolocation data, and inferences to service providers listed in Section 6.2.</p>
+            <h3 className="text-xl font-medium mb-3">7.6 Categories Disclosed in Past 12 Months</h3>
+            <p>For business purposes, we have disclosed: Identifiers, professional information, internet activity, geolocation data, and inferences to service providers listed in Section 7.2.</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">7. Data Retention</h2>
+            <h2 className="text-2xl font-semibold mb-4">8. Data Retention</h2>
             <p>We retain personal information as follows:</p>
             <ul className="list-disc pl-6 mb-4">
               <li>Account Information: Duration of account plus 3 years</li>
@@ -171,12 +220,13 @@ const PrivacyPolicy = () => {
               <li>Transaction/Communication Records: 7 years (legal/tax requirements)</li>
               <li>Usage/Log Data: 2 years</li>
               <li>Aggregated Job Data: Regularly refreshed; retained up to 1 year</li>
+              <li>Trust/Safety Indicators: May be retained after account deletion to protect the platform</li>
             </ul>
-            <p>After account deletion, we delete or anonymize information within 30 days, except where retention is legally required.</p>
+            <p>After account deletion, we delete or anonymize most information within 30 days, except where retention is legally required or necessary to protect the platform (e.g., abuse records, blacklist flags).</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">8. Data Security</h2>
+            <h2 className="text-2xl font-semibold mb-4">9. Data Security</h2>
             <p>We implement appropriate measures including:</p>
             <ul className="list-disc pl-6 mb-4">
               <li>Encrypted data transmission (HTTPS/TLS)</li>
@@ -190,99 +240,101 @@ const PrivacyPolicy = () => {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">9. Your Rights and Choices</h2>
+            <h2 className="text-2xl font-semibold mb-4">10. Your Rights and Choices</h2>
             
-            <h3 className="text-xl font-medium mb-3">9.1 Access and Update</h3>
-            <p>Access and update your information through account settings or our Telegram bot. For other information, contact privacy@titlii.social.</p>
+            <h3 className="text-xl font-medium mb-3">10.1 Access and Update</h3>
+            <p>Access and update your information through account settings, our WhatsApp bot, or by contacting privacy@titlii.social.</p>
 
-            <h3 className="text-xl font-medium mb-3">9.2 Account Deletion</h3>
-            <p>Request deletion at support@titlii.social. We process requests within 30 days, except where retention is legally required.</p>
+            <h3 className="text-xl font-medium mb-3">10.2 Account Deletion</h3>
+            <p>Request deletion at support@titlii.social. We process requests within 30 days, except where retention is legally required or necessary for platform safety.</p>
 
-            <h3 className="text-xl font-medium mb-3">9.3 Communication Preferences</h3>
+            <h3 className="text-xl font-medium mb-3">10.3 Communication Preferences</h3>
             <p>Opt out of promotional communications via settings or unsubscribe links. Service communications cannot be opted out.</p>
 
-            <h3 className="text-xl font-medium mb-3">9.4 Data Portability</h3>
+            <h3 className="text-xl font-medium mb-3">10.4 Data Portability</h3>
             <p>Request a copy of your data in machine-readable format at privacy@titlii.social.</p>
 
-            <h3 className="text-xl font-medium mb-3">9.5 Do Not Track Signals</h3>
+            <h3 className="text-xl font-medium mb-3">10.5 Do Not Track Signals</h3>
             <p>Our Services do not currently respond to "Do Not Track" browser signals. However, you can manage tracking through cookie settings and by opting out of interest-based advertising through the Digital Advertising Alliance (optout.aboutads.info) or Network Advertising Initiative (optout.networkadvertising.org).</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">10. California Privacy Rights (CCPA/CPRA)</h2>
+            <h2 className="text-2xl font-semibold mb-4">11. California Privacy Rights (CCPA/CPRA)</h2>
             <p>California residents have the following rights under the California Consumer Privacy Act (CCPA) as amended by the California Privacy Rights Act (CPRA):</p>
 
-            <h3 className="text-xl font-medium mb-3">10.1 Right to Know</h3>
+            <h3 className="text-xl font-medium mb-3">11.1 Right to Know</h3>
             <p>Request information about categories and specific pieces of personal information collected, sources, purposes, and third parties with whom we share it.</p>
 
-            <h3 className="text-xl font-medium mb-3">10.2 Right to Delete</h3>
+            <h3 className="text-xl font-medium mb-3">11.2 Right to Delete</h3>
             <p>Request deletion of your personal information, subject to legal exceptions.</p>
 
-            <h3 className="text-xl font-medium mb-3">10.3 Right to Correct</h3>
+            <h3 className="text-xl font-medium mb-3">11.3 Right to Correct</h3>
             <p>Request correction of inaccurate personal information we maintain about you.</p>
 
-            <h3 className="text-xl font-medium mb-3">10.4 Right to Opt-Out of Sale/Sharing</h3>
+            <h3 className="text-xl font-medium mb-3">11.4 Right to Opt-Out of Sale/Sharing</h3>
             <p>We do NOT sell personal information. You may opt out of sharing for cross-context behavioral advertising by emailing privacy@titlii.social with subject "Opt-Out of Sharing."</p>
 
-            <h3 className="text-xl font-medium mb-3">10.5 Right to Limit Use of Sensitive Personal Information</h3>
+            <h3 className="text-xl font-medium mb-3">11.5 Right to Limit Use of Sensitive Personal Information</h3>
             <p>You may limit our use of sensitive personal information to only what is necessary to provide the Services. Email privacy@titlii.social with subject "Limit Sensitive Information."</p>
 
-            <h3 className="text-xl font-medium mb-3">10.6 Right to Non-Discrimination</h3>
+            <h3 className="text-xl font-medium mb-3">11.6 Right to Non-Discrimination</h3>
             <p>We will not discriminate against you for exercising your privacy rights.</p>
 
-            <h3 className="text-xl font-medium mb-3">10.7 Authorized Agents</h3>
+            <h3 className="text-xl font-medium mb-3">11.7 Authorized Agents</h3>
             <p>You may designate an authorized agent to submit requests on your behalf. The agent must provide written authorization signed by you. We may require you to verify your identity directly.</p>
 
-            <h3 className="text-xl font-medium mb-3">10.8 Exercising Your Rights</h3>
+            <h3 className="text-xl font-medium mb-3">11.8 Exercising Your Rights</h3>
             <p>Submit requests to privacy@titlii.social with subject "California Privacy Request." We will verify your identity using information associated with your account. We respond within 45 days (may be extended by 45 days with notice).</p>
 
-            <h3 className="text-xl font-medium mb-3">10.9 Financial Incentives</h3>
+            <h3 className="text-xl font-medium mb-3">11.9 Financial Incentives</h3>
             <p>We do not offer financial incentives for the collection, sale, or deletion of personal information.</p>
 
-            <h3 className="text-xl font-medium mb-3">10.10 Shine the Light (CA Civil Code Section 1798.83)</h3>
+            <h3 className="text-xl font-medium mb-3">11.10 Shine the Light (CA Civil Code Section 1798.83)</h3>
             <p>California residents may request information about disclosure of personal information to third parties for direct marketing. We do not share personal information with third parties for their direct marketing purposes. Contact privacy@titlii.social for more information.</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">11. Other State Privacy Rights</h2>
+            <h2 className="text-2xl font-semibold mb-4">12. Other State Privacy Rights</h2>
             <p>Residents of Virginia, Colorado, Connecticut, Utah, and other states with comprehensive privacy laws may have similar rights to access, delete, correct, and opt-out. Contact privacy@titlii.social to exercise these rights.</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">12. International Users</h2>
+            <h2 className="text-2xl font-semibold mb-4">13. International Users</h2>
             <p>Titlii is operated from the United States (Dallas, Texas). If you are outside the U.S., your information may be transferred to and processed in the United States.</p>
-            <p>For EEA, UK, or other regions with data protection laws, we process data based on: consent, contract performance, legal obligations, and legitimate interests.</p>
+            <p>For EEA, UK, or other regions with data protection laws, we process data based on: consent, contract performance, legal obligations, and legitimate interests (see Section 4.4 for details).</p>
             <p>EEA and UK users may lodge complaints with local data protection authorities.</p>
             <p>Standard Contractual Clauses or other appropriate safeguards apply to international transfers where required.</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">13. Children's Privacy</h2>
+            <h2 className="text-2xl font-semibold mb-4">14. Children's Privacy</h2>
             <p>Our Services are not for individuals under 18. We do not knowingly collect personal information from children under 18. If we learn we have collected such information, we will delete it promptly. Contact privacy@titlii.social if you believe we have inadvertently collected information from a child.</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">14. Third-Party Links and Services</h2>
+            <h2 className="text-2xl font-semibold mb-4">15. Third-Party Links and Services</h2>
             <p>Our Services may link to third-party websites and services. This Privacy Policy does not apply to them. Review their privacy policies. We are not responsible for their practices.</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">15. Changes to This Privacy Policy</h2>
+            <h2 className="text-2xl font-semibold mb-4">16. Changes to This Privacy Policy</h2>
             <p>We may update this Privacy Policy. When we make material changes:</p>
             <ul className="list-disc pl-6 mb-4">
               <li>We update the "Last Updated" date</li>
-              <li>We notify you via email or through the Services</li>
+              <li>We notify you via email, WhatsApp, or through the Services</li>
               <li>We provide opportunity to review before changes take effect</li>
             </ul>
             <p>Your continued use constitutes acceptance.</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">16. Contact Us</h2>
+            <h2 className="text-2xl font-semibold mb-4">17. Contact Us</h2>
             <p><strong>Made of Drama Studios Inc.</strong><br />
-            Dallas, Texas</p>
+            Dallas, Texas 75001<br />
+            United States</p>
             <p>Privacy Inquiries: <a href="mailto:privacy@titlii.social" className="text-red-600 hover:underline">privacy@titlii.social</a><br />
             General Support: <a href="mailto:support@titlii.social" className="text-red-600 hover:underline">support@titlii.social</a><br />
+            WhatsApp: <a href="https://wa.me/12134147369" className="text-red-600 hover:underline">+1 (213) 414-7369</a><br />
             Website: <a href="https://titlii.social" className="text-red-600 hover:underline">https://titlii.social</a></p>
             <p>For data access, deletion, correction, or other privacy requests:<br />
             Email: privacy@titlii.social<br />
