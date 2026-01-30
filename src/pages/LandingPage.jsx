@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import AuthModal from "../components/AuthModal";
 
-const WORDS = ["photographer", "plumber", "developer", "designer", "tutor", "DJ", "trainer"];
+const WORDS = ["photographer", "plumber", "developer", "designer", "tutor", "DJ", "gig", "clients", "opportunities"];
 
 const CONVERSATIONS = [
   [
@@ -127,6 +127,7 @@ const LandingPage = () => {
   const [currentWord, setCurrentWord] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState("signup"); // "signup" or "signin"
+  const [flowType, setFlowType] = useState('hiring'); // 'hiring' or 'freelancer'
 
   // Fix mobile Safari white space issue
   useEffect(() => {
@@ -337,7 +338,7 @@ const LandingPage = () => {
             {/* Eyebrow - BLACK */}
             <div className="animate-fade-up mb-8">
               <span className="font-mono text-xs tracking-[0.3em] text-gray-900 lowercase">
-                find anyone you need
+                the superconnector
               </span>
             </div>
             
@@ -363,14 +364,14 @@ const LandingPage = () => {
             
             {/* CTA */}
             <div className="flex flex-col sm:flex-row items-start gap-6 animate-fade-up-delay-3">
-              <button 
+              <button
                 onClick={handleTryUsNow}
                 className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16 lowercase rounded-full"
               >
-                <span className="relative z-10">try us now</span>
-                <ArrowRight 
-                  className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white" 
-                  size={20} 
+                <span className="relative z-10">start connecting</span>
+                <ArrowRight
+                  className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white"
+                  size={20}
                 />
               </button>
               <div className="font-mono text-xs text-gray-400 flex items-center gap-2 lowercase">
@@ -400,25 +401,42 @@ const LandingPage = () => {
             {/* Left - Phone with animated messages */}
             <div className="relative lg:sticky lg:top-32 flex justify-center lg:justify-center">
               <PhoneMockup />
-              
+
               {/* Decorative elements */}
               <div className="absolute -bottom-10 left-0 w-32 h-32 border border-[#E50914]/20 rounded-full hidden lg:block" />
             </div>
-            
+
             {/* Right - Steps */}
             <div className="space-y-20 pt-8 lg:pt-20">
               <div className="font-mono text-xs tracking-[0.3em] text-[#E50914] mb-12 lowercase">
                 how it works
               </div>
-              
-              {[
+
+              {/* Toggle */}
+              <div className="flex gap-4 mb-8">
+                <button
+                  onClick={() => setFlowType('hiring')}
+                  className={`font-mono text-sm tracking-wider ${flowType === 'hiring' ? 'text-[#E50914]' : 'text-white/50'}`}
+                >
+                  HIRING
+                </button>
+                <span className="text-white/30">|</span>
+                <button
+                  onClick={() => setFlowType('freelancer')}
+                  className={`font-mono text-sm tracking-wider ${flowType === 'freelancer' ? 'text-[#E50914]' : 'text-white/50'}`}
+                >
+                  LOOKING FOR WORK
+                </button>
+              </div>
+
+              {((flowType === 'hiring' ? [
                 {
                   num: "01",
                   title: "message Taj",
                   desc: "Tell our AI concierge exactly who you're looking for. No forms. No filters. Just describe what you need in your own words."
                 },
                 {
-                  num: "02", 
+                  num: "02",
                   title: "get matched",
                   desc: "Within minutes, Taj finds the perfect people from our network of verified professionals."
                 },
@@ -427,7 +445,23 @@ const LandingPage = () => {
                   title: "connect",
                   desc: "We make the intro. You take it from there. Real conversations, real collaborations, real results."
                 }
-              ].map((step, idx) => (
+              ] : [
+                {
+                  num: "01",
+                  title: "tell Taj about you",
+                  desc: "Share your skills, location, and what kind of work you're looking for. Takes 2 minutes."
+                },
+                {
+                  num: "02",
+                  title: "get opportunities",
+                  desc: "Taj matches you with requests and gigs that fit your profile. No more scrolling job boards."
+                },
+                {
+                  num: "03",
+                  title: "connect",
+                  desc: "Say yes to the ones you want. We make the intro. You take it from there."
+                }
+              ])).map((step, idx) => (
                 <div key={idx} className="group hover-lift">
                   <div className="flex items-start gap-8">
                     <span className="font-mono text-sm text-[#E50914]">{step.num}</span>
@@ -450,12 +484,11 @@ const LandingPage = () => {
       {/* ==================== STATS (WHITE) ==================== */}
       <section className="py-24 bg-white border-y border-gray-200">
         <div className="max-w-[1800px] mx-auto px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
             {[
-              { value: "4,500+", label: "verified providers" },
+              { value: "500+", label: "verified creatives" },
               { value: "17", label: "categories" },
-              { value: "5min", label: "average match time" },
-              { value: "94%", label: "success rate" }
+              { value: "10+", label: "US cities" }
             ].map((stat, idx) => (
               <div key={idx} className="text-center md:text-left">
                 <div className="font-display text-4xl md:text-6xl text-[#E50914] mb-2">
@@ -463,58 +496,6 @@ const LandingPage = () => {
                 </div>
                 <div className="font-mono text-xs tracking-[0.15em] text-gray-400 lowercase">
                   {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== TESTIMONIALS (DARK) ==================== */}
-      <section id="testimonials" className="py-32 relative overflow-hidden bg-[#0a0a0a]">
-        {/* Background butterfly watermark */}
-        <img 
-          src="/butterfly.png" 
-          alt=""
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] opacity-[0.03] pointer-events-none"
-        />
-        
-        <div className="max-w-[1800px] mx-auto px-8 relative z-10">
-          <div className="font-mono text-xs tracking-[0.3em] text-[#E50914] mb-16 lowercase">
-            real stories
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                quote: "Found a photographer for my daughter's birthday in 10 minutes. She was amazing and half the price of others.",
-                name: "Maria G.",
-                role: "Los Angeles"
-              },
-              {
-                quote: "My sink was flooding at 9pm. Had a plumber at my door by 10. Titlii literally saved my apartment.",
-                name: "James K.",
-                role: "Chicago"
-              },
-              {
-                quote: "Been looking for a good guitar teacher for months. Found one in my neighborhood through Titlii.",
-                name: "Aisha T.",
-                role: "Austin"
-              }
-            ].map((t, idx) => (
-              <div 
-                key={idx} 
-                className="group p-8 border border-white/10 hover:border-[#E50914]/30 transition-all duration-500 hover-lift"
-              >
-                <p className="font-display text-xl leading-relaxed mb-8 text-white/70 group-hover:text-white transition-colors">
-                  "{t.quote}"
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#E50914] to-[#ff6b6b]" />
-                  <div>
-                    <div className="font-syne font-semibold text-white">{t.name}</div>
-                    <div className="font-mono text-xs text-white/40">{t.role}</div>
-                  </div>
                 </div>
               </div>
             ))}
@@ -561,11 +542,11 @@ const LandingPage = () => {
               your next connection is one message away.
             </p>
             
-            <button 
+            <button
               onClick={handleTryUsNow}
               className="group inline-flex items-center gap-4 px-10 py-5 md:px-12 md:py-6 bg-[#E50914] font-syne font-semibold text-lg md:text-xl tracking-wide text-white hover:gap-6 transition-all duration-300 lowercase rounded-full"
             >
-              get started
+              start connecting
               <ArrowUpRight size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </button>
           </div>
@@ -578,6 +559,7 @@ const LandingPage = () => {
           <div className="flex items-center justify-center gap-4 md:gap-8">
             <a href="/privacy" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">privacy</a>
             <a href="/terms" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">terms</a>
+            <a href="/faq" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">faq</a>
             <a href="mailto:taj@titlii.social" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">contact</a>
           </div>
         </div>
