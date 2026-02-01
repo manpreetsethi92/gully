@@ -180,6 +180,24 @@ const LandingPage = () => {
           50% { filter: drop-shadow(0 0 50px rgba(229, 9, 20, 0.6)); }
         }
         
+        @keyframes flicker {
+          0%, 100% { opacity: 1; filter: drop-shadow(0 0 20px rgba(229, 9, 20, 0.6)) brightness(1); }
+          5% { opacity: 0.95; filter: drop-shadow(0 0 35px rgba(229, 9, 20, 0.8)) brightness(1.1); }
+          10% { opacity: 1; filter: drop-shadow(0 0 25px rgba(229, 9, 20, 0.5)) brightness(1); }
+          15% { opacity: 0.97; filter: drop-shadow(0 0 40px rgba(229, 9, 20, 0.9)) brightness(1.15); }
+          20% { opacity: 1; filter: drop-shadow(0 0 20px rgba(229, 9, 20, 0.6)) brightness(1); }
+          35% { opacity: 0.98; filter: drop-shadow(0 0 45px rgba(229, 9, 20, 1)) brightness(1.2); }
+          40% { opacity: 1; filter: drop-shadow(0 0 30px rgba(229, 9, 20, 0.7)) brightness(1.05); }
+          55% { opacity: 0.96; filter: drop-shadow(0 0 38px rgba(229, 9, 20, 0.85)) brightness(1.1); }
+          60% { opacity: 1; filter: drop-shadow(0 0 22px rgba(229, 9, 20, 0.55)) brightness(1); }
+          75% { opacity: 0.99; filter: drop-shadow(0 0 42px rgba(229, 9, 20, 0.95)) brightness(1.18); }
+          80% { opacity: 1; filter: drop-shadow(0 0 28px rgba(229, 9, 20, 0.65)) brightness(1.02); }
+        }
+        
+        .butterfly-flicker {
+          animation: flicker 2s ease-in-out infinite, pulse-glow 4s ease-in-out infinite;
+        }
+        
         @keyframes flap-left {
           0%, 5% { transform: rotateY(0deg) scaleX(1); }
           10% { transform: rotateY(45deg) scaleX(0.85); }
@@ -516,7 +534,7 @@ const LandingPage = () => {
             {/* Flapping Butterfly - 2x bigger */}
             <div className="mx-auto mb-6 md:mb-12 flex justify-center">
               <div 
-                className="butterfly-wrapper butterfly-glow w-[280px] h-[200px] md:w-[560px] md:h-[400px]" 
+                className="butterfly-wrapper butterfly-glow butterfly-flicker w-[280px] h-[200px] md:w-[560px] md:h-[400px]" 
                 style={{ 
                   position: 'relative' 
                 }}

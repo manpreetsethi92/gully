@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="200" height="160">
+  <defs>
+    <!-- Red glow filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Gradient for depth -->
+    <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E50914;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B0000;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer glow outline - Left Wing -->
+  <path d="M100 80 
+           C70 50, 30 30, 15 50 
+           C5 65, 10 85, 25 100
+           C15 115, 20 135, 40 140
+           C55 145, 75 130, 100 95" 
+        fill="none" stroke="#E50914" stroke-width="4" filter="url(#glow)" opacity="0.8"/>
+  
+  <!-- Outer glow outline - Right Wing -->
+  <path d="M100 80 
+           C130 50, 170 30, 185 50 
+           C195 65, 190 85, 175 100
+           C185 115, 180 135, 160 140
+           C145 145, 125 130, 100 95" 
+        fill="none" stroke="#E50914" stroke-width="4" filter="url(#glow)" opacity="0.8"/>
+  
+  <!-- Left Wing Base -->
+  <path d="M100 80 
+           C70 50, 30 30, 15 50 
+           C5 65, 10 85, 25 100
+           C15 115, 20 135, 40 140
+           C55 145, 75 130, 100 95" 
+        fill="#0f1419" stroke="#E50914" stroke-width="2"/>
+  
+  <!-- Right Wing Base -->
+  <path d="M100 80 
+           C130 50, 170 30, 185 50 
+           C195 65, 190 85, 175 100
+           C185 115, 180 135, 160 140
+           C145 145, 125 130, 100 95" 
+        fill="#0f1419" stroke="#E50914" stroke-width="2"/>
+  
+  <!-- Stained glass segments - Left Wing -->
+  <path d="M95 78 C80 60, 55 50, 40 55 L50 70 Z" fill="#E50914" opacity="0.9"/>
+  <path d="M40 55 C30 58, 22 68, 25 80 L50 70 Z" fill="#ff4444" opacity="0.7"/>
+  <path d="M25 80 C20 90, 25 105, 35 115 L55 95 L50 70 Z" fill="#E50914" opacity="0.8"/>
+  <path d="M35 115 C30 125, 40 138, 55 140 L65 115 L55 95 Z" fill="#cc0000" opacity="0.9"/>
+  <path d="M55 140 C70 142, 85 130, 95 110 L65 115 Z" fill="#ff6666" opacity="0.6"/>
+  <path d="M50 70 L55 95 L65 115 L95 110 L95 78 Z" fill="#990000" opacity="0.7"/>
+  
+  <!-- Stained glass segments - Right Wing -->
+  <path d="M105 78 C120 60, 145 50, 160 55 L150 70 Z" fill="#E50914" opacity="0.9"/>
+  <path d="M160 55 C170 58, 178 68, 175 80 L150 70 Z" fill="#ff4444" opacity="0.7"/>
+  <path d="M175 80 C180 90, 175 105, 165 115 L145 95 L150 70 Z" fill="#E50914" opacity="0.8"/>
+  <path d="M165 115 C170 125, 160 138, 145 140 L135 115 L145 95 Z" fill="#cc0000" opacity="0.9"/>
+  <path d="M145 140 C130 142, 115 130, 105 110 L135 115 Z" fill="#ff6666" opacity="0.6"/>
+  <path d="M150 70 L145 95 L135 115 L105 110 L105 78 Z" fill="#990000" opacity="0.7"/>
+  
+  <!-- Wing detail lines -->
+  <path d="M50 70 L95 78" stroke="#E50914" stroke-width="0.5" opacity="0.5"/>
+  <path d="M55 95 L95 90" stroke="#E50914" stroke-width="0.5" opacity="0.5"/>
+  <path d="M65 115 L95 105" stroke="#E50914" stroke-width="0.5" opacity="0.5"/>
+  <path d="M150 70 L105 78" stroke="#E50914" stroke-width="0.5" opacity="0.5"/>
+  <path d="M145 95 L105 90" stroke="#E50914" stroke-width="0.5" opacity="0.5"/>
+  <path d="M135 115 L105 105" stroke="#E50914" stroke-width="0.5" opacity="0.5"/>
+  
+  <!-- Body -->
+  <ellipse cx="100" cy="95" rx="5" ry="20" fill="#0f1419" stroke="#E50914" stroke-width="1"/>
+  <circle cx="100" cy="75" r="6" fill="#0f1419" stroke="#E50914" stroke-width="1"/>
+  
+  <!-- Antennae -->
+  <path d="M96 70 Q90 55, 85 48 Q82 45, 80 47" stroke="#0f1419" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M104 70 Q110 55, 115 48 Q118 45, 120 47" stroke="#0f1419" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <circle cx="80" cy="47" r="2" fill="#E50914"/>
+  <circle cx="120" cy="47" r="2" fill="#E50914"/>
+</svg>
