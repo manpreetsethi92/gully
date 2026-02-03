@@ -486,13 +486,13 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                 {(request.budget_display || request.timeline_display || request.location) && (
                   <div className={`flex items-center gap-3 mt-2 text-sm ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
                     {request.budget_display && (
-                      <span>💰 {request.budget_display}</span>
+                      <span>{request.budget_display}</span>
                     )}
                     {request.timeline_display && (
-                      <span>📅 {request.timeline_display}</span>
+                      <span>{request.timeline_display}</span>
                     )}
                     {request.location && (
-                      <span>📍 {request.location}</span>
+                      <span>{request.location}</span>
                     )}
                   </div>
                 )}
@@ -558,9 +558,9 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                 <p className="text-sm">"{selectedRequest.title}"</p>
                 {(selectedRequest.budget_display || selectedRequest.timeline_display || selectedRequest.location) && (
                   <div className="flex items-center gap-2 mt-1 text-sm">
-                    {selectedRequest.budget_display && <span>💰 {selectedRequest.budget_display}</span>}
-                    {selectedRequest.timeline_display && <span>📅 {selectedRequest.timeline_display}</span>}
-                    {selectedRequest.location && <span>📍 {selectedRequest.location}</span>}
+                    {selectedRequest.budget_display && <span>{selectedRequest.budget_display}</span>}
+                    {selectedRequest.timeline_display && <span>{selectedRequest.timeline_display}</span>}
+                    {selectedRequest.location && <span>{selectedRequest.location}</span>}
                   </div>
                 )}
               </div>
@@ -624,7 +624,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                           {/* Location */}
                           {match.matched_user?.location && (
                             <p className={`text-sm mt-1 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
-                              📍 {match.matched_user.location}
+                              {match.matched_user.location}
                             </p>
                           )}
 
@@ -650,7 +650,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                           {/* Match Reason */}
                           {match.match_reason && (
                             <p className={`text-xs mt-2 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
-                              ✨ {match.match_reason}
+                              {match.match_reason}
                             </p>
                           )}
                         </div>
@@ -758,7 +758,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                           {/* Location */}
                           {user?.location && (
                             <p className={`text-sm mt-1 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
-                              📍 {user.location}
+                              {user.location}
                             </p>
                           )}
 
