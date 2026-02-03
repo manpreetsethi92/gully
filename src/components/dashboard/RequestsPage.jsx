@@ -1,11 +1,32 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck, BadgeCheck } from "lucide-react";
+import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck, BadgeCheck, Filter, TrendingUp, Briefcase, Camera, Mic, Palette, Code } from "lucide-react";
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
+
+// Category icons and colors
+const CATEGORY_CONFIG = {
+  creative_visual: { icon: Camera, label: "Visual", color: "purple" },
+  creative_audio: { icon: Mic, label: "Audio", color: "pink" },
+  creative_design: { icon: Palette, label: "Design", color: "blue" },
+  tech: { icon: Code, label: "Tech", color: "green" },
+  business: { icon: Briefcase, label: "Business", color: "orange" },
+  other: { icon: Users, label: "Other", color: "gray" }
+};
+
+// Detect category from request title
+const detectCategory = (title) => {
+  const lower = (title || "").toLowerCase();
+  if (/photo|video|cinema|film|camera|director|editor/.test(lower)) return "creative_visual";
+  if (/music|audio|sound|dj|producer|singer|voice/.test(lower)) return "creative_audio";
+  if (/design|graphic|ui|ux|illustrat|art|animate/.test(lower)) return "creative_design";
+  if (/develop|code|program|software|web|app|data|ai|ml/.test(lower)) return "tech";
+  if (/market|sales|finance|consult|manage|business/.test(lower)) return "business";
+  return "other";
+};
 
 const RequestsPage = ({ onRefresh, darkMode }) => {
   const { token } = useAuth();
@@ -19,6 +40,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
   const [applicantsLoading, setApplicantsLoading] = useState(false);
   const [showApplicants, setShowApplicants] = useState(false);
   const [closeLoading, setCloseLoading] = useState(null);
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const fetchRequests = useCallback(async () => {
     try {
@@ -36,6 +58,33 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
   useEffect(() => {
     fetchRequests();
   }, [fetchRequests]);
+
+  // Calculate summary stats
+  const stats = useMemo(() => {
+    const active = requests.filter(r => !['expired', 'closed'].includes(r.status)).length;
+    const withMatches = requests.filter(r => r.matches_count > 0).length;
+    const withApplicants = requests.filter(r => r.applicants_count > 0).length;
+    const totalMatches = requests.reduce((sum, r) => sum + (r.matches_count || 0), 0);
+    
+    // Category breakdown
+    const byCategory = {};
+    requests.forEach(r => {
+      const cat = r.category || detectCategory(r.title);
+      byCategory[cat] = (byCategory[cat] || 0) + 1;
+    });
+    
+    return { active, withMatches, withApplicants, totalMatches, byCategory };
+  }, [requests]);
+
+  // Filter requests
+  const filteredRequests = useMemo(() => {
+    if (activeFilter === "all") return requests;
+    if (activeFilter === "active") return requests.filter(r => !['expired', 'closed'].includes(r.status));
+    if (activeFilter === "matches") return requests.filter(r => r.matches_count > 0);
+    if (activeFilter === "applicants") return requests.filter(r => r.applicants_count > 0);
+    // Category filters
+    return requests.filter(r => (r.category || detectCategory(r.title)) === activeFilter);
+  }, [requests, activeFilter]);
 
   const fetchMatches = async (requestId) => {
     setMatchesLoading(true);
@@ -151,7 +200,6 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
     }
   };
 
-  // Calculate expiration display
   const getExpirationDisplay = (expiresAt) => {
     if (!expiresAt) return null;
     const now = new Date();
@@ -193,6 +241,12 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
     }
   };
 
+  const getCategoryDisplay = (request) => {
+    const cat = request.category || detectCategory(request.title);
+    const config = CATEGORY_CONFIG[cat] || CATEGORY_CONFIG.other;
+    return config;
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -207,6 +261,82 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
       <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-gray-100'}`}>
         <h1 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>My Requests</h1>
       </div>
+
+      {/* Summary Stats */}
+      {requests.length > 0 && (
+        <div className={`px-4 py-4 border-b ${darkMode ? 'border-white/10' : 'border-gray-100'}`}>
+          <div className="grid grid-cols-4 gap-3">
+            <button
+              onClick={() => setActiveFilter("active")}
+              className={`p-3 rounded-xl text-center transition-all ${
+                activeFilter === "active"
+                  ? (darkMode ? 'bg-red-500/20 ring-2 ring-red-500' : 'bg-red-50 ring-2 ring-red-500')
+                  : (darkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-50 hover:bg-gray-100')
+              }`}
+            >
+              <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats.active}</div>
+              <div className={`text-xs ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>Active</div>
+            </button>
+            <button
+              onClick={() => setActiveFilter("matches")}
+              className={`p-3 rounded-xl text-center transition-all ${
+                activeFilter === "matches"
+                  ? (darkMode ? 'bg-green-500/20 ring-2 ring-green-500' : 'bg-green-50 ring-2 ring-green-500')
+                  : (darkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-50 hover:bg-gray-100')
+              }`}
+            >
+              <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats.totalMatches}</div>
+              <div className={`text-xs ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>Matches</div>
+            </button>
+            <button
+              onClick={() => setActiveFilter("applicants")}
+              className={`p-3 rounded-xl text-center transition-all ${
+                activeFilter === "applicants"
+                  ? (darkMode ? 'bg-purple-500/20 ring-2 ring-purple-500' : 'bg-purple-50 ring-2 ring-purple-500')
+                  : (darkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-50 hover:bg-gray-100')
+              }`}
+            >
+              <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats.withApplicants}</div>
+              <div className={`text-xs ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>Applicants</div>
+            </button>
+            <button
+              onClick={() => setActiveFilter("all")}
+              className={`p-3 rounded-xl text-center transition-all ${
+                activeFilter === "all"
+                  ? (darkMode ? 'bg-blue-500/20 ring-2 ring-blue-500' : 'bg-blue-50 ring-2 ring-blue-500')
+                  : (darkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-50 hover:bg-gray-100')
+              }`}
+            >
+              <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{requests.length}</div>
+              <div className={`text-xs ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>Total</div>
+            </button>
+          </div>
+
+          {/* Category Filters */}
+          <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+            {Object.entries(CATEGORY_CONFIG).map(([key, config]) => {
+              const count = stats.byCategory[key] || 0;
+              if (count === 0) return null;
+              const Icon = config.icon;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setActiveFilter(activeFilter === key ? "all" : key)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+                    activeFilter === key
+                      ? (darkMode ? `bg-${config.color}-500/30 text-${config.color}-300` : `bg-${config.color}-100 text-${config.color}-700`)
+                      : (darkMode ? 'bg-white/5 text-white/60 hover:bg-white/10' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')
+                  }`}
+                >
+                  <Icon size={12} />
+                  {config.label}
+                  <span className="opacity-60">({count})</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Message Taj Banner */}
       <div className={`px-4 py-4 border-b ${darkMode ? 'border-white/10' : 'border-gray-100'}`}>
@@ -232,20 +362,34 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
       </div>
 
       {/* Requests */}
-      {requests.length === 0 ? (
+      {filteredRequests.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
           <Send size={48} className={darkMode ? 'text-white/20' : 'text-gray-300'} />
-          <h2 className={`text-2xl font-bold mb-2 mt-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>No requests yet</h2>
-          <p className={darkMode ? 'text-white/50' : 'text-gray-500'}>Message Taj to create your first request</p>
+          <h2 className={`text-2xl font-bold mb-2 mt-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            {activeFilter === "all" ? "No requests yet" : `No ${activeFilter} requests`}
+          </h2>
+          <p className={darkMode ? 'text-white/50' : 'text-gray-500'}>
+            {activeFilter === "all" ? "Message Taj to create your first request" : "Try a different filter"}
+          </p>
+          {activeFilter !== "all" && (
+            <button
+              onClick={() => setActiveFilter("all")}
+              className="mt-4 px-4 py-2 rounded-full text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors"
+            >
+              Show all requests
+            </button>
+          )}
         </div>
       ) : (
         <div>
-          {requests.map((request) => {
+          {filteredRequests.map((request) => {
             const hasMatches = request.matches_count > 0;
             const hasApplicants = request.applicants_count > 0;
             const expiry = getExpirationDisplay(request.expires_at);
             const isExpired = request.status === 'expired';
             const isClosed = request.status === 'closed';
+            const categoryConfig = getCategoryDisplay(request);
+            const CategoryIcon = categoryConfig.icon;
 
             return (
               <div
@@ -265,12 +409,11 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                     {formatDate(request.created_at)}
                   </span>
 
-                  {/* Category Badge */}
-                  {request.category && request.category !== 'other' && request.category !== 'community' && (
-                    <span className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'}`}>
-                      {request.category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                    </span>
-                  )}
+                  {/* Category Badge with Icon */}
+                  <span className={`flex items-center gap-1 px-2 py-0.5 text-xs rounded-full ${darkMode ? 'bg-white/10 text-white/70' : 'bg-gray-100 text-gray-600'}`}>
+                    <CategoryIcon size={10} />
+                    {categoryConfig.label}
+                  </span>
 
                   {/* Status Badge */}
                   <span className={`px-2 py-0.5 text-xs rounded-full ${
@@ -285,8 +428,8 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
 
                   {/* Match Count */}
                   {hasMatches && (
-                    <span className={`text-sm ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
-                      {request.matches_count} matches
+                    <span className={`text-sm font-medium ${darkMode ? 'text-green-400' : 'text-green-600'}`}>
+                      {request.matches_count} match{request.matches_count > 1 ? 'es' : ''}
                     </span>
                   )}
 
@@ -319,19 +462,13 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                 {(request.budget_display || request.timeline_display || request.location) && (
                   <div className={`flex items-center gap-3 mt-2 text-sm ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
                     {request.budget_display && (
-                      <span>{request.budget_display}</span>
-                    )}
-                    {request.budget_display && (request.timeline_display || request.location) && (
-                      <span>·</span>
+                      <span>💰 {request.budget_display}</span>
                     )}
                     {request.timeline_display && (
-                      <span>{request.timeline_display}</span>
-                    )}
-                    {request.timeline_display && request.location && (
-                      <span>·</span>
+                      <span>📅 {request.timeline_display}</span>
                     )}
                     {request.location && (
-                      <span>{request.location}</span>
+                      <span>📍 {request.location}</span>
                     )}
                   </div>
                 )}
@@ -397,11 +534,9 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                 <p className="text-sm">"{selectedRequest.title}"</p>
                 {(selectedRequest.budget_display || selectedRequest.timeline_display || selectedRequest.location) && (
                   <div className="flex items-center gap-2 mt-1 text-sm">
-                    {selectedRequest.budget_display && <span>{selectedRequest.budget_display}</span>}
-                    {selectedRequest.budget_display && (selectedRequest.timeline_display || selectedRequest.location) && <span>·</span>}
-                    {selectedRequest.timeline_display && <span>{selectedRequest.timeline_display}</span>}
-                    {selectedRequest.timeline_display && selectedRequest.location && <span>·</span>}
-                    {selectedRequest.location && <span>{selectedRequest.location}</span>}
+                    {selectedRequest.budget_display && <span>💰 {selectedRequest.budget_display}</span>}
+                    {selectedRequest.timeline_display && <span>📅 {selectedRequest.timeline_display}</span>}
+                    {selectedRequest.location && <span>📍 {selectedRequest.location}</span>}
                   </div>
                 )}
               </div>
@@ -465,7 +600,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                           {/* Location */}
                           {match.matched_user?.location && (
                             <p className={`text-sm mt-1 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
-                              {match.matched_user.location}
+                              📍 {match.matched_user.location}
                             </p>
                           )}
 
@@ -491,7 +626,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                           {/* Match Reason */}
                           {match.match_reason && (
                             <p className={`text-xs mt-2 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
-                              Matched: {match.match_reason}
+                              ✨ {match.match_reason}
                             </p>
                           )}
                         </div>
@@ -599,7 +734,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                           {/* Location */}
                           {user?.location && (
                             <p className={`text-sm mt-1 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
-                              {user.location}
+                              📍 {user.location}
                             </p>
                           )}
 
