@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import axios from "axios";
-import { LogOut, Trash2, Crown, CheckCircle, ExternalLink } from "lucide-react";
+import { LogOut, Trash2, Crown, CheckCircle, ExternalLink, HelpCircle, MessageCircle, Bug, Mail } from "lucide-react";
 
 const SettingsPage = ({ darkMode }) => {
   const { logout, token } = useAuth();
@@ -226,6 +226,59 @@ const SettingsPage = ({ darkMode }) => {
               )}
             </>
           )}
+        </div>
+
+        {/* Support Section */}
+        <div className="settings-section">
+          <h2 className={darkMode ? 'text-white' : ''}>Support</h2>
+
+          <a
+            href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20have%20a%20question..."
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
+          >
+            <div className="settings-item-info">
+              <h3 className={darkMode ? 'text-white' : ''}>Chat with Taj</h3>
+              <p className={darkMode ? 'text-white/50' : ''}>Ask questions or get help via WhatsApp</p>
+            </div>
+            <MessageCircle size={20} className={darkMode ? 'text-white/40' : 'text-gray-400'} />
+          </a>
+
+          <a
+            href="mailto:taj@titlii.social?subject=Support%20Request"
+            className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
+          >
+            <div className="settings-item-info">
+              <h3 className={darkMode ? 'text-white' : ''}>Email Support</h3>
+              <p className={darkMode ? 'text-white/50' : ''}>taj@titlii.social</p>
+            </div>
+            <Mail size={20} className={darkMode ? 'text-white/40' : 'text-gray-400'} />
+          </a>
+
+          <a
+            href="mailto:taj@titlii.social?subject=Bug%20Report"
+            className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
+          >
+            <div className="settings-item-info">
+              <h3 className={darkMode ? 'text-white' : ''}>Report a Bug</h3>
+              <p className={darkMode ? 'text-white/50' : ''}>Found something broken? Let us know</p>
+            </div>
+            <Bug size={20} className={darkMode ? 'text-white/40' : 'text-gray-400'} />
+          </a>
+
+          <a
+            href="https://titlii.social/faq"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
+          >
+            <div className="settings-item-info">
+              <h3 className={darkMode ? 'text-white' : ''}>FAQ</h3>
+              <p className={darkMode ? 'text-white/50' : ''}>Frequently asked questions</p>
+            </div>
+            <HelpCircle size={20} className={darkMode ? 'text-white/40' : 'text-gray-400'} />
+          </a>
         </div>
 
         {/* Account Section */}

@@ -7,25 +7,49 @@ import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck, BadgeC
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
-// Category icons and colors
+// Category icons and colors - Aligned with how Taj categorizes requests
 const CATEGORY_CONFIG = {
-  creative_visual: { icon: Camera, label: "Visual", color: "purple" },
-  creative_audio: { icon: Mic, label: "Audio", color: "pink" },
-  creative_design: { icon: Palette, label: "Design", color: "blue" },
-  tech: { icon: Code, label: "Tech", color: "green" },
-  business: { icon: Briefcase, label: "Business", color: "orange" },
-  other: { icon: Users, label: "Other", color: "gray" }
+  hiring: { icon: Users, label: "Hiring", color: "blue", description: "Looking to hire someone" },
+  gig: { icon: Briefcase, label: "Need a Gig", color: "green", description: "Looking for work" },
+  event: { icon: Camera, label: "Event", color: "purple", description: "Event or production" },
+  collab: { icon: TrendingUp, label: "Collab", color: "pink", description: "Collaboration or project" },
+  other: { icon: MessageCircle, label: "Other", color: "gray", description: "Other requests" }
 };
 
-// Detect category from request title
+// Detect category from request title - matches how Taj talks
 const detectCategory = (title) => {
   const lower = (title || "").toLowerCase();
-  if (/photo|video|cinema|film|camera|director|editor/.test(lower)) return "creative_visual";
-  if (/music|audio|sound|dj|producer|singer|voice/.test(lower)) return "creative_audio";
-  if (/design|graphic|ui|ux|illustrat|art|animate/.test(lower)) return "creative_design";
-  if (/develop|code|program|software|web|app|data|ai|ml/.test(lower)) return "tech";
-  if (/market|sales|finance|consult|manage|business/.test(lower)) return "business";
+  // Event-related
+  if (/event|wedding|party|shoot|production|film|video|concert|festival|show/.test(lower)) return "event";
+  // Looking for gig/work
+  if (/looking for work|for hire|need.*gig|freelance|available|seeking.*work/.test(lower)) return "gig";
+  // Collaboration
+  if (/collab|partner|project|together|team up|work with/.test(lower)) return "collab";
+  // Default to hiring (most common)
+  if (/need|looking for|find|hire|want|searching/.test(lower)) return "hiring";
   return "other";
+};
+
+// Summarize a request title - make it clean and readable
+const summarizeRequest = (title) => {
+  if (!title) return "Request";
+  // Remove common filler words and clean up
+  let clean = title
+    .replace(/^(I need|I'm looking for|Looking for|Need|Find me|Can you find|Help me find)\s*/i, "")
+    .replace(/\s+(please|asap|urgent|quickly)$/i, "")
+    .trim();
+  
+  // Capitalize first letter
+  if (clean.length > 0) {
+    clean = clean.charAt(0).toUpperCase() + clean.slice(1);
+  }
+  
+  // Truncate if too long
+  if (clean.length > 60) {
+    clean = clean.substring(0, 57) + "...";
+  }
+  
+  return clean || title;
 };
 
 const RequestsPage = ({ onRefresh, darkMode }) => {
@@ -453,9 +477,9 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                   )}
                 </div>
 
-                {/* Row 2: Request Title */}
-                <p className={`text-[15px] leading-relaxed ${isExpired || isClosed ? (darkMode ? 'text-white/50' : 'text-gray-500') : (darkMode ? 'text-white/90' : 'text-gray-800')}`}>
-                  "{request.title}"
+                {/* Row 2: Request Title - Summarized */}
+                <p className={`text-[15px] leading-relaxed font-medium ${isExpired || isClosed ? (darkMode ? 'text-white/50' : 'text-gray-500') : (darkMode ? 'text-white/90' : 'text-gray-800')}`}>
+                  {summarizeRequest(request.title)}
                 </p>
 
                 {/* Row 3: Budget / Timeline / Location (if any exist) */}
