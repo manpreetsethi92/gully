@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck, BadgeCheck, Filter, TrendingUp, Briefcase, Camera, Mic, Palette, Code } from "lucide-react";
+import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck, BadgeCheck, TrendingUp, Briefcase, Camera } from "lucide-react";
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
