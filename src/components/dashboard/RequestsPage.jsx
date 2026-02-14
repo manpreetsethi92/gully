@@ -142,7 +142,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
 
       setMatches(matches.map(m =>
         m.id === matchId
-          ? { ...m, status: action === 'approve' ? 'outreach_sent' : 'rejected' }
+          ? { ...m, status: action === 'approve' ? 'outreach_pending' : 'rejected' }
           : m
       ));
 
@@ -258,9 +258,16 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
     switch (status) {
       case "suggested": return { label: "New", color: "text-blue-600 bg-blue-50" };
       case "outreach_sent": return { label: "Sent", color: "text-amber-600 bg-amber-50" };
+      case "outreach_pending": return { label: "Sent", color: "text-amber-600 bg-amber-50" };
+      case "requester_interested": return { label: "Sent", color: "text-amber-600 bg-amber-50" };
       case "accepted": return { label: "Connected", color: "text-green-600 bg-green-50" };
+      case "connected": return { label: "Connected", color: "text-green-600 bg-green-50" };
+      case "applied": return { label: "Applied", color: "text-purple-600 bg-purple-50" };
       case "rejected": return { label: "Skipped", color: "text-gray-500 bg-gray-100" };
+      case "skipped": return { label: "Skipped", color: "text-gray-500 bg-gray-100" };
+      case "requester_passed": return { label: "Skipped", color: "text-gray-500 bg-gray-100" };
       case "declined": return { label: "Declined", color: "text-red-600 bg-red-50" };
+      case "professional_declined": return { label: "Declined", color: "text-red-600 bg-red-50" };
       default: return { label: status, color: "text-gray-600 bg-gray-50" };
     }
   };
