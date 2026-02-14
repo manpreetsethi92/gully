@@ -148,50 +148,6 @@ const SettingsPage = ({ darkMode }) => {
                 )}
               </div>
 
-              {/* Usage Stats */}
-              <div className={`p-4 rounded-xl mb-4 ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
-                <h3 className={`text-sm font-medium mb-3 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                  Today's Usage
-                </h3>
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className={darkMode ? 'text-white/80' : 'text-gray-700'}>Requests</span>
-                      <span className={darkMode ? 'text-white/60' : 'text-gray-500'}>
-                        {subscription?.requests?.used || 0} / {subscription?.requests?.limit || 1000}
-                      </span>
-                    </div>
-                    <div className={`h-2 rounded-full ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}>
-                      <div
-                        className="h-full rounded-full bg-purple-500"
-                        style={{
-                          width: `${Math.min(100, ((subscription?.requests?.used || 0) / (subscription?.requests?.limit || 1000)) * 100)}%`
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className={darkMode ? 'text-white/80' : 'text-gray-700'}>Job Alerts</span>
-                      <span className={darkMode ? 'text-white/60' : 'text-gray-500'}>
-                        {subscription?.scraped_jobs?.used || 0} / {subscription?.scraped_jobs?.limit || 15}
-                      </span>
-                    </div>
-                    <div className={`h-2 rounded-full ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}>
-                      <div
-                        className="h-full rounded-full bg-blue-500"
-                        style={{
-                          width: `${Math.min(100, ((subscription?.scraped_jobs?.used || 0) / (subscription?.scraped_jobs?.limit || 15)) * 100)}%`
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <p className={`text-xs mt-3 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
-                  Resets at midnight UTC
-                </p>
-              </div>
-
               {/* Upgrade Buttons - Only show if show_pricing_ui is true */}
               {subscription?.show_pricing_ui && subscription?.tier === "free" && (
                 <div className="space-y-3">
