@@ -587,14 +587,15 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
               </div>
             ) : (
               <div className="space-y-3">
-                {matches.map((match) => {
+                {matches.map((match, index) => {
                   const status = getMatchStatus(match.status);
                   const canAct = match.status === 'suggested';
 
                   return (
                     <div
                       key={match.id}
-                      className={`rounded-xl p-4 ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}
+                      className={`rounded-xl p-4 ${darkMode ? 'bg-white/5' : 'bg-gray-50'} animate-fadeIn`}
+                      style={{ animationDelay: `${index * 120}ms`, animationFillMode: 'backwards' }}
                     >
                       <div className="flex items-start gap-3">
                         {/* Avatar - with photo support */}
@@ -602,7 +603,8 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                           <img
                             src={match.matched_user.photo_url || match.matched_user.photo || match.matched_user.avatar}
                             alt={match.matched_user.name}
-                            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                            className="w-10 h-10 rounded-full object-cover flex-shrink-0 bg-gray-200"
+                            loading="eager"
                           />
                         ) : (
                           <div
