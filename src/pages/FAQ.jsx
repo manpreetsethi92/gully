@@ -5,22 +5,22 @@ const FAQ = () => {
 
   const faqs = [
     {
-      category: "About Titlii",
+      category: "About Giggy",
       questions: [
         {
-          q: "What is Titlii?",
-          a: "Titlii is a professional matching platform that connects creative professionals with opportunities. Think of it as having a well-connected friend in the industry who knows exactly who you need and can make the introduction instantly."
+          q: "What is Giggy?",
+          a: "Giggy is a professional matching platform that connects creative professionals with opportunities. Think of it as having a well-connected friend in the industry who knows exactly who you need and can make the introduction instantly."
         },
         {
           q: "Who is Taj?",
           a: "Taj is our AI concierge that lives on WhatsApp and Telegram. You text Taj what you're looking for (or what kind of work you want), and Taj finds the perfect matches from our network of verified professionals."
         },
         {
-          q: "How is Titlii different from Upwork or LinkedIn?",
+          q: "How is Giggy different from Upwork or LinkedIn?",
           a: "No endless scrolling. No forms. No algorithms hiding your profile. You tell Taj what you need in plain language, and we match you with vetted professionals who actually fit. It's like texting a friend, not searching a database."
         },
         {
-          q: "What categories does Titlii cover?",
+          q: "What categories does Giggy cover?",
           a: "We cover 17 categories including Film & Video, Photography, Music & Audio, Design, Tech, Writing, Marketing, Events, Fashion, Voice Acting, Education, Wellness, Culinary, Sports, Real Estate, Legal, and Trades."
         },
         {
@@ -92,7 +92,7 @@ const FAQ = () => {
         },
         {
           q: "How do I contact support?",
-          a: "Text Taj at +1 213-414-7369 on WhatsApp and say \"I need help\", or email taj@titlii.social. We're a small team and we actually respond."
+          a: "Text Taj at +1 213-414-7369 on WhatsApp and say \"I need help\", or email taj@getgiggy.ai. We're a small team and we actually respond."
         }
       ]
     }
@@ -104,8 +104,8 @@ const FAQ = () => {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <a href="/" className="flex items-center gap-3">
-            <img src="/butterfly.png" alt="Titlii" className="w-8 h-auto" />
-            <span className="text-2xl font-bold tracking-tight" style={{ color: '#E50914' }}>titlii</span>
+            <img src="/butterfly.png" alt="Giggy" className="w-8 h-auto" />
+            <span className="text-2xl font-bold tracking-tight" style={{ color: '#E50914' }}>giggy</span>
           </a>
           <button
             onClick={() => navigate("/")}
@@ -120,7 +120,7 @@ const FAQ = () => {
       <main className="pt-24 pb-16 px-6">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold mb-2">Frequently Asked Questions</h1>
-          <p className="text-gray-500 mb-12">Everything you need to know about Titlii</p>
+          <p className="text-gray-500 mb-12">Everything you need to know about Giggy</p>
 
           {faqs.map((section, sectionIdx) => (
             <section key={sectionIdx} className="mb-12">
@@ -140,7 +140,7 @@ const FAQ = () => {
             <h2 className="text-2xl font-semibold mb-4">Still have questions?</h2>
             <p className="text-gray-600 mb-6">Text Taj on WhatsApp or reach out to our team</p>
             <a 
-              href="mailto:taj@titlii.social"
+              href="mailto:taj@getgiggy.ai"
               className="inline-block px-6 py-3 rounded-full text-white font-medium transition-colors"
               style={{ backgroundColor: '#E50914' }}
             >

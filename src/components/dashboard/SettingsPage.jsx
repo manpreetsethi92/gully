@@ -201,18 +201,18 @@ const SettingsPage = ({ darkMode }) => {
           </a>
 
           <a
-            href="mailto:taj@titlii.social?subject=Support%20Request"
+            href="mailto:taj@getgiggy.ai?subject=Support%20Request"
             className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
           >
             <div className="settings-item-info">
               <h3 className={darkMode ? 'text-white' : ''}>Email Support</h3>
-              <p className={darkMode ? 'text-white/50' : ''}>taj@titlii.social</p>
+              <p className={darkMode ? 'text-white/50' : ''}>taj@getgiggy.ai</p>
             </div>
             <Mail size={20} className={darkMode ? 'text-white/40' : 'text-gray-400'} />
           </a>
 
           <a
-            href="mailto:taj@titlii.social?subject=Bug%20Report"
+            href="mailto:taj@getgiggy.ai?subject=Bug%20Report"
             className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
           >
             <div className="settings-item-info">
@@ -223,7 +223,7 @@ const SettingsPage = ({ darkMode }) => {
           </a>
 
           <a
-            href="https://titlii.social/faq"
+            href="https://getgiggy.ai/faq"
             target="_blank"
             rel="noopener noreferrer"
             className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}

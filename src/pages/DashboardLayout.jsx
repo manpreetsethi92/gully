@@ -108,8 +108,8 @@ const DashboardLayout = () => {
           <Menu size={24} className={darkMode ? 'text-white' : 'text-gray-900'} />
         </button>
         <div className="flex items-center gap-2">
-          <img src="/butterfly.png" alt="Titlii" className="w-6 h-auto" />
-          <span className="font-syne font-bold text-xl text-[#E50914]">titlii</span>
+          <img src="/butterfly.png" alt="Giggy" className="w-6 h-auto" />
+          <span className="font-syne font-bold text-xl text-[#E50914]">giggy</span>
         </div>
         <div className="flex items-center gap-1">
           <button 
@@ -146,8 +146,8 @@ const DashboardLayout = () => {
           {/* Logo + Dark Mode Toggle - Added pt-12 for mobile safe area */}
           <div className="px-6 py-6 pt-14 lg:pt-6 flex items-center justify-between">
             <div className="inline-flex items-center gap-3">
-              <img src="/butterfly.png" alt="Titlii" className="w-8 h-auto" />
-              <span className="font-syne font-bold text-2xl tracking-tight text-[#E50914]">titlii</span>
+              <img src="/butterfly.png" alt="Giggy" className="w-8 h-auto" />
+              <span className="font-syne font-bold text-2xl tracking-tight text-[#E50914]">giggy</span>
             </div>
             <button
               onClick={() => setDarkMode(!darkMode)}
@@ -233,9 +233,9 @@ const DashboardLayout = () => {
               <div className="flex flex-wrap gap-x-4 gap-y-2 font-mono text-xs text-gray-400">
                 <a href="/terms" className="hover:text-gray-600 dark:hover:text-white/60">Terms</a>
                 <a href="/privacy" className="hover:text-gray-600 dark:hover:text-white/60">Privacy</a>
-                <a href="mailto:taj@titlii.social" className="hover:text-gray-600 dark:hover:text-white/60">Contact</a>
+                <a href="mailto:taj@getgiggy.ai" className="hover:text-gray-600 dark:hover:text-white/60">Contact</a>
               </div>
-              <p className="mt-2 font-mono text-xs text-gray-400">© 2025 titlii</p>
+              <p className="mt-2 font-mono text-xs text-gray-400">© 2025 giggy</p>
             </div>
           </div>
         </aside>
@@ -374,9 +374,9 @@ const DashboardLayout = () => {
               <div className="flex flex-wrap gap-x-3 gap-y-1">
                 <a href="/terms" className="hover:underline">Terms of Service</a>
                 <a href="/privacy" className="hover:underline">Privacy Policy</a>
-                <a href="mailto:taj@titlii.social" className="hover:underline">Contact Us</a>
+                <a href="mailto:taj@getgiggy.ai" className="hover:underline">Contact Us</a>
               </div>
-              <p className="mt-2">© 2026 titlii</p>
+              <p className="mt-2">© 2026 giggy</p>
             </div>
           </div>
         </aside>

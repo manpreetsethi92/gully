@@ -31,7 +31,7 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
   const [actionLoading, setActionLoading] = useState(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
-  const [inviteLink] = useState("https://titlii.social");
+  const [inviteLink] = useState("https://getgiggy.ai");
 
   useEffect(() => {
     const fetchOpportunities = async () => {
@@ -562,7 +562,7 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
           <DialogHeader>
             <DialogTitle className={darkMode ? 'text-white' : ''}>Invite a friend</DialogTitle>
             <DialogDescription className={darkMode ? 'text-white/60' : ''}>
-              Share this link with friends to invite them to Titlii
+              Share this link with friends to invite them to Giggy
             </DialogDescription>
           </DialogHeader>
 
