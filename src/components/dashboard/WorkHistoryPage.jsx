@@ -57,7 +57,10 @@ const WorkHistoryPage = ({ darkMode }) => {
           <div className={`p-4 rounded-2xl ${darkMode ? "bg-green-500/10" : "bg-green-50"}`}>
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp size={18} className={darkMode ? "text-green-400" : "text-green-600"} />
-              <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Your skills</p>
+              <div>
+                <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Your verified track record</p>
+                <p className={`text-xs mt-0.5 ${darkMode ? "text-white/40" : "text-gray-400"}`}>Skills you've proven by actually doing the work</p>
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
               {skills.slice(0, 8).map((s, i) => (
@@ -72,9 +75,9 @@ const WorkHistoryPage = ({ darkMode }) => {
       {savedJobs.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
           <History size={48} className={darkMode ? "text-white/20" : "text-gray-300"} />
-          <h2 className={`text-2xl font-bold mb-2 mt-4 ${darkMode ? "text-white" : "text-gray-900"}`}>No work history yet</h2>
+          <h2 className={`text-2xl font-bold mb-2 mt-4 ${darkMode ? "text-white" : "text-gray-900"}`}>No gigs closed yet</h2>
           <p className={`mb-6 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
-            When you save and close gigs through Giggy, they build your verified track record here.
+            Every gig you deliver through Giggy gets added here — your personal verified portfolio. Hirers see this when they're deciding who to book.
           </p>
           <a href="https://wa.me/12134147369?text=Hi%20Taj!" target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-bold text-sm" style={{ background: "#E50914" }}>
