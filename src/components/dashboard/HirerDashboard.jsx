@@ -55,20 +55,26 @@ const HirerDashboard = ({ darkMode }) => {
     }
     setPosting(true);
     try {
+      // RequestCreate only accepts: title, description, category
+      // Fold budget + location into description so the AI extracts them automatically
+      const descParts = [];
+      if (form.description.trim()) descParts.push(form.description.trim());
+      if (form.budget.trim()) descParts.push(`Budget: ${form.budget.trim()}`);
+      if (form.location.trim()) descParts.push(`Location: ${form.location.trim()}`);
+      const fullDescription = descParts.length > 0 ? descParts.join(". ") : form.title;
+
       await axios.post(`${API}/requests`, {
         title: form.title,
-        description: form.description,
-        budget_display: form.budget,
-        location: form.location,
-        category: form.category,
-        request_type: "hiring",
+        description: fullDescription,
+        category: form.category || "other",
       }, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success("Gig posted! Taj will start finding matches.");
+      toast.success("Gig posted! Taj is finding matches — check My Requests for updates. You'll also get matches on WhatsApp.");
       setShowPostForm(false);
       setForm({ title: "", description: "", budget: "", location: "", category: "" });
       fetchGigs();
-    } catch {
-      toast.error("Failed to post — try messaging Taj on WhatsApp instead");
+    } catch (err) {
+      const msg = err?.response?.data?.detail || "Failed to post";
+      toast.error(msg + " — try messaging Taj on WhatsApp instead");
     } finally {
       setPosting(false);
     }
