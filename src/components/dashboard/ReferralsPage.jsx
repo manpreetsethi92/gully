@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Copy, CheckCircle, Clock, TrendingUp, Share2, Gift, Wallet } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
-import { useAuth } from '../../context/useAuth';
+import { useAuth } from '../../App';
 
 const ReferralsPage = ({ darkMode = false }) => {
   const { user, token, API } = useAuth();
