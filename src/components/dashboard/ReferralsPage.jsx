@@ -3,27 +3,27 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { Gift, Copy, Users, MessageCircle } from "lucide-react";
+import { Gift, Copy, Users } from "lucide-react";
 
 const ReferralsPage = ({ darkMode }) => {
   const { token } = useAuth();
-  const [referralData, setReferralData] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchReferralData = async () => {
+    const fetch = async () => {
       try {
-        const response = await axios.get(`${API}/graph/intent-signals`, {
+        const res = await axios.get(`${API}/users/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setReferralData(response.data);
+        setUser(res.data);
       } catch {
-        setReferralData(null);
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
-    fetchReferralData();
+    fetch();
   }, [token]);
 
   const handleCopy = (link) => {
@@ -32,21 +32,18 @@ const ReferralsPage = ({ darkMode }) => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="spinner"></div>
-      </div>
-    );
+    return <div className="flex items-center justify-center py-20"><div className="spinner"></div></div>;
   }
 
-  const referralLink = referralData?.referral_link || "https://getgiggy.ai";
-  const referralCount = referralData?.referral_count || 0;
-  const rewardBalance = referralData?.reward_balance || 0;
-  const referred = referralData?.referred_users || [];
+  // Build referral link from user's phone or ID
+  const userId = user?.id || user?._id || "";
+  const referralLink = `https://getgiggy.ai?ref=${userId.slice(-6) || "giggy"}`;
+  const referralCount = user?.referral_count || 0;
+  const rewardBalance = user?.reward_balance || 0;
+  const referred = user?.referred_users || [];
 
   return (
     <div>
-      {/* Header */}
       <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? "bg-[#0a0a0a] border-white/10" : "bg-white border-gray-100"}`}>
         <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Referrals</h1>
       </div>
@@ -94,15 +91,14 @@ const ReferralsPage = ({ darkMode }) => {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white text-sm font-semibold flex-shrink-0"
             style={{ background: "#E50914" }}
           >
-            <Copy size={14} />
-            Copy
+            <Copy size={14} /> Copy
           </button>
         </div>
       </div>
 
-      {/* Referred Users */}
+      {/* Referred users or empty */}
       {referred.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
+        <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
           <Users size={40} className={darkMode ? "text-white/20" : "text-gray-300"} />
           <p className={`mt-4 ${darkMode ? "text-white/50" : "text-gray-500"}`}>No referrals yet</p>
           <p className={`text-sm mt-1 ${darkMode ? "text-white/30" : "text-gray-400"}`}>Share your link to start earning</p>
@@ -111,7 +107,8 @@ const ReferralsPage = ({ darkMode }) => {
         <div className={`divide-y ${darkMode ? "divide-white/10" : "divide-gray-100"}`}>
           {referred.map((r, i) => (
             <div key={i} className={`px-4 py-4 flex items-center gap-3 ${darkMode ? "hover:bg-white/5" : "hover:bg-gray-50"} transition-colors`}>
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+                style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}>
                 {r.name?.charAt(0).toUpperCase() || "?"}
               </div>
               <div className="flex-1">
