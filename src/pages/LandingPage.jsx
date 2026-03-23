@@ -169,12 +169,6 @@ const LandingPage = () => {
           min-height: 100% !important;
         }
         
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
-        
-        .font-display { font-family: 'Playfair Display', serif; }
-        .font-mono { font-family: 'Space Mono', monospace; }
-        .font-syne { font-family: 'Syne', sans-serif; }
-        
         @keyframes pulse-glow {
           0%, 100% { filter: drop-shadow(0 0 30px rgba(229, 9, 20, 0.4)); }
           50% { filter: drop-shadow(0 0 50px rgba(229, 9, 20, 0.6)); }
