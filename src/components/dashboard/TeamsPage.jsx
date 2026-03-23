@@ -54,9 +54,9 @@ const TeamsPage = ({ darkMode }) => {
               <UsersRound size={20} className="text-white" />
             </div>
             <div>
-              <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Team up for bigger gigs</p>
+              <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Your collaborative teams</p>
               <p className={`text-sm mt-1 ${darkMode ? "text-white/60" : "text-gray-600"}`}>
-                When you close gigs with others, Giggy automatically suggests forming a team. Teams can be booked together.
+                When you work with the same person twice, Giggy suggests forming a named team. Teams have a shared rate card and reputation — hirers can book the whole team for bigger projects.
               </p>
             </div>
           </div>
@@ -67,9 +67,9 @@ const TeamsPage = ({ darkMode }) => {
       {teams.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
           <UsersRound size={48} className={darkMode ? "text-white/20" : "text-gray-300"} />
-          <h2 className={`text-2xl font-bold mb-2 mt-4 ${darkMode ? "text-white" : "text-gray-900"}`}>No teams yet</h2>
+          <h2 className={`text-2xl font-bold mb-2 mt-4 ${darkMode ? "text-white" : "text-gray-900"}`}>No teams formed yet</h2>
           <p className={`mb-6 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
-            Close 2 gigs with the same person and Giggy will suggest forming a team.
+            Close 2+ gigs with the same collaborator and Giggy will prompt you to form a named team. Unlike Work History (your solo track record), teams are bookable units — hirers can hire the whole team at once.
           </p>
           <a
             href={WHATSAPP_BOT_URL}
@@ -79,7 +79,7 @@ const TeamsPage = ({ darkMode }) => {
             style={{ background: "#E50914" }}
           >
             <MessageCircle size={18} />
-            Find collaborators via Taj
+            Find collaborators via Taj →
           </a>
         </div>
       ) : (
