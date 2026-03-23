@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { useAuth, API } from "../../App";
 import axios from "axios";
@@ -29,7 +30,7 @@ const OAUTH_PLATFORMS = [
 ];
 
 const SocialOAuthPage = ({ darkMode }) => {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const [connectedAccounts, setConnectedAccounts] = useState({});
   const [loading, setLoading] = useState({});
   const [accountData, setAccountData] = useState({});

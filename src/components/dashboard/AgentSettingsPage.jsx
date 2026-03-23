@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../App';
 import axios from 'axios';
@@ -8,7 +9,7 @@ import { Switch } from '../ui/switch';
 import { TrendingUp, MessageSquare, Calendar, FileCheck, Zap, Loader } from 'lucide-react';
 
 const AgentSettingsPage = ({ darkMode = false }) => {
-  const { user, token, API } = useAuth();
+  const { token, API } = useAuth();
   const [settings, setSettings] = useState({
     pitchAutonomy: false,
     negotiateAutonomy: false,

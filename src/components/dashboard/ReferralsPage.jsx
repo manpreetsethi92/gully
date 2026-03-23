@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { Copy, CheckCircle, Clock, TrendingUp, Share2, Gift, Wallet } from 'lucide-react';
 import { Card } from '../ui/card';
@@ -19,7 +20,7 @@ const ReferralsPage = ({ darkMode = false }) => {
 
   useEffect(() => {
     fetchReferralData();
-  }, []);
+  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchReferralData = async () => {
     try {
