@@ -24,6 +24,16 @@ const ConnectionsPage = lazy(() => import("../components/dashboard/ConnectionsPa
 const SettingsPage = lazy(() => import("../components/dashboard/SettingsPage"));
 const ProfilePage = lazy(() => import("../components/dashboard/ProfilePage"));
 const SavedJobsPage = lazy(() => import("../components/dashboard/SavedJobsPage"));
+const SocialOAuthPage = lazy(() => import("../components/dashboard/SocialOAuthPage"));
+const OnboardingFlow = lazy(() => import("../components/dashboard/OnboardingFlow"));
+const HirerDashboard = lazy(() => import("../components/dashboard/HirerDashboard"));
+const AdsPage = lazy(() => import("../components/dashboard/AdsPage"));
+const TeamsPage = lazy(() => import("../components/dashboard/TeamsPage"));
+const PaymentsPage = lazy(() => import("../components/dashboard/PaymentsPage"));
+const AgentSettingsPage = lazy(() => import("../components/dashboard/AgentSettingsPage"));
+const WorkHistoryPage = lazy(() => import("../components/dashboard/WorkHistoryPage"));
+const ReferralsPage = lazy(() => import("../components/dashboard/ReferralsPage"));
+const NotificationsPage = lazy(() => import("../components/dashboard/NotificationsPage"));
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
@@ -291,6 +301,16 @@ const DashboardLayout = () => {
               <Route path="connections" element={<ConnectionsPage onRefresh={fetchAllData} darkMode={darkMode} />} />
               <Route path="profile" element={<ProfilePage darkMode={darkMode} />} />
               <Route path="settings" element={<SettingsPage darkMode={darkMode} />} />
+              <Route path="social-connect" element={<SocialOAuthPage />} />
+              <Route path="onboarding" element={<OnboardingFlow />} />
+              <Route path="hirer" element={<HirerDashboard />} />
+              <Route path="ads" element={<AdsPage />} />
+              <Route path="teams" element={<TeamsPage />} />
+              <Route path="payments" element={<PaymentsPage />} />
+              <Route path="agent-settings" element={<AgentSettingsPage />} />
+              <Route path="work-history" element={<WorkHistoryPage />} />
+              <Route path="referrals" element={<ReferralsPage />} />
+              <Route path="notifications" element={<NotificationsPage />} />
             </Routes>
           </Suspense>
         </main>
