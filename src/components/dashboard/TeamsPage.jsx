@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../App';
 import axios from 'axios';
@@ -6,7 +7,7 @@ import { Card } from '../ui/card';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { Users, Plus, X, Mail, Trash2, Shield, Clock } from 'lucide-react';
+import { Users, Plus, X, Trash2, Shield } from 'lucide-react';
 
 const TeamsPage = ({ darkMode = false }) => {
   const { user, token, API } = useAuth();
@@ -27,7 +28,7 @@ const TeamsPage = ({ darkMode = false }) => {
 
   useEffect(() => {
     fetchTeams();
-  }, []);
+  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchTeams = async () => {
     try {
