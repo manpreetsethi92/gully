@@ -1,368 +1,130 @@
-import React, { useState } from "react";
+/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
+import { useState } from "react";
 import { useAuth, API } from "../../App";
+import { MessageCircle, ChevronRight } from "lucide-react";
 import axios from "axios";
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
-import { Input } from "../ui/input";
-import { ChevronRight, Check, Briefcase, Search, Video, Calendar, Zap } from "lucide-react";
+import { toast } from "sonner";
+
+const STEPS = [
+  { id: "skills", title: "What are your main skills?", placeholder: "e.g. Graphic design, video editing, carpentry..." },
+  { id: "location", title: "Where are you based?", placeholder: "e.g. Austin, TX" },
+  { id: "rate", title: "What's your typical rate?", placeholder: "e.g. $75/hr or $500/project" },
+  { id: "availability", title: "How available are you?", placeholder: "e.g. Full-time, weekends only, 10hrs/week..." },
+  { id: "dream_gig", title: "What's your dream gig?", placeholder: "e.g. Brand identity for a music startup" },
+];
 
 const OnboardingFlow = ({ darkMode }) => {
-  const { user, token } = useAuth();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState({
-    intent: null, // 'hiring' or 'working'
-    name: user?.name || "",
-    skills: [],
-    location: "",
-    completedChallenge: false,
-    recordedIntro: false,
-    calendarConnected: false
-  });
-  const [skillInput, setSkillInput] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { token } = useAuth();
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [done, setDone] = useState(false);
 
-  const steps = [
-    {
-      title: "What brings you here?",
-      description: "Tell us your primary goal on Giggy",
-      component: StepIntent
-    },
-    {
-      title: "Tell us about yourself",
-      description: "Help us understand your profile better",
-      component: StepBasicInfo
-    },
-    {
-      title: "Connect your social accounts",
-      description: "Link platforms to showcase your work",
-      component: StepSocialConnect
-    },
-    {
-      title: "Get a Verified badge",
-      description: "Complete a quick skill challenge",
-      component: StepSkillChallenge
-    },
-    {
-      title: "Record your intro",
-      description: "60-second video introduction",
-      component: StepVideoIntro
-    },
-    {
-      title: "Set your availability",
-      description: "Connect your calendar for easy booking",
-      component: StepCalendar
-    }
-  ];
-
-  const calculateProgress = () => {
-    let completed = 0;
-    if (formData.intent) completed++;
-    if (formData.name && formData.location) completed++;
-    if (formData.completedChallenge) completed++;
-    if (formData.recordedIntro) completed++;
-    if (formData.calendarConnected) completed++;
-    return Math.round((completed / 5) * 100);
-  };
+  const current = STEPS[step];
+  const isLast = step === STEPS.length - 1;
 
   const handleNext = async () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      // Complete onboarding
-      setLoading(true);
+    if (isLast) {
+      setSaving(true);
       try {
-        await axios.post(`${API}/onboarding/complete`, formData, {
+        await axios.patch(`${API}/users/me`, { onboarding_answers: answers }, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        // Redirect to dashboard
-        window.location.href = '/app';
-      } catch (error) {
-        console.error("Failed to complete onboarding:", error);
+        setDone(true);
+      } catch {
+        toast.error("Failed to save — try again");
+      } finally {
+        setSaving(false);
       }
-      setLoading(false);
+    } else {
+      setStep(s => s + 1);
     }
   };
 
-  const handleBack = () => {
-    if (currentStep > 0) setCurrentStep(currentStep - 1);
-  };
-
-  const CurrentStepComponent = steps[currentStep].component;
+  if (done) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+        <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center mb-4">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="2.5">
+            <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <h2 className={`text-2xl font-bold mb-2 ${darkMode ? "text-white" : "text-gray-900"}`}>You're all set!</h2>
+        <p className={`mb-6 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+          Taj now knows exactly what you're looking for. Expect matches soon.
+        </p>
+        <a
+          href="https://wa.me/12134147369?text=Hi%20Taj!"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-bold text-sm"
+          style={{ background: "#E50914" }}
+        >
+          <MessageCircle size={18} />
+          Say hi to Taj on WhatsApp
+        </a>
+      </div>
+    );
+  }
 
   return (
-    <div className={`min-h-screen p-4 lg:p-6 flex flex-col ${darkMode ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
-      <div className="max-w-2xl w-full mx-auto flex-1 flex flex-col">
-        {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <h1 className={`font-syne font-bold text-2xl ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              {steps[currentStep].title}
-            </h1>
-            <span className="font-syne font-bold text-[#E50914]">{calculateProgress()}%</span>
-          </div>
-          <div className={`w-full h-2 rounded-full overflow-hidden ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}>
-            <div
-              className="h-full bg-[#E50914] transition-all duration-300"
-              style={{ width: `${calculateProgress()}%` }}
-            />
-          </div>
-          <p className={`text-sm mt-2 ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-            Step {currentStep + 1} of {steps.length} • {steps[currentStep].description}
-          </p>
-        </div>
+    <div>
+      {/* Header */}
+      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? "bg-[#0a0a0a] border-white/10" : "bg-white border-gray-100"}`}>
+        <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Complete your profile</h1>
+        <p className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>Step {step + 1} of {STEPS.length}</p>
+      </div>
 
-        {/* Step Content */}
-        <div className="flex-1">
-          <CurrentStepComponent
-            formData={formData}
-            setFormData={setFormData}
-            skillInput={skillInput}
-            setSkillInput={setSkillInput}
-            darkMode={darkMode}
-          />
-        </div>
+      {/* Progress Bar */}
+      <div className={`h-1 ${darkMode ? "bg-white/10" : "bg-gray-100"}`}>
+        <div
+          className="h-1 transition-all duration-300"
+          style={{ width: `${((step + 1) / STEPS.length) * 100}%`, background: "#E50914" }}
+        />
+      </div>
 
-        {/* Navigation Buttons */}
-        <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200 dark:border-white/10">
-          <Button
-            onClick={handleBack}
-            disabled={currentStep === 0}
-            variant="outline"
-            className="flex-1"
+      {/* Step Content */}
+      <div className="px-4 py-8">
+        <h2 className={`text-2xl font-bold mb-6 ${darkMode ? "text-white" : "text-gray-900"}`}>{current.title}</h2>
+        <textarea
+          value={answers[current.id] || ""}
+          onChange={(e) => setAnswers(prev => ({ ...prev, [current.id]: e.target.value }))}
+          placeholder={current.placeholder}
+          rows={4}
+          className={`w-full p-4 rounded-2xl border text-[15px] resize-none outline-none focus:ring-2 focus:ring-red-500 transition-all ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
+        />
+
+        <button
+          onClick={handleNext}
+          disabled={saving || !answers[current.id]?.trim()}
+          className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-full text-white font-semibold transition-opacity disabled:opacity-50"
+          style={{ background: "#E50914" }}
+        >
+          {saving ? "Saving..." : isLast ? "Finish" : "Next"}
+          {!saving && <ChevronRight size={18} />}
+        </button>
+
+        {step > 0 && (
+          <button
+            onClick={() => setStep(s => s - 1)}
+            className={`mt-3 w-full py-3 rounded-full font-semibold border transition-colors ${darkMode ? "border-white/20 text-white/60 hover:bg-white/10" : "border-gray-300 text-gray-600 hover:bg-gray-50"}`}
           >
             Back
-          </Button>
-          <Button
-            onClick={handleNext}
-            disabled={loading}
-            className="flex-1 bg-[#E50914] hover:bg-[#d00810] text-white"
-          >
-            {currentStep === steps.length - 1 ? 'Complete' : 'Next'}
-            {!loading && <ChevronRight size={16} className="ml-2" />}
-          </Button>
-        </div>
+          </button>
+        )}
+      </div>
+
+      {/* Skip */}
+      <div className="px-4 pb-4 text-center">
+        <button
+          onClick={() => setStep(s => Math.min(s + 1, STEPS.length - 1))}
+          className={`text-sm ${darkMode ? "text-white/30 hover:text-white/50" : "text-gray-400 hover:text-gray-600"}`}
+        >
+          Skip this question
+        </button>
       </div>
     </div>
   );
 };
-
-// Step 1: Intent
-const StepIntent = ({ formData, setFormData, darkMode }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <Card
-      onClick={() => setFormData({ ...formData, intent: 'hiring' })}
-      className={`p-6 cursor-pointer transition-all ${
-        formData.intent === 'hiring'
-          ? darkMode ? 'bg-[#E50914]/20 border-[#E50914]/50' : 'bg-red-50 border-[#E50914]'
-          : darkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
-      }`}
-    >
-      <Briefcase size={32} className={formData.intent === 'hiring' ? 'text-[#E50914]' : 'text-gray-400'} />
-      <h3 className={`font-syne font-bold text-lg mt-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-        I'm Hiring
-      </h3>
-      <p className={`text-sm mt-2 ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-        Post gigs and find talented people to help with projects
-      </p>
-      {formData.intent === 'hiring' && <Check size={20} className="text-[#E50914] mt-4" />}
-    </Card>
-
-    <Card
-      onClick={() => setFormData({ ...formData, intent: 'working' })}
-      className={`p-6 cursor-pointer transition-all ${
-        formData.intent === 'working'
-          ? darkMode ? 'bg-[#E50914]/20 border-[#E50914]/50' : 'bg-red-50 border-[#E50914]'
-          : darkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
-      }`}
-    >
-      <Search size={32} className={formData.intent === 'working' ? 'text-[#E50914]' : 'text-gray-400'} />
-      <h3 className={`font-syne font-bold text-lg mt-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-        I'm Looking for Work
-      </h3>
-      <p className={`text-sm mt-2 ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-        Find and apply for gigs that match your skills
-      </p>
-      {formData.intent === 'working' && <Check size={20} className="text-[#E50914] mt-4" />}
-    </Card>
-  </div>
-);
-
-// Step 2: Basic Info
-const StepBasicInfo = ({ formData, setFormData, darkMode }) => (
-  <div className="space-y-4">
-    <div>
-      <label className={`block text-sm font-syne font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-        Full Name
-      </label>
-      <Input
-        value={formData.name}
-        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-        placeholder="Your name"
-        className={darkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-gray-50'}
-      />
-    </div>
-
-    <div>
-      <label className={`block text-sm font-syne font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-        Skills (add up to 5)
-      </label>
-      <div className="flex gap-2 mb-3">
-        <Input
-          value={formData.skills.join(", ")}
-          onChange={(e) => setFormData({ ...formData, skills: e.target.value.split(",").map(s => s.trim()).filter(s => s) })}
-          placeholder="e.g., Electrical, Plumbing, React"
-          className={darkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-gray-50'}
-        />
-      </div>
-      {formData.skills.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {formData.skills.map((skill, i) => (
-            <span key={i} className={`px-3 py-1 rounded-full text-sm ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}>
-              {skill}
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
-
-    <div>
-      <label className={`block text-sm font-syne font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-        Location
-      </label>
-      <Input
-        value={formData.location}
-        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-        placeholder="City, State"
-        className={darkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-gray-50'}
-      />
-    </div>
-  </div>
-);
-
-// Step 3: Social Connect
-const StepSocialConnect = ({ darkMode }) => (
-  <Card className={`p-6 ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'}`}>
-    <h3 className={`font-syne font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-      Connect your platforms
-    </h3>
-    <p className={`text-sm mb-6 ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-      Link LinkedIn, GitHub, portfolio, or other platforms to showcase your work. You can do this now or skip for later.
-    </p>
-    <Button
-      onClick={() => window.location.href = '/app/connect-social'}
-      className="w-full bg-[#E50914] hover:bg-[#d00810] text-white"
-    >
-      Connect Accounts
-    </Button>
-  </Card>
-);
-
-// Step 4: Skill Challenge
-const StepSkillChallenge = ({ formData, setFormData, darkMode }) => (
-  <Card className={`p-6 ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'}`}>
-    <div className="flex items-start gap-4 mb-4">
-      <Zap size={24} className="text-[#E50914]" />
-      <div>
-        <h3 className={`font-syne font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-          Earn a Verified Badge
-        </h3>
-        <p className={`text-sm mt-1 ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-          Complete a quick task to prove your skills and get the blue verified badge
-        </p>
-      </div>
-    </div>
-    
-    <div className={`p-4 rounded-lg mb-6 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-200'}`}>
-      <p className={`text-sm font-mono ${darkMode ? 'text-white/80' : 'text-gray-800'}`}>
-        We'll send you a small task related to your skills. Complete it quickly to get verified in 2-3 hours.
-      </p>
-    </div>
-
-    <Button
-      onClick={() => setFormData({ ...formData, completedChallenge: !formData.completedChallenge })}
-      className={`w-full ${
-        formData.completedChallenge
-          ? 'bg-green-600 hover:bg-green-700 text-white'
-          : 'bg-[#E50914] hover:bg-[#d00810] text-white'
-      }`}
-    >
-      {formData.completedChallenge ? '✓ Challenge Complete' : 'Start Challenge'}
-    </Button>
-  </Card>
-);
-
-// Step 5: Video Intro
-const StepVideoIntro = ({ formData, setFormData, darkMode }) => (
-  <Card className={`p-6 ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'}`}>
-    <div className="flex items-start gap-4 mb-4">
-      <Video size={24} className="text-[#E50914]" />
-      <div>
-        <h3 className={`font-syne font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-          Record a 60-Second Intro
-        </h3>
-        <p className={`text-sm mt-1 ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-          Send a WhatsApp voice/video message introducing yourself
-        </p>
-      </div>
-    </div>
-
-    <div className={`p-4 rounded-lg mb-6 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-200'}`}>
-      <p className={`text-sm font-mono ${darkMode ? 'text-white/80' : 'text-gray-800'}`}>
-        "Hi, I'm [name]. I specialize in [skills]. I'm excited to help with projects in [location]."
-      </p>
-    </div>
-
-    <Button
-      onClick={() => {
-        setFormData({ ...formData, recordedIntro: true });
-        window.open('https://wa.me/12134147369?text=Here%20is%20my%20intro', '_blank');
-      }}
-      className={`w-full ${
-        formData.recordedIntro
-          ? 'bg-green-600 hover:bg-green-700 text-white'
-          : 'bg-[#E50914] hover:bg-[#d00810] text-white'
-      }`}
-    >
-      {formData.recordedIntro ? '✓ Intro Sent' : 'Send on WhatsApp'}
-    </Button>
-  </Card>
-);
-
-// Step 6: Calendar
-const StepCalendar = ({ formData, setFormData, darkMode }) => (
-  <Card className={`p-6 ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'}`}>
-    <div className="flex items-start gap-4 mb-4">
-      <Calendar size={24} className="text-[#E50914]" />
-      <div>
-        <h3 className={`font-syne font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-          Connect Your Calendar
-        </h3>
-        <p className={`text-sm mt-1 ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-          Let hirers see when you're available for gigs
-        </p>
-      </div>
-    </div>
-
-    <div className={`p-4 rounded-lg mb-6 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-200'}`}>
-      <p className={`text-sm font-mono ${darkMode ? 'text-white/80' : 'text-gray-800'}`}>
-        We'll sync your Google Calendar so hirers know your availability instantly.
-      </p>
-    </div>
-
-    <Button
-      onClick={() => {
-        setFormData({ ...formData, calendarConnected: true });
-        window.location.href = `${API}/oauth/google-calendar/authorize`;
-      }}
-      className={`w-full ${
-        formData.calendarConnected
-          ? 'bg-green-600 hover:bg-green-700 text-white'
-          : 'bg-[#E50914] hover:bg-[#d00810] text-white'
-      }`}
-    >
-      {formData.calendarConnected ? '✓ Calendar Connected' : 'Connect Google Calendar'}
-    </Button>
-  </Card>
-);
 
 export default OnboardingFlow;

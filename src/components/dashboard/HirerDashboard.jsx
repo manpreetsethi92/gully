@@ -1,377 +1,266 @@
 /* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
-import { useAuth, API } from "../../App";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Tabs } from "../ui/tabs";
-import {
-  Plus,
-  MessageSquare,
-  Check,
-  Clock,
-  ChevronRight,
-  Briefcase
-} from "lucide-react";
+import { toast } from "sonner";
+import { useAuth, API } from "../../App";
+import { Briefcase, MessageCircle, Plus, Users, Clock, Check, X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+
+const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!%20I%20need%20to%20hire%20someone";
 
 const HirerDashboard = ({ darkMode }) => {
   const { token } = useAuth();
-  const [activeTab, setActiveTab] = useState("post");
   const [gigs, setGigs] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [showPostForm, setShowPostForm] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    budget: "",
-    location: "",
-    category: "",
-    deadline: ""
-  });
+  const [loading, setLoading] = useState(true);
+  const [selectedGig, setSelectedGig] = useState(null);
+  const [candidates, setCandidates] = useState([]);
+  const [candidatesLoading, setCandidatesLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
+    const fetchGigs = async () => {
+      try {
+        const response = await axios.get(`${API}/requests`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setGigs(response.data);
+      } catch (error) {
+        toast.error("Failed to fetch gigs");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchGigs();
   }, [token]);
 
-  const fetchGigs = async () => {
+  const fetchCandidates = async (gigId) => {
+    setCandidatesLoading(true);
     try {
-      const response = await axios.get(`${API}/gigs`, {
+      const response = await axios.get(`${API}/requests/${gigId}/matches`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setGigs(response.data);
-    } catch (error) {
-      console.error("Failed to fetch gigs:", error);
+      setCandidates(response.data);
+    } catch {
+      setCandidates([]);
+    } finally {
+      setCandidatesLoading(false);
     }
   };
 
-  const handlePostGig = async () => {
-    setLoading(true);
+  const handleAction = async (matchId, action) => {
+    setActionLoading(matchId);
     try {
-      await axios.post(`${API}/gigs`, formData, {
+      await axios.post(`${API}/matches/${matchId}/action`, { action }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setFormData({ title: "", description: "", budget: "", location: "", category: "", deadline: "" });
-      setShowPostForm(false);
-      fetchGigs();
-    } catch (error) {
-      console.error("Failed to post gig:", error);
+      setCandidates(candidates.map(c =>
+        c.id === matchId ? { ...c, status: action === "approve" ? "outreach_pending" : "rejected" } : c
+      ));
+      toast.success(action === "approve" ? "Taj will reach out to them!" : "Skipped");
+    } catch {
+      toast.error("Action failed");
+    } finally {
+      setActionLoading(null);
     }
-    setLoading(false);
   };
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = now - date;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    if (hours < 1) return "Just now";
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return days < 7 ? `${days}d ago` : date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
+  const activeGigs = gigs.filter(g => !["expired", "closed"].includes(g.status));
 
   return (
-    <div className={`min-h-screen p-4 lg:p-6 ${darkMode ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className={`font-syne font-bold text-3xl ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              Manage Gigs
-            </h1>
-            <p className={`text-sm mt-1 ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-              Post jobs and manage your team of contractors
-            </p>
-          </div>
-          <Button
-            onClick={() => setShowPostForm(!showPostForm)}
-            className="bg-[#E50914] hover:bg-[#d00810] text-white gap-2"
-          >
-            <Plus size={18} />
-            Post a Gig
-          </Button>
-        </div>
+    <div>
+      {/* Header */}
+      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b flex items-center justify-between ${darkMode ? "bg-[#0a0a0a] border-white/10" : "bg-white border-gray-100"}`}>
+        <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Post a Gig</h1>
+        <a
+          href={WHATSAPP_BOT_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold"
+          style={{ background: "#E50914" }}
+        >
+          <Plus size={16} />
+          New Gig
+        </a>
+      </div>
 
-        {/* Post Form */}
-        {showPostForm && (
-          <Card className={`mb-8 p-6 ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-100'}`}>
-            <h2 className={`font-syne font-bold text-lg mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              Post a New Gig
-            </h2>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  placeholder="Gig Title (e.g., Kitchen Renovation)"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className={darkMode ? 'bg-white/10 border-white/20 text-white' : ''}
-                />
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className={`px-4 py-2 rounded-lg border ${
-                    darkMode
-                      ? 'bg-white/10 border-white/20 text-white'
-                      : 'bg-white border-gray-200'
-                  }`}
-                >
-                  <option value="">Select Category</option>
-                  <option value="construction">Construction</option>
-                  <option value="plumbing">Plumbing</option>
-                  <option value="electrical">Electrical</option>
-                  <option value="landscaping">Landscaping</option>
-                  <option value="it">IT/Software</option>
-                  <option value="design">Design</option>
-                  <option value="writing">Writing</option>
-                  <option value="other">Other</option>
-                </select>
+      {/* Stats */}
+      {gigs.length > 0 && (
+        <div className={`px-4 py-4 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: "Active", value: activeGigs.length, color: darkMode ? "bg-white/5" : "bg-gray-50" },
+              { label: "Total Matches", value: gigs.reduce((s, g) => s + (g.matches_count || 0), 0), color: darkMode ? "bg-white/5" : "bg-gray-50" },
+              { label: "Closed", value: gigs.filter(g => g.status === "closed").length, color: darkMode ? "bg-white/5" : "bg-gray-50" },
+            ].map((stat) => (
+              <div key={stat.label} className={`p-3 rounded-xl text-center ${stat.color}`}>
+                <div className={`text-2xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>{stat.value}</div>
+                <div className={`text-xs ${darkMode ? "text-white/50" : "text-gray-500"}`}>{stat.label}</div>
               </div>
-
-              <Textarea
-                placeholder="Describe the gig details, requirements, and expectations..."
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className={darkMode ? 'bg-white/10 border-white/20 text-white' : ''}
-                rows={4}
-              />
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Input
-                  placeholder="Budget (e.g., $500-1000)"
-                  value={formData.budget}
-                  onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                  className={darkMode ? 'bg-white/10 border-white/20 text-white' : ''}
-                />
-                <Input
-                  placeholder="Location"
-                  value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className={darkMode ? 'bg-white/10 border-white/20 text-white' : ''}
-                />
-                <Input
-                  type="date"
-                  value={formData.deadline}
-                  onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
-                  className={darkMode ? 'bg-white/10 border-white/20 text-white' : ''}
-                />
-              </div>
-
-              <div className="flex gap-3">
-                <Button
-                  onClick={handlePostGig}
-                  disabled={loading || !formData.title || !formData.description}
-                  className="flex-1 bg-[#E50914] hover:bg-[#d00810] text-white"
-                >
-                  {loading ? "Posting..." : "Post Gig"}
-                </Button>
-                <Button
-                  onClick={() => setShowPostForm(false)}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          {[
-            { label: "Posted", value: gigs.length, icon: Briefcase, color: "text-blue-500" },
-            { label: "Active", value: gigs.filter(g => g.status === 'posted').length, icon: Clock, color: "text-yellow-500" },
-            { label: "Matched", value: gigs.filter(g => g.status === 'matched').length, icon: Check, color: "text-green-500" },
-            { label: "Closed", value: gigs.filter(g => g.status === 'closed').length, icon: Briefcase, color: "text-gray-500" }
-          ].map((stat, i) => (
-            <Card
-              key={i}
-              className={`p-4 ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-100'}`}
-            >
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg ${stat.color} opacity-20`}>
-                  <stat.icon size={20} className={stat.color} />
-                </div>
-                <div>
-                  <p className={`text-xs font-mono ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-                    {stat.label}
-                  </p>
-                  <p className={`font-syne font-bold text-2xl ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {stat.value}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        {/* Gigs Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <div className={`border-b ${darkMode ? 'border-white/10' : 'border-gray-200'} mb-6 flex gap-6`}>
-            {["post", "candidates", "active"].map(tab => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`pb-3 font-syne font-semibold text-sm transition-colors border-b-2 ${
-                  activeTab === tab
-                    ? 'border-[#E50914] text-[#E50914]'
-                    : `border-transparent ${darkMode ? 'text-white/60 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`
-                }`}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
             ))}
           </div>
+        </div>
+      )}
 
-          {/* Posted Gigs */}
-          {activeTab === "post" && (
-            <div className="space-y-4">
-              {gigs.length === 0 ? (
-                <Card className={`p-8 text-center ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-100'}`}>
-                  <p className={`${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-                    No gigs posted yet. Click "Post a Gig" to get started!
-                  </p>
-                </Card>
-              ) : (
-                gigs.map(gig => <GigCard key={gig.id} gig={gig} darkMode={darkMode} />)
-              )}
-            </div>
-          )}
-
-          {/* Candidates */}
-          {activeTab === "candidates" && (
-            <div className="space-y-4">
-              {gigs.flatMap(g => g.candidates || []).length === 0 ? (
-                <Card className={`p-8 text-center ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-100'}`}>
-                  <p className={`${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-                    No candidates yet. Keep an eye here for applications!
-                  </p>
-                </Card>
-              ) : (
-                gigs.flatMap(g => (g.candidates || []).map(c => (
-                  <CandidateCard key={c.id} candidate={c} gig={g} darkMode={darkMode} />
-                )))
-              )}
-            </div>
-          )}
-
-          {/* Active Gigs */}
-          {activeTab === "active" && (
-            <div className="space-y-4">
-              {gigs.filter(g => g.status !== 'closed').map(gig => (
-                <GigStatusCard key={gig.id} gig={gig} darkMode={darkMode} />
-              ))}
-            </div>
-          )}
-        </Tabs>
+      {/* Banner */}
+      <div className={`px-4 py-4 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+        <div className={`flex items-center gap-4 p-4 rounded-2xl ${darkMode ? "bg-red-500/10" : "bg-red-50"}`}>
+          <div className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 bg-[#E50914]">
+            <MessageCircle size={22} className="text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Tell Taj what you need</p>
+            <p className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>She'll find and vet talent for you</p>
+          </div>
+          <a
+            href={WHATSAPP_BOT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[#25D366]"
+          >
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="white">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
+          </a>
+        </div>
       </div>
+
+      {/* Gig List */}
+      {gigs.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+          <Briefcase size={48} className={darkMode ? "text-white/20" : "text-gray-300"} />
+          <h2 className={`text-2xl font-bold mb-2 mt-4 ${darkMode ? "text-white" : "text-gray-900"}`}>No gigs posted yet</h2>
+          <p className={`mb-6 ${darkMode ? "text-white/50" : "text-gray-500"}`}>Tell Taj who you're looking for and she'll find the right person.</p>
+          <a
+            href={WHATSAPP_BOT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-bold text-sm"
+            style={{ background: "#E50914" }}
+          >
+            <MessageCircle size={18} />
+            Message Taj to post a gig
+          </a>
+        </div>
+      ) : (
+        <div className={`divide-y ${darkMode ? "divide-white/10" : "divide-gray-100"}`}>
+          {gigs.map((gig) => (
+            <div
+              key={gig.id}
+              className={`px-4 py-5 cursor-pointer transition-colors ${darkMode ? "hover:bg-white/5" : "hover:bg-gray-50"}`}
+              onClick={() => { setSelectedGig(gig); fetchCandidates(gig.id); }}
+            >
+              <div className="flex items-start gap-3">
+                <div className={`flex items-center gap-2 flex-wrap mb-2`}>
+                  <span className={`w-2 h-2 rounded-full inline-block ${gig.status === "closed" || gig.status === "expired" ? "bg-gray-400" : "bg-green-500"}`}></span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <span className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>{formatDate(gig.created_at)}</span>
+                    <span className={`px-2 py-0.5 text-xs rounded-full ${gig.status === "closed" || gig.status === "expired" ? (darkMode ? "bg-gray-500/20 text-gray-400" : "bg-gray-100 text-gray-500") : (darkMode ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700")}`}>
+                      {gig.status === "awaiting_approval" ? "Review" : gig.status?.charAt(0).toUpperCase() + gig.status?.slice(1)}
+                    </span>
+                    {gig.matches_count > 0 && (
+                      <span className={`text-sm font-medium ${darkMode ? "text-green-400" : "text-green-600"}`}>
+                        {gig.matches_count} match{gig.matches_count > 1 ? "es" : ""}
+                      </span>
+                    )}
+                  </div>
+                  <p className={`text-[15px] font-medium ${darkMode ? "text-white/90" : "text-gray-800"}`}>{gig.title}</p>
+                  {(gig.budget_display || gig.location) && (
+                    <div className={`flex gap-3 mt-1 text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+                      {gig.budget_display && <span>{gig.budget_display}</span>}
+                      {gig.location && <span>{gig.location}</span>}
+                    </div>
+                  )}
+                  {gig.matches_count > 0 && (
+                    <p className="text-sm font-medium text-red-500 mt-2">View candidates →</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Candidates Modal */}
+      <Dialog open={!!selectedGig} onOpenChange={() => setSelectedGig(null)}>
+        <DialogContent className={`sm:max-w-md max-h-[80vh] overflow-hidden flex flex-col ${darkMode ? "bg-[#111] border-white/10" : ""}`}>
+          <DialogHeader>
+            <DialogTitle className={darkMode ? "text-white" : "text-gray-900"}>Candidates</DialogTitle>
+            {selectedGig && (
+              <p className={`text-sm ${darkMode ? "text-white/60" : "text-gray-500"}`}>"{selectedGig.title}"</p>
+            )}
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto py-4 -mx-6 px-6">
+            {candidatesLoading ? (
+              <div className="flex items-center justify-center py-10"><div className="spinner"></div></div>
+            ) : candidates.length === 0 ? (
+              <div className="text-center py-10">
+                <Users size={40} className={`mx-auto mb-3 ${darkMode ? "text-white/20" : "text-gray-300"}`} />
+                <p className={darkMode ? "text-white/50" : "text-gray-500"}>No candidates yet — Taj is searching</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {candidates.map((c) => (
+                  <div key={c.id} className={`rounded-xl p-4 ${darkMode ? "bg-white/5" : "bg-gray-50"}`}>
+                    <div className="flex items-start gap-3">
+                      {c.matched_user?.photo_url ? (
+                        <img src={c.matched_user.photo_url} alt={c.matched_user.name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}>
+                          {c.matched_user?.name?.charAt(0).toUpperCase() || "?"}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className={`font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>{c.matched_user?.name}</p>
+                        {c.matched_user?.location && <p className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>{c.matched_user.location}</p>}
+                        {c.matched_user?.skills?.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mt-2">
+                            {c.matched_user.skills.slice(0, 3).map((s, i) => (
+                              <span key={i} className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? "bg-white/10 text-white/70" : "bg-gray-200 text-gray-700"}`}>{s}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      {c.status === "suggested" && (
+                        <div className="flex gap-2 flex-shrink-0">
+                          <button onClick={() => handleAction(c.id, "approve")} disabled={actionLoading === c.id} className="w-9 h-9 rounded-full flex items-center justify-center bg-green-500 text-white">
+                            <Check size={18} />
+                          </button>
+                          <button onClick={() => handleAction(c.id, "reject")} disabled={actionLoading === c.id} className={`w-9 h-9 rounded-full flex items-center justify-center border ${darkMode ? "border-white/20 text-white/60" : "border-gray-300 text-gray-500"}`}>
+                            <X size={18} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
-
-const GigCard = ({ gig, darkMode }) => (
-  <Card className={`p-6 ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-100'} hover:shadow-lg transition-all`}>
-    <div className="flex items-start justify-between mb-4">
-      <div className="flex-1">
-        <h3 className={`font-syne font-bold text-lg ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-          {gig.title}
-        </h3>
-        <p className={`text-sm mt-1 ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-          {gig.description.substring(0, 100)}...
-        </p>
-      </div>
-      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-        gig.status === 'posted' ? (darkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700') :
-        gig.status === 'matched' ? (darkMode ? 'bg-yellow-900/30 text-yellow-400' : 'bg-yellow-100 text-yellow-700') :
-        (darkMode ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700')
-      }`}>
-        {gig.status}
-      </span>
-    </div>
-
-    <div className="grid grid-cols-3 gap-4 mb-4">
-      <div>
-        <p className={`text-xs font-mono ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>BUDGET</p>
-        <p className={`font-syne font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{gig.budget}</p>
-      </div>
-      <div>
-        <p className={`text-xs font-mono ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>LOCATION</p>
-        <p className={`font-syne font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{gig.location}</p>
-      </div>
-      <div>
-        <p className={`text-xs font-mono ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>APPLICANTS</p>
-        <p className={`font-syne font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{(gig.candidates || []).length}</p>
-      </div>
-    </div>
-
-    <Button className="w-full bg-[#E50914] hover:bg-[#d00810] text-white gap-2">
-      Manage <ChevronRight size={16} />
-    </Button>
-  </Card>
-);
-
-const CandidateCard = ({ candidate, gig, darkMode }) => (
-  <Card className={`p-4 ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-100'}`}>
-    <div className="flex items-start justify-between">
-      <div className="flex-1">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-full bg-[#E50914]/20 flex items-center justify-center">
-            <span className="font-syne font-bold text-[#E50914]">
-              {candidate.name.charAt(0).toUpperCase()}
-            </span>
-          </div>
-          <div>
-            <h4 className={`font-syne font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              {candidate.name}
-            </h4>
-            <p className={`text-xs ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-              Applied for {gig.title}
-            </p>
-          </div>
-        </div>
-        <p className={`text-sm mt-2 ${darkMode ? 'text-white/70' : 'text-gray-700'}`}>
-          {candidate.pitch}
-        </p>
-      </div>
-      <div className="flex gap-2">
-        <Button size="sm" className="bg-[#E50914] hover:bg-[#d00810] text-white gap-1">
-          <MessageSquare size={14} />
-          Contact
-        </Button>
-        <Button size="sm" variant="outline">
-          <Check size={14} />
-        </Button>
-      </div>
-    </div>
-  </Card>
-);
-
-const GigStatusCard = ({ gig, darkMode }) => (
-  <Card className={`p-6 ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-100'}`}>
-    <div className="flex items-center justify-between mb-4">
-      <h3 className={`font-syne font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-        {gig.title}
-      </h3>
-      <div className="flex items-center gap-2">
-        <div className="w-3 h-3 rounded-full bg-green-500" />
-        <span className={`text-sm font-mono ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
-          Active
-        </span>
-      </div>
-    </div>
-
-    <div className="space-y-2 mb-4">
-      <div className="flex items-center justify-between">
-        <span className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>Posted 2 days ago</span>
-        <span className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-          {(gig.candidates || []).length} applicants
-        </span>
-      </div>
-      <div className={`h-2 rounded-full overflow-hidden ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}>
-        <div className="h-full bg-[#E50914]" style={{ width: "60%" }} />
-      </div>
-    </div>
-
-    <div className="grid grid-cols-2 gap-3">
-      <Button className="bg-[#E50914] hover:bg-[#d00810] text-white" size="sm">
-        View Applicants
-      </Button>
-      <Button variant="outline" size="sm">
-        Edit Gig
-      </Button>
-    </div>
-  </Card>
-);
 
 export default HirerDashboard;
