@@ -13,7 +13,7 @@ import {
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { useAuth } from '../../context/useAuth';
+import { useAuth } from '../../App';
 
 const NotificationsPage = ({ darkMode = false }) => {
   const { token, API } = useAuth();
