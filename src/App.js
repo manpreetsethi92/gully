@@ -188,6 +188,17 @@ function App() {
 const AppRoutes = () => {
   const { loading, isAuthenticated, showUpgradeModal, upgradeLimitType, closeUpgradeModal } = useAuth();
 
+  // Capture ?ref= referral code on landing and store in localStorage
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
+    if (ref) {
+      localStorage.setItem("giggy_ref", ref);
+      // Track the click on the backend (fire and forget)
+      fetch(`${API}/referrals/track/${ref}`).catch(() => {});
+    }
+  }, []);
+
   // Block everything until auth is hydrated
   if (loading) {
     return (
