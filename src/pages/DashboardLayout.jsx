@@ -15,6 +15,7 @@ import {
   CreditCard,
   Gift,
   Link2,
+  Network,
   Menu,
   X,
   MoreHorizontal,
@@ -42,6 +43,7 @@ const AgentSettingsPage = lazy(() => import("../components/dashboard/AgentSettin
 const WorkHistoryPage = lazy(() => import("../components/dashboard/WorkHistoryPage"));
 const ReferralsPage = lazy(() => import("../components/dashboard/ReferralsPage"));
 const NotificationsPage = lazy(() => import("../components/dashboard/NotificationsPage"));
+const NetworkPage = lazy(() => import("../components/dashboard/NetworkPage"));
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
@@ -111,6 +113,7 @@ const DashboardLayout = () => {
     { id: "saved-jobs", label: "Saved Jobs", icon: Bookmark, count: stats.savedJobs },
     { id: "requests", label: "My Requests", icon: Send, count: stats.requests },
     { id: "connections", label: "Connections", icon: Users, count: stats.connections },
+    { id: "network", label: "My Network", icon: Network },
     { id: "hirer", label: "Post a Gig", icon: Briefcase },
     { id: "teams", label: "My Teams", icon: UsersRound },
     { id: "work-history", label: "My Track Record", icon: History },
@@ -327,6 +330,7 @@ const DashboardLayout = () => {
               <Route path="work-history" element={<WorkHistoryPage />} />
               <Route path="referrals" element={<ReferralsPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="network" element={<NetworkPage darkMode={darkMode} />} />
             </Routes>
           </Suspense>
         </main>
