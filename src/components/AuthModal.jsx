@@ -344,12 +344,30 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     try {
       const fullPhone = getFullPhoneNumber();
 
+      // Build lightweight device fingerprint from stable browser signals
+      const fpRaw = [
+        navigator.userAgent,
+        navigator.language,
+        screen.width + "x" + screen.height,
+        screen.colorDepth,
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
+        navigator.hardwareConcurrency || "",
+      ].join("|");
+      // Hash it so we never store raw UA strings
+      const fpArray = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(fpRaw));
+      const deviceFingerprint = Array.from(new Uint8Array(fpArray)).map(b => b.toString(16).padStart(2,"0")).join("");
+
+      // Pick up referral code if user landed via a referral link
+      const refCode = localStorage.getItem("giggy_ref") || undefined;
+
       const response = await axios.post(`${API}/auth/signup-and-call`, {
         name: name.trim(),
         phone: fullPhone,
         location: location.trim(),
+        device_fingerprint: deviceFingerprint,
         instagram: instagram.trim() || "",
-        linkedin: linkedin.trim() || ""
+        linkedin: linkedin.trim() || "",
+        ...(refCode && { ref_code: refCode })
       });
 
       if (response.data.success) {
@@ -359,13 +377,22 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
           user: response.data.user
         };
 
+        // Clear referral code after successful signup so it isn't reused
+        localStorage.removeItem("giggy_ref");
+
         setShowSuccess(true);
         toast.success("Welcome to Giggy!");
       }
     } catch (error) {
       console.error("Signup error:", error);
-      const detail = error.response?.data?.detail || "Something went wrong. Please try again.";
-      toast.error(detail);
+      if (error.response?.status === 409) {
+        toast.error("An account already exists from this device. Please sign in instead.");
+        setInternalMode("signin");
+        setStep("phone");
+      } else {
+        const detail = error.response?.data?.detail || "Something went wrong. Please try again.";
+        toast.error(detail);
+      }
     } finally {
       setLoading(false);
     }
