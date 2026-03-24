@@ -348,8 +348,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       const fpRaw = [
         navigator.userAgent,
         navigator.language,
-        screen.width + "x" + screen.height,
-        screen.colorDepth,
+        window.screen.width + "x" + window.screen.height,
+        window.screen.colorDepth,
         Intl.DateTimeFormat().resolvedOptions().timeZone,
         navigator.hardwareConcurrency || "",
       ].join("|");
