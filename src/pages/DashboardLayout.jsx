@@ -65,51 +65,52 @@ const DashboardLayout = () => {
 
   const currentPath = location.pathname.split("/").pop() || "opportunities";
 
-  // Fetch all data in parallel on mount with abort controller
+  // Fetch all data function (callable from child components)
+  const fetchAllData = useCallback(async (signal = null) => {
+    if (!token) return;
+
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      const config = signal ? { headers, signal } : { headers };
+
+      const [oppsRes, reqsRes, connsRes, trendingRes, savedJobsRes] = await Promise.all([
+        axios.get(`${API}/opportunities`, config),
+        axios.get(`${API}/requests`, config),
+        axios.get(`${API}/connections`, config),
+        axios.get(`${API}/stats/trending`, config),
+        axios.get(`${API}/saved-jobs`, config).catch(() => ({ data: [] }))
+      ]);
+
+      // Only update state if request wasn't aborted
+      if (!signal || !signal.aborted) {
+        setStats({
+          opportunities: oppsRes.data.length,
+          requests: reqsRes.data.length,
+          connections: connsRes.data.filter(c => c.status === 'connected').length,
+          savedJobs: savedJobsRes.data.length
+        });
+        setTrending(trendingRes.data.trending || []);
+      }
+    } catch (error) {
+      // Ignore abort errors
+      if (error.name !== 'CanceledError' && error.name !== 'AbortError') {
+        console.error("Failed to fetch data:", error);
+      }
+    }
+  }, [token]);
+
+  // Fetch all data on mount with abort controller
   useEffect(() => {
     if (!token) return;
 
     const controller = new AbortController();
-    const { signal } = controller;
-
-    const fetchAllData = async () => {
-      try {
-        const headers = { Authorization: `Bearer ${token}` };
-        const config = { headers, signal };
-
-        const [oppsRes, reqsRes, connsRes, trendingRes, savedJobsRes] = await Promise.all([
-          axios.get(`${API}/opportunities`, config),
-          axios.get(`${API}/requests`, config),
-          axios.get(`${API}/connections`, config),
-          axios.get(`${API}/stats/trending`, config),
-          axios.get(`${API}/saved-jobs`, config).catch(() => ({ data: [] }))
-        ]);
-
-        // Only update state if request wasn't aborted
-        if (!signal.aborted) {
-          setStats({
-            opportunities: oppsRes.data.length,
-            requests: reqsRes.data.length,
-            connections: connsRes.data.filter(c => c.status === 'connected').length,
-            savedJobs: savedJobsRes.data.length
-          });
-          setTrending(trendingRes.data.trending || []);
-        }
-      } catch (error) {
-        // Ignore abort errors
-        if (error.name !== 'CanceledError' && error.name !== 'AbortError') {
-          console.error("Failed to fetch data:", error);
-        }
-      }
-    };
-
-    fetchAllData();
+    fetchAllData(controller.signal);
 
     // Cleanup: abort requests if component unmounts
     return () => {
       controller.abort();
     };
-  }, [token]);
+  }, [token, fetchAllData]);
 
   // Apply dark mode to document
   useEffect(() => {
