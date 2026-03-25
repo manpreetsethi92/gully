@@ -35,8 +35,6 @@ const SavedJobsPage = lazy(() => import("../components/dashboard/SavedJobsPage")
 const SocialOAuthPage = lazy(() => import("../components/dashboard/SocialOAuthPage"));
 const OnboardingFlow = lazy(() => import("../components/dashboard/OnboardingFlow"));
 const AdsPage = lazy(() => import("../components/dashboard/AdsPage"));
-const TeamsPage = lazy(() => import("../components/dashboard/TeamsPage"));
-const PaymentsPage = lazy(() => import("../components/dashboard/PaymentsPage"));
 const AgentSettingsPage = lazy(() => import("../components/dashboard/AgentSettingsPage"));
 const WorkHistoryPage = lazy(() => import("../components/dashboard/WorkHistoryPage"));
 const ReferralsPage = lazy(() => import("../components/dashboard/ReferralsPage"));
@@ -132,9 +130,7 @@ const DashboardLayout = () => {
     { id: "requests", label: "My Requests", icon: Send, count: stats.requests },
     { id: "connections", label: "Connections", icon: Users, count: stats.connections },
     { id: "network", label: "My Network", icon: Network },
-    { id: "teams", label: "My Teams", icon: UsersRound },
     { id: "work-history", label: "My Track Record", icon: History },
-    { id: "payments", label: "Payments", icon: CreditCard },
     { id: "referrals", label: "Referrals", icon: Gift },
     { id: "ads", label: "Promote", icon: Megaphone },
     { id: "agent-settings", label: "Taj Agent", icon: Bot },
@@ -337,12 +333,10 @@ const DashboardLayout = () => {
               <Route path="connections" element={<ConnectionsPage onRefresh={fetchAllData} darkMode={darkMode} />} />
               <Route path="profile" element={<ProfilePage darkMode={darkMode} />} />
               <Route path="settings" element={<SettingsPage darkMode={darkMode} />} />
-              <Route path="social-connect" element={<SocialOAuthPage />} />
+              <Route path="social-connect" element={<SocialOAuthPage darkMode={darkMode} />} />
               <Route path="onboarding" element={<OnboardingFlow />} />
               <Route path="ads" element={<AdsPage />} />
-              <Route path="teams" element={<TeamsPage />} />
-              <Route path="payments" element={<PaymentsPage />} />
-              <Route path="agent-settings" element={<AgentSettingsPage />} />
+              <Route path="agent-settings" element={<AgentSettingsPage darkMode={darkMode} />} />
               <Route path="work-history" element={<WorkHistoryPage />} />
               <Route path="referrals" element={<ReferralsPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
