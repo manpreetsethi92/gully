@@ -7,7 +7,6 @@ import {
   Send,
   Users,
   Settings as SettingsIcon,
-  Briefcase,
   UsersRound,
   Megaphone,
   Bot,
@@ -35,7 +34,6 @@ const ProfilePage = lazy(() => import("../components/dashboard/ProfilePage"));
 const SavedJobsPage = lazy(() => import("../components/dashboard/SavedJobsPage"));
 const SocialOAuthPage = lazy(() => import("../components/dashboard/SocialOAuthPage"));
 const OnboardingFlow = lazy(() => import("../components/dashboard/OnboardingFlow"));
-const HirerDashboard = lazy(() => import("../components/dashboard/HirerDashboard"));
 const AdsPage = lazy(() => import("../components/dashboard/AdsPage"));
 const TeamsPage = lazy(() => import("../components/dashboard/TeamsPage"));
 const PaymentsPage = lazy(() => import("../components/dashboard/PaymentsPage"));
@@ -114,7 +112,6 @@ const DashboardLayout = () => {
     { id: "requests", label: "My Requests", icon: Send, count: stats.requests },
     { id: "connections", label: "Connections", icon: Users, count: stats.connections },
     { id: "network", label: "My Network", icon: Network },
-    { id: "hirer", label: "Post a Gig", icon: Briefcase },
     { id: "teams", label: "My Teams", icon: UsersRound },
     { id: "work-history", label: "My Track Record", icon: History },
     { id: "payments", label: "Payments", icon: CreditCard },
@@ -322,7 +319,6 @@ const DashboardLayout = () => {
               <Route path="settings" element={<SettingsPage darkMode={darkMode} />} />
               <Route path="social-connect" element={<SocialOAuthPage />} />
               <Route path="onboarding" element={<OnboardingFlow />} />
-              <Route path="hirer" element={<HirerDashboard />} />
               <Route path="ads" element={<AdsPage />} />
               <Route path="teams" element={<TeamsPage />} />
               <Route path="payments" element={<PaymentsPage />} />
