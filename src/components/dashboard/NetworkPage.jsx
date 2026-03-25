@@ -417,17 +417,23 @@ const NetworkPage = ({ darkMode }) => {
       <InviteEarnSection darkMode={darkMode} token={token} />
 
       {/* SECTION 2: Connections */}
-      {connections.length > 0 && (
-        <div className={`border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
-          <div className={`px-4 py-3 ${darkMode ? "bg-white/5" : "bg-gray-50"}`}>
-            <h2 className={`text-sm font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Connections ({connections.length})</h2>
-            <p className={`text-xs ${darkMode ? "text-white/50" : "text-gray-500"}`}>People you've matched with on Giggy</p>
-          </div>
-          {connections.map((conn) => (
-            <ConnectionCard key={conn.id} conn={conn} darkMode={darkMode} expanded={expandedConnectionId === conn.id} onToggle={() => setExpandedConnectionId(expandedConnectionId === conn.id ? null : conn.id)} />
-          ))}
+      <div className={`border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+        <div className={`px-4 py-3 ${darkMode ? "bg-white/5" : "bg-gray-50"}`}>
+          <h2 className={`text-sm font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Connections ({connections.length})</h2>
+          <p className={`text-xs ${darkMode ? "text-white/50" : "text-gray-500"}`}>People you've matched with on Giggy</p>
         </div>
-      )}
+        {connections.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
+            <Users size={32} className={`mb-2 ${darkMode ? "text-white/20" : "text-gray-200"}`} />
+            <p className={`font-semibold text-sm ${darkMode ? "text-white/60" : "text-gray-500"}`}>No connections yet</p>
+            <p className={`text-xs mt-1 ${darkMode ? "text-white/30" : "text-gray-400"}`}>When you match with someone on Giggy, they'll appear here</p>
+          </div>
+        ) : (
+          connections.map((conn) => (
+            <ConnectionCard key={conn.id} conn={conn} darkMode={darkMode} expanded={expandedConnectionId === conn.id} onToggle={() => setExpandedConnectionId(expandedConnectionId === conn.id ? null : conn.id)} />
+          ))
+        )}
+      </div>
 
       {/* SECTION 3: My Contacts */}
       <div>
