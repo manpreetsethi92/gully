@@ -5,10 +5,8 @@ import axios from "axios";
 import {
   Sparkles,
   Send,
-  Users,
   Settings as SettingsIcon,
   History,
-  Gift,
   Link2,
   Network,
   Menu,
