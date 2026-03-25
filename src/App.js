@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
 import { Toaster } from "./components/ui/sonner";
 import UpgradeModal from "./components/UpgradeModal";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Pages
 import LandingPage from "./pages/LandingPage";
@@ -178,9 +179,11 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppRoutes />
-    </AuthProvider>
+    <ErrorBoundary errorMessage="Something went wrong with the app. We're working on fixing it.">
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

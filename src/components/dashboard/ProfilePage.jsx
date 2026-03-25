@@ -8,9 +8,8 @@ import { Textarea } from "../ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Instagram, Linkedin, Twitter, Film, Music, MapPin, ExternalLink, Camera, Search, X, Loader2, BadgeCheck } from "lucide-react";
 
-// Cloudinary config
+// Cloudinary config — cloud name only, no preset (signed uploads via backend)
 const CLOUDINARY_CLOUD_NAME = "ds7znu6zd";
-const CLOUDINARY_UPLOAD_PRESET = "titli_uploads";
 
 // Expanded skills list - searchable
 const ALL_SKILLS = [
@@ -122,24 +121,29 @@ const ProfilePage = () => {
     setFormData({ ...formData, skills: formData.skills.filter(s => s !== skill) });
   };
 
-  // Upload image to Cloudinary
+  // Upload image to Cloudinary via server-signed request (no unsigned preset)
   const uploadToCloudinary = async (file) => {
+    // 1. Get signature from our backend (requires valid JWT)
+    const sigRes = await axios.get(`${API}/upload/signature`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const { timestamp, signature, api_key, folder } = sigRes.data;
+
+    // 2. Build signed FormData
     const uploadData = new FormData();
     uploadData.append('file', file);
-    uploadData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    
+    uploadData.append('timestamp', timestamp);
+    uploadData.append('signature', signature);
+    uploadData.append('api_key', api_key);
+    uploadData.append('folder', folder);
+
+    // 3. Upload directly to Cloudinary with signature
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: 'POST',
-        body: uploadData
-      }
+      { method: 'POST', body: uploadData }
     );
-    
-    if (!response.ok) {
-      throw new Error('Upload failed');
-    }
-    
+
+    if (!response.ok) throw new Error('Upload failed');
     const data = await response.json();
     return data.secure_url;
   };
@@ -147,18 +151,52 @@ const ProfilePage = () => {
   const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file size
       if (file.size > 10 * 1024 * 1024) {
         toast.error("Photo must be less than 10MB");
         return;
       }
-      
+
+      // Validate MIME type - only allow common image formats
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type.toLowerCase())) {
+        toast.error("Only JPEG, PNG, GIF, and WebP images are allowed");
+        return;
+      }
+
+      // Additional validation: Check file extension matches MIME type
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+      if (!fileExtension || !validExtensions.includes(fileExtension)) {
+        toast.error("Invalid file extension. Only .jpg, .jpeg, .png, .gif, .webp are allowed");
+        return;
+      }
+
+      // Validate that MIME type matches extension (prevent spoofing)
+      const mimeToExtension = {
+        'image/jpeg': ['jpg', 'jpeg'],
+        'image/jpg': ['jpg', 'jpeg'],
+        'image/png': ['png'],
+        'image/gif': ['gif'],
+        'image/webp': ['webp']
+      };
+
+      const expectedExtensions = mimeToExtension[file.type.toLowerCase()];
+      if (!expectedExtensions || !expectedExtensions.includes(fileExtension)) {
+        toast.error("File extension doesn't match file type. File may be corrupted or renamed.");
+        return;
+      }
+
       // Show preview immediately
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewPhoto(reader.result);
       };
+      reader.onerror = () => {
+        toast.error("Failed to read file");
+      };
       reader.readAsDataURL(file);
-      
+
       // Upload to Cloudinary
       setUploadingPhoto(true);
       try {
