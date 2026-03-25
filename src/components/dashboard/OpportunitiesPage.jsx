@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../ui/dialog";
-import { Input } from "../ui/input";
-import { Sparkles, Check, X, Share2, Copy, MessageCircle, ExternalLink, Bookmark } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Sparkles, Check, X, MessageCircle, ExternalLink, Bookmark } from "lucide-react";
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
@@ -29,9 +28,7 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
   const [opportunities, setOpportunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
-  const [showInviteModal, setShowInviteModal] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
-  const [inviteLink] = useState("https://getgiggy.ai");
 
   useEffect(() => {
     const fetchOpportunities = async () => {
@@ -84,11 +81,6 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
     } finally {
       setActionLoading(null);
     }
-  };
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(inviteLink);
-    toast.success("Link copied!");
   };
 
   const formatDate = (dateStr) => {
@@ -159,15 +151,8 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
   return (
     <div>
       {/* Header */}
-      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b flex items-center justify-between ${darkMode ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-gray-100'}`}>
+      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-gray-100'}`}>
         <h1 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Opportunities</h1>
-        <button
-          onClick={() => setShowInviteModal(true)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-colors ${darkMode ? 'hover:bg-white/10 text-white' : 'hover:bg-gray-100 text-gray-900'}`}
-        >
-          <Share2 size={18} />
-          Invite
-        </button>
       </div>
 
       {/* Info Banner */}
@@ -556,53 +541,6 @@ const OpportunitiesPage = ({ onRefresh, darkMode }) => {
         </DialogContent>
       </Dialog>
 
-      {/* Invite Modal */}
-      <Dialog open={showInviteModal} onOpenChange={setShowInviteModal}>
-        <DialogContent className={`sm:max-w-md ${darkMode ? 'bg-[#1a1a1a] border-white/10' : 'bg-white'}`}>
-          <DialogHeader>
-            <DialogTitle className={darkMode ? 'text-white' : ''}>Invite a friend</DialogTitle>
-            <DialogDescription className={darkMode ? 'text-white/60' : ''}>
-              Share this link with friends to invite them to Giggy
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="py-4">
-            <div className="flex items-center gap-2">
-              <Input
-                value={inviteLink}
-                readOnly
-                className={`flex-1 ${darkMode ? 'bg-white/5 border-white/10 text-white' : ''}`}
-              />
-              <button
-                onClick={handleCopyLink}
-                className="px-4 py-2.5 rounded-lg font-semibold text-white"
-                style={{ background: '#E50914' }}
-              >
-                <Copy size={18} />
-              </button>
-            </div>
-
-            <div className="mt-6 flex gap-3">
-              <button
-                className={`flex-1 py-3 rounded-full border font-semibold transition-colors ${darkMode ? 'border-white/20 text-white hover:bg-white/10' : 'border-gray-300 hover:bg-gray-50'}`}
-                onClick={() => setShowInviteModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="flex-1 py-3 rounded-full text-white font-semibold"
-                style={{ background: '#E50914' }}
-                onClick={() => {
-                  handleCopyLink();
-                  setShowInviteModal(false);
-                }}
-              >
-                Copy & Close
-              </button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

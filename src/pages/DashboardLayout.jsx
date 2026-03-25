@@ -24,14 +24,12 @@ import {
 
 const OpportunitiesPage = lazy(() => import("../components/dashboard/OpportunitiesPage"));
 const RequestsPage = lazy(() => import("../components/dashboard/RequestsPage"));
-const ConnectionsPage = lazy(() => import("../components/dashboard/ConnectionsPage"));
 const SettingsPage = lazy(() => import("../components/dashboard/SettingsPage"));
 const ProfilePage = lazy(() => import("../components/dashboard/ProfilePage"));
 const SavedJobsPage = lazy(() => import("../components/dashboard/SavedJobsPage"));
 const SocialOAuthPage = lazy(() => import("../components/dashboard/SocialOAuthPage"));
 const OnboardingFlow = lazy(() => import("../components/dashboard/OnboardingFlow"));
 const WorkHistoryPage = lazy(() => import("../components/dashboard/WorkHistoryPage"));
-const ReferralsPage = lazy(() => import("../components/dashboard/ReferralsPage"));
 const NotificationsPage = lazy(() => import("../components/dashboard/NotificationsPage"));
 const NetworkPage = lazy(() => import("../components/dashboard/NetworkPage"));
 
@@ -122,10 +120,8 @@ const DashboardLayout = () => {
     { id: "opportunities", label: "Opportunities", icon: Sparkles, count: stats.opportunities },
     { id: "saved-jobs", label: "Saved Jobs", icon: Bookmark, count: stats.savedJobs },
     { id: "requests", label: "My Requests", icon: Send, count: stats.requests },
-    { id: "connections", label: "Connections", icon: Users, count: stats.connections },
-    { id: "network", label: "My Network", icon: Network },
+    { id: "network", label: "Network", icon: Network },
     { id: "work-history", label: "My Track Record", icon: History },
-    { id: "referrals", label: "Referrals", icon: Gift },
     { id: "social-connect", label: "Connect Socials", icon: Link2 },
     { id: "settings", label: "Settings", icon: SettingsIcon }
   ];
@@ -322,13 +318,11 @@ const DashboardLayout = () => {
               <Route path="opportunities" element={<OpportunitiesPage onRefresh={fetchAllData} darkMode={darkMode} />} />
               <Route path="saved-jobs" element={<SavedJobsPage onRefresh={fetchAllData} darkMode={darkMode} />} />
               <Route path="requests" element={<RequestsPage onRefresh={fetchAllData} darkMode={darkMode} />} />
-              <Route path="connections" element={<ConnectionsPage onRefresh={fetchAllData} darkMode={darkMode} />} />
               <Route path="profile" element={<ProfilePage darkMode={darkMode} />} />
               <Route path="settings" element={<SettingsPage darkMode={darkMode} />} />
               <Route path="social-connect" element={<SocialOAuthPage darkMode={darkMode} />} />
               <Route path="onboarding" element={<OnboardingFlow />} />
               <Route path="work-history" element={<WorkHistoryPage />} />
-              <Route path="referrals" element={<ReferralsPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
               <Route path="network" element={<NetworkPage darkMode={darkMode} />} />
             </Routes>
