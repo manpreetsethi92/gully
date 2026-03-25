@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, Suspense, lazy } from "react";
 import { Routes, Route, useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth, API } from "../App";
 import axios from "axios";
-import { useAxios } from "../hooks/useAbortController";
 import {
   Sparkles,
   Send,
