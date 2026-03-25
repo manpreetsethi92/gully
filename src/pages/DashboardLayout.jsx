@@ -7,7 +7,6 @@ import {
   Send,
   Users,
   Settings as SettingsIcon,
-  UsersRound,
   History,
   Gift,
   Link2,
