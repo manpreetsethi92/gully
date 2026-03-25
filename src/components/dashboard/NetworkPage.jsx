@@ -324,7 +324,7 @@ const NetworkPage = ({ darkMode }) => {
   const [expandedConnectionId, setExpandedConnectionId] = useState(null);
   const [expandedContactId, setExpandedContactId] = useState(null);
   const [showImport, setShowImport] = useState(false);
-  const [showConnections, setShowConnections] = useState(true);
+  const [activeTab, setActiveTab] = useState("connections");
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -417,50 +417,64 @@ const NetworkPage = ({ darkMode }) => {
       {/* SECTION 1: Invite & Earn */}
       <InviteEarnSection darkMode={darkMode} token={token} />
 
-      {/* SECTION 2: Connections */}
-      <div className={`border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
-        <div className={`px-4 py-3 ${darkMode ? "bg-white/5" : "bg-gray-50"}`}>
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className={`text-sm font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Connections ({connections.length})</h2>
-              <p className={`text-xs ${darkMode ? "text-white/50" : "text-gray-500"}`}>People you've matched with on Giggy</p>
-            </div>
-            <button onClick={() => setShowConnections(!showConnections)} className={`text-xs font-semibold ${darkMode ? "text-white/60" : "text-gray-600"}`}>
-              {showConnections ? "Hide" : "Show"}
-            </button>
-          </div>
+      {/* TAB BAR */}
+      <div className={`px-4 py-3 border-b ${darkMode ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-100"}`}>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setActiveTab("connections")}
+            className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-colors ${
+              activeTab === "connections"
+                ? "bg-[#E50914] text-white"
+                : darkMode
+                ? "bg-white/10 text-white/60 hover:bg-white/15"
+                : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+            }`}
+          >
+            Connections ({connections.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("contacts")}
+            className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-colors ${
+              activeTab === "contacts"
+                ? "bg-[#E50914] text-white"
+                : darkMode
+                ? "bg-white/10 text-white/60 hover:bg-white/15"
+                : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+            }`}
+          >
+            My Contacts ({contacts.length})
+          </button>
         </div>
-        {showConnections && (
-          <>
-            {connections.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-                <Users size={32} className={`mb-2 ${darkMode ? "text-white/20" : "text-gray-200"}`} />
-                <p className={`font-semibold text-sm ${darkMode ? "text-white/60" : "text-gray-500"}`}>No connections yet</p>
-                <p className={`text-xs mt-1 ${darkMode ? "text-white/30" : "text-gray-400"}`}>When you match with someone on Giggy, they'll appear here</p>
-              </div>
-            ) : (
-              connections.map((conn) => (
-                <ConnectionCard key={conn.id} conn={conn} darkMode={darkMode} expanded={expandedConnectionId === conn.id} onToggle={() => setExpandedConnectionId(expandedConnectionId === conn.id ? null : conn.id)} />
-              ))
-            )}
-          </>
-        )}
       </div>
 
-      {/* SECTION 3: My Contacts */}
-      <div>
-        <div className={`px-4 py-3 ${darkMode ? "bg-white/5" : "bg-gray-50"}`}>
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className={`text-sm font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>My Contacts ({contacts.length})</h2>
-              <p className={`text-xs ${darkMode ? "text-white/50" : "text-gray-500"}`}>Imported from LinkedIn, Gmail, Instagram</p>
+      {/* TAB CONTENT */}
+      {activeTab === "connections" ? (
+        /* CONNECTIONS TAB */
+        <div>
+          {connections.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+              <Users size={36} className={`mb-3 ${darkMode ? "text-white/20" : "text-gray-200"}`} />
+              <p className={`font-semibold text-sm ${darkMode ? "text-white/60" : "text-gray-500"}`}>No connections yet</p>
+              <p className={`text-xs mt-1 ${darkMode ? "text-white/30" : "text-gray-400"}`}>When you match with someone on Giggy, they'll appear here</p>
             </div>
-            <button onClick={() => setShowImport(!showImport)} className={`text-xs font-semibold ${darkMode ? "text-white/60" : "text-gray-600"}`}>
-              {showImport ? "Hide" : "Import"}
-            </button>
-          </div>
+          ) : (
+            connections.map((conn) => (
+              <ConnectionCard key={conn.id} conn={conn} darkMode={darkMode} expanded={expandedConnectionId === conn.id} onToggle={() => setExpandedConnectionId(expandedConnectionId === conn.id ? null : conn.id)} />
+            ))
+          )}
+        </div>
+      ) : (
+        /* MY CONTACTS TAB */
+        <div>
+          <div className={`px-4 py-3 ${darkMode ? "bg-white/5" : "bg-gray-50"}`}>
+            <div className="flex items-center justify-between mb-3">
+              <p className={`text-xs ${darkMode ? "text-white/50" : "text-gray-500"}`}>Imported from LinkedIn, Gmail, Instagram</p>
+              <button onClick={() => setShowImport(!showImport)} className={`text-xs font-semibold ${darkMode ? "text-white/60" : "text-gray-600"}`}>
+                {showImport ? "Hide" : "Import"}
+              </button>
+            </div>
 
-          {showImport && <ImportControls darkMode={darkMode} onImport={handleImport} importing={importing} />}
+            {showImport && <ImportControls darkMode={darkMode} onImport={handleImport} importing={importing} />}
 
           {/* Search */}
           {contacts.length > 0 && (
