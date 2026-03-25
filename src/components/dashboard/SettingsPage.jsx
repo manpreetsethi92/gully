@@ -2,7 +2,38 @@ import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import axios from "axios";
-import { LogOut, Trash2, Crown, CheckCircle, ExternalLink, HelpCircle, MessageCircle, Bug, Mail } from "lucide-react";
+import { LogOut, Trash2, Crown, CheckCircle, ExternalLink, HelpCircle, MessageCircle, Bug, Mail, Bot, Zap } from "lucide-react";
+
+const Switch = ({ checked, onChange, disabled, darkMode }) => (
+  <button
+    role="switch"
+    aria-checked={checked}
+    disabled={disabled}
+    onClick={() => !disabled && onChange?.(!checked)}
+    style={{
+      display: "inline-flex", alignItems: "center", width: "44px", height: "24px",
+      borderRadius: "9999px", border: "none", cursor: disabled ? "not-allowed" : "pointer",
+      padding: "2px", transition: "background-color 0.2s",
+      backgroundColor: checked ? "#E50914" : (darkMode ? "rgba(255,255,255,0.15)" : "#D1D5DB"),
+      opacity: disabled ? 0.5 : 1, flexShrink: 0,
+    }}
+  >
+    <span style={{
+      display: "block", width: "20px", height: "20px", borderRadius: "50%",
+      backgroundColor: "white", transition: "transform 0.2s",
+      transform: checked ? "translateX(20px)" : "translateX(0)",
+      boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+    }} />
+  </button>
+);
+
+const AGENT_SETTINGS_CONFIG = [
+  { key: "agent_pitch", label: "Auto-pitch to hirers", description: "Taj reaches out to matching hirers on your behalf without asking first", pro: true },
+  { key: "agent_negotiate", label: "Auto-negotiate rate", description: "Taj handles rate negotiations within your stated range", pro: true },
+  { key: "agent_calendar", label: "Auto-confirm bookings", description: "Taj accepts gig invites that match your availability", pro: true },
+  { key: "agent_invoice", label: "Chase unpaid invoices", description: "Taj follows up on late payments from hirers", pro: false },
+  { key: "agent_portfolio", label: "Auto-update work history", description: "Taj adds closed gigs to your work history automatically", pro: false },
+];
 
 const SettingsPage = ({ darkMode }) => {
   const { logout, token } = useAuth();
@@ -11,6 +42,12 @@ const SettingsPage = ({ darkMode }) => {
   const [deleting, setDeleting] = useState(false);
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [agentSettings, setAgentSettings] = useState({
+    agent_pitch: false, agent_negotiate: false,
+    agent_calendar: false, agent_invoice: false, agent_portfolio: false,
+  });
+  const [agentLoading, setAgentLoading] = useState(true);
+  const [savingAgent, setSavingAgent] = useState(null);
   const [upgrading, setUpgrading] = useState(false);
 
   const fetchSubscriptionStatus = useCallback(async () => {
@@ -26,9 +63,24 @@ const SettingsPage = ({ darkMode }) => {
     }
   }, [token]);
 
+  const fetchAgentSettings = useCallback(async () => {
+    try {
+      const res = await axios.get(`${API}/users/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const prefs = res.data?.agent_settings || res.data?.preferences || {};
+      setAgentSettings(prev => ({ ...prev, ...prefs }));
+    } catch (error) {
+      console.error("Failed to fetch agent settings:", error);
+    } finally {
+      setAgentLoading(false);
+    }
+  }, [token]);
+
   useEffect(() => {
     fetchSubscriptionStatus();
-  }, [fetchSubscriptionStatus]);
+    fetchAgentSettings();
+  }, [fetchSubscriptionStatus, fetchAgentSettings]);
 
   const handleUpgrade = async (plan) => {
     setUpgrading(true);
@@ -61,6 +113,24 @@ const SettingsPage = ({ darkMode }) => {
     } catch (error) {
       console.error("Failed to open portal:", error);
       toast.error("Failed to open subscription portal");
+    }
+  };
+
+  const handleAgentToggle = async (key) => {
+    const newVal = !agentSettings[key];
+    setAgentSettings(prev => ({ ...prev, [key]: newVal }));
+    setSavingAgent(key);
+    try {
+      await axios.put(`${API}/users/me`, {
+        agent_settings: { ...agentSettings, [key]: newVal }
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      toast.success("Saved");
+    } catch (error) {
+      setAgentSettings(prev => ({ ...prev, [key]: !newVal }));
+      toast.error("Failed to save");
+      console.error("Failed to save agent setting:", error);
+    } finally {
+      setSavingAgent(null);
     }
   };
 
@@ -179,6 +249,64 @@ const SettingsPage = ({ darkMode }) => {
                   Manage Subscription
                 </button>
               )}
+            </>
+          )}
+        </div>
+
+        {/* Taj Agent Section */}
+        <div className="settings-section">
+          <h2 className={darkMode ? 'text-white' : ''}>Taj Agent</h2>
+
+          {agentLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="spinner"></div>
+            </div>
+          ) : (
+            <>
+              {/* Info Banner */}
+              <div className={`p-4 rounded-2xl mb-4 ${darkMode ? "bg-red-500/10" : "bg-red-50"}`}>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#E50914] flex items-center justify-center flex-shrink-0">
+                    <Bot size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Taj works for you, automatically</p>
+                    <p className={`text-sm mt-1 ${darkMode ? "text-white/60" : "text-gray-600"}`}>
+                      Choose how much Taj does on your behalf. Toggle what you want — she handles the rest.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Agent Settings Toggles */}
+              <div className={`space-y-0 -mx-4 divide-y ${darkMode ? "divide-white/10" : "divide-gray-100"}`}>
+                {AGENT_SETTINGS_CONFIG.map(({ key, label, description, pro }) => (
+                  <div key={key} className={`px-4 py-4 flex items-start gap-3 ${darkMode ? "hover:bg-white/5" : "hover:bg-gray-50"} transition-colors`}>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${agentSettings[key] ? (darkMode ? "bg-red-500/20" : "bg-red-100") : (darkMode ? "bg-white/5" : "bg-gray-100")}`}>
+                      <Zap size={18} className={agentSettings[key] ? (darkMode ? "text-red-400" : "text-red-500") : (darkMode ? "text-white/30" : "text-gray-400")} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className={`font-semibold text-sm ${darkMode ? "text-white" : "text-gray-900"}`}>{label}</p>
+                        {pro && <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${darkMode ? "bg-yellow-500/20 text-yellow-300" : "bg-yellow-100 text-yellow-700"}`}>Pro</span>}
+                      </div>
+                      <p className={`text-sm mt-1 ${darkMode ? "text-white/50" : "text-gray-500"}`}>{description}</p>
+                    </div>
+                    <Switch checked={agentSettings[key]} onChange={() => handleAgentToggle(key)} disabled={savingAgent === key} darkMode={darkMode} />
+                  </div>
+                ))}
+              </div>
+
+              {/* Upgrade CTA */}
+              <a
+                href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20want%20to%20upgrade%20to%20Pro"
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-white font-semibold mt-4"
+                style={{ background: "#E50914" }}
+              >
+                <MessageCircle size={18} />
+                Upgrade to Pro for full autonomy
+              </a>
             </>
           )}
         </div>

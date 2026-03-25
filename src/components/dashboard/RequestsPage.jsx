@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck, BadgeCheck, TrendingUp, Briefcase, Camera, Plus } from "lucide-react";
+import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck, BadgeCheck, TrendingUp, Briefcase, Camera, Plus, Megaphone } from "lucide-react";
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
@@ -625,7 +625,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                 )}
 
                 {/* Row 4: Action buttons */}
-                <div className="flex items-center gap-3 mt-3">
+                <div className="flex items-center gap-3 mt-3 flex-wrap">
                   {hasMatches && (
                     <button
                       onClick={(e) => {
@@ -647,6 +647,18 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                     >
                       View applicants →
                     </button>
+                  )}
+                  {!isClosed && !isExpired && (
+                    <a
+                      href={`https://wa.me/12134147369?text=Hi%20Taj!%20I%20want%20to%20promote%20this%20request:%20${encodeURIComponent(request.title)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className={`text-sm font-medium flex items-center gap-1 ${darkMode ? 'text-yellow-400 hover:text-yellow-300' : 'text-yellow-600 hover:text-yellow-500'}`}
+                    >
+                      <Megaphone size={14} />
+                      Promote
+                    </a>
                   )}
                   {isClosed ? (
                     <span className={`text-sm font-medium flex items-center gap-1 ${darkMode ? 'text-white/30' : 'text-gray-400'}`}>
