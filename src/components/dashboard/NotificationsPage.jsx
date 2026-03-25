@@ -10,48 +10,30 @@ const NotificationsPage = ({ darkMode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // No /notifications endpoint yet — pull recent activity from stats
-    const fetch = async () => {
+    const fetchNotifications = async () => {
       try {
-        const [oppRes, connRes] = await Promise.allSettled([
-          axios.get(`${API}/opportunities`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`${API}/connections`, { headers: { Authorization: `Bearer ${token}` } }),
-        ]);
-        const notifs = [];
-        if (oppRes.status === "fulfilled" && oppRes.value.data?.length > 0) {
-          oppRes.value.data.slice(0, 5).forEach(opp => {
-            notifs.push({
-              id: `opp-${opp.id}`,
-              type: "match",
-              title: `New opportunity from ${opp.from_user?.name || "someone"}`,
-              body: opp.request_title || opp.request_description,
-              created_at: opp.created_at,
-              read: false,
-            });
-          });
-        }
-        if (connRes.status === "fulfilled" && connRes.value.data?.length > 0) {
-          connRes.value.data.slice(0, 3).forEach(conn => {
-            const other = conn.other_user || conn;
-            notifs.push({
-              id: `conn-${conn.id}`,
-              type: "connection",
-              title: `You connected with ${other.name || "someone"}`,
-              body: conn.request_title || null,
-              created_at: conn.created_at || conn.createdAt,
-              read: true,
-            });
-          });
-        }
-        notifs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        setNotifications(notifs);
+        const res = await axios.get(`${API}/notifications`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setNotifications(res.data.notifications || []);
       } catch {
         setNotifications([]);
       } finally {
         setLoading(false);
       }
     };
-    fetch();
+    fetchNotifications();
+
+    // SSE — receive new notifications in real time
+    const sseUrl = `${API}/notifications/stream?token=${token}`;
+    const es = new EventSource(sseUrl);
+    es.addEventListener("notification", (e) => {
+      try {
+        const notif = JSON.parse(e.data);
+        setNotifications(prev => [notif, ...prev]);
+      } catch {}
+    });
+    return () => es.close();
   }, [token]);
 
   const formatDate = (dateStr) => {

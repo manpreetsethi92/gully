@@ -8,10 +8,7 @@ import {
   Users,
   Settings as SettingsIcon,
   UsersRound,
-  Megaphone,
-  Bot,
   History,
-  CreditCard,
   Gift,
   Link2,
   Network,
@@ -34,8 +31,6 @@ const ProfilePage = lazy(() => import("../components/dashboard/ProfilePage"));
 const SavedJobsPage = lazy(() => import("../components/dashboard/SavedJobsPage"));
 const SocialOAuthPage = lazy(() => import("../components/dashboard/SocialOAuthPage"));
 const OnboardingFlow = lazy(() => import("../components/dashboard/OnboardingFlow"));
-const AdsPage = lazy(() => import("../components/dashboard/AdsPage"));
-const AgentSettingsPage = lazy(() => import("../components/dashboard/AgentSettingsPage"));
 const WorkHistoryPage = lazy(() => import("../components/dashboard/WorkHistoryPage"));
 const ReferralsPage = lazy(() => import("../components/dashboard/ReferralsPage"));
 const NotificationsPage = lazy(() => import("../components/dashboard/NotificationsPage"));
@@ -132,8 +127,6 @@ const DashboardLayout = () => {
     { id: "network", label: "My Network", icon: Network },
     { id: "work-history", label: "My Track Record", icon: History },
     { id: "referrals", label: "Referrals", icon: Gift },
-    { id: "ads", label: "Promote", icon: Megaphone },
-    { id: "agent-settings", label: "Taj Agent", icon: Bot },
     { id: "social-connect", label: "Connect Socials", icon: Link2 },
     { id: "settings", label: "Settings", icon: SettingsIcon }
   ];
@@ -335,8 +328,6 @@ const DashboardLayout = () => {
               <Route path="settings" element={<SettingsPage darkMode={darkMode} />} />
               <Route path="social-connect" element={<SocialOAuthPage darkMode={darkMode} />} />
               <Route path="onboarding" element={<OnboardingFlow />} />
-              <Route path="ads" element={<AdsPage />} />
-              <Route path="agent-settings" element={<AgentSettingsPage darkMode={darkMode} />} />
               <Route path="work-history" element={<WorkHistoryPage />} />
               <Route path="referrals" element={<ReferralsPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
