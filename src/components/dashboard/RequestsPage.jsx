@@ -3,14 +3,9 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck, BadgeCheck, TrendingUp, Briefcase, Camera, Plus, Megaphone } from "lucide-react";
+import { Send, Users, MessageCircle, Check, X, Clock, XCircle, UserCheck, BadgeCheck, TrendingUp, Briefcase, Camera, Megaphone } from "lucide-react";
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
-
-const CATEGORIES = [
-  "Film & Video", "Photography", "Graphic Design", "Web Development",
-  "Marketing", "Music", "Writing", "Events", "Trades", "Other"
-];
 
 // Category icons and colors - Aligned with how Taj categorizes requests
 const CATEGORY_CONFIG = {
@@ -57,105 +52,6 @@ const summarizeRequest = (title) => {
   return clean || title;
 };
 
-// Isolated component so typing in form fields never re-renders the full RequestsPage
-const PostGigModal = ({ open, onClose, onPosted, token, darkMode }) => {
-  const [form, setForm] = useState({ title: "", description: "", budget: "", location: "", category: "" });
-  const [posting, setPosting] = useState(false);
-
-  const handlePost = async () => {
-    if (!form.title.trim()) { toast.error("Add a title for your gig"); return; }
-    setPosting(true);
-    try {
-      const descParts = [];
-      if (form.description.trim()) descParts.push(form.description.trim());
-      if (form.budget.trim()) descParts.push(`Budget: ${form.budget.trim()}`);
-      if (form.location.trim()) descParts.push(`Location: ${form.location.trim()}`);
-      const fullDescription = descParts.length > 0 ? descParts.join(". ") : form.title;
-      await axios.post(`${API}/requests`, {
-        title: form.title,
-        description: fullDescription,
-        category: form.category || "other",
-      }, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success("Gig posted! Taj is finding matches — check back shortly.");
-      setForm({ title: "", description: "", budget: "", location: "", category: "" });
-      onPosted();
-    } catch (err) {
-      toast.error((err?.response?.data?.detail || "Failed to post") + " — try messaging Taj on WhatsApp instead");
-    } finally {
-      setPosting(false);
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className={`sm:max-w-md max-h-[90vh] overflow-y-auto ${darkMode ? "bg-[#111] border-white/10" : ""}`}>
-        <DialogHeader>
-          <DialogTitle className={darkMode ? "text-white" : "text-gray-900"}>Post a gig</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 pt-2">
-          <div>
-            <label className={`text-xs font-semibold uppercase tracking-wider block mb-1.5 ${darkMode ? "text-white/40" : "text-gray-400"}`}>What do you need? *</label>
-            <input
-              value={form.title}
-              onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-              placeholder="e.g. Videographer for product launch in Austin"
-              className={`w-full px-4 py-3 rounded-xl border text-[15px] outline-none focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
-            />
-          </div>
-          <div>
-            <label className={`text-xs font-semibold uppercase tracking-wider block mb-1.5 ${darkMode ? "text-white/40" : "text-gray-400"}`}>Details</label>
-            <textarea
-              value={form.description}
-              onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-              placeholder="Describe the project, skills needed, timeline..."
-              rows={3}
-              className={`w-full px-4 py-3 rounded-xl border text-[15px] resize-none outline-none focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={`text-xs font-semibold uppercase tracking-wider block mb-1.5 ${darkMode ? "text-white/40" : "text-gray-400"}`}>Budget</label>
-              <input value={form.budget} onChange={e => setForm(f => ({ ...f, budget: e.target.value }))} placeholder="e.g. $500"
-                className={`w-full px-3 py-2.5 rounded-xl border text-sm outline-none focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`} />
-            </div>
-            <div>
-              <label className={`text-xs font-semibold uppercase tracking-wider block mb-1.5 ${darkMode ? "text-white/40" : "text-gray-400"}`}>Location</label>
-              <input value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} placeholder="e.g. Austin, TX"
-                className={`w-full px-3 py-2.5 rounded-xl border text-sm outline-none focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`} />
-            </div>
-          </div>
-          <div>
-            <label className={`text-xs font-semibold uppercase tracking-wider block mb-1.5 ${darkMode ? "text-white/40" : "text-gray-400"}`}>Category</label>
-            <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-              className={`w-full px-4 py-3 rounded-xl border text-[15px] outline-none focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white" : "bg-gray-50 border-gray-200 text-gray-900"}`}>
-              <option value="">Select category</option>
-              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </div>
-          <div className="flex gap-3 pt-2">
-            <button onClick={onClose}
-              className={`flex-1 py-3 rounded-full border font-semibold ${darkMode ? "border-white/20 text-white hover:bg-white/10" : "border-gray-300 text-gray-700 hover:bg-gray-50"}`}>
-              Cancel
-            </button>
-            <button onClick={handlePost} disabled={posting || !form.title.trim()}
-              className="flex-1 py-3 rounded-full text-white font-semibold disabled:opacity-50"
-              style={{ background: "#E50914" }}>
-              {posting ? "Posting..." : "Post gig"}
-            </button>
-          </div>
-          <div className="pb-2 text-center">
-            <p className={`text-xs ${darkMode ? "text-white/30" : "text-gray-400"}`}>or</p>
-            <a href={WHATSAPP_BOT_URL} target="_blank" rel="noopener noreferrer"
-              className={`text-sm font-medium mt-1 inline-block ${darkMode ? "text-white/50 hover:text-white" : "text-gray-500 hover:text-gray-700"}`}>
-              Tell Taj on WhatsApp instead
-            </a>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
 const RequestsPage = ({ onRefresh, darkMode }) => {
   const { token } = useAuth();
   const [requests, setRequests] = useState([]);
@@ -169,7 +65,6 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
   const [showApplicants, setShowApplicants] = useState(false);
   const [closeLoading, setCloseLoading] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
-  const [showPostForm, setShowPostForm] = useState(false);
 
   const fetchRequests = useCallback(async () => {
     try {
@@ -394,24 +289,9 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
   return (
     <div>
       {/* Header */}
-      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b flex items-center justify-between ${darkMode ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-gray-100'}`}>
+      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-gray-100'}`}>
         <h1 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>My Requests</h1>
-        <button
-          onClick={() => setShowPostForm(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-full text-white text-sm font-semibold"
-          style={{ background: "#E50914" }}
-        >
-          <Plus size={15} /> Post Gig
-        </button>
       </div>
-
-      <PostGigModal
-        open={showPostForm}
-        onClose={() => setShowPostForm(false)}
-        onPosted={() => { setShowPostForm(false); fetchRequests(); }}
-        token={token}
-        darkMode={darkMode}
-      />
 
       {/* Summary Stats */}
       {requests.length > 0 && (
