@@ -502,21 +502,22 @@ const NetworkPage = ({ darkMode }) => {
           )}
         </div>
 
-        {/* Contacts List */}
-        {filteredContacts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 px-8 text-center">
-            <Users size={36} className={`mb-3 ${darkMode ? "text-white/20" : "text-gray-200"}`} />
-            <p className={`font-semibold text-sm ${darkMode ? "text-white/60" : "text-gray-500"}`}>
-              {search || filter !== "all" ? "No contacts match" : "No network imported yet"}
-            </p>
-            <p className={`text-xs mt-1 ${darkMode ? "text-white/30" : "text-gray-400"}`}>
-              {search || filter !== "all" ? "Try a different filter" : "Tap 'Import' above to get started"}
-            </p>
-          </div>
-        ) : (
-          filteredContacts.map((c, i) => <ContactCard key={c.id || i} contact={c} darkMode={darkMode} expanded={expandedContactId === c.id} onToggle={() => setExpandedContactId(expandedContactId === c.id ? null : c.id)} />)
-        )}
-      </div>
+          {/* Contacts List */}
+          {filteredContacts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 px-8 text-center">
+              <Users size={36} className={`mb-3 ${darkMode ? "text-white/20" : "text-gray-200"}`} />
+              <p className={`font-semibold text-sm ${darkMode ? "text-white/60" : "text-gray-500"}`}>
+                {search || filter !== "all" ? "No contacts match" : "No network imported yet"}
+              </p>
+              <p className={`text-xs mt-1 ${darkMode ? "text-white/30" : "text-gray-400"}`}>
+                {search || filter !== "all" ? "Try a different filter" : "Tap 'Import' above to get started"}
+              </p>
+            </div>
+          ) : (
+            filteredContacts.map((c, i) => <ContactCard key={c.id || i} contact={c} darkMode={darkMode} expanded={expandedContactId === c.id} onToggle={() => setExpandedContactId(expandedContactId === c.id ? null : c.id)} />)
+          )}
+        </div>
+      )}
     </div>
   );
 };
