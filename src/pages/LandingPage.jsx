@@ -152,6 +152,18 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Preload AuthModal chunk after page is idle so first click is instant
+  useEffect(() => {
+    const preload = () => import("../components/AuthModal");
+    if ("requestIdleCallback" in window) {
+      const id = requestIdleCallback(preload);
+      return () => cancelIdleCallback(id);
+    } else {
+      const t = setTimeout(preload, 2000);
+      return () => clearTimeout(t);
+    }
+  }, []);
+
   const handleTryUsNow = useCallback(() => {
     startTransition(() => {
       setHasModalBeenOpened(true);
