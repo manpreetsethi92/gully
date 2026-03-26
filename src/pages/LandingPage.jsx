@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, startTransition, Suspense, lazy } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import AuthModal from "../components/AuthModal";
+const AuthModal = lazy(() => import("../components/AuthModal"));
 
 const WORDS = ["photographer", "gig", "videographer", "mentor", "designer", "clients", "editor", "beta testers", "producer", "collab"];
 
@@ -126,6 +126,7 @@ const PhoneMockup = () => {
 const LandingPage = () => {
   const [currentWord, setCurrentWord] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [hasModalBeenOpened, setHasModalBeenOpened] = useState(false);
   const [authMode, setAuthMode] = useState("signup"); // "signup" or "signin"
   const [flowType, setFlowType] = useState('hiring'); // 'hiring' or 'freelancer'
 
@@ -152,13 +153,19 @@ const LandingPage = () => {
   }, []);
 
   const handleTryUsNow = useCallback(() => {
-    setAuthMode("signup");
-    setShowAuthModal(true);
+    startTransition(() => {
+      setHasModalBeenOpened(true);
+      setAuthMode("signup");
+      setShowAuthModal(true);
+    });
   }, []);
 
   const handleSignIn = useCallback(() => {
-    setAuthMode("signin");
-    setShowAuthModal(true);
+    startTransition(() => {
+      setHasModalBeenOpened(true);
+      setAuthMode("signin");
+      setShowAuthModal(true);
+    });
   }, []);
 
   return (
@@ -432,11 +439,15 @@ const LandingPage = () => {
         </div>
       </footer>
 
-      <AuthModal 
-        isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)}
-        mode={authMode}
-      />
+      {hasModalBeenOpened && (
+        <Suspense fallback={null}>
+          <AuthModal 
+            isOpen={showAuthModal} 
+            onClose={() => setShowAuthModal(false)}
+            mode={authMode}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };
