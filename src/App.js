@@ -100,23 +100,30 @@ const AuthProvider = ({ children }) => {
 
   // Verify token with backend after hydration
   useEffect(() => {
+    let isMounted = true;
+
     const verifyToken = async () => {
-      if (token) {
+      if (token && isMounted) {
         try {
           const response = await axios.get(`${API}/users/me`, {
             headers: { Authorization: `Bearer ${token}` }
           });
-          setUser(prev => ({
-            ...response.data,
-            profile_completed: response.data.profile_completed || prev?.profile_completed || false
-          }));
-          localStorage.setItem("titly_user", JSON.stringify(response.data));
+
+          if (isMounted) {
+            setUser(prev => ({
+              ...response.data,
+              profile_completed: response.data.profile_completed || prev?.profile_completed || false
+            }));
+            localStorage.setItem("titly_user", JSON.stringify(response.data));
+          }
         } catch (error) {
-          console.error("Token verification failed:", error);
-          localStorage.removeItem("titly_token");
-          localStorage.removeItem("titly_user");
-          setToken(null);
-          setUser(null);
+          if (isMounted) {
+            console.error("Token verification failed:", error);
+            localStorage.removeItem("titly_token");
+            localStorage.removeItem("titly_user");
+            setToken(null);
+            setUser(null);
+          }
         }
       }
     };
@@ -124,6 +131,10 @@ const AuthProvider = ({ children }) => {
     if (!loading && token) {
       verifyToken();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [token, loading]);
 
   const login = (newToken, userData) => {

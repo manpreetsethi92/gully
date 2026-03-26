@@ -72,6 +72,9 @@ const SocialOAuthPage = ({ darkMode }) => {
   // Listen for OAuth popup success/error messages
   useEffect(() => {
     const handleMessage = (event) => {
+      // SECURITY: Validate origin to prevent malicious messages
+      if (event.origin !== window.location.origin) return;
+
       if (event.data?.type === "oauth_success") {
         toast.success(`${event.data.platform} connected successfully!`);
         fetchConnectedAccounts();

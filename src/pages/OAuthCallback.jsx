@@ -16,10 +16,10 @@ const OAuthCallback = () => {
       toast.error("Authorization cancelled");
       // If in popup, close it
       if (window.opener) {
-        window.opener.postMessage({ type: "oauth_error", platform }, "*");
+        window.opener.postMessage({ type: "oauth_error", platform }, window.location.origin);
         setTimeout(() => window.close(), 1000);
       } else {
-        navigate("/dashboard/network");
+        navigate("/app/network");
       }
       return;
     }
@@ -28,11 +28,11 @@ const OAuthCallback = () => {
       toast.success("Account connected successfully!");
       // If in popup, notify parent and close
       if (window.opener) {
-        window.opener.postMessage({ type: "oauth_success", platform }, "*");
+        window.opener.postMessage({ type: "oauth_success", platform }, window.location.origin);
         setTimeout(() => window.close(), 1500);
       } else {
         // If not popup, redirect to network page
-        setTimeout(() => navigate("/dashboard/network"), 1500);
+        setTimeout(() => navigate("/app/network"), 1500);
       }
     }
   }, [searchParams, navigate]);

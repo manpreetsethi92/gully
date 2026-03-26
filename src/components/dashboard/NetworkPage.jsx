@@ -340,11 +340,14 @@ const NetworkPage = ({ darkMode }) => {
   // Listen for OAuth callback success
   useEffect(() => {
     const handleOAuthMessage = (event) => {
-      if (event.data.type === "oauth_success") {
+      // SECURITY: Validate origin to prevent malicious messages
+      if (event.origin !== window.location.origin) return;
+
+      if (event.data?.type === "oauth_success") {
         fetchData();
         toast.success("Account connected successfully!");
         setConnecting(null);
-      } else if (event.data.type === "oauth_error") {
+      } else if (event.data?.type === "oauth_error") {
         toast.error("Authorization cancelled");
         setConnecting(null);
       }
