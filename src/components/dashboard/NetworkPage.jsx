@@ -216,41 +216,32 @@ const ConnectionCard = ({ conn, darkMode, expanded, onToggle }) => {
 // SECTION 3: MY CONTACTS (Imported network)
 // ══════════════════════════════════════════════════════════════════════════════
 
-const ImportControls = ({ darkMode, onImport, importing }) => {
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [igHandle, setIgHandle] = useState("");
-  const [showLinkedin, setShowLinkedin] = useState(false);
-  const [showIg, setShowIg] = useState(false);
-
+const ImportControls = ({ darkMode, onConnect, connecting }) => {
   return (
     <div className="flex flex-col gap-2 mt-2">
-      {!showLinkedin ? (
-        <button onClick={() => setShowLinkedin(true)} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${darkMode ? "bg-[#0077b5]/20 text-[#4db8ff] hover:bg-[#0077b5]/30" : "bg-[#0077b5]/10 text-[#0077b5] hover:bg-[#0077b5]/20"}`}>
-          <Link2 size={13} /> Import LinkedIn
-        </button>
-      ) : (
-        <div className="flex gap-2">
-          <input type="url" placeholder="linkedin.com/in/your-profile" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} className={`flex-1 px-2 py-1.5 rounded-lg text-xs border outline-none ${darkMode ? "bg-white/10 border-white/20 text-white placeholder-white/30" : "bg-white border-gray-200 text-gray-900"}`} />
-          <button onClick={() => { onImport("linkedin", linkedinUrl); setLinkedinUrl(""); setShowLinkedin(false); }} disabled={!linkedinUrl.trim() || importing === "linkedin"} className="px-3 py-1.5 rounded-lg bg-[#0077b5] text-white text-xs font-semibold disabled:opacity-50">{importing === "linkedin" ? "..." : "Import"}</button>
-          <button onClick={() => setShowLinkedin(false)} className={`p-1.5 rounded-lg ${darkMode ? "hover:bg-white/10" : "hover:bg-gray-100"}`}><X size={14} className={darkMode ? "text-white/50" : "text-gray-400"} /></button>
-        </div>
-      )}
-
-      <button onClick={() => onImport("gmail", null)} disabled={importing === "gmail"} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${darkMode ? "bg-red-500/20 text-red-300 hover:bg-red-500/30" : "bg-red-50 text-red-600 hover:bg-red-100"}`}>
-        <Mail size={13} /> {importing === "gmail" ? "Connecting..." : "Import Gmail"}
+      <button
+        onClick={() => onConnect("linkedin")}
+        disabled={connecting === "linkedin"}
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${darkMode ? "bg-[#0077b5]/20 text-[#4db8ff] hover:bg-[#0077b5]/30" : "bg-[#0077b5]/10 text-[#0077b5] hover:bg-[#0077b5]/20"}`}
+      >
+        <Linkedin size={13} /> {connecting === "linkedin" ? "Connecting..." : "Connect LinkedIn"}
       </button>
 
-      {!showIg ? (
-        <button onClick={() => setShowIg(true)} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${darkMode ? "bg-purple-500/20 text-purple-300 hover:bg-purple-500/30" : "bg-purple-50 text-purple-700 hover:bg-purple-100"}`}>
-          <Instagram size={13} /> Import Instagram
-        </button>
-      ) : (
-        <div className="flex gap-2">
-          <input type="text" placeholder="@yourhandle" value={igHandle} onChange={(e) => setIgHandle(e.target.value)} className={`flex-1 px-2 py-1.5 rounded-lg text-xs border outline-none ${darkMode ? "bg-white/10 border-white/20 text-white placeholder-white/30" : "bg-white border-gray-200 text-gray-900"}`} />
-          <button onClick={() => { onImport("instagram", igHandle); setIgHandle(""); setShowIg(false); }} disabled={!igHandle.trim() || importing === "instagram"} className="px-3 py-1.5 rounded-lg bg-purple-600 text-white text-xs font-semibold disabled:opacity-50">{importing === "instagram" ? "..." : "Import"}</button>
-          <button onClick={() => setShowIg(false)} className={`p-1.5 rounded-lg ${darkMode ? "hover:bg-white/10" : "hover:bg-gray-100"}`}><X size={14} className={darkMode ? "text-white/50" : "text-gray-400"} /></button>
-        </div>
-      )}
+      <button
+        onClick={() => onConnect("google")}
+        disabled={connecting === "google"}
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${darkMode ? "bg-red-500/20 text-red-300 hover:bg-red-500/30" : "bg-red-50 text-red-600 hover:bg-red-100"}`}
+      >
+        <Mail size={13} /> {connecting === "google" ? "Connecting..." : "Connect Google"}
+      </button>
+
+      <button
+        onClick={() => onConnect("instagram")}
+        disabled={connecting === "instagram"}
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${darkMode ? "bg-purple-500/20 text-purple-300 hover:bg-purple-500/30" : "bg-purple-50 text-purple-700 hover:bg-purple-100"}`}
+      >
+        <Instagram size={13} /> {connecting === "instagram" ? "Connecting..." : "Connect Instagram"}
+      </button>
     </div>
   );
 };
@@ -314,11 +305,11 @@ const ContactCard = ({ contact, darkMode, expanded, onToggle }) => {
 // ══════════════════════════════════════════════════════════════════════════════
 
 const NetworkPage = ({ darkMode }) => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [connections, setConnections] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [importing, setImporting] = useState(null);
+  const [connecting, setConnecting] = useState(null);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [expandedConnectionId, setExpandedConnectionId] = useState(null);
@@ -346,30 +337,63 @@ const NetworkPage = ({ darkMode }) => {
     fetchData();
   }, [fetchData]);
 
-  const handleImport = async (source, value) => {
-    setImporting(source);
-    try {
-      if (source === "gmail") {
-        const res = await axios.post(`${API}/oauth/gmail/authorize`, {}, { headers: { Authorization: `Bearer ${token}` } });
-        if (res.data?.auth_url) {
-          window.open(res.data.auth_url, "_blank");
-          toast.success("Opening Gmail — come back after authorizing");
-        } else {
-          toast.info("Gmail OAuth not configured yet");
-        }
-      } else if (source === "linkedin") {
-        await axios.post(`${API}/network/import/linkedin`, { linkedin_url: value }, { headers: { Authorization: `Bearer ${token}` } });
-        toast.success("LinkedIn import started — check back in a minute 🦋");
-        setTimeout(fetchData, 5000);
-      } else if (source === "instagram") {
-        await axios.post(`${API}/network/import/instagram`, { instagram_handle: value }, { headers: { Authorization: `Bearer ${token}` } });
-        toast.success("Instagram import done 🦋");
+  // Listen for OAuth callback success
+  useEffect(() => {
+    const handleOAuthMessage = (event) => {
+      if (event.data.type === "oauth_success") {
         fetchData();
+        toast.success("Account connected successfully!");
+        setConnecting(null);
+      } else if (event.data.type === "oauth_error") {
+        toast.error("Authorization cancelled");
+        setConnecting(null);
+      }
+    };
+
+    window.addEventListener("message", handleOAuthMessage);
+    return () => window.removeEventListener("message", handleOAuthMessage);
+  }, [fetchData]);
+
+  const handleConnect = async (platform) => {
+    setConnecting(platform);
+    try {
+      const userId = user?.id || user?.user_id;
+      if (!userId) {
+        toast.error("User ID not found. Please refresh and try again.");
+        setConnecting(null);
+        return;
+      }
+
+      const res = await axios.get(
+        `${API}/oauth/${platform}/authorize?user_id=${userId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.data?.auth_url) {
+        // Open OAuth page in popup
+        const width = 600, height = 700;
+        const left = (window.screen.width / 2) - (width / 2);
+        const top = (window.screen.height / 2) - (height / 2);
+
+        const popup = window.open(
+          res.data.auth_url,
+          `${platform}_oauth`,
+          `width=${width},height=${height},top=${top},left=${left}`
+        );
+
+        if (!popup) {
+          toast.error("Please allow popups to connect your account");
+          setConnecting(null);
+        } else {
+          toast.success(`Opening ${platform}...`);
+        }
+      } else {
+        toast.info(`${platform} OAuth not configured yet`);
+        setConnecting(null);
       }
     } catch (e) {
-      toast.error(`Import failed — ${e?.response?.data?.detail || "try again"}`);
-    } finally {
-      setImporting(null);
+      toast.error(`Connection failed — ${e?.response?.data?.detail || "try again"}`);
+      setConnecting(null);
     }
   };
 
@@ -474,7 +498,7 @@ const NetworkPage = ({ darkMode }) => {
               </button>
             </div>
 
-            {showImport && <ImportControls darkMode={darkMode} onImport={handleImport} importing={importing} />}
+            {showImport && <ImportControls darkMode={darkMode} onConnect={handleConnect} connecting={connecting} />}
 
           {/* Search */}
           {contacts.length > 0 && (
