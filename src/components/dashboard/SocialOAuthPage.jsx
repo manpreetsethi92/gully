@@ -55,6 +55,29 @@ const SocialOAuthPage = ({ darkMode }) => {
         connectedResult._linkedinSkills = enriched.skills || userData.skills || [];
       }
 
+      // GitHub enriched data
+      const oauthGithub = oauth.github || {};
+      if (verifiedResult.github) {
+        connectedResult._githubUsername = oauthGithub.username || "";
+        connectedResult._githubName = oauthGithub.name || "";
+        connectedResult._githubBio = oauthGithub.bio || "";
+        connectedResult._githubRepos = oauthGithub.public_repos || 0;
+        connectedResult._githubFollowers = oauthGithub.followers || 0;
+        connectedResult._githubLanguages = oauthGithub.languages || [];
+        connectedResult._githubAvatar = oauthGithub.avatar_url || "";
+        connectedResult._githubUrl = oauthGithub.profile_url || "";
+      }
+
+      // YouTube enriched data
+      const oauthYoutube = oauth.youtube || {};
+      if (verifiedResult.youtube) {
+        connectedResult._youtubeName = oauthYoutube.channel_name || "";
+        connectedResult._youtubeSubscribers = oauthYoutube.subscriber_count || 0;
+        connectedResult._youtubeVideos = oauthYoutube.video_count || 0;
+        connectedResult._youtubeUrl = oauthYoutube.channel_url || "";
+        connectedResult._youtubeAvatar = oauthYoutube.profile_picture || "";
+      }
+
       setConnected(connectedResult);
       setVerified(verifiedResult);
     } catch {
@@ -206,6 +229,60 @@ const SocialOAuthPage = ({ darkMode }) => {
                     )}
                   </div>
                 )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* GitHub Enriched Card */}
+      {verified.github && connected._githubUsername && (
+        <div className={`px-4 py-4 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+          <div className={`p-4 rounded-2xl ${darkMode ? "bg-white/5 border border-white/10" : "bg-gray-50 border border-gray-200"}`}>
+            <div className="flex items-start gap-3">
+              {connected._githubAvatar ? (
+                <img src={connected._githubAvatar} alt="GitHub" className="w-12 h-12 rounded-full object-cover flex-shrink-0" />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-[#24292e] flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">GH</div>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <p className={`font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>{connected._githubName || connected._githubUsername}</p>
+                  <ShieldCheck size={14} className="text-blue-400 flex-shrink-0" />
+                </div>
+                <p className={`text-xs ${darkMode ? "text-white/40" : "text-gray-400"}`}>@{connected._githubUsername} · {connected._githubRepos} repos · {connected._githubFollowers} followers</p>
+                {connected._githubBio && <p className={`text-sm mt-1 ${darkMode ? "text-white/60" : "text-gray-600"}`}>{connected._githubBio}</p>}
+                {connected._githubLanguages?.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {connected._githubLanguages.slice(0, 6).map(l => (
+                      <span key={l} className={`text-xs px-2 py-0.5 rounded-full ${darkMode ? "bg-white/10 text-white/60" : "bg-gray-200 text-gray-600"}`}>{l}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* YouTube Enriched Card */}
+      {verified.youtube && connected._youtubeName && (
+        <div className={`px-4 py-4 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+          <div className={`p-4 rounded-2xl ${darkMode ? "bg-red-500/10 border border-red-500/20" : "bg-red-50 border border-red-100"}`}>
+            <div className="flex items-start gap-3">
+              {connected._youtubeAvatar ? (
+                <img src={connected._youtubeAvatar} alt="YouTube" className="w-12 h-12 rounded-full object-cover flex-shrink-0" />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-[#ff0000] flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">YT</div>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <p className={`font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>{connected._youtubeName}</p>
+                  <ShieldCheck size={14} className="text-blue-400 flex-shrink-0" />
+                </div>
+                <p className={`text-xs ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                  {connected._youtubeSubscribers?.toLocaleString()} subscribers · {connected._youtubeVideos?.toLocaleString()} videos
+                </p>
               </div>
             </div>
           </div>
