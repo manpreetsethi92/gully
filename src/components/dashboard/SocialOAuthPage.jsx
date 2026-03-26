@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { Link2, Check, ExternalLink, ShieldCheck } from "lucide-react";
+import { Check, ExternalLink, ShieldCheck } from "lucide-react";
 
 const PLATFORMS = [
   { key: "linkedin", label: "LinkedIn", color: "#0077b5", icon: "in", supportsOAuth: true },
