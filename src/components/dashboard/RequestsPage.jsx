@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, startTransition } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
@@ -55,6 +55,7 @@ const summarizeRequest = (title) => {
 const RequestsPage = ({ onRefresh, darkMode }) => {
   const { token } = useAuth();
   const [requests, setRequests] = useState([]);
+  const [confirmCloseId, setConfirmCloseId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [matches, setMatches] = useState([]);
@@ -549,9 +550,7 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (window.confirm('Are you sure you want to close this post?')) {
-                          handleClosePost(request.id);
-                        }
+                        startTransition(() => setConfirmCloseId(request.id));
                       }}
                       disabled={closeLoading === request.id}
                       className={`text-sm font-medium flex items-center gap-1 ${darkMode ? 'text-white/40 hover:text-white/60' : 'text-gray-400 hover:text-gray-600'}`}
@@ -840,6 +839,35 @@ const RequestsPage = ({ onRefresh, darkMode }) => {
                 })}
               </div>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+      {/* Confirm close dialog — replaces window.confirm to avoid INP block */}
+      <Dialog open={!!confirmCloseId} onOpenChange={() => setConfirmCloseId(null)}>
+        <DialogContent className={`sm:max-w-xs ${darkMode ? 'bg-[#111] border-white/10' : ''}`}>
+          <DialogHeader>
+            <DialogTitle className={darkMode ? 'text-white' : 'text-gray-900'}>Close this post?</DialogTitle>
+          </DialogHeader>
+          <p className={`text-sm mb-4 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+            This will mark the post as closed. You can't undo this.
+          </p>
+          <div className="flex gap-3 justify-end">
+            <button
+              onClick={() => setConfirmCloseId(null)}
+              className={`px-4 py-2 text-sm rounded-lg ${darkMode ? 'text-white/60 hover:text-white/80' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                const id = confirmCloseId;
+                setConfirmCloseId(null);
+                startTransition(() => handleClosePost(id));
+              }}
+              className="px-4 py-2 text-sm rounded-lg bg-[#E50914] text-white hover:bg-red-700"
+            >
+              Close post
+            </button>
           </div>
         </DialogContent>
       </Dialog>
