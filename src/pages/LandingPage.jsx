@@ -436,6 +436,8 @@ const LandingPage = () => {
             
             <button
               onClick={handleTryUsNow}
+              onMouseEnter={() => import("../components/AuthModal")}
+              onFocus={() => import("../components/AuthModal")}
               className="group inline-flex items-center gap-4 px-10 py-5 md:px-12 md:py-6 bg-[#E50914] font-syne font-semibold text-lg md:text-xl tracking-wide text-white hover:gap-6 transition-all duration-300 lowercase rounded-full"
             >
               start connecting
