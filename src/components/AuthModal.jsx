@@ -359,7 +359,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       const deviceFingerprint = Array.from(new Uint8Array(fpArray)).map(b => b.toString(16).padStart(2,"0")).join("");
 
       // Pick up referral code if user landed via a referral link
-      const refCode = localStorage.getItem("giggy_ref") || undefined;
+      const refCode = localStorage.getItem("titlii_ref") || undefined;
 
       const response = await axios.post(`${API}/auth/signup-and-call`, {
         name: name.trim(),
@@ -380,10 +380,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         };
 
         // Clear referral code after successful signup so it isn't reused
-        localStorage.removeItem("giggy_ref");
+        localStorage.removeItem("titlii_ref");
 
         setShowSuccess(true);
-        toast.success("Welcome to Giggy!");
+        toast.success("Welcome to Titlii!");
       }
     } catch (error) {
       console.error("Signup error:", error);
@@ -621,7 +621,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             ) : internalMode === "signup" ? (
               /* ========== SIGNUP MODE ========== */
               <div>
-                <h2 className="text-xl font-bold mb-1">Join <span className="font-syne text-[#E50914]">giggy</span></h2>
+                <h2 className="text-xl font-bold mb-1">Join <span className="font-syne text-[#E50914]">titlii</span></h2>
                 <p className="text-gray-500 text-sm mb-6">Tell us a bit about yourself</p>
 
                 <form onSubmit={handleSignupSubmit} className="space-y-4">
