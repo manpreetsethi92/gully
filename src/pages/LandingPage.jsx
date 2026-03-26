@@ -201,6 +201,8 @@ const LandingPage = () => {
           {/* Desktop */}
           <button
             onClick={handleSignIn}
+            onMouseEnter={() => import("../components/AuthModal")}
+            onFocus={() => import("../components/AuthModal")}
             className="hidden md:block font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
           >
             SIGN IN
@@ -209,6 +211,8 @@ const LandingPage = () => {
           {/* Mobile */}
           <button
             onClick={handleSignIn}
+            onMouseEnter={() => import("../components/AuthModal")}
+            onFocus={() => import("../components/AuthModal")}
             className="md:hidden font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
           >
             SIGN IN
@@ -252,6 +256,8 @@ const LandingPage = () => {
             <div className="flex flex-col sm:flex-row items-start gap-6 animate-fade-up-delay-3">
               <button
                 onClick={handleTryUsNow}
+                onMouseEnter={() => import("../components/AuthModal")}
+                onFocus={() => import("../components/AuthModal")}
                 className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16 lowercase rounded-full"
               >
                 <span className="relative z-10">start connecting</span>
