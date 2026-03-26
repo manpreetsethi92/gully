@@ -13,6 +13,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import FAQ from "./pages/FAQ";
+import OAuthCallback from "./pages/OAuthCallback";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 export const API = `${BACKEND_URL}/api`;
@@ -223,6 +224,7 @@ const AppRoutes = () => {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/oauth/callback" element={<OAuthCallback />} />
           <Route
             path="/app/*"
             element={
