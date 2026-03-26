@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, startTransition } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
@@ -276,6 +276,7 @@ const ProfilePage = () => {
         <h1 className="text-xl font-bold">Profile</h1>
         <button
           onClick={() => {
+            startTransition(() => {
             setFormData({
               name: user?.name || "",
               age: user?.age || "",
@@ -288,6 +289,7 @@ const ProfilePage = () => {
             setPreviewPhoto(null);
             setSkillSearch("");
             setShowEditModal(true);
+            });
           }}
           className="px-4 py-2 rounded-2xl border border-gray-200 dark:border-[#333] font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors"
           data-testid="edit-profile-btn"
