@@ -193,6 +193,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [whatsappAlertsOptIn, setWhatsappAlertsOptIn] = useState(true);
   const [location, setLocation] = useState("");
   const [instagram, setInstagram] = useState("");
   const [linkedin, setLinkedin] = useState("");
@@ -367,6 +368,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         device_fingerprint: deviceFingerprint,
         instagram: instagram.trim() || "",
         linkedin: linkedin.trim() || "",
+        whatsapp_alerts_opt_in: whatsappAlertsOptIn,
         ...(refCode && { ref_code: refCode })
       });
 
@@ -741,6 +743,18 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                       <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#E50914] hover:underline">Terms of Service</a>
                       {" "}and{" "}
                       <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#E50914] hover:underline">Privacy Policy</a>
+                    </span>
+                  </label>
+
+                  <label className="flex items-start gap-3 mt-3 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={whatsappAlertsOptIn}
+                      onChange={(e) => setWhatsappAlertsOptIn(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 rounded border-gray-300 text-[#E50914] focus:ring-[#E50914] accent-[#E50914]"
+                    />
+                    <span className="text-xs text-gray-500">
+                      Send me gig alerts on WhatsApp 🔔
                     </span>
                   </label>
 
