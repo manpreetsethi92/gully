@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, forwardRef, useCallback } from "react";
+import { useState, useEffect, useRef, forwardRef, useCallback, startTransition } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -851,7 +851,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleVerifyOTP();
+                    startTransition(() => { handleVerifyOTP(); });
                   }}
                   className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
                   style={{ background: '#E50914' }}
