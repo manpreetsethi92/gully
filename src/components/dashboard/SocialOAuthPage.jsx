@@ -311,16 +311,6 @@ const SocialOAuthPage = ({ darkMode }) => {
                 {connected._linkedinLocation && (
                   <p className={`text-xs ${darkMode ? "text-white/30" : "text-gray-400"}`}>{connected._linkedinLocation}</p>
                 )}
-                {connected._linkedinSkills?.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {connected._linkedinSkills.slice(0, 5).map(s => (
-                      <span key={s} className={`text-xs px-2 py-0.5 rounded-full ${darkMode ? "bg-white/10 text-white/60" : "bg-gray-200 text-gray-600"}`}>{s}</span>
-                    ))}
-                    {connected._linkedinSkills.length > 5 && (
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${darkMode ? "bg-white/10 text-white/40" : "bg-gray-200 text-gray-400"}`}>+{connected._linkedinSkills.length - 5} more</span>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -344,13 +334,6 @@ const SocialOAuthPage = ({ darkMode }) => {
                 </div>
                 <p className={`text-xs ${darkMode ? "text-white/40" : "text-gray-400"}`}>@{connected._githubUsername} · {connected._githubRepos} repos · {connected._githubFollowers} followers</p>
                 {connected._githubBio && <p className={`text-sm mt-1 ${darkMode ? "text-white/60" : "text-gray-600"}`}>{connected._githubBio}</p>}
-                {connected._githubLanguages?.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {connected._githubLanguages.slice(0, 6).map(l => (
-                      <span key={l} className={`text-xs px-2 py-0.5 rounded-full ${darkMode ? "bg-white/10 text-white/60" : "bg-gray-200 text-gray-600"}`}>{l}</span>
-                    ))}
-                  </div>
-                )}
               </div>
             </div>
           </div>
