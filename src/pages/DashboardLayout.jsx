@@ -49,8 +49,18 @@ const DashboardLayout = () => {
     // Show banner if user hasn't dismissed it yet
     return !sessionStorage.getItem('titli-wa-banner-dismissed');
   });
+  const [showConnectSocialsModal, setShowConnectSocialsModal] = useState(false);
 
   const currentPath = location.pathname.split("/").pop() || "opportunities";
+
+  // Check if we should show Connect Socials modal (from signup flow)
+  useEffect(() => {
+    if (location.state?.showConnectSocials) {
+      setShowConnectSocialsModal(true);
+      // Clear the state so modal doesn't show again on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // Fetch all data function (callable from child components)
   const fetchAllData = useCallback(async (signal = null) => {
@@ -340,7 +350,7 @@ const DashboardLayout = () => {
                   className={`w-full h-11 pl-11 pr-4 rounded-2xl border-0 font-syne text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all ${darkMode ? 'bg-white/10 text-white placeholder-white/40 focus:bg-white/15' : 'bg-gray-100 focus:bg-white'}`}
                 />
               </div>
-              <button 
+              <button
                 onClick={() => setShowNotifications(!showNotifications)}
                 className={`p-2.5 rounded-full relative ${darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}
               >
@@ -413,6 +423,45 @@ const DashboardLayout = () => {
           </div>
         </aside>
       </div>
+
+      {/* Connect Socials Modal - shown after signup */}
+      {showConnectSocialsModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className={`relative w-full max-w-md rounded-3xl shadow-2xl overflow-hidden ${darkMode ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
+            <button
+              onClick={() => setShowConnectSocialsModal(false)}
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10"
+            >
+              <X size={20} className={darkMode ? 'text-white' : 'text-gray-900'} />
+            </button>
+
+            <div className="p-8 text-center">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-purple-500 to-[#E50914] flex items-center justify-center">
+                <Link2 size={40} className="text-white" />
+              </div>
+              <h2 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Build Your Info Mesh 🦋</h2>
+              <p className={`text-sm mb-6 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                Connect your LinkedIn, Instagram, and other socials so Taj can scrape your profile and create your complete info mesh. This helps us match you with the right opportunities!
+              </p>
+              <button
+                onClick={() => {
+                  setShowConnectSocialsModal(false);
+                  navigate('/app/social-connect');
+                }}
+                className="w-full h-12 rounded-full text-white font-semibold bg-[#E50914] hover:bg-red-700 transition-colors"
+              >
+                Connect Socials
+              </button>
+              <button
+                onClick={() => setShowConnectSocialsModal(false)}
+                className={`w-full h-10 rounded-full mt-3 text-sm font-medium ${darkMode ? 'text-white/50 hover:bg-white/5' : 'text-gray-500 hover:bg-gray-50'}`}
+              >
+                I'll do it later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
