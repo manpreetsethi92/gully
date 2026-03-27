@@ -250,7 +250,7 @@ const SocialOAuthPage = ({ darkMode }) => {
 
   // Get list of added links (excluding meta fields like _label)
   const addedLinks = Object.keys(portfolioLinks).filter(
-    key => !key.endsWith("_label") && portfolioLinks[key]
+    key => !key.endsWith("_label")
   );
 
   if (loading) {
