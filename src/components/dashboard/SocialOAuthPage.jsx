@@ -267,10 +267,25 @@ const SocialOAuthPage = ({ darkMode }) => {
     <div>
       {/* Header */}
       <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? "bg-[#0a0a0a] border-white/10" : "bg-white border-gray-100"}`}>
-        <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Connect Socials</h1>
-        <p className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>
-          {connectedCount} of {PLATFORMS.length} connected
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Connect Socials</h1>
+            <p className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+              {connectedCount} of {PLATFORMS.length} connected
+            </p>
+          </div>
+          <button
+            onClick={() => setShowAddLinkModal(true)}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              darkMode
+                ? "bg-white/10 text-white hover:bg-white/15"
+                : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+            }`}
+          >
+            <span className="text-lg leading-none">+</span>
+            Add Link
+          </button>
+        </div>
       </div>
 
       {/* Info Banner */}
@@ -396,24 +411,11 @@ const SocialOAuthPage = ({ darkMode }) => {
       {/* Portfolio & Work Links Section */}
       <div className={`mt-6 border-t ${darkMode ? "border-white/10" : "border-gray-100"}`}>
         <div className="px-4 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Link2 size={20} className={darkMode ? "text-white" : "text-gray-900"} />
-              <h2 className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
-                Work & Portfolio
-              </h2>
-            </div>
-            <button
-              onClick={() => setShowAddLinkModal(true)}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                darkMode
-                  ? "bg-white/10 text-white hover:bg-white/15"
-                  : "bg-gray-100 text-gray-900 hover:bg-gray-200"
-              }`}
-            >
-              <span className="text-lg leading-none">+</span>
-              Add Link
-            </button>
+          <div className="flex items-center gap-2 mb-4">
+            <Link2 size={20} className={darkMode ? "text-white" : "text-gray-900"} />
+            <h2 className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
+              Work & Portfolio
+            </h2>
           </div>
 
           {addedLinks.length > 0 ? (
