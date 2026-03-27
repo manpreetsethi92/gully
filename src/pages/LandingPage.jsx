@@ -165,18 +165,25 @@ const LandingPage = () => {
   }, []);
 
   const handleTryUsNow = useCallback(() => {
-    startTransition(() => {
-      setHasModalBeenOpened(true);
-      setAuthMode("signup");
-      setShowAuthModal(true);
+    // Use requestAnimationFrame to allow browser to paint click feedback first
+    // This prevents the 272ms INP blocking issue
+    requestAnimationFrame(() => {
+      startTransition(() => {
+        setHasModalBeenOpened(true);
+        setAuthMode("signup");
+        setShowAuthModal(true);
+      });
     });
   }, []);
 
   const handleSignIn = useCallback(() => {
-    startTransition(() => {
-      setHasModalBeenOpened(true);
-      setAuthMode("signin");
-      setShowAuthModal(true);
+    // Use requestAnimationFrame to allow browser to paint click feedback first
+    requestAnimationFrame(() => {
+      startTransition(() => {
+        setHasModalBeenOpened(true);
+        setAuthMode("signin");
+        setShowAuthModal(true);
+      });
     });
   }, []);
 
