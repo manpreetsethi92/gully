@@ -195,7 +195,7 @@ const SocialOAuthPage = ({ darkMode }) => {
   const handleSavePortfolio = async () => {
     setSavingPortfolio(true);
     try {
-      await axios.patch(
+      await axios.put(
         `${API}/users/me`,
         { social_links: portfolioLinks },
         { headers: { Authorization: `Bearer ${token}` } }
