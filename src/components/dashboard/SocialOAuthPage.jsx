@@ -16,13 +16,23 @@ const PLATFORMS = [
   { key: "dribbble", label: "Dribbble", color: "#ea4c89", icon: "Dr", supportsOAuth: false },
 ];
 
-const PORTFOLIO_LINKS = [
+const SOCIAL_MANUAL_LINKS = [
+  { key: "instagram", label: "Instagram", placeholder: "https://www.instagram.com/yourusername" },
+  { key: "tiktok", label: "TikTok", placeholder: "https://www.tiktok.com/@yourusername" },
+  { key: "twitter", label: "X / Twitter", placeholder: "https://x.com/yourusername" },
+  { key: "behance", label: "Behance", placeholder: "https://www.behance.net/yourusername" },
+  { key: "dribbble", label: "Dribbble", placeholder: "https://dribbble.com/yourusername" },
+];
+
+const WORK_LINKS = [
   { key: "imdb", label: "IMDb", placeholder: "https://www.imdb.com/name/nm..." },
-  { key: "vimeo", label: "Vimeo", placeholder: "https://vimeo.com/..." },
-  { key: "soundcloud", label: "SoundCloud", placeholder: "https://soundcloud.com/..." },
+  { key: "vimeo", label: "Vimeo", placeholder: "https://vimeo.com/yourusername" },
+  { key: "soundcloud", label: "SoundCloud", placeholder: "https://soundcloud.com/yourusername" },
   { key: "website", label: "Personal Website", placeholder: "https://yourwebsite.com" },
   { key: "portfolio", label: "Portfolio", placeholder: "https://yourportfolio.com" },
 ];
+
+const PORTFOLIO_LINKS = [...SOCIAL_MANUAL_LINKS, ...WORK_LINKS];
 
 const SocialOAuthPage = ({ darkMode }) => {
   const { token, user } = useAuth();
@@ -415,33 +425,71 @@ const SocialOAuthPage = ({ darkMode }) => {
             </h2>
           </div>
           <p className={`text-sm mb-4 ${darkMode ? "text-white/60" : "text-gray-600"}`}>
-            Add links to your portfolio, showreel, IMDb profile, or other work samples
+            Manually add your profile links for platforms without OAuth, plus portfolio and work samples
           </p>
 
-          <div className="space-y-3">
-            {PORTFOLIO_LINKS.map((link) => (
-              <div key={link.key}>
-                <label className={`text-xs font-medium mb-1 block ${darkMode ? "text-white/70" : "text-gray-600"}`}>
-                  {link.label}
-                </label>
-                <input
-                  type="url"
-                  value={portfolioLinks[link.key] || ""}
-                  onChange={(e) => {
-                    setPortfolioLinks(prev => ({
-                      ...prev,
-                      [link.key]: e.target.value
-                    }));
-                  }}
-                  placeholder={link.placeholder}
-                  className={`w-full px-3 py-2 rounded-lg border text-sm ${
-                    darkMode
-                      ? "bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/20"
-                      : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-300"
-                  } focus:outline-none`}
-                />
-              </div>
-            ))}
+          {/* Social Platforms (Coming Soon for OAuth) */}
+          <div className="mb-6">
+            <h3 className={`text-sm font-semibold mb-3 ${darkMode ? "text-white/80" : "text-gray-700"}`}>
+              Social Profiles (Coming Soon for OAuth)
+            </h3>
+            <div className="space-y-3">
+              {SOCIAL_MANUAL_LINKS.map((link) => (
+                <div key={link.key}>
+                  <label className={`text-xs font-medium mb-1 block ${darkMode ? "text-white/70" : "text-gray-600"}`}>
+                    {link.label}
+                  </label>
+                  <input
+                    type="url"
+                    value={portfolioLinks[link.key] || ""}
+                    onChange={(e) => {
+                      setPortfolioLinks(prev => ({
+                        ...prev,
+                        [link.key]: e.target.value
+                      }));
+                    }}
+                    placeholder={link.placeholder}
+                    className={`w-full px-3 py-2 rounded-lg border text-sm ${
+                      darkMode
+                        ? "bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/20"
+                        : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-300"
+                    } focus:outline-none`}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Work & Portfolio Links */}
+          <div>
+            <h3 className={`text-sm font-semibold mb-3 ${darkMode ? "text-white/80" : "text-gray-700"}`}>
+              Work & Portfolio
+            </h3>
+            <div className="space-y-3">
+              {WORK_LINKS.map((link) => (
+                <div key={link.key}>
+                  <label className={`text-xs font-medium mb-1 block ${darkMode ? "text-white/70" : "text-gray-600"}`}>
+                    {link.label}
+                  </label>
+                  <input
+                    type="url"
+                    value={portfolioLinks[link.key] || ""}
+                    onChange={(e) => {
+                      setPortfolioLinks(prev => ({
+                        ...prev,
+                        [link.key]: e.target.value
+                      }));
+                    }}
+                    placeholder={link.placeholder}
+                    className={`w-full px-3 py-2 rounded-lg border text-sm ${
+                      darkMode
+                        ? "bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/20"
+                        : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-300"
+                    } focus:outline-none`}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           <button
