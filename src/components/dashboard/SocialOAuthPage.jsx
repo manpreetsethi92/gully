@@ -7,9 +7,9 @@ import { Check, ExternalLink, ShieldCheck, Link2, Save, X } from "lucide-react";
 const PLATFORMS = [
   { key: "linkedin", label: "LinkedIn", color: "#0077b5", icon: "in", supportsOAuth: true },
   { key: "google", label: "Google", color: "#4285F4", icon: "G", supportsOAuth: true },
-  { key: "instagram", label: "Instagram", color: "linear-gradient(135deg,#405de6,#5851db,#833ab4,#c13584,#e1306c,#fd1d1d)", icon: "IG", supportsOAuth: false },
   { key: "github", label: "GitHub", color: "#24292e", icon: "GH", supportsOAuth: true },
   { key: "youtube", label: "YouTube", color: "#ff0000", icon: "YT", supportsOAuth: true },
+  { key: "instagram", label: "Instagram", color: "linear-gradient(135deg,#405de6,#5851db,#833ab4,#c13584,#e1306c,#fd1d1d)", icon: "IG", supportsOAuth: false },
   { key: "twitter", label: "X / Twitter", color: "#000", icon: "X", supportsOAuth: false },
 ];
 
