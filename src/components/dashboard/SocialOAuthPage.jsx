@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { Check, ExternalLink, ShieldCheck } from "lucide-react";
+import { Check, ExternalLink, ShieldCheck, Link2, Save } from "lucide-react";
 
 const PLATFORMS = [
   { key: "linkedin", label: "LinkedIn", color: "#0077b5", icon: "in", supportsOAuth: true },
@@ -16,12 +16,22 @@ const PLATFORMS = [
   { key: "dribbble", label: "Dribbble", color: "#ea4c89", icon: "Dr", supportsOAuth: false },
 ];
 
+const PORTFOLIO_LINKS = [
+  { key: "imdb", label: "IMDb", placeholder: "https://www.imdb.com/name/nm..." },
+  { key: "vimeo", label: "Vimeo", placeholder: "https://vimeo.com/..." },
+  { key: "soundcloud", label: "SoundCloud", placeholder: "https://soundcloud.com/..." },
+  { key: "website", label: "Personal Website", placeholder: "https://yourwebsite.com" },
+  { key: "portfolio", label: "Portfolio", placeholder: "https://yourportfolio.com" },
+];
+
 const SocialOAuthPage = ({ darkMode }) => {
   const { token, user } = useAuth();
   const [connected, setConnected] = useState({});
   const [verified, setVerified] = useState({});
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(null);
+  const [portfolioLinks, setPortfolioLinks] = useState({});
+  const [savingPortfolio, setSavingPortfolio] = useState(false);
 
   const fetchConnectedAccounts = useCallback(async () => {
     if (!token) return;
@@ -80,9 +90,19 @@ const SocialOAuthPage = ({ darkMode }) => {
 
       setConnected(connectedResult);
       setVerified(verifiedResult);
+
+      // Load portfolio links
+      const portfolio = {};
+      PORTFOLIO_LINKS.forEach(link => {
+        if (links[link.key]) {
+          portfolio[link.key] = links[link.key];
+        }
+      });
+      setPortfolioLinks(portfolio);
     } catch {
       setConnected({});
       setVerified({});
+      setPortfolioLinks({});
     } finally {
       setLoading(false);
     }
@@ -154,6 +174,24 @@ const SocialOAuthPage = ({ darkMode }) => {
       const msg = err.response?.data?.detail || `Failed to connect ${platform}`;
       toast.error(msg);
       setConnecting(null);
+    }
+  };
+
+  const handleSavePortfolio = async () => {
+    setSavingPortfolio(true);
+    try {
+      await axios.patch(
+        `${API}/users/me`,
+        { social_links: portfolioLinks },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Portfolio links saved!");
+      fetchConnectedAccounts(); // Refresh data
+    } catch (error) {
+      toast.error("Failed to save portfolio links");
+      console.error("Save error:", error);
+    } finally {
+      setSavingPortfolio(false);
     }
   };
 
@@ -365,6 +403,65 @@ const SocialOAuthPage = ({ darkMode }) => {
             </div>
           );
         })}
+      </div>
+
+      {/* Portfolio & Work Links Section */}
+      <div className={`mt-6 border-t ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+        <div className="px-4 py-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Link2 size={20} className={darkMode ? "text-white" : "text-gray-900"} />
+            <h2 className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
+              Portfolio & Work Links
+            </h2>
+          </div>
+          <p className={`text-sm mb-4 ${darkMode ? "text-white/60" : "text-gray-600"}`}>
+            Add links to your portfolio, showreel, IMDb profile, or other work samples
+          </p>
+
+          <div className="space-y-3">
+            {PORTFOLIO_LINKS.map((link) => (
+              <div key={link.key}>
+                <label className={`text-xs font-medium mb-1 block ${darkMode ? "text-white/70" : "text-gray-600"}`}>
+                  {link.label}
+                </label>
+                <input
+                  type="url"
+                  value={portfolioLinks[link.key] || ""}
+                  onChange={(e) => {
+                    setPortfolioLinks(prev => ({
+                      ...prev,
+                      [link.key]: e.target.value
+                    }));
+                  }}
+                  placeholder={link.placeholder}
+                  className={`w-full px-3 py-2 rounded-lg border text-sm ${
+                    darkMode
+                      ? "bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/20"
+                      : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-300"
+                  } focus:outline-none`}
+                />
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={handleSavePortfolio}
+            disabled={savingPortfolio}
+            className="mt-4 w-full h-10 rounded-full text-white font-medium transition-colors bg-[#E50914] hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {savingPortfolio ? (
+              <>
+                <div className="spinner w-4 h-4" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save size={16} />
+                Save Portfolio Links
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
