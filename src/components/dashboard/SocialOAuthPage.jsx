@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { Check, ExternalLink, ShieldCheck, Link2, Save } from "lucide-react";
+import { Check, ExternalLink, ShieldCheck, Link2, Save, X } from "lucide-react";
 
 const PLATFORMS = [
   { key: "linkedin", label: "LinkedIn", color: "#0077b5", icon: "in", supportsOAuth: true },
@@ -42,6 +42,10 @@ const SocialOAuthPage = ({ darkMode }) => {
   const [connecting, setConnecting] = useState(null);
   const [portfolioLinks, setPortfolioLinks] = useState({});
   const [savingPortfolio, setSavingPortfolio] = useState(false);
+  const [showAddLinkModal, setShowAddLinkModal] = useState(false);
+  const [selectedLinkType, setSelectedLinkType] = useState("");
+  const [customLinkLabel, setCustomLinkLabel] = useState("");
+  const [customLinkUrl, setCustomLinkUrl] = useState("");
 
   const fetchConnectedAccounts = useCallback(async () => {
     if (!token) return;
@@ -204,6 +208,49 @@ const SocialOAuthPage = ({ darkMode }) => {
       setSavingPortfolio(false);
     }
   };
+
+  const handleAddLink = () => {
+    if (selectedLinkType === "custom") {
+      if (!customLinkLabel || !customLinkUrl) {
+        toast.error("Please provide both label and URL");
+        return;
+      }
+      // Add custom link with a unique key
+      const customKey = `custom_${Date.now()}`;
+      setPortfolioLinks(prev => ({
+        ...prev,
+        [customKey]: customLinkUrl,
+        [`${customKey}_label`]: customLinkLabel
+      }));
+    } else if (selectedLinkType) {
+      // Just mark this predefined link type as ready to fill
+      setPortfolioLinks(prev => ({
+        ...prev,
+        [selectedLinkType]: prev[selectedLinkType] || ""
+      }));
+    }
+    // Reset modal
+    setShowAddLinkModal(false);
+    setSelectedLinkType("");
+    setCustomLinkLabel("");
+    setCustomLinkUrl("");
+  };
+
+  const handleRemoveLink = (key) => {
+    setPortfolioLinks(prev => {
+      const updated = { ...prev };
+      delete updated[key];
+      if (key.startsWith("custom_")) {
+        delete updated[`${key}_label`];
+      }
+      return updated;
+    });
+  };
+
+  // Get list of added links (excluding meta fields like _label)
+  const addedLinks = Object.keys(portfolioLinks).filter(
+    key => !key.endsWith("_label") && portfolioLinks[key]
+  );
 
   if (loading) {
     return (
@@ -443,61 +490,215 @@ const SocialOAuthPage = ({ darkMode }) => {
       {/* Portfolio & Work Links Section */}
       <div className={`mt-6 border-t ${darkMode ? "border-white/10" : "border-gray-100"}`}>
         <div className="px-4 py-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Link2 size={20} className={darkMode ? "text-white" : "text-gray-900"} />
-            <h2 className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
-              Work & Portfolio
-            </h2>
-          </div>
-          <p className={`text-sm mb-4 ${darkMode ? "text-white/60" : "text-gray-600"}`}>
-            Add links to your showreel, portfolio, IMDb, or other work samples
-          </p>
-
-          <div className="space-y-3">
-            {WORK_LINKS.map((link) => (
-              <div key={link.key}>
-                <label className={`text-xs font-medium mb-1 block ${darkMode ? "text-white/70" : "text-gray-600"}`}>
-                  {link.label}
-                </label>
-                <input
-                  type="url"
-                  value={portfolioLinks[link.key] || ""}
-                  onChange={(e) => {
-                    setPortfolioLinks(prev => ({
-                      ...prev,
-                      [link.key]: e.target.value
-                    }));
-                  }}
-                  placeholder={link.placeholder}
-                  className={`w-full px-3 py-2 rounded-lg border text-sm ${
-                    darkMode
-                      ? "bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/20"
-                      : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-300"
-                  } focus:outline-none`}
-                />
-              </div>
-            ))}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Link2 size={20} className={darkMode ? "text-white" : "text-gray-900"} />
+              <h2 className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
+                Work & Portfolio
+              </h2>
+            </div>
+            <button
+              onClick={() => setShowAddLinkModal(true)}
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                darkMode
+                  ? "bg-white/10 text-white hover:bg-white/15"
+                  : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+              }`}
+            >
+              <span className="text-lg leading-none">+</span>
+              Add Link
+            </button>
           </div>
 
-          <button
-            onClick={handleSavePortfolio}
-            disabled={savingPortfolio}
-            className="mt-4 w-full h-10 rounded-full text-white font-medium transition-colors bg-[#E50914] hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            {savingPortfolio ? (
-              <>
-                <div className="spinner w-4 h-4" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save size={16} />
-                Save All Links
-              </>
-            )}
-          </button>
+          {addedLinks.length > 0 ? (
+            <div className="space-y-3 mb-4">
+              {addedLinks.map((key) => {
+                const linkInfo = WORK_LINKS.find(l => l.key === key);
+                const label = linkInfo?.label || portfolioLinks[`${key}_label`] || key;
+                const url = portfolioLinks[key];
+
+                return (
+                  <div key={key} className={`p-3 rounded-lg border ${darkMode ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-200"}`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <label className={`text-xs font-medium mb-1 block ${darkMode ? "text-white/70" : "text-gray-600"}`}>
+                          {label}
+                        </label>
+                        <input
+                          type="url"
+                          value={url}
+                          onChange={(e) => {
+                            setPortfolioLinks(prev => ({
+                              ...prev,
+                              [key]: e.target.value
+                            }));
+                          }}
+                          placeholder={linkInfo?.placeholder || "https://..."}
+                          className={`w-full px-3 py-2 rounded-lg border text-sm ${
+                            darkMode
+                              ? "bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/20"
+                              : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-300"
+                          } focus:outline-none`}
+                        />
+                      </div>
+                      <button
+                        onClick={() => handleRemoveLink(key)}
+                        className={`mt-6 p-2 rounded-lg transition-colors ${
+                          darkMode ? "hover:bg-white/10 text-white/40 hover:text-white/70" : "hover:bg-gray-200 text-gray-400 hover:text-gray-700"
+                        }`}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className={`text-sm mb-4 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+              No links added yet. Click "+ Add Link" to add your portfolio, showreel, or work samples.
+            </p>
+          )}
+
+          {addedLinks.length > 0 && (
+            <button
+              onClick={handleSavePortfolio}
+              disabled={savingPortfolio}
+              className="w-full h-10 rounded-full text-white font-medium transition-colors bg-[#E50914] hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {savingPortfolio ? (
+                <>
+                  <div className="spinner w-4 h-4" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  Save All Links
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
+
+      {/* Add Link Modal */}
+      {showAddLinkModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className={`relative w-full max-w-md rounded-2xl shadow-2xl overflow-hidden ${darkMode ? "bg-[#0a0a0a]" : "bg-white"}`}>
+            <button
+              onClick={() => {
+                setShowAddLinkModal(false);
+                setSelectedLinkType("");
+                setCustomLinkLabel("");
+                setCustomLinkUrl("");
+              }}
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10"
+            >
+              <X size={20} className={darkMode ? "text-white" : "text-gray-900"} />
+            </button>
+
+            <div className="p-6">
+              <h2 className={`text-xl font-bold mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}>
+                Add Portfolio Link
+              </h2>
+
+              <div className="space-y-3 mb-4">
+                <p className={`text-sm ${darkMode ? "text-white/60" : "text-gray-600"}`}>
+                  Select a preset or add a custom link
+                </p>
+
+                {/* Preset Options */}
+                <div className="space-y-2">
+                  {WORK_LINKS.map((link) => (
+                    <button
+                      key={link.key}
+                      onClick={() => setSelectedLinkType(link.key)}
+                      className={`w-full p-3 rounded-lg border text-left transition-colors ${
+                        selectedLinkType === link.key
+                          ? darkMode
+                            ? "bg-[#E50914]/10 border-[#E50914]"
+                            : "bg-red-50 border-[#E50914]"
+                          : darkMode
+                          ? "bg-white/5 border-white/10 hover:bg-white/10"
+                          : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+                      }`}
+                    >
+                      <p className={`font-medium text-sm ${darkMode ? "text-white" : "text-gray-900"}`}>
+                        {link.label}
+                      </p>
+                    </button>
+                  ))}
+
+                  {/* Custom Option */}
+                  <button
+                    onClick={() => setSelectedLinkType("custom")}
+                    className={`w-full p-3 rounded-lg border text-left transition-colors ${
+                      selectedLinkType === "custom"
+                        ? darkMode
+                          ? "bg-[#E50914]/10 border-[#E50914]"
+                          : "bg-red-50 border-[#E50914]"
+                        : darkMode
+                        ? "bg-white/5 border-white/10 hover:bg-white/10"
+                        : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+                    }`}
+                  >
+                    <p className={`font-medium text-sm ${darkMode ? "text-white" : "text-gray-900"}`}>
+                      Other (Custom Link)
+                    </p>
+                  </button>
+                </div>
+
+                {/* Custom Link Inputs */}
+                {selectedLinkType === "custom" && (
+                  <div className="space-y-3 mt-4 p-3 rounded-lg bg-white/5 border border-white/10">
+                    <div>
+                      <label className={`text-xs font-medium mb-1 block ${darkMode ? "text-white/70" : "text-gray-600"}`}>
+                        Label
+                      </label>
+                      <input
+                        type="text"
+                        value={customLinkLabel}
+                        onChange={(e) => setCustomLinkLabel(e.target.value)}
+                        placeholder="e.g., My Portfolio"
+                        className={`w-full px-3 py-2 rounded-lg border text-sm ${
+                          darkMode
+                            ? "bg-white/5 border-white/10 text-white placeholder-white/30"
+                            : "bg-white border-gray-200 text-gray-900 placeholder-gray-400"
+                        } focus:outline-none`}
+                      />
+                    </div>
+                    <div>
+                      <label className={`text-xs font-medium mb-1 block ${darkMode ? "text-white/70" : "text-gray-600"}`}>
+                        URL
+                      </label>
+                      <input
+                        type="url"
+                        value={customLinkUrl}
+                        onChange={(e) => setCustomLinkUrl(e.target.value)}
+                        placeholder="https://..."
+                        className={`w-full px-3 py-2 rounded-lg border text-sm ${
+                          darkMode
+                            ? "bg-white/5 border-white/10 text-white placeholder-white/30"
+                            : "bg-white border-gray-200 text-gray-900 placeholder-gray-400"
+                        } focus:outline-none`}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <button
+                onClick={handleAddLink}
+                disabled={!selectedLinkType}
+                className="w-full h-10 rounded-full text-white font-medium transition-colors bg-[#E50914] hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Add Link
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
