@@ -409,7 +409,8 @@ const SocialOAuthPage = ({ darkMode }) => {
       </div>
 
       {/* Portfolio Links - Same format as platforms */}
-      {addedLinks.map((key) => {
+      <>
+        {addedLinks.map((key) => {
         const linkInfo = WORK_LINKS.find(l => l.key === key);
         const label = linkInfo?.label || portfolioLinks[`${key}_label`] || key;
         const url = portfolioLinks[key];
@@ -473,28 +474,29 @@ const SocialOAuthPage = ({ darkMode }) => {
         );
       })}
 
-      {/* Save All Links Button */}
-      {addedLinks.length > 0 && (
-        <div className={`px-4 py-4 border-t ${darkMode ? "border-white/10" : "border-gray-100"}`}>
-          <button
-            onClick={handleSavePortfolio}
-            disabled={savingPortfolio}
-            className="w-full h-10 rounded-full text-white font-medium transition-colors bg-[#E50914] hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            {savingPortfolio ? (
-              <>
-                <div className="spinner w-4 h-4" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save size={16} />
-                Save All Links
-              </>
-            )}
-          </button>
-        </div>
-      )}
+        {/* Save All Links Button */}
+        {addedLinks.length > 0 && (
+          <div className={`px-4 py-4 border-t ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+            <button
+              onClick={handleSavePortfolio}
+              disabled={savingPortfolio}
+              className="w-full h-10 rounded-full text-white font-medium transition-colors bg-[#E50914] hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {savingPortfolio ? (
+                <>
+                  <div className="spinner w-4 h-4" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  Save All Links
+                </>
+              )}
+            </button>
+          </div>
+        )}
+      </>
         </div>
       </div>
 
