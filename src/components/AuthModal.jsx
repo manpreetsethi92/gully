@@ -224,12 +224,19 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     debounce(async (fullPhone) => {
       try {
         const response = await axios.get(`${API}/auth/check-phone?phone=${encodeURIComponent(fullPhone)}`);
-        setPhoneExists(response.data.exists);
+        // Use startTransition for non-urgent state updates to prevent blocking
+        startTransition(() => {
+          setPhoneExists(response.data.exists);
+        });
       } catch (error) {
         console.error("Phone check error:", error);
-        setPhoneExists(false);
+        startTransition(() => {
+          setPhoneExists(false);
+        });
       } finally {
-        setPhoneChecking(false);
+        startTransition(() => {
+          setPhoneChecking(false);
+        });
       }
     }, 500),
     []
@@ -239,11 +246,16 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   useEffect(() => {
     const cleaned = phone.replace(/\D/g, '');
     if (internalMode === "signup" && cleaned.length >= 10) {
-      setPhoneChecking(true);
+      // Use startTransition to prevent blocking UI updates during typing
+      startTransition(() => {
+        setPhoneChecking(true);
+      });
       const fullPhone = `${countryCode}${cleaned}`;
       checkPhoneDebounced(fullPhone);
     } else {
-      setPhoneExists(false);
+      startTransition(() => {
+        setPhoneExists(false);
+      });
     }
   }, [phone, countryCode, internalMode, checkPhoneDebounced]);
 
