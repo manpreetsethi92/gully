@@ -8,7 +8,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { useAuth, API } from "../App";
-import { ArrowLeft, MessageCircle, Check, Instagram, ChevronDown, Search, Mail } from "lucide-react";
+import { ArrowLeft, MessageCircle, ChevronDown, Search, Mail } from "lucide-react";
 
 const COUNTRY_CODES = [
   { code: "+1", country: "United States", flag: "🇺🇸" },
@@ -195,7 +195,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [whatsappAlertsOptIn, setWhatsappAlertsOptIn] = useState(true);
   const [location, setLocation] = useState("");
-  const [instagram, setInstagram] = useState("");
 
   // OTP state (for signin)
   const [otp, setOtp] = useState("");
@@ -257,7 +256,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setName("");
     setEmail("");
     setLocation("");
-    setInstagram("");
     setAgreedToTerms(false);
     setShowSuccess(false);
     setShowCountryDropdown(false);
@@ -358,7 +356,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         email: email.trim(),
         location: location.trim(),
         device_fingerprint: deviceFingerprint,
-        instagram: instagram.trim() || "",
         whatsapp_alerts_opt_in: whatsappAlertsOptIn,
         ...(refCode && { ref_code: refCode })
       });
@@ -684,25 +681,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                       placeholder="City, State (e.g., Dallas, TX)"
                       className="h-11"
                     />
-                  </div>
-
-                  {/* Instagram (Optional) */}
-                  <div>
-                    <Label className="text-xs font-medium text-gray-500 mb-1 block">INSTAGRAM USERNAME (OPTIONAL)</Label>
-                    <div className="flex items-center gap-2">
-                      <Instagram size={16} className="text-pink-500 flex-shrink-0" />
-                      <Input
-                        value={instagram}
-                        onChange={(e) => setInstagram(e.target.value)}
-                        placeholder="your_username"
-                        className={`h-11 flex-1 ${instagram.trim() ? 'border-green-300' : ''}`}
-                      />
-                    </div>
-                    {instagram.trim() && (
-                      <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
-                        <Check size={12} /> Will help verify your profile
-                      </p>
-                    )}
                   </div>
 
                   <label className="flex items-start gap-3 mt-5 cursor-pointer select-none">
