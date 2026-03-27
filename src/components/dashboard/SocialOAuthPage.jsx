@@ -22,6 +22,10 @@ const SOCIAL_MANUAL_LINKS = [
 ];
 
 const WORK_LINKS = [
+  { key: "tiktok", label: "TikTok", placeholder: "https://www.tiktok.com/@yourusername" },
+  { key: "behance", label: "Behance", placeholder: "https://www.behance.net/yourusername" },
+  { key: "dribbble", label: "Dribbble", placeholder: "https://dribbble.com/yourusername" },
+  { key: "spotify", label: "Spotify", placeholder: "https://open.spotify.com/artist/..." },
   { key: "imdb", label: "IMDb", placeholder: "https://www.imdb.com/name/nm..." },
   { key: "vimeo", label: "Vimeo", placeholder: "https://vimeo.com/yourusername" },
   { key: "soundcloud", label: "SoundCloud", placeholder: "https://soundcloud.com/yourusername" },
