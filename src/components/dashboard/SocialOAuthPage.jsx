@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { Check, ExternalLink, ShieldCheck, Link2, Save, X } from "lucide-react";
+import { Check, ExternalLink, ShieldCheck, Save, X } from "lucide-react";
 
 const PLATFORMS = [
   { key: "linkedin", label: "LinkedIn", color: "#0077b5", icon: "in", supportsOAuth: true },
@@ -408,85 +408,93 @@ const SocialOAuthPage = ({ darkMode }) => {
         })}
       </div>
 
-      {/* Portfolio & Work Links Section */}
-      <div className={`mt-6 border-t ${darkMode ? "border-white/10" : "border-gray-100"}`}>
-        <div className="px-4 py-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Link2 size={20} className={darkMode ? "text-white" : "text-gray-900"} />
-            <h2 className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
-              Work & Portfolio
-            </h2>
-          </div>
+      {/* Portfolio Links - Same format as platforms */}
+      {addedLinks.map((key) => {
+        const linkInfo = WORK_LINKS.find(l => l.key === key);
+        const label = linkInfo?.label || portfolioLinks[`${key}_label`] || key;
+        const url = portfolioLinks[key];
 
-          {addedLinks.length > 0 ? (
-            <div className="space-y-3 mb-4">
-              {addedLinks.map((key) => {
-                const linkInfo = WORK_LINKS.find(l => l.key === key);
-                const label = linkInfo?.label || portfolioLinks[`${key}_label`] || key;
-                const url = portfolioLinks[key];
+        // Get first 2 letters for icon
+        const iconText = label.substring(0, 2).toUpperCase();
 
-                return (
-                  <div key={key} className={`p-3 rounded-lg border ${darkMode ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-200"}`}>
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <label className={`text-xs font-medium mb-1 block ${darkMode ? "text-white/70" : "text-gray-600"}`}>
-                          {label}
-                        </label>
-                        <input
-                          type="url"
-                          value={url}
-                          onChange={(e) => {
-                            setPortfolioLinks(prev => ({
-                              ...prev,
-                              [key]: e.target.value
-                            }));
-                          }}
-                          placeholder={linkInfo?.placeholder || "https://..."}
-                          className={`w-full px-3 py-2 rounded-lg border text-sm ${
-                            darkMode
-                              ? "bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/20"
-                              : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-300"
-                          } focus:outline-none`}
-                        />
-                      </div>
-                      <button
-                        onClick={() => handleRemoveLink(key)}
-                        className={`mt-6 p-2 rounded-lg transition-colors ${
-                          darkMode ? "hover:bg-white/10 text-white/40 hover:text-white/70" : "hover:bg-gray-200 text-gray-400 hover:text-gray-700"
-                        }`}
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+        return (
+          <div key={key}>
+            <div className={`px-4 py-4 flex items-center gap-3 border-t ${darkMode ? "border-white/10 hover:bg-white/5" : "border-gray-100 hover:bg-gray-50"} transition-colors`}>
+              {/* Icon */}
+              <div
+                className={`w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 ${
+                  darkMode ? "bg-white/10" : "bg-gray-800"
+                }`}
+              >
+                {iconText}
+              </div>
+
+              {/* Platform Info */}
+              <div className="flex-1 min-w-0">
+                <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>
+                  {label}
+                </p>
+                <p className={`text-sm ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                  Add your profile link
+                </p>
+              </div>
+
+              {/* Remove button */}
+              <button
+                onClick={() => handleRemoveLink(key)}
+                className={`p-2 rounded-lg transition-colors ${
+                  darkMode ? "hover:bg-white/10 text-white/40 hover:text-white/70" : "hover:bg-gray-200 text-gray-400 hover:text-gray-700"
+                }`}
+              >
+                <X size={16} />
+              </button>
             </div>
-          ) : (
-            <p className={`text-sm mb-4 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
-              No links added yet. Click "+ Add Link" to add your portfolio, showreel, or work samples.
-            </p>
-          )}
 
-          {addedLinks.length > 0 && (
-            <button
-              onClick={handleSavePortfolio}
-              disabled={savingPortfolio}
-              className="w-full h-10 rounded-full text-white font-medium transition-colors bg-[#E50914] hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
-            >
-              {savingPortfolio ? (
-                <>
-                  <div className="spinner w-4 h-4" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save size={16} />
-                  Save All Links
-                </>
-              )}
-            </button>
-          )}
+            {/* Inline input field */}
+            <div className={`px-4 pb-4 ${darkMode ? "bg-white/[0.02]" : "bg-gray-50/50"}`}>
+              <input
+                type="url"
+                value={url}
+                onChange={(e) => {
+                  setPortfolioLinks(prev => ({
+                    ...prev,
+                    [key]: e.target.value
+                  }));
+                }}
+                placeholder={linkInfo?.placeholder || "https://..."}
+                className={`w-full px-3 py-2 rounded-lg border text-sm ${
+                  darkMode
+                    ? "bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/20"
+                    : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-300"
+                } focus:outline-none`}
+              />
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Save All Links Button */}
+      {addedLinks.length > 0 && (
+        <div className={`px-4 py-4 border-t ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+          <button
+            onClick={handleSavePortfolio}
+            disabled={savingPortfolio}
+            className="w-full h-10 rounded-full text-white font-medium transition-colors bg-[#E50914] hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {savingPortfolio ? (
+              <>
+                <div className="spinner w-4 h-4" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save size={16} />
+                Save All Links
+              </>
+            )}
+          </button>
+        </div>
+      )}
         </div>
       </div>
 
