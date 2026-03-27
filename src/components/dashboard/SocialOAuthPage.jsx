@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
@@ -47,6 +47,7 @@ const SocialOAuthPage = ({ darkMode }) => {
   const [selectedLinkType, setSelectedLinkType] = useState("");
   const [customLinkLabel, setCustomLinkLabel] = useState("");
   const [customLinkUrl, setCustomLinkUrl] = useState("");
+  const pollTimerRef = useRef(null);
 
   const fetchConnectedAccounts = useCallback(async () => {
     if (!token) return;
@@ -125,6 +126,13 @@ const SocialOAuthPage = ({ darkMode }) => {
 
   useEffect(() => {
     fetchConnectedAccounts();
+    // Cleanup polling interval on unmount
+    return () => {
+      if (pollTimerRef.current) {
+        clearInterval(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+    };
   }, [fetchConnectedAccounts]);
 
   // Listen for OAuth popup success/error messages
@@ -174,9 +182,10 @@ const SocialOAuthPage = ({ darkMode }) => {
         );
 
         // Fallback: if popup closed without postMessage
-        const pollTimer = setInterval(() => {
+        pollTimerRef.current = setInterval(() => {
           if (popup?.closed) {
-            clearInterval(pollTimer);
+            clearInterval(pollTimerRef.current);
+            pollTimerRef.current = null;
             setConnecting(null);
             fetchConnectedAccounts();
           }
@@ -204,7 +213,6 @@ const SocialOAuthPage = ({ darkMode }) => {
       fetchConnectedAccounts(); // Refresh data
     } catch (error) {
       toast.error("Failed to save portfolio links");
-      console.error("Save error:", error);
     } finally {
       setSavingPortfolio(false);
     }
@@ -500,8 +508,22 @@ const SocialOAuthPage = ({ darkMode }) => {
 
       {/* Add Link Modal */}
       {showAddLinkModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className={`relative w-full max-w-md rounded-2xl shadow-2xl overflow-hidden ${darkMode ? "bg-[#0a0a0a]" : "bg-white"}`}>
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          onClick={() => {
+            setShowAddLinkModal(false);
+            setSelectedLinkType("");
+            setCustomLinkLabel("");
+            setCustomLinkUrl("");
+          }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
+          <div
+            className={`relative w-full max-w-md rounded-2xl shadow-2xl overflow-hidden ${darkMode ? "bg-[#0a0a0a]" : "bg-white"}`}
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={() => {
                 setShowAddLinkModal(false);
@@ -509,13 +531,14 @@ const SocialOAuthPage = ({ darkMode }) => {
                 setCustomLinkLabel("");
                 setCustomLinkUrl("");
               }}
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10"
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[#E50914]"
+              aria-label="Close modal"
             >
               <X size={20} className={darkMode ? "text-white" : "text-gray-900"} />
             </button>
 
             <div className="p-6">
-              <h2 className={`text-xl font-bold mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}>
+              <h2 id="modal-title" className={`text-xl font-bold mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}>
                 Add Portfolio Link
               </h2>
 
@@ -607,7 +630,7 @@ const SocialOAuthPage = ({ darkMode }) => {
               <button
                 onClick={handleAddLink}
                 disabled={!selectedLinkType}
-                className="w-full h-10 rounded-full text-white font-medium transition-colors bg-[#E50914] hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-10 rounded-full text-white font-medium transition-colors bg-[#E50914] hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E50914]"
               >
                 Add Link
               </button>

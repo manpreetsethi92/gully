@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, forwardRef, useCallback, startTransition } from "react";
+import { useState, useEffect, useRef, forwardRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -62,18 +62,19 @@ const COUNTRY_CODES = [
   { code: "+51", country: "Peru", flag: "🇵🇪" }
 ];
 
-// Debounce utility
-const debounce = (func, wait) => {
+// Debounce utility with cleanup support
+const createDebounce = () => {
   let timeout;
-  return (...args) => {
+  const debounced = (func, wait) => (...args) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   };
+  const cancel = () => clearTimeout(timeout);
+  return { debounced, cancel };
 };
 
 // Country dropdown rendered via portal to escape Dialog
 const CountryDropdown = forwardRef(({ isOpen, onClose, onSelect, buttonRef, searchValue, onSearchChange, filteredCountries, selectedCode }, ref) => {
-  console.log("CountryDropdown render, isOpen:", isOpen);
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
 
   useEffect(() => {
@@ -177,6 +178,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const phoneInputRef = useRef(null);
   const countryButtonRef = useRef(null);
   const dropdownRef = useRef(null);
+  const debounceRef = useRef(null);
 
   // Internal mode (can override prop for switching)
   const [internalMode, setInternalMode] = useState(mode);
@@ -201,10 +203,21 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
 
   // Success state
   const [showSuccess, setShowSuccess] = useState(false);
+  const [pendingAuthData, setPendingAuthData] = useState(null);
 
   // Phone check state
   const [phoneExists, setPhoneExists] = useState(false);
   const [phoneChecking, setPhoneChecking] = useState(false);
+
+  // Initialize debounce helper
+  useEffect(() => {
+    debounceRef.current = createDebounce();
+    return () => {
+      if (debounceRef.current) {
+        debounceRef.current.cancel();
+      }
+    };
+  }, []);
 
   // Reset when mode changes or modal opens
   useEffect(() => {
@@ -218,46 +231,33 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     }
   }, [isOpen, mode]);
 
-  // Debounced phone check function
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const checkPhoneDebounced = useCallback(
-    debounce(async (fullPhone) => {
-      try {
-        const response = await axios.get(`${API}/auth/check-phone?phone=${encodeURIComponent(fullPhone)}`);
-        // Use startTransition for non-urgent state updates to prevent blocking
-        startTransition(() => {
-          setPhoneExists(response.data.exists);
-        });
-      } catch (error) {
-        console.error("Phone check error:", error);
-        startTransition(() => {
-          setPhoneExists(false);
-        });
-      } finally {
-        startTransition(() => {
-          setPhoneChecking(false);
-        });
-      }
-    }, 500),
-    []
-  );
+  // Phone check function
+  const checkPhone = useCallback(async (fullPhone) => {
+    try {
+      const response = await axios.get(`${API}/auth/check-phone?phone=${encodeURIComponent(fullPhone)}`);
+      setPhoneExists(response.data.exists);
+    } catch (error) {
+      setPhoneExists(false);
+    } finally {
+      setPhoneChecking(false);
+    }
+  }, []);
 
   // Check phone when user types 10 digits (signup mode only)
   useEffect(() => {
     const cleaned = phone.replace(/\D/g, '');
     if (internalMode === "signup" && cleaned.length >= 10) {
-      // Use startTransition to prevent blocking UI updates during typing
-      startTransition(() => {
-        setPhoneChecking(true);
-      });
+      setPhoneChecking(true);
       const fullPhone = `${countryCode}${cleaned}`;
-      checkPhoneDebounced(fullPhone);
+      // Use debounced function with proper cleanup
+      const debouncedCheck = debounceRef.current?.debounced(checkPhone, 500);
+      if (debouncedCheck) {
+        debouncedCheck(fullPhone);
+      }
     } else {
-      startTransition(() => {
-        setPhoneExists(false);
-      });
+      setPhoneExists(false);
     }
-  }, [phone, countryCode, internalMode, checkPhoneDebounced]);
+  }, [phone, countryCode, internalMode, checkPhone]);
 
   const resetAndClose = () => {
     setInternalMode(mode);
@@ -395,11 +395,11 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       });
 
       if (response.data.success) {
-        // Store token/user for later - don't call login() yet to prevent auto-navigation
-        window.__pendingAuth = {
+        // Store token/user in state - don't call login() yet to prevent auto-navigation
+        setPendingAuthData({
           token: response.data.token,
           user: response.data.user
-        };
+        });
 
         // Clear referral code after successful signup so it isn't reused
         localStorage.removeItem("titlii_ref");
@@ -408,7 +408,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         toast.success("Welcome to Titlii!");
       }
     } catch (error) {
-      console.error("Signup error:", error);
       if (error.response?.status === 409) {
         toast.error("An account already exists from this device. Please sign in instead.");
         setInternalMode("signin");
@@ -443,7 +442,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       setStep("otp");
       toast.success("Code sent via SMS!");
     } catch (error) {
-      console.error("Send OTP error:", error);
       if (error.response?.status === 404) {
         toast.error("No account found with this phone number. Please sign up first.");
         // Switch to signup mode
@@ -460,43 +458,30 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   };
 
   const handleVerifyOTP = async () => {
-    console.log("handleVerifyOTP called, OTP length:", otp.length);
-    
     if (otp.length !== 6) {
       toast.error("Please enter the complete 6-digit code");
       return;
     }
-    
+
     setLoading(true);
     try {
       const fullPhone = getFullPhoneNumber();
-      console.log("Calling verify-otp API with phone:", fullPhone);
-      
-        const response = await axios.post(`${API}/auth/verify-otp`, { 
+
+      const response = await axios.post(`${API}/auth/verify-otp`, {
         phone: fullPhone,
-          otp: otp
-        });
-        
-      console.log("Verify OTP response:", {
-        hasToken: !!response.data.token,
-        hasUser: !!response.data.user,
-        profileCompleted: response.data.profile_completed,
-        isNewUser: response.data.is_new_user
+        otp: otp
       });
-      
+
       // Call login with token and user data
-      console.log("Calling login() with token and user");
-          login(response.data.token, response.data.user);
-      
+      login(response.data.token, response.data.user);
+
       // Wait a moment for state to update
       await new Promise(resolve => setTimeout(resolve, 100));
-      
-      console.log("Closing modal and navigating");
+
       onClose();
-      
+
       // Navigate to dashboard (route is /app/* in App.js)
       setTimeout(() => {
-        console.log("Navigating to /app (dashboard)");
         navigate("/app", { replace: true });
       }, 200);
       
@@ -506,7 +491,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         toast.info("Welcome! Let's complete your profile.");
       }
     } catch (error) {
-      console.error("Verify OTP error:", error);
       toast.error(error.response?.data?.detail || "Invalid code. Please try again.");
     } finally {
       setLoading(false);
@@ -614,10 +598,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => {
-                    // Login user
-                    if (window.__pendingAuth) {
-                      login(window.__pendingAuth.token, window.__pendingAuth.user);
-                      delete window.__pendingAuth;
+                    // Login user with pending auth data
+                    if (pendingAuthData) {
+                      login(pendingAuthData.token, pendingAuthData.user);
+                      setPendingAuthData(null);
                     }
                     // Navigate to dashboard with flag to show Connect Socials modal
                     onClose();
@@ -642,10 +626,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     <Label className="text-xs font-medium text-gray-500 mb-1 block">YOUR NAME</Label>
                     <Input
                       value={name}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        startTransition(() => setName(value));
-                      }}
+                      onChange={(e) => setName(e.target.value)}
                       placeholder="John Doe"
                       className="h-11"
                     />
@@ -660,13 +641,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                         ref={phoneInputRef}
                         type="tel"
                         value={phone}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          // Use startTransition to prevent blocking UI during typing
-                          startTransition(() => {
-                            setPhone(value);
-                          });
-                        }}
+                        onChange={(e) => setPhone(e.target.value)}
                         placeholder="(000) 000-0000"
                         className="flex-1 h-11"
                         autoComplete="tel"
@@ -697,10 +672,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                       <Input
                         type="email"
                         value={email}
-                        onChange={(e) => {
-                        const value = e.target.value;
-                        startTransition(() => setEmail(value));
-                      }}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="johndoe@company.com"
                         className="h-11 pl-10"
                         autoComplete="email"
@@ -713,10 +685,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     <Label className="text-xs font-medium text-gray-500 mb-1 block">LOCATION</Label>
                     <Input
                       value={location}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        startTransition(() => setLocation(value));
-                      }}
+                      onChange={(e) => setLocation(e.target.value)}
                       placeholder="City, State (e.g., Dallas, TX)"
                       className="h-11"
                     />
@@ -774,13 +743,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                         ref={phoneInputRef}
                         type="tel"
                         value={phone}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          // Use startTransition to prevent blocking UI during typing
-                          startTransition(() => {
-                            setPhone(value);
-                          });
-                        }}
+                        onChange={(e) => setPhone(e.target.value)}
                         placeholder="(000) 000-0000"
                         className="flex-1 h-11"
                         autoComplete="tel"
@@ -837,9 +800,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     <InputOTP
                       maxLength={6}
                       value={otp}
-                      onChange={(value) => {
-                        startTransition(() => setOtp(value));
-                      }}
+                      onChange={setOtp}
                     >
                       <InputOTPGroup>
                       {[0, 1, 2, 3, 4, 5].map(i => (
@@ -854,7 +815,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    startTransition(() => { handleVerifyOTP(); });
+                    handleVerifyOTP();
                   }}
                   className="w-full h-11 rounded-full text-white font-semibold transition-opacity"
                   style={{ background: '#E50914' }}
