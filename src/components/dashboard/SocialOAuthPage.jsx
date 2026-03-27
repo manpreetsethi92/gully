@@ -7,24 +7,24 @@ import { Check, ExternalLink, ShieldCheck, Link2, Save, X } from "lucide-react";
 const PLATFORMS = [
   { key: "linkedin", label: "LinkedIn", color: "#0077b5", icon: "in", supportsOAuth: true },
   { key: "google", label: "Google", color: "#4285F4", icon: "G", supportsOAuth: true },
-  { key: "instagram", label: "Instagram", color: "linear-gradient(135deg,#405de6,#5851db,#833ab4,#c13584,#e1306c,#fd1d1d)", icon: "IG", supportsOAuth: false },
   { key: "github", label: "GitHub", color: "#24292e", icon: "GH", supportsOAuth: true },
   { key: "youtube", label: "YouTube", color: "#ff0000", icon: "YT", supportsOAuth: true },
-  { key: "tiktok", label: "TikTok", color: "#010101", icon: "TK", supportsOAuth: false },
-  { key: "behance", label: "Behance", color: "#1769ff", icon: "Be", supportsOAuth: false },
+  { key: "tiktok", label: "TikTok", color: "#010101", icon: "TK", supportsOAuth: true, comingSoon: true },
+  { key: "behance", label: "Behance", color: "#1769ff", icon: "Be", supportsOAuth: true, comingSoon: true },
+  { key: "dribbble", label: "Dribbble", color: "#ea4c89", icon: "Dr", supportsOAuth: true, comingSoon: true },
+  { key: "instagram", label: "Instagram", color: "linear-gradient(135deg,#405de6,#5851db,#833ab4,#c13584,#e1306c,#fd1d1d)", icon: "IG", supportsOAuth: false },
   { key: "twitter", label: "X / Twitter", color: "#000", icon: "X", supportsOAuth: false },
-  { key: "dribbble", label: "Dribbble", color: "#ea4c89", icon: "Dr", supportsOAuth: false },
 ];
 
 const SOCIAL_MANUAL_LINKS = [
   { key: "instagram", label: "Instagram", placeholder: "https://www.instagram.com/yourusername" },
-  { key: "tiktok", label: "TikTok", placeholder: "https://www.tiktok.com/@yourusername" },
   { key: "twitter", label: "X / Twitter", placeholder: "https://x.com/yourusername" },
-  { key: "behance", label: "Behance", placeholder: "https://www.behance.net/yourusername" },
-  { key: "dribbble", label: "Dribbble", placeholder: "https://dribbble.com/yourusername" },
 ];
 
 const WORK_LINKS = [
+  { key: "tiktok", label: "TikTok", placeholder: "https://www.tiktok.com/@yourusername" },
+  { key: "behance", label: "Behance", placeholder: "https://www.behance.net/yourusername" },
+  { key: "dribbble", label: "Dribbble", placeholder: "https://dribbble.com/yourusername" },
   { key: "imdb", label: "IMDb", placeholder: "https://www.imdb.com/name/nm..." },
   { key: "vimeo", label: "Vimeo", placeholder: "https://vimeo.com/yourusername" },
   { key: "soundcloud", label: "SoundCloud", placeholder: "https://soundcloud.com/yourusername" },
@@ -390,7 +390,7 @@ const SocialOAuthPage = ({ darkMode }) => {
           const isVerified = !!verified[platform.key];
           const isConnected = isVerified || !!connected[platform.key];
           const isConnecting = connecting === platform.key;
-          const showManualInput = !platform.supportsOAuth && !isConnected;
+          const showManualInput = !platform.supportsOAuth && !isConnected && !platform.comingSoon;
 
           return (
             <div key={platform.key}>
@@ -431,7 +431,7 @@ const SocialOAuthPage = ({ darkMode }) => {
                     )
                   ) : (
                     <p className={`text-sm ${darkMode ? "text-white/40" : "text-gray-400"}`}>
-                      {platform.supportsOAuth ? "Verify with OAuth" : "Add your profile link"}
+                      {platform.comingSoon ? "Coming soon" : platform.supportsOAuth ? "Verify with OAuth" : "Add your profile link"}
                     </p>
                   )}
                 </div>
@@ -446,6 +446,10 @@ const SocialOAuthPage = ({ darkMode }) => {
                     {isVerified ? <ShieldCheck size={12} /> : <Check size={12} />}
                     {isVerified ? "Verified" : "Connected"}
                   </span>
+                ) : platform.comingSoon ? (
+                  <span className={`px-3 py-1.5 text-sm rounded-full ${darkMode ? "bg-white/5 text-white/30" : "bg-gray-100 text-gray-400"}`}>
+                    Soon
+                  </span>
                 ) : platform.supportsOAuth ? (
                   <button
                     onClick={() => handleConnect(platform.key)}
@@ -454,11 +458,7 @@ const SocialOAuthPage = ({ darkMode }) => {
                   >
                     {isConnecting ? "..." : "Verify"}
                   </button>
-                ) : (
-                  <span className={`px-3 py-1.5 text-sm rounded-full ${darkMode ? "bg-white/5 text-white/30" : "bg-gray-100 text-gray-400"}`}>
-                    Soon
-                  </span>
-                )}
+                ) : null}
               </div>
 
               {/* Inline Manual Input for Coming Soon Platforms */}
