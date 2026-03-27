@@ -8,7 +8,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { useAuth, API } from "../App";
-import { ArrowLeft, MessageCircle, Check, Instagram, Linkedin, ChevronDown, Search, Mail } from "lucide-react";
+import { ArrowLeft, MessageCircle, Check, Instagram, ChevronDown, Search, Mail } from "lucide-react";
 
 const COUNTRY_CODES = [
   { code: "+1", country: "United States", flag: "🇺🇸" },
@@ -196,7 +196,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const [whatsappAlertsOptIn, setWhatsappAlertsOptIn] = useState(true);
   const [location, setLocation] = useState("");
   const [instagram, setInstagram] = useState("");
-  const [linkedin, setLinkedin] = useState("");
 
   // OTP state (for signin)
   const [otp, setOtp] = useState("");
@@ -259,7 +258,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setEmail("");
     setLocation("");
     setInstagram("");
-    setLinkedin("");
     setAgreedToTerms(false);
     setShowSuccess(false);
     setShowCountryDropdown(false);
@@ -298,10 +296,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     }, 100);
   };
 
-  const hasSocialLink = () => {
-    return instagram.trim() !== "" || linkedin.trim() !== "";
-  };
-
   const isValidEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
@@ -336,10 +330,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       return;
     }
 
-    if (!hasSocialLink()) {
-      toast.error("Please add your Instagram or LinkedIn");
-      return;
-    }
+    // Instagram is now optional - no validation required
 
     setLoading(true);
     try {
@@ -364,10 +355,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       const response = await axios.post(`${API}/auth/signup-and-call`, {
         name: name.trim(),
         phone: fullPhone,
+        email: email.trim(),
         location: location.trim(),
         device_fingerprint: deviceFingerprint,
         instagram: instagram.trim() || "",
-        linkedin: linkedin.trim() || "",
         whatsapp_alerts_opt_in: whatsappAlertsOptIn,
         ...(refCode && { ref_code: refCode })
       });
@@ -695,38 +686,21 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     />
                   </div>
 
-                  {/* Social Links */}
-                  <div className="p-4 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(229, 9, 20, 0.05) 0%, rgba(255, 71, 87, 0.05) 100%)', border: '1px solid rgba(229, 9, 20, 0.2)' }}>
-                    <Label className="text-xs font-medium mb-2 block" style={{ color: '#E50914' }}>
-                      VERIFY YOUR PROFILE
-                    </Label>
-                    <p className="text-xs text-gray-500 mb-3">Add at least one social link so we can verify you're real</p>
-
-                    {/* Instagram */}
-                    <div className="flex items-center gap-2 mb-3">
+                  {/* Instagram (Optional) */}
+                  <div>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">INSTAGRAM USERNAME (OPTIONAL)</Label>
+                    <div className="flex items-center gap-2">
                       <Instagram size={16} className="text-pink-500 flex-shrink-0" />
                       <Input
                         value={instagram}
                         onChange={(e) => setInstagram(e.target.value)}
-                        placeholder="Instagram username"
-                        className={`h-10 text-sm ${instagram.trim() ? 'border-green-300' : ''}`}
-                      />
-                      </div>
-
-                    {/* LinkedIn */}
-                    <div className="flex items-center gap-2">
-                      <Linkedin size={16} className="text-blue-600 flex-shrink-0" />
-                      <Input
-                        value={linkedin}
-                        onChange={(e) => setLinkedin(e.target.value)}
-                        placeholder="LinkedIn URL or username"
-                        className={`h-10 text-sm ${linkedin.trim() ? 'border-green-300' : ''}`}
+                        placeholder="your_username"
+                        className={`h-11 flex-1 ${instagram.trim() ? 'border-green-300' : ''}`}
                       />
                     </div>
-
-                    {hasSocialLink() && (
-                      <p className="text-xs text-green-600 mt-3 flex items-center gap-1">
-                        <Check size={12} /> Ready to verify
+                    {instagram.trim() && (
+                      <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
+                        <Check size={12} /> Will help verify your profile
                       </p>
                     )}
                   </div>
