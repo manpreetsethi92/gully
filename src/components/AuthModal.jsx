@@ -642,7 +642,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     <Label className="text-xs font-medium text-gray-500 mb-1 block">YOUR NAME</Label>
                     <Input
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        startTransition(() => setName(value));
+                      }}
                       placeholder="John Doe"
                       className="h-11"
                     />
@@ -657,7 +660,13 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                         ref={phoneInputRef}
                         type="tel"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Use startTransition to prevent blocking UI during typing
+                          startTransition(() => {
+                            setPhone(value);
+                          });
+                        }}
                         placeholder="(000) 000-0000"
                         className="flex-1 h-11"
                         autoComplete="tel"
@@ -688,7 +697,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                       <Input
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                        const value = e.target.value;
+                        startTransition(() => setEmail(value));
+                      }}
                         placeholder="johndoe@company.com"
                         className="h-11 pl-10"
                         autoComplete="email"
@@ -701,7 +713,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     <Label className="text-xs font-medium text-gray-500 mb-1 block">LOCATION</Label>
                     <Input
                       value={location}
-                      onChange={(e) => setLocation(e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        startTransition(() => setLocation(value));
+                      }}
                       placeholder="City, State (e.g., Dallas, TX)"
                       className="h-11"
                     />
@@ -759,7 +774,13 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                         ref={phoneInputRef}
                         type="tel"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Use startTransition to prevent blocking UI during typing
+                          startTransition(() => {
+                            setPhone(value);
+                          });
+                        }}
                         placeholder="(000) 000-0000"
                         className="flex-1 h-11"
                         autoComplete="tel"
@@ -813,7 +834,13 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   </div>
                   
                 <div className="flex justify-center mb-6">
-                    <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+                    <InputOTP
+                      maxLength={6}
+                      value={otp}
+                      onChange={(value) => {
+                        startTransition(() => setOtp(value));
+                      }}
+                    >
                       <InputOTPGroup>
                       {[0, 1, 2, 3, 4, 5].map(i => (
                         <InputOTPSlot key={i} index={i} className="w-10 h-12 text-lg" />
