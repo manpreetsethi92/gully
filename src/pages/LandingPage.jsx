@@ -2,6 +2,15 @@ import React, { useState, useEffect, useCallback, startTransition, Suspense, laz
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 const AuthModal = lazy(() => import("../components/AuthModal"));
 
+// Animation timing constants (in milliseconds)
+const ANIMATION_TIMING = {
+  MESSAGE_DELAY: 1200,
+  CONVERSATION_GAP: 3500,
+  INITIAL_DELAY: 600,
+  WORD_ROTATION_INTERVAL: 2000,
+  PRELOAD_DELAY: 2000
+};
+
 const WORDS = ["photographer", "gig", "videographer", "mentor", "designer", "clients", "editor", "beta testers", "producer", "collab"];
 
 const CONVERSATIONS = [
@@ -49,17 +58,17 @@ const PhoneMockup = () => {
         const msgToAdd = currentConvo[messageIndex];
         setVisibleMessages(prev => [...prev, msgToAdd]);
         messageIndex++;
-        const id = setTimeout(showNextMessage, 1200);
+        const id = setTimeout(showNextMessage, ANIMATION_TIMING.MESSAGE_DELAY);
         timeoutIds.push(id);
       } else {
         const id1 = setTimeout(() => {
           setConvoIndex((prev) => (prev + 1) % CONVERSATIONS.length);
-        }, 3500);
+        }, ANIMATION_TIMING.CONVERSATION_GAP);
         timeoutIds.push(id1);
       }
     };
 
-    const startId = setTimeout(showNextMessage, 600);
+    const startId = setTimeout(showNextMessage, ANIMATION_TIMING.INITIAL_DELAY);
     timeoutIds.push(startId);
 
     return () => {
@@ -148,7 +157,7 @@ const LandingPage = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentWord((prev) => (prev + 1) % WORDS.length);
-    }, 2000);
+    }, ANIMATION_TIMING.WORD_ROTATION_INTERVAL);
     return () => clearInterval(interval);
   }, []);
 
@@ -159,7 +168,7 @@ const LandingPage = () => {
       const id = requestIdleCallback(preload);
       return () => cancelIdleCallback(id);
     } else {
-      const t = setTimeout(preload, 2000);
+      const t = setTimeout(preload, ANIMATION_TIMING.PRELOAD_DELAY);
       return () => clearTimeout(t);
     }
   }, []);
