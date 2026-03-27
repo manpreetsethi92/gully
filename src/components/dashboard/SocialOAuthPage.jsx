@@ -497,8 +497,6 @@ const SocialOAuthPage = ({ darkMode }) => {
           </div>
         )}
       </>
-        </div>
-      </div>
 
       {/* Add Link Modal */}
       {showAddLinkModal && (
