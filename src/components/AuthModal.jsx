@@ -197,6 +197,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [whatsappAlertsOptIn, setWhatsappAlertsOptIn] = useState(true);
   const [location, setLocation] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [instagramUrl, setInstagramUrl] = useState("");
 
   // OTP state (for signin)
   const [otp, setOtp] = useState("");
@@ -268,6 +270,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setName("");
     setEmail("");
     setLocation("");
+    setLinkedinUrl("");
+    setInstagramUrl("");
     setAgreedToTerms(false);
     setShowSuccess(false);
     setShowCountryDropdown(false);
@@ -340,7 +344,12 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       return;
     }
 
-    // Instagram is now optional - no validation required
+    if (!linkedinUrl.trim()) {
+      toast.error("Please enter your LinkedIn profile URL");
+      return;
+    }
+
+    // Instagram is optional - no validation required
 
     setLoading(true);
     try {
@@ -389,6 +398,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         phone: fullPhone,
         email: email.trim(),
         location: location.trim(),
+        linkedin: linkedinUrl.trim(),
+        instagram: instagramUrl.trim() || undefined,
         device_fingerprint: deviceFingerprint,
         whatsapp_alerts_opt_in: whatsappAlertsOptIn,
         ...(refCode && { ref_code: refCode })
@@ -687,6 +698,28 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
                       placeholder="City, State (e.g., Dallas, TX)"
+                      className="h-11"
+                    />
+                  </div>
+
+                  {/* LinkedIn URL */}
+                  <div>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">LINKEDIN URL</Label>
+                    <Input
+                      value={linkedinUrl}
+                      onChange={(e) => setLinkedinUrl(e.target.value)}
+                      placeholder="linkedin.com/in/yourprofile"
+                      className="h-11"
+                    />
+                  </div>
+
+                  {/* Instagram URL */}
+                  <div>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">INSTAGRAM URL (OPTIONAL)</Label>
+                    <Input
+                      value={instagramUrl}
+                      onChange={(e) => setInstagramUrl(e.target.value)}
+                      placeholder="instagram.com/yourhandle"
                       className="h-11"
                     />
                   </div>
