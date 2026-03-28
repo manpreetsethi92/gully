@@ -344,12 +344,11 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       return;
     }
 
-    if (!linkedinUrl.trim()) {
-      toast.error("Please enter your LinkedIn profile URL");
+    // Require at least one social media URL (LinkedIn OR Instagram)
+    if (!linkedinUrl.trim() && !instagramUrl.trim()) {
+      toast.error("Please enter at least one social media URL (LinkedIn or Instagram)");
       return;
     }
-
-    // Instagram is optional - no validation required
 
     setLoading(true);
     try {
@@ -704,7 +703,9 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
 
                   {/* LinkedIn URL */}
                   <div>
-                    <Label className="text-xs font-medium text-gray-500 mb-1 block">LINKEDIN URL</Label>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">
+                      LINKEDIN URL {!instagramUrl.trim() && <span className="text-[#E50914]">*</span>}
+                    </Label>
                     <Input
                       value={linkedinUrl}
                       onChange={(e) => setLinkedinUrl(e.target.value)}
@@ -715,13 +716,16 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
 
                   {/* Instagram URL */}
                   <div>
-                    <Label className="text-xs font-medium text-gray-500 mb-1 block">INSTAGRAM URL (OPTIONAL)</Label>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">
+                      INSTAGRAM URL {!linkedinUrl.trim() && <span className="text-[#E50914]">*</span>}
+                    </Label>
                     <Input
                       value={instagramUrl}
                       onChange={(e) => setInstagramUrl(e.target.value)}
                       placeholder="instagram.com/yourhandle"
                       className="h-11"
                     />
+                    <p className="text-xs text-gray-400 mt-1">At least one social URL required (LinkedIn or Instagram)</p>
                   </div>
 
                   <label className="flex items-start gap-3 mt-5 cursor-pointer select-none">
