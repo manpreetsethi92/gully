@@ -81,10 +81,12 @@ const PhoneMockup = () => {
       className="relative z-10 max-w-sm"
       style={{ filter: 'drop-shadow(0 40px 80px rgba(0,0,0,0.5))' }}
     >
-      <img 
-        src="/phone-mockup.png" 
+      <img
+        src="/phone-mockup.png"
         alt="Titlii chat interface"
         className="w-full h-auto"
+        fetchpriority="high"
+        decoding="async"
       />
       
       {/* Message bubbles overlay */}
@@ -205,11 +207,13 @@ const LandingPage = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 mix-blend-difference">
         <div className="max-w-[1800px] mx-auto px-8 py-6 flex items-center justify-between">
           <a href="/" className="flex items-center gap-4">
-            <img 
-              src="/butterfly.png" 
-              alt="Titlii" 
+            <img
+              src="/butterfly.png"
+              alt="Titlii"
               className="w-10 h-auto"
               style={{ filter: 'brightness(0) invert(1)' }}
+              fetchpriority="high"
+              decoding="async"
             />
             <span className="font-syne font-bold text-xl tracking-tight text-white">titlii</span>
           </a>
@@ -272,8 +276,6 @@ const LandingPage = () => {
             <div className="flex flex-col sm:flex-row items-start gap-6 animate-fade-up-delay-3">
               <button
                 onClick={handleTryUsNow}
-                onMouseEnter={() => import("../components/AuthModal")}
-                onFocus={() => import("../components/AuthModal")}
                 className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16 lowercase rounded-full"
               >
                 <span className="relative z-10">start connecting</span>
@@ -292,7 +294,7 @@ const LandingPage = () => {
         
         {/* Mobile butterfly - shows below content on mobile */}
         <div className="lg:hidden absolute bottom-10 right-4 w-32 opacity-30">
-          <img src="/butterfly.png" alt="" className="w-full h-auto" />
+          <img src="/butterfly.png" alt="" className="w-full h-auto" loading="lazy" decoding="async" />
         </div>
         
         {/* Scroll indicator */}
@@ -431,11 +433,11 @@ const LandingPage = () => {
               >
                 {/* Left Wing */}
                 <div className="wing-left">
-                  <img src="/butterfly.png" alt="" />
+                  <img src="/butterfly.png" alt="" loading="lazy" decoding="async" />
                 </div>
                 {/* Right Wing */}
                 <div className="wing-right">
-                  <img src="/butterfly.png" alt="" />
+                  <img src="/butterfly.png" alt="" loading="lazy" decoding="async" />
                 </div>
               </div>
             </div>
@@ -452,8 +454,6 @@ const LandingPage = () => {
             
             <button
               onClick={handleTryUsNow}
-              onMouseEnter={() => import("../components/AuthModal")}
-              onFocus={() => import("../components/AuthModal")}
               className="group inline-flex items-center gap-4 px-10 py-5 md:px-12 md:py-6 bg-[#E50914] font-syne font-semibold text-lg md:text-xl tracking-wide text-white hover:gap-6 transition-all duration-300 lowercase rounded-full"
             >
               start connecting
