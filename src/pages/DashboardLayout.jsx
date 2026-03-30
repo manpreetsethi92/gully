@@ -452,12 +452,6 @@ const DashboardLayout = () => {
               >
                 Connect Socials
               </button>
-              <button
-                onClick={() => setShowConnectSocialsModal(false)}
-                className={`w-full h-10 rounded-full mt-3 text-sm font-medium ${darkMode ? 'text-white/50 hover:bg-white/5' : 'text-gray-500 hover:bg-gray-50'}`}
-              >
-                I'll do it later
-              </button>
             </div>
           </div>
         </div>
