@@ -207,15 +207,12 @@ const LandingPage = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 mix-blend-difference">
         <div className="max-w-[1800px] mx-auto px-8 py-6 flex items-center justify-between">
           <a href="/" className="flex items-center gap-4">
-            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white"><span style={{fontFamily:"Georgia,serif",fontSize:"22px",fontWeight:"400",color:"#111",lineHeight:1}}>G</span></span>
             <span className="font-syne font-bold text-xl tracking-tight text-white">gully</span>
           </a>
           
           {/* Desktop */}
           <button
             onClick={handleSignIn}
-            onMouseEnter={() => import("../components/AuthModal")}
-            onFocus={() => import("../components/AuthModal")}
             className="hidden md:block font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
           >
             SIGN IN
@@ -224,8 +221,6 @@ const LandingPage = () => {
           {/* Mobile */}
           <button
             onClick={handleSignIn}
-            onMouseEnter={() => import("../components/AuthModal")}
-            onFocus={() => import("../components/AuthModal")}
             className="md:hidden font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
           >
             SIGN IN
