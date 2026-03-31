@@ -233,62 +233,86 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* ==================== HERO SECTION (WHITE) ==================== */}
-      <section className="min-h-screen relative bg-white pt-20 pb-0">
-        <div className="w-full lg:max-w-[1800px] lg:mx-auto lg:px-8 relative z-20 lg:flex lg:items-center lg:min-h-screen">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between lg:w-full lg:gap-8">
-            {/* Left — text */}
-            <div className="max-w-2xl w-full lg:w-auto px-8 lg:px-0 pt-12 lg:pt-0 mb-10 lg:mb-0">
-              <div className="animate-fade-up mb-8">
-                <span className="font-mono text-xs tracking-[0.3em] text-gray-900 lowercase">
-                  the superconnector
-                </span>
-              </div>
-              <h1 className="font-display text-[clamp(3rem,10vw,9rem)] leading-[0.9] tracking-tight mb-8 animate-fade-up-delay-1 text-gray-900 lowercase">
-                need a
-                <br />
-                <span className="relative inline-block">
-                  <span className="text-[#E50914] transition-all duration-500" key={currentWord}>
-                    {WORDS[currentWord]}
-                  </span>
-                  <span className="text-gray-900">?</span>
-                </span>
-              </h1>
-              <p className="font-syne text-xl md:text-2xl text-gray-500 max-w-xl leading-relaxed mb-12 animate-fade-up-delay-2 lowercase">
-                text taj. we post your ad. get matched in minutes.
-              </p>
-              <div className="flex flex-col sm:flex-row items-start gap-6 animate-fade-up-delay-3">
-                <button
-                  onClick={handleTryUsNow}
-                  className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16 lowercase rounded-full"
-                >
-                  <span className="relative z-10">start connecting</span>
-                  <ArrowRight
-                    className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white"
-                    size={20}
-                  />
-                </button>
-                <div className="font-mono text-xs text-gray-400 flex items-center gap-2 lowercase">
-                  <span className="w-8 h-px bg-gray-300" />
-                  free to start
-                </div>
-              </div>
-            </div>
+      {/* ==================== HERO SECTION ==================== */}
+      {/* Desktop: full viewport, no scroll. Mobile: stacks vertically */}
+      <section className="bg-white pt-20 flex flex-col lg:block lg:h-screen lg:overflow-hidden">
 
-            {/* Right — phone + footer */}
-            <div className="flex flex-col items-center flex-shrink-0 w-full lg:w-[520px] lg:pr-[140px] gap-4">
-              <div className="w-full lg:max-w-sm mx-auto">
-                <PhoneMockup />
-              </div>
-              <div className="flex items-center gap-6 pb-8 lg:pb-0">
-                <a href="/privacy" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">privacy</a>
-                <a href="/terms" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">terms</a>
-                <a href="/faq" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">faq</a>
-                <a href="mailto:taj@trygully.com" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">contact</a>
+        {/* Desktop layout — absolute positioning for pixel-perfect fit */}
+        <div className="hidden lg:flex h-full items-center justify-between max-w-[1800px] mx-auto px-8">
+          {/* Left */}
+          <div className="max-w-2xl">
+            <div className="animate-fade-up mb-8">
+              <span className="font-mono text-xs tracking-[0.3em] text-gray-900 lowercase">the superconnector</span>
+            </div>
+            <h1 className="font-display text-[clamp(3rem,8vw,9rem)] leading-[0.9] tracking-tight mb-8 animate-fade-up-delay-1 text-gray-900 lowercase">
+              need a<br />
+              <span className="relative inline-block">
+                <span className="text-[#E50914] transition-all duration-500" key={currentWord}>{WORDS[currentWord]}</span>
+                <span className="text-gray-900">?</span>
+              </span>
+            </h1>
+            <p className="font-syne text-xl md:text-2xl text-gray-500 max-w-xl leading-relaxed mb-12 animate-fade-up-delay-2 lowercase">
+              text taj. we post your ad. get matched in minutes.
+            </p>
+            <div className="flex items-start gap-6 animate-fade-up-delay-3">
+              <button onClick={handleTryUsNow} className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16 lowercase rounded-full">
+                <span className="relative z-10">start connecting</span>
+                <ArrowRight className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white" size={20} />
+              </button>
+              <div className="font-mono text-xs text-gray-400 flex items-center gap-2 lowercase">
+                <span className="w-8 h-px bg-gray-300" />free to start
               </div>
             </div>
           </div>
+          {/* Right — phone + footer */}
+          <div className="flex flex-col items-center flex-shrink-0 w-[520px] pr-[140px] gap-6">
+            <div className="w-full max-w-sm">
+              <PhoneMockup />
+            </div>
+            <div className="flex items-center gap-6">
+              <a href="/privacy" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">privacy</a>
+              <a href="/terms" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">terms</a>
+              <a href="/faq" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">faq</a>
+              <a href="mailto:taj@trygully.com" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">contact</a>
+            </div>
+          </div>
         </div>
+
+        {/* Mobile layout — stacks vertically */}
+        <div className="lg:hidden flex flex-col px-8 pb-0">
+          <div className="mb-8 pt-4">
+            <span className="font-mono text-xs tracking-[0.3em] text-gray-900 lowercase">the superconnector</span>
+          </div>
+          <h1 className="font-display text-[clamp(3rem,12vw,6rem)] leading-[0.9] tracking-tight mb-8 text-gray-900 lowercase">
+            need a<br />
+            <span className="relative inline-block">
+              <span className="text-[#E50914] transition-all duration-500" key={currentWord}>{WORDS[currentWord]}</span>
+              <span className="text-gray-900">?</span>
+            </span>
+          </h1>
+          <p className="font-syne text-lg text-gray-500 leading-relaxed mb-10 lowercase">
+            text taj. we post your ad. get matched in minutes.
+          </p>
+          <div className="flex items-center gap-4 mb-10">
+            <button onClick={handleTryUsNow} className="group relative px-8 py-4 bg-[#E50914] font-syne font-semibold text-base tracking-wide text-white overflow-hidden transition-all duration-300 lowercase rounded-full">
+              <span className="relative z-10">start connecting</span>
+            </button>
+            <div className="font-mono text-xs text-gray-400 flex items-center gap-2 lowercase">
+              <span className="w-8 h-px bg-gray-300" />free to start
+            </div>
+          </div>
+          {/* Phone — full width, no padding */}
+          <div className="w-full -mx-8" style={{width: 'calc(100% + 4rem)'}}>
+            <PhoneMockup />
+          </div>
+          <div className="flex items-center justify-center gap-6 py-6">
+            <a href="/privacy" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">privacy</a>
+            <a href="/terms" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">terms</a>
+            <a href="/faq" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">faq</a>
+            <a href="mailto:taj@trygully.com" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">contact</a>
+          </div>
+        </div>
+
       </section>
 
       {hasModalBeenOpened && (
