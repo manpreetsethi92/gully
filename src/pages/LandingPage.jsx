@@ -252,7 +252,7 @@ const LandingPage = () => {
               </span>
             </h1>
             <p className="font-syne text-xl md:text-2xl text-gray-500 max-w-xl leading-relaxed mb-12 animate-fade-up-delay-2 lowercase">
-              text taj. we post your ad. get matched in minutes.
+              text us: Post a Gig - Find a Gig - Matched in Mins
             </p>
             <div className="flex items-start gap-6 animate-fade-up-delay-3">
               <button onClick={handleTryUsNow} className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16 lowercase rounded-full">
@@ -291,7 +291,7 @@ const LandingPage = () => {
             </span>
           </h1>
           <p className="font-syne text-lg text-gray-500 leading-relaxed mb-10 lowercase">
-            text taj. we post your ad. get matched in minutes.
+            text us: Post a Gig - Find a Gig - Matched in Mins
           </p>
           <div className="flex items-center gap-4 mb-10">
             <button onClick={handleTryUsNow} className="group relative px-8 py-4 bg-[#E50914] font-syne font-semibold text-base tracking-wide text-white overflow-hidden transition-all duration-300 lowercase rounded-full">
