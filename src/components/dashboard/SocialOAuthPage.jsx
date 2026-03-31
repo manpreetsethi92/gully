@@ -63,10 +63,16 @@ const SocialOAuthPage = ({ darkMode }) => {
 
       const connectedResult = {};
       const verifiedResult = {};
+      // fabric_connected_platforms is set by the backend when Fabric sync completes
+      const fabricPlatforms = userData.fabric_connected_platforms || [];
 
       PLATFORMS.forEach(p => {
         if (links[p.key]) connectedResult[p.key] = links[p.key];
-        if (oauth[p.key] || linkedAt[p.key]) verifiedResult[p.key] = true;
+        // linked_at is stamped by Fabric webhook; social_oauth by direct OAuth
+        // fabric_connected_platforms is a fallback for when linked_at isn't set yet
+        if (oauth[p.key] || linkedAt[p.key] || fabricPlatforms.includes(p.key)) {
+          verifiedResult[p.key] = true;
+        }
       });
 
       // Pull LinkedIn enriched data for the profile card
