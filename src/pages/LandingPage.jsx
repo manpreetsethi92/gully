@@ -229,11 +229,11 @@ const LandingPage = () => {
       </nav>
 
       {/* ==================== HERO SECTION (WHITE) ==================== */}
-      <section className="min-h-screen relative flex items-center bg-white pt-20 pb-12 lg:pb-0">
-        <div className="max-w-[1800px] mx-auto px-8 relative z-20 w-full">
-          <div className="flex flex-col lg:flex-row items-center lg:items-center lg:justify-between gap-8">
+      <section className="min-h-screen relative flex items-center bg-white pt-20 pb-0">
+        <div className="w-full lg:max-w-[1800px] lg:mx-auto lg:px-8 relative z-20">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-8">
             {/* Left — text */}
-            <div className="max-w-2xl w-full lg:w-auto">
+            <div className="max-w-2xl w-full lg:w-auto px-8 lg:px-0 mb-8 lg:mb-0">
               <div className="animate-fade-up mb-8">
                 <span className="font-mono text-xs tracking-[0.3em] text-gray-900 lowercase">
                   the superconnector
@@ -271,8 +271,8 @@ const LandingPage = () => {
             </div>
 
             {/* Right — phone + footer */}
-            <div className="flex flex-col items-center justify-center flex-shrink-0 w-full lg:w-[520px] lg:pr-[140px] gap-4 max-w-[320px] lg:max-w-none mx-auto lg:mx-0">
-              <div className="w-full origin-top scale-[0.65] lg:scale-100 -mb-16 lg:mb-0">
+            <div className="flex flex-col items-center justify-center flex-shrink-0 w-full lg:w-[520px] lg:pr-[140px] gap-4 lg:mx-0">
+              <div className="w-full lg:max-w-sm">
                 <PhoneMockup />
               </div>
               <div className="flex items-center gap-6">
