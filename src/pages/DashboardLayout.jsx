@@ -146,7 +146,7 @@ const DashboardLayout = () => {
           <Menu size={24} className={darkMode ? 'text-white' : 'text-gray-900'} />
         </button>
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black"><span style={{fontFamily:"'Syne', sans-serif",fontSize:"13px",fontWeight:"700",color:"white",lineHeight:1}}>G</span></span>
+          <img src="/favicon-32x32.png" alt="Gully" className="w-6 h-6" />
           <span className="font-syne font-bold text-xl text-[#E50914]">gully</span>
         </div>
         <div className="flex items-center gap-1">
@@ -184,7 +184,7 @@ const DashboardLayout = () => {
           {/* Logo + Dark Mode Toggle - Added pt-12 for mobile safe area */}
           <div className="px-6 py-6 pt-14 lg:pt-6 flex items-center justify-between">
             <div className="inline-flex items-center gap-3">
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-black"><span style={{fontFamily:"'Syne', sans-serif",fontSize:"15px",fontWeight:"700",color:"white",lineHeight:1}}>G</span></span>
+              <img src="/favicon-32x32.png" alt="Gully" className="w-8 h-8" />
               <span className="font-syne font-bold text-2xl tracking-tight text-[#E50914]">gully</span>
             </div>
             <button
