@@ -56,7 +56,7 @@ const TeamsPage = ({ darkMode }) => {
             <div>
               <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Your collaborative teams</p>
               <p className={`text-sm mt-1 ${darkMode ? "text-white/60" : "text-gray-600"}`}>
-                When you work with the same person twice, Titlii suggests forming a named team. Teams have a shared rate card and reputation — hirers can book the whole team for bigger projects.
+                When you work with the same person twice, Gully suggests forming a named team. Teams have a shared rate card and reputation — hirers can book the whole team for bigger projects.
               </p>
             </div>
           </div>
@@ -69,7 +69,7 @@ const TeamsPage = ({ darkMode }) => {
           <UsersRound size={48} className={darkMode ? "text-white/20" : "text-gray-300"} />
           <h2 className={`text-2xl font-bold mb-2 mt-4 ${darkMode ? "text-white" : "text-gray-900"}`}>No teams formed yet</h2>
           <p className={`mb-6 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
-            Close 2+ gigs with the same collaborator and Titlii will prompt you to form a named team. Unlike Work History (your solo track record), teams are bookable units — hirers can hire the whole team at once.
+            Close 2+ gigs with the same collaborator and Gully will prompt you to form a named team. Unlike Work History (your solo track record), teams are bookable units — hirers can hire the whole team at once.
           </p>
           <a
             href={WHATSAPP_BOT_URL}

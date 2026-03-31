@@ -35,7 +35,7 @@ const ReferralsPage = ({ darkMode }) => {
   const handleWhatsAppShare = () => {
     if (!referral?.referral_url) return;
     const text = encodeURIComponent(
-      `Join me on Titlii — find creative gigs and collaborators. ${referral.referral_url}`
+      `Join me on Gully — find creative gigs and collaborators. ${referral.referral_url}`
     );
     window.open(`https://wa.me/?text=${text}`, "_blank");
   };
@@ -45,7 +45,7 @@ const ReferralsPage = ({ darkMode }) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Join me on Titlii",
+          title: "Join me on Gully",
           text: "Find creative gigs and collaborators.",
           url: referral.referral_url,
         });

@@ -30,7 +30,7 @@ axios.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid - clear auth and redirect
-      localStorage.removeItem("titly_token");
+      localStorage.removeItem("gully_token");
       if (window.location.pathname !== "/") {
         window.location.href = "/";
       }
@@ -77,16 +77,16 @@ const AuthProvider = ({ children }) => {
   // Hydrate auth from localStorage AFTER mount (Safari bfcache fix)
   useEffect(() => {
     const hydrateAuth = () => {
-      const storedToken = localStorage.getItem("titly_token");
-      const storedUser = localStorage.getItem("titly_user");
+      const storedToken = localStorage.getItem("gully_token");
+      const storedUser = localStorage.getItem("gully_user");
 
       if (storedToken && storedUser) {
         try {
           setToken(storedToken);
           setUser(JSON.parse(storedUser));
         } catch {
-          localStorage.removeItem("titly_token");
-          localStorage.removeItem("titly_user");
+          localStorage.removeItem("gully_token");
+          localStorage.removeItem("gully_user");
           setToken(null);
           setUser(null);
         }
@@ -114,13 +114,13 @@ const AuthProvider = ({ children }) => {
               ...response.data,
               profile_completed: response.data.profile_completed || prev?.profile_completed || false
             }));
-            localStorage.setItem("titly_user", JSON.stringify(response.data));
+            localStorage.setItem("gully_user", JSON.stringify(response.data));
           }
         } catch (error) {
           if (isMounted) {
             console.error("Token verification failed:", error);
-            localStorage.removeItem("titly_token");
-            localStorage.removeItem("titly_user");
+            localStorage.removeItem("gully_token");
+            localStorage.removeItem("gully_user");
             setToken(null);
             setUser(null);
           }
@@ -138,22 +138,22 @@ const AuthProvider = ({ children }) => {
   }, [token, loading]);
 
   const login = (newToken, userData) => {
-    localStorage.setItem("titly_token", newToken);
-    localStorage.setItem("titly_user", JSON.stringify(userData));
+    localStorage.setItem("gully_token", newToken);
+    localStorage.setItem("gully_user", JSON.stringify(userData));
     setToken(newToken);
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem("titly_token");
-    localStorage.removeItem("titly_user");
+    localStorage.removeItem("gully_token");
+    localStorage.removeItem("gully_user");
     setToken(null);
     setUser(null);
   };
 
   const updateUser = (userData) => {
     setUser(userData);
-    localStorage.setItem("titly_user", JSON.stringify(userData));
+    localStorage.setItem("gully_user", JSON.stringify(userData));
   };
 
   const openAuthModal = () => setShowAuthModal(true);
@@ -208,7 +208,7 @@ const AppRoutes = () => {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get("ref");
     if (ref) {
-      localStorage.setItem("giggy_ref", ref);
+      localStorage.setItem("gully_ref", ref);
       // Track the click on the backend (fire and forget)
       fetch(`${API}/referrals/track/${ref}`).catch(() => {});
     }

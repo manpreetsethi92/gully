@@ -77,7 +77,7 @@ const WorkHistoryPage = ({ darkMode }) => {
           <History size={48} className={darkMode ? "text-white/20" : "text-gray-300"} />
           <h2 className={`text-2xl font-bold mb-2 mt-4 ${darkMode ? "text-white" : "text-gray-900"}`}>No gigs closed yet</h2>
           <p className={`mb-6 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
-            Every gig you deliver through Titlii gets added here — your personal verified portfolio. Hirers see this when they're deciding who to book.
+            Every gig you deliver through Gully gets added here — your personal verified portfolio. Hirers see this when they're deciding who to book.
           </p>
           <a href="https://wa.me/12134147369?text=Hi%20Taj!" target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-bold text-sm" style={{ background: "#E50914" }}>

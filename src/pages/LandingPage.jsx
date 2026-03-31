@@ -83,7 +83,7 @@ const PhoneMockup = () => {
     >
       <img
         src="/phone-mockup.png"
-        alt="Titlii chat interface"
+        alt="Gully chat interface"
         className="w-full h-auto"
         fetchpriority="high"
         decoding="async"
@@ -209,13 +209,13 @@ const LandingPage = () => {
           <a href="/" className="flex items-center gap-4">
             <img
               src="/butterfly.png"
-              alt="Titlii"
+              alt="Gully"
               className="w-10 h-auto"
               style={{ filter: 'brightness(0) invert(1)' }}
               fetchpriority="high"
               decoding="async"
             />
-            <span className="font-syne font-bold text-xl tracking-tight text-white">titlii</span>
+            <span className="font-syne font-bold text-xl tracking-tight text-white">gully</span>
           </a>
           
           {/* Desktop */}
@@ -443,7 +443,7 @@ const LandingPage = () => {
             </div>
             
             <h2 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-4 md:mb-8 text-white lowercase">
-              let titlii take
+              let gully take
               <br />
               <span className="text-[#E50914]">you places</span>
             </h2>
@@ -470,7 +470,7 @@ const LandingPage = () => {
             <a href="/privacy" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">privacy</a>
             <a href="/terms" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">terms</a>
             <a href="/faq" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">faq</a>
-            <a href="mailto:taj@titlii.social" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">contact</a>
+            <a href="mailto:taj@trygully.com" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">contact</a>
           </div>
         </div>
       </footer>
