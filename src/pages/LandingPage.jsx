@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, startTransition, Suspense, lazy } from "react";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 const AuthModal = lazy(() => import("../components/AuthModal"));
 
 // Animation timing constants (in milliseconds)
@@ -139,7 +139,7 @@ const LandingPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [hasModalBeenOpened, setHasModalBeenOpened] = useState(false);
   const [authMode, setAuthMode] = useState("signup"); // "signup" or "signin"
-  const [flowType, setFlowType] = useState('hiring'); // 'hiring' or 'freelancer'
+  // flowType removed — below-hero sections deleted
 
   // Fix mobile Safari white space issue
   useEffect(() => {
