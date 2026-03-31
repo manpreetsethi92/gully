@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, startTransition, Suspense, laz
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 const AuthModal = lazy(() => import("../components/AuthModal"));
 
+// Animation timing constants (in milliseconds)
 const ANIMATION_TIMING = {
   MESSAGE_DELAY: 1200,
   CONVERSATION_GAP: 3500,
@@ -10,27 +11,27 @@ const ANIMATION_TIMING = {
   PRELOAD_DELAY: 2000
 };
 
-const WORDS = ["photographer", "gig", "videographer", "mentor", "designer", "clients", "editor", "collab", "producer", "beta testers"];
+const WORDS = ["photographer", "gig", "videographer", "mentor", "designer", "clients", "editor", "beta testers", "producer", "collab"];
 
 const CONVERSATIONS = [
   [
     { sender: "taj", text: "Gurbax mentioned he is looking for a singer to collab on his new EP. Interested?" },
-    { sender: "user", text: "yes, tell me more about him" },
-    { sender: "taj", text: "Mostly electronic, house but open to other genres. Want to see his profile?" },
+    { sender: "user", text: "yes, tell me more about him, what kind of songs does he make?" },
+    { sender: "taj", text: "Mostly electronic, house but he is open to other genres as well. You want to see his profile?" },
     { sender: "user", text: "Yes, send it over" },
-    { sender: "taj", text: "Awesome, doing it asap 🦋" }
+    { sender: "taj", text: "Awesome, doing it asap" }
   ],
   [
-    { sender: "user", text: "I am a comedian traveling to NYC next weekend. Help me find a spot for an open mic" },
-    { sender: "taj", text: "Sure, I have a few venues in mind, let me reach out to them" },
+    { sender: "user", text: "I am a comedian traveling to NYC next weekend. Help me find a spot so I can do an open mic" },
+    { sender: "taj", text: "Sure, I have a few venues in mind, let me reach out to them and ask if they have any openings" },
     { sender: "user", text: "Awesome thanks" },
     { sender: "taj", text: "Sure thing!" }
   ],
   [
     { sender: "user", text: "Looking for 10 users to try my new skincare product" },
     { sender: "taj", text: "sure tell me more about these users" },
-    { sender: "user", text: "must be influencers with at least 5K followers" },
-    { sender: "taj", text: "awesome here are 10 people you might like!" }
+    { sender: "user", text: "sure, must be influencers with at least 5K followers" },
+    { sender: "taj", text: "awesome here are 10 people you might like, lmk and I can message them for you!" }
   ]
 ];
 
@@ -40,12 +41,18 @@ const PhoneMockup = () => {
   const animationRef = React.useRef(null);
 
   useEffect(() => {
-    if (animationRef.current) animationRef.current.forEach(id => clearTimeout(id));
+    if (animationRef.current) {
+      animationRef.current.forEach(id => clearTimeout(id));
+    }
+    
     const timeoutIds = [];
     animationRef.current = timeoutIds;
+    
     setVisibleMessages([]);
+
     const currentConvo = CONVERSATIONS[convoIndex];
     let messageIndex = 0;
+    
     const showNextMessage = () => {
       if (messageIndex < currentConvo.length) {
         const msgToAdd = currentConvo[messageIndex];
@@ -60,32 +67,66 @@ const PhoneMockup = () => {
         timeoutIds.push(id1);
       }
     };
+
     const startId = setTimeout(showNextMessage, ANIMATION_TIMING.INITIAL_DELAY);
     timeoutIds.push(startId);
-    return () => timeoutIds.forEach(id => clearTimeout(id));
+
+    return () => {
+      timeoutIds.forEach(id => clearTimeout(id));
+    };
   }, [convoIndex]);
 
   return (
-    <div className="relative z-10 max-w-sm w-full" style={{ filter: 'drop-shadow(0 40px 80px rgba(0,0,0,0.6))' }}>
-      <img src="/phone-mockup.png" alt="Gully chat interface" className="w-full h-auto" fetchpriority="high" decoding="async" />
-      <div style={{
-        position: 'absolute', top: '18%', left: '6%', right: '6%', bottom: '15%',
-        display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-        padding: '12px', overflow: 'hidden',
-      }}>
+    <div 
+      className="relative z-10 max-w-sm"
+      style={{ filter: 'drop-shadow(0 40px 80px rgba(0,0,0,0.5))' }}
+    >
+      <img
+        src="/phone-mockup.png"
+        alt="Gully chat interface"
+        className="w-full h-auto"
+        fetchpriority="high"
+        decoding="async"
+      />
+      
+      {/* Message bubbles overlay */}
+      <div 
+        style={{
+          position: 'absolute',
+          top: '18%',
+          left: '6%',
+          right: '6%',
+          bottom: '15%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          padding: '12px',
+          overflow: 'hidden',
+        }}
+      >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {visibleMessages.map((msg, idx) => (
-            <div key={`${convoIndex}-${idx}`} style={{
-              maxWidth: '80%', padding: '10px 14px', fontSize: '14px', lineHeight: 1.45,
-              color: '#fff',
-              alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-              background: msg.sender === 'user'
-                ? 'linear-gradient(135deg, #B06AB3 0%, #9B59B6 50%, #8E44AD 100%)'
-                : 'linear-gradient(135deg, #4A4A5A 0%, #3D3D4A 50%, #333340 100%)',
-              borderRadius: msg.sender === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-              boxShadow: msg.sender === 'user' ? '0 4px 15px rgba(155,89,182,0.4)' : '0 4px 15px rgba(0,0,0,0.3)',
-              animation: 'message-pop 0.3s ease-out',
-            }}>{msg.text}</div>
+            <div
+              key={`${convoIndex}-${idx}`}
+              style={{ 
+                maxWidth: '80%',
+                padding: '12px 16px',
+                fontSize: '16px',
+                lineHeight: 1.45,
+                color: '#fff',
+                alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                background: msg.sender === 'user' 
+                  ? 'linear-gradient(135deg, #B06AB3 0%, #9B59B6 50%, #8E44AD 100%)' 
+                  : 'linear-gradient(135deg, #4A4A5A 0%, #3D3D4A 50%, #333340 100%)',
+                borderRadius: msg.sender === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                boxShadow: msg.sender === 'user' 
+                  ? '0 4px 15px rgba(155, 89, 182, 0.4)' 
+                  : '0 4px 15px rgba(0,0,0,0.3)',
+                animation: 'message-pop 0.3s ease-out',
+              }}
+            >
+              {msg.text}
+            </div>
           ))}
         </div>
       </div>
@@ -97,15 +138,21 @@ const LandingPage = () => {
   const [currentWord, setCurrentWord] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [hasModalBeenOpened, setHasModalBeenOpened] = useState(false);
-  const [authMode, setAuthMode] = useState("signup");
-  const [flowType, setFlowType] = useState('hiring');
+  const [authMode, setAuthMode] = useState("signup"); // "signup" or "signin"
+  const [flowType, setFlowType] = useState('hiring'); // 'hiring' or 'freelancer'
 
+  // Fix mobile Safari white space issue
   useEffect(() => {
-    document.documentElement.style.backgroundColor = '#0c0b09';
-    document.body.style.backgroundColor = '#0c0b09';
+    document.documentElement.style.backgroundColor = '#0a0a0a';
+    document.body.style.backgroundColor = '#0a0a0a';
+    document.documentElement.style.minHeight = '100%';
+    document.body.style.minHeight = '100%';
+
     return () => {
       document.documentElement.style.backgroundColor = '';
       document.body.style.backgroundColor = '';
+      document.documentElement.style.minHeight = '';
+      document.body.style.minHeight = '';
     };
   }, []);
 
@@ -116,6 +163,7 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Preload AuthModal chunk after page is idle so first click is instant
   useEffect(() => {
     const preload = () => import("../components/AuthModal");
     if ("requestIdleCallback" in window) {
@@ -128,6 +176,8 @@ const LandingPage = () => {
   }, []);
 
   const handleTryUsNow = useCallback(() => {
+    // Use requestAnimationFrame to allow browser to paint click feedback first
+    // This prevents the 272ms INP blocking issue
     requestAnimationFrame(() => {
       startTransition(() => {
         setHasModalBeenOpened(true);
@@ -138,6 +188,7 @@ const LandingPage = () => {
   }, []);
 
   const handleSignIn = useCallback(() => {
+    // Use requestAnimationFrame to allow browser to paint click feedback first
     requestAnimationFrame(() => {
       startTransition(() => {
         setHasModalBeenOpened(true);
@@ -148,167 +199,213 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="overflow-x-hidden" style={{ background: '#0c0b09' }}>
+    <div className="overflow-x-hidden bg-[#0a0a0a]">
 
-      {/* ── NAV ── */}
-      <nav className="fixed top-0 left-0 right-0 z-50" style={{ background: 'rgba(12,11,9,0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-3">
-            <img src="/butterfly.png" alt="Gully" className="w-8 h-auto" style={{ filter: 'brightness(0) invert(1)' }} fetchpriority="high" decoding="async" />
-            <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: '1.25rem', color: '#fff', letterSpacing: '-0.01em' }}>gully</span>
+
+
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 mix-blend-difference">
+        <div className="max-w-[1800px] mx-auto px-8 py-6 flex items-center justify-between">
+          <a href="/" className="flex items-center gap-4">
+            <img
+              src="/butterfly.png"
+              alt="Gully"
+              className="w-10 h-auto"
+              style={{ filter: 'brightness(0) invert(1)' }}
+              fetchpriority="high"
+              decoding="async"
+            />
+            <span className="font-syne font-bold text-xl tracking-tight text-white">gully</span>
           </a>
-          <button onClick={handleSignIn} style={{ fontFamily: 'monospace', fontSize: '0.75rem', letterSpacing: '0.15em', color: 'rgba(255,255,255,0.5)', transition: 'color 0.2s' }}
-            onMouseEnter={e => e.target.style.color='#D4A853'}
-            onMouseLeave={e => e.target.style.color='rgba(255,255,255,0.5)'}>
+          
+          {/* Desktop */}
+          <button
+            onClick={handleSignIn}
+            onMouseEnter={() => import("../components/AuthModal")}
+            onFocus={() => import("../components/AuthModal")}
+            className="hidden md:block font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
+          >
+            SIGN IN
+          </button>
+          
+          {/* Mobile */}
+          <button
+            onClick={handleSignIn}
+            onMouseEnter={() => import("../components/AuthModal")}
+            onFocus={() => import("../components/AuthModal")}
+            className="md:hidden font-mono text-sm tracking-wider text-white hover:text-[#E50914] transition-colors"
+          >
             SIGN IN
           </button>
         </div>
       </nav>
 
-
-      {/* ── HERO: TEXT LEFT / PHONE RIGHT ── */}
-      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', position: 'relative', overflow: 'hidden', paddingTop: '80px' }}>
-
-        {/* Road image — right side, fading into dark */}
-        <div style={{
-          position: 'absolute', top: 0, right: 0, width: '55%', height: '100%', zIndex: 1,
-          background: 'linear-gradient(to right, #0c0b09 0%, transparent 30%)',
-          pointerEvents: 'none'
-        }} />
-        <img src="/gully-road.jpg" alt="" style={{
-          position: 'absolute', top: 0, right: 0, width: '55%', height: '100%',
-          objectFit: 'cover', objectPosition: 'center top', opacity: 0.25, zIndex: 0,
-          maskImage: 'linear-gradient(to right, transparent 0%, black 30%)',
-          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 30%)',
-        }} loading="eager" />
-
-        {/* Warm glow */}
-        <div style={{
-          position: 'absolute', top: '20%', right: '10%', width: '500px', height: '500px',
-          background: 'radial-gradient(circle, rgba(212,168,83,0.08) 0%, transparent 70%)',
-          zIndex: 1, pointerEvents: 'none'
-        }} />
-
-        <div className="max-w-7xl mx-auto px-8 w-full relative" style={{ zIndex: 2 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
-
-            {/* LEFT — Text */}
-            <div>
-              <div style={{ fontFamily: 'monospace', fontSize: '0.7rem', letterSpacing: '0.25em', color: '#D4A853', marginBottom: '1.5rem', opacity: 0.9 }}>
-                THE SUPERCONNECTOR
-              </div>
-
-              <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(3rem, 6vw, 5.5rem)', lineHeight: 0.95, fontWeight: 900, color: '#F5F0E8', marginBottom: '1.5rem', letterSpacing: '-0.02em' }}>
-                need a<br />
-                <span style={{ color: '#D4A853', fontStyle: 'italic', transition: 'opacity 0.4s' }} key={currentWord}>
+      {/* ==================== HERO SECTION (WHITE) ==================== */}
+      <section className="min-h-screen relative flex items-center bg-white pt-20">
+        {/* Main Content */}
+        <div className="max-w-[1800px] mx-auto px-8 relative z-20 w-full">
+          <div className="max-w-4xl">
+            {/* Eyebrow - BLACK */}
+            <div className="animate-fade-up mb-8">
+              <span className="font-mono text-xs tracking-[0.3em] text-gray-900 lowercase">
+                the superconnector
+              </span>
+            </div>
+            
+            {/* Main Headline */}
+            <h1 className="font-display text-[clamp(3rem,10vw,9rem)] leading-[0.9] tracking-tight mb-8 animate-fade-up-delay-1 text-gray-900 lowercase">
+              need a
+              <br />
+              <span className="relative inline-block">
+                <span 
+                  className="text-[#E50914] transition-all duration-500"
+                  key={currentWord}
+                >
                   {WORDS[currentWord]}
                 </span>
-                <span style={{ color: '#F5F0E8' }}>?</span>
-              </h1>
-
-              <p style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', color: 'rgba(245,240,232,0.5)', maxWidth: '420px', lineHeight: 1.7, marginBottom: '2.5rem' }}>
-                text taj on whatsapp. get matched in minutes. no app, no forms — just your next connection.
-              </p>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                <button onClick={handleTryUsNow} style={{
-                  padding: '0.9rem 2.2rem', background: '#D4A853', border: 'none', borderRadius: '4px',
-                  fontFamily: 'monospace', fontSize: '0.75rem', letterSpacing: '0.15em', color: '#0c0b09',
-                  fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '0.5rem'
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.background = '#E8BB6B'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = '#D4A853'; e.currentTarget.style.transform = 'translateY(0)'; }}>
-                  START CONNECTING <ArrowRight size={14} />
-                </button>
-                <span style={{ fontFamily: 'monospace', fontSize: '0.65rem', letterSpacing: '0.15em', color: 'rgba(245,240,232,0.3)' }}>FREE TO START</span>
+                <span className="text-gray-900">?</span>
+              </span>
+            </h1>
+            
+            {/* Subheadline */}
+            <p className="font-syne text-xl md:text-2xl text-gray-500 max-w-xl leading-relaxed mb-12 animate-fade-up-delay-2 lowercase">
+              text taj. we post your ad. get matched in minutes.
+            </p>
+            
+            {/* CTA */}
+            <div className="flex flex-col sm:flex-row items-start gap-6 animate-fade-up-delay-3">
+              <button
+                onClick={handleTryUsNow}
+                className="group relative px-10 py-5 bg-[#E50914] font-syne font-semibold text-lg tracking-wide text-white overflow-hidden transition-all duration-300 hover:pr-16 lowercase rounded-full"
+              >
+                <span className="relative z-10">start connecting</span>
+                <ArrowRight
+                  className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white"
+                  size={20}
+                />
+              </button>
+              <div className="font-mono text-xs text-gray-400 flex items-center gap-2 lowercase">
+                <span className="w-8 h-px bg-gray-300" />
+                free to start
               </div>
-            </div>
-
-            {/* RIGHT — Phone */}
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <PhoneMockup />
             </div>
           </div>
         </div>
+        
+        {/* Mobile butterfly - shows below content on mobile */}
+        <div className="lg:hidden absolute bottom-10 right-4 w-32 opacity-30">
+          <img src="/butterfly.png" alt="" className="w-full h-auto" loading="lazy" decoding="async" />
+        </div>
+        
+        {/* Scroll indicator */}
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+          <span className="font-mono text-[10px] tracking-[0.2em] text-gray-400 lowercase">scroll</span>
+          <div className="w-px h-12 bg-gradient-to-b from-gray-300 to-transparent" />
+        </div>
       </section>
 
+      {/* ==================== HOW IT WORKS (DARK) ==================== */}
+      <section id="how-it-works" className="py-32 relative bg-[#0a0a0a] overflow-hidden">
+        <div className="max-w-[1800px] mx-auto px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            {/* Left - Phone with animated messages */}
+            <div className="relative lg:sticky lg:top-32 flex justify-center lg:justify-center">
+              <PhoneMockup />
 
-      {/* ── HOW IT WORKS ── */}
-      <section style={{ padding: '8rem 0', background: '#0c0b09', position: 'relative', overflow: 'hidden' }}>
-        {/* Subtle road texture divider */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(to right, transparent, rgba(212,168,83,0.3), transparent)' }} />
-
-        <div className="max-w-7xl mx-auto px-8">
-          <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '3rem', alignItems: 'center' }}>
-            <span style={{ fontFamily: 'monospace', fontSize: '0.7rem', letterSpacing: '0.25em', color: '#D4A853' }}>HOW IT WORKS</span>
-            <div style={{ flex: 1, height: '1px', background: 'rgba(212,168,83,0.2)' }} />
-            <div style={{ display: 'flex', gap: '1.5rem' }}>
-              {['HIRING', 'LOOKING FOR WORK'].map((tab, i) => (
-                <button key={tab} onClick={() => setFlowType(i === 0 ? 'hiring' : 'freelancer')}
-                  style={{ fontFamily: 'monospace', fontSize: '0.65rem', letterSpacing: '0.15em', background: 'none', border: 'none', cursor: 'pointer',
-                    color: (i === 0 ? flowType === 'hiring' : flowType === 'freelancer') ? '#D4A853' : 'rgba(245,240,232,0.3)',
-                    transition: 'color 0.2s', padding: '0.25rem 0',
-                    borderBottom: (i === 0 ? flowType === 'hiring' : flowType === 'freelancer') ? '1px solid #D4A853' : '1px solid transparent'
-                  }}>
-                  {tab}
-                </button>
-              ))}
+              {/* Decorative elements */}
+              <div className="absolute -bottom-10 left-0 w-32 h-32 border border-[#E50914]/20 rounded-full hidden lg:block" />
             </div>
-          </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'start' }}>
-            {/* Left — Steps */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem', paddingTop: '1rem' }}>
+            {/* Right - Steps */}
+            <div className="space-y-20 pt-8 lg:pt-20">
+              <div className="font-mono text-xs tracking-[0.3em] text-[#E50914] mb-12 lowercase">
+                how it works
+              </div>
+
+              {/* Toggle */}
+              <div className="flex gap-4 mb-8">
+                <button
+                  onClick={() => setFlowType('hiring')}
+                  className={`font-mono text-sm tracking-wider ${flowType === 'hiring' ? 'text-[#E50914]' : 'text-white/50'}`}
+                >
+                  HIRING
+                </button>
+                <span className="text-white/30">|</span>
+                <button
+                  onClick={() => setFlowType('freelancer')}
+                  className={`font-mono text-sm tracking-wider ${flowType === 'freelancer' ? 'text-[#E50914]' : 'text-white/50'}`}
+                >
+                  LOOKING FOR WORK
+                </button>
+              </div>
+
               {((flowType === 'hiring' ? [
-                { num: "01", title: "message Taj", desc: "Tell our AI concierge who you're looking for. No forms, no filters — just describe what you need in plain english." },
-                { num: "02", title: "get matched", desc: "Within minutes, Taj finds the right people from our network of verified professionals across 17 categories." },
-                { num: "03", title: "connect", desc: "We make the intro. Real conversations, real collaborations — your next hire is one message away." }
+                {
+                  num: "01",
+                  title: "message Taj",
+                  desc: "Tell our AI concierge exactly who you're looking for. No forms. No filters. Just describe what you need in your own words."
+                },
+                {
+                  num: "02",
+                  title: "get matched",
+                  desc: "Within minutes, Taj finds the perfect people from our network of verified professionals."
+                },
+                {
+                  num: "03",
+                  title: "connect",
+                  desc: "We make the intro. You take it from there. Real conversations, real collaborations, real results."
+                }
               ] : [
-                { num: "01", title: "tell Taj about you", desc: "Share your skills, location, and what kind of work you want. Takes 2 minutes on WhatsApp." },
-                { num: "02", title: "get opportunities", desc: "Taj matches you with gigs that fit your profile. No more scrolling job boards at 2am." },
-                { num: "03", title: "connect", desc: "Say yes to the ones you want. We make the intro and handle the awkward part." }
+                {
+                  num: "01",
+                  title: "tell Taj about you",
+                  desc: "Share your skills, location, and what kind of work you're looking for. Takes 2 minutes."
+                },
+                {
+                  num: "02",
+                  title: "get opportunities",
+                  desc: "Taj matches you with requests and gigs that fit your profile. No more scrolling job boards."
+                },
+                {
+                  num: "03",
+                  title: "connect",
+                  desc: "Say yes to the ones you want. We make the intro. You take it from there."
+                }
               ])).map((step, idx) => (
-                <div key={idx} style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
-                  <span style={{ fontFamily: 'monospace', fontSize: '0.7rem', color: '#D4A853', letterSpacing: '0.1em', paddingTop: '0.6rem', minWidth: '2rem' }}>{step.num}</span>
-                  <div>
-                    <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.2rem', fontWeight: 700, color: '#F5F0E8', marginBottom: '0.75rem', lineHeight: 1.1, fontStyle: 'italic' }}>
-                      {step.title}
-                    </h3>
-                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: '1rem', color: 'rgba(245,240,232,0.45)', lineHeight: 1.7, maxWidth: '380px' }}>
-                      {step.desc}
-                    </p>
+                <div key={idx} className="group hover-lift">
+                  <div className="flex items-start gap-8">
+                    <span className="font-mono text-sm text-[#E50914]">{step.num}</span>
+                    <div>
+                      <h3 className="font-display text-3xl md:text-4xl mb-4 text-white group-hover:text-[#E50914] transition-colors">
+                        {step.title}
+                      </h3>
+                      <p className="font-syne text-lg text-white/50 max-w-md leading-relaxed">
+                        {step.desc}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
-
-            {/* Right — Phone */}
-            <div style={{ display: 'flex', justifyContent: 'center', position: 'sticky', top: '8rem' }}>
-              <PhoneMockup />
-            </div>
           </div>
         </div>
       </section>
 
-
-      {/* ── STATS ── */}
-      <section style={{ padding: '5rem 0', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(to right, transparent, rgba(212,168,83,0.2), transparent)' }} />
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(to right, transparent, rgba(212,168,83,0.2), transparent)' }} />
-
-        <div className="max-w-7xl mx-auto px-8">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '2rem' }}>
+      {/* ==================== STATS (WHITE) ==================== */}
+      <section className="py-24 bg-white border-y border-gray-200">
+        <div className="max-w-[1800px] mx-auto px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
             {[
               { value: "500+", label: "verified creatives" },
               { value: "17", label: "categories" },
               { value: "10+", label: "US cities" }
             ].map((stat, idx) => (
-              <div key={idx} style={{ textAlign: 'center', padding: '1rem' }}>
-                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.5rem,5vw,4rem)', color: '#D4A853', fontWeight: 900, lineHeight: 1 }}>
+              <div key={idx} className="text-center md:text-left">
+                <div className="font-display text-4xl md:text-6xl text-[#E50914] mb-2">
                   {stat.value}
                 </div>
-                <div style={{ fontFamily: 'monospace', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'rgba(245,240,232,0.35)', marginTop: '0.5rem' }}>
-                  {stat.label.toUpperCase()}
+                <div className="font-mono text-xs tracking-[0.15em] text-gray-400 lowercase">
+                  {stat.label}
                 </div>
               </div>
             ))}
@@ -316,56 +413,75 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* ── ROAD CTA ── */}
-      <section style={{ padding: '8rem 0', position: 'relative', overflow: 'hidden' }}>
-        {/* Road image full bleed */}
-        <img src="/gully-road.jpg" alt="" style={{
-          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-          objectFit: 'cover', objectPosition: 'center', opacity: 0.15, zIndex: 0
-        }} />
-        <div style={{
-          position: 'absolute', inset: 0, zIndex: 1,
-          background: 'linear-gradient(to bottom, #0c0b09 0%, transparent 30%, transparent 70%, #0c0b09 100%)'
-        }} />
-        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'rgba(12,11,9,0.5)' }} />
-
-        <div className="max-w-7xl mx-auto px-8 relative" style={{ zIndex: 2, textAlign: 'center' }}>
-          <div style={{ fontFamily: 'monospace', fontSize: '0.65rem', letterSpacing: '0.3em', color: '#D4A853', marginBottom: '1.5rem', opacity: 0.8 }}>
-            EVERY OPPORTUNITY IS DOWN THE STREET
+      {/* ==================== FINAL CTA (DARK with glow) ==================== */}
+      <section className="py-12 md:py-16 relative overflow-hidden bg-[#0a0a0a]">
+        {/* Gradient glow behind butterfly */}
+        <div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] rounded-full opacity-20 blur-[100px]"
+          style={{ background: 'radial-gradient(circle, #E50914 0%, transparent 70%)' }}
+        />
+        
+        <div className="max-w-[1800px] mx-auto px-8 relative z-10">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Flapping Butterfly - 2x bigger */}
+            <div className="mx-auto mb-6 md:mb-12 flex justify-center">
+              <div 
+                className="butterfly-wrapper butterfly-glow butterfly-flicker w-[280px] h-[200px] md:w-[560px] md:h-[400px]" 
+                style={{ 
+                  position: 'relative' 
+                }}
+              >
+                {/* Left Wing */}
+                <div className="wing-left">
+                  <img src="/butterfly.png" alt="" loading="lazy" decoding="async" />
+                </div>
+                {/* Right Wing */}
+                <div className="wing-right">
+                  <img src="/butterfly.png" alt="" loading="lazy" decoding="async" />
+                </div>
+              </div>
+            </div>
+            
+            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-4 md:mb-8 text-white lowercase">
+              let gully take
+              <br />
+              <span className="text-[#E50914]">you places</span>
+            </h2>
+            
+            <p className="font-syne text-base md:text-xl text-white/50 mb-8 md:mb-12 max-w-lg mx-auto lowercase">
+              your next connection is one message away.
+            </p>
+            
+            <button
+              onClick={handleTryUsNow}
+              className="group inline-flex items-center gap-4 px-10 py-5 md:px-12 md:py-6 bg-[#E50914] font-syne font-semibold text-lg md:text-xl tracking-wide text-white hover:gap-6 transition-all duration-300 lowercase rounded-full"
+            >
+              start connecting
+              <ArrowUpRight size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </button>
           </div>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.5rem,6vw,5rem)', fontWeight: 900, color: '#F5F0E8', lineHeight: 1, marginBottom: '1.5rem', letterSpacing: '-0.02em' }}>
-            your next connection<br />
-            <span style={{ color: '#D4A853', fontStyle: 'italic' }}>is one message away</span>
-          </h2>
-          <p style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.1rem', color: 'rgba(245,240,232,0.45)', marginBottom: '2.5rem' }}>
-            free to start. no app. just WhatsApp.
-          </p>
-          <button onClick={handleTryUsNow} style={{
-            padding: '1rem 2.5rem', background: 'transparent', border: '1px solid rgba(212,168,83,0.6)',
-            borderRadius: '4px', fontFamily: 'monospace', fontSize: '0.75rem', letterSpacing: '0.15em',
-            color: '#D4A853', cursor: 'pointer', transition: 'all 0.2s', display: 'inline-flex', alignItems: 'center', gap: '0.75rem'
-          }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#D4A853'; e.currentTarget.style.color = '#0c0b09'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#D4A853'; }}>
-            START CONNECTING <ArrowUpRight size={14} />
-          </button>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer style={{ padding: '1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.06)', background: '#0c0b09' }}>
-        <div className="max-w-7xl mx-auto px-8 flex items-center justify-center gap-8">
-          {[['privacy', '/privacy'], ['terms', '/terms'], ['faq', '/faq'], ['contact', 'mailto:taj@trygully.com']].map(([label, href]) => (
-            <a key={label} href={href} style={{ fontFamily: 'monospace', fontSize: '0.65rem', letterSpacing: '0.15em', color: 'rgba(245,240,232,0.25)', transition: 'color 0.2s', textTransform: 'lowercase' }}
-              onMouseEnter={e => e.target.style.color = 'rgba(245,240,232,0.6)'}
-              onMouseLeave={e => e.target.style.color = 'rgba(245,240,232,0.25)'}>{label}</a>
-          ))}
+      {/* ==================== FOOTER (DARK) ==================== */}
+      <footer className="py-6 md:py-4 bg-[#0a0a0a]">
+        <div className="max-w-[1800px] mx-auto px-8">
+          <div className="flex items-center justify-center gap-4 md:gap-8">
+            <a href="/privacy" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">privacy</a>
+            <a href="/terms" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">terms</a>
+            <a href="/faq" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">faq</a>
+            <a href="mailto:taj@trygully.com" className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors">contact</a>
+          </div>
         </div>
       </footer>
 
       {hasModalBeenOpened && (
         <Suspense fallback={null}>
-          <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} mode={authMode} />
+          <AuthModal 
+            isOpen={showAuthModal} 
+            onClose={() => setShowAuthModal(false)}
+            mode={authMode}
+          />
         </Suspense>
       )}
     </div>
