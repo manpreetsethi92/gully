@@ -275,25 +275,19 @@ const LandingPage = () => {
               </div>
             </div>
 
-            {/* Right — phone */}
-            <div className="hidden lg:flex items-center justify-center flex-shrink-0 w-[380px]">
+            {/* Right — phone + footer */}
+            <div className="hidden lg:flex flex-col items-center justify-center flex-shrink-0 w-[380px] gap-6">
               <PhoneMockup />
+              <div className="flex items-center gap-6">
+                <a href="/privacy" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">privacy</a>
+                <a href="/terms" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">terms</a>
+                <a href="/faq" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">faq</a>
+                <a href="mailto:taj@trygully.com" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">contact</a>
+              </div>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-4 border-t border-gray-100">
-        <div className="max-w-[1800px] mx-auto px-8">
-          <div className="flex items-center justify-center gap-6 md:gap-8">
-            <a href="/privacy" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">privacy</a>
-            <a href="/terms" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">terms</a>
-            <a href="/faq" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">faq</a>
-            <a href="mailto:taj@trygully.com" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">contact</a>
-          </div>
-        </div>
-      </footer>
 
       {hasModalBeenOpened && (
         <Suspense fallback={null}>
