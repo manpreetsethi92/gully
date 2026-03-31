@@ -290,6 +290,17 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Footer */}
+      <footer className="py-4 border-t border-gray-100">
+        <div className="max-w-[1800px] mx-auto px-8">
+          <div className="flex items-center justify-center gap-6 md:gap-8">
+            <a href="/privacy" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">privacy</a>
+            <a href="/terms" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">terms</a>
+            <a href="/faq" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">faq</a>
+            <a href="mailto:taj@trygully.com" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">contact</a>
+          </div>
+        </div>
+      </footer>
 
       {hasModalBeenOpened && (
         <Suspense fallback={null}>
