@@ -100,19 +100,19 @@ const PhoneMockup = () => {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-end',
-          padding: '12px',
+          padding: '8px',
           overflow: 'hidden',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           {visibleMessages.map((msg, idx) => (
             <div
               key={`${convoIndex}-${idx}`}
               style={{ 
                 maxWidth: '80%',
-                padding: '12px 16px',
-                fontSize: '16px',
-                lineHeight: 1.45,
+                padding: '8px 11px',
+                fontSize: '11px',
+                lineHeight: 1.4,
                 color: '#fff',
                 alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
                 background: msg.sender === 'user' 
