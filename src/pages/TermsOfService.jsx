@@ -8,8 +8,8 @@ const TermsOfService = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-3">
-            <span className="text-2xl font-bold tracking-tight" style={{ color: '#E50914' }}>gully</span>
+          <a href="/" className="flex items-center gap-4">
+            <span className="font-syne font-bold text-xl tracking-tight text-white mix-blend-difference">gully</span>
           </a>
           <button
             onClick={() => navigate("/")}

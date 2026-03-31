@@ -146,7 +146,7 @@ const DashboardLayout = () => {
           <Menu size={24} className={darkMode ? 'text-white' : 'text-gray-900'} />
         </button>
         <div className="flex items-center gap-2">
-          <span className="font-syne font-bold text-xl text-[#E50914]">gully</span>
+          <span className="font-syne font-bold text-xl tracking-tight text-white mix-blend-difference">gully</span>
         </div>
         <div className="flex items-center gap-1">
           <button 
@@ -183,7 +183,7 @@ const DashboardLayout = () => {
           {/* Logo + Dark Mode Toggle - Added pt-12 for mobile safe area */}
           <div className="px-6 py-6 pt-14 lg:pt-6 flex items-center justify-between">
             <div className="inline-flex items-center gap-3">
-              <span className="font-syne font-bold text-2xl tracking-tight text-[#E50914]">gully</span>
+              <span className="font-syne font-bold text-xl tracking-tight text-white mix-blend-difference">gully</span>
             </div>
             <button
               onClick={() => setDarkMode(!darkMode)}
