@@ -100,19 +100,19 @@ const PhoneMockup = () => {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-end',
-          padding: '8px',
+          padding: '12px',
           overflow: 'hidden',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {visibleMessages.map((msg, idx) => (
             <div
               key={`${convoIndex}-${idx}`}
               style={{ 
                 maxWidth: '80%',
-                padding: '8px 11px',
-                fontSize: '11px',
-                lineHeight: 1.4,
+                padding: '12px 16px',
+                fontSize: '16px',
+                lineHeight: 1.45,
                 color: '#fff',
                 alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
                 background: msg.sender === 'user' 
@@ -271,8 +271,10 @@ const LandingPage = () => {
             </div>
 
             {/* Right — phone + footer */}
-            <div className="flex flex-col items-center justify-center flex-shrink-0 w-full lg:w-[520px] lg:pr-[140px] gap-6 max-w-[280px] lg:max-w-none mx-auto lg:mx-0">
-              <PhoneMockup />
+            <div className="flex flex-col items-center justify-center flex-shrink-0 w-full lg:w-[520px] lg:pr-[140px] gap-4 max-w-[320px] lg:max-w-none mx-auto lg:mx-0">
+              <div className="w-full origin-top scale-[0.65] lg:scale-100 -mb-16 lg:mb-0">
+                <PhoneMockup />
+              </div>
               <div className="flex items-center gap-6">
                 <a href="/privacy" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">privacy</a>
                 <a href="/terms" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">terms</a>
