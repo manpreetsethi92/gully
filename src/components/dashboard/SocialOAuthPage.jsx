@@ -9,8 +9,9 @@ const PLATFORMS = [
   { key: "google", label: "Google", color: "#4285F4", icon: "G", supportsOAuth: true },
   { key: "github", label: "GitHub", color: "#24292e", icon: "GH", supportsOAuth: true },
   { key: "youtube", label: "YouTube", color: "#ff0000", icon: "YT", supportsOAuth: true },
-  { key: "instagram", label: "Instagram", color: "linear-gradient(135deg,#405de6,#5851db,#833ab4,#c13584,#e1306c,#fd1d1d)", icon: "IG", supportsOAuth: false },
-  { key: "twitter", label: "X / Twitter", color: "#000", icon: "X", supportsOAuth: false },
+  { key: "instagram", label: "Instagram", color: "linear-gradient(135deg,#405de6,#5851db,#833ab4,#c13584,#e1306c,#fd1d1d)", icon: "IG", supportsOAuth: true },
+  { key: "tiktok", label: "TikTok", color: "#000", icon: "TT", supportsOAuth: true },
+  { key: "facebook", label: "Facebook", color: "#1877f2", icon: "f", supportsOAuth: true },
 ];
 
 const SOCIAL_MANUAL_LINKS = [
