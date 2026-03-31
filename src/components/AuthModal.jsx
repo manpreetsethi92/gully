@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, forwardRef, useCallback } from "react";
+import { useState, useEffect, useRef, forwardRef, useCallback, startTransition } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -716,7 +716,12 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                       </div>
                       <Input
                         value={linkedinUrl}
-                        onChange={(e) => setLinkedinUrl(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          startTransition(() => {
+                            setLinkedinUrl(value);
+                          });
+                        }}
                         placeholder="linkedin.com/in/yourprofile"
                         className="h-11 pl-11"
                       />
@@ -736,7 +741,12 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                       </div>
                       <Input
                         value={instagramUrl}
-                        onChange={(e) => setInstagramUrl(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          startTransition(() => {
+                            setInstagramUrl(value);
+                          });
+                        }}
                         placeholder="instagram.com/yourhandle"
                         className="h-11 pl-11"
                       />
