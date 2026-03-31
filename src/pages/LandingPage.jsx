@@ -181,26 +181,26 @@ const LandingPage = () => {
   }, []);
 
   const handleTryUsNow = useCallback(() => {
-    // Use requestAnimationFrame to allow browser to paint click feedback first
-    // This prevents the 272ms INP blocking issue
-    requestAnimationFrame(() => {
+    // Use setTimeout with a small delay to allow browser to paint click feedback
+    // This gives the browser more time than requestAnimationFrame to show visual feedback
+    setTimeout(() => {
       startTransition(() => {
         setHasModalBeenOpened(true);
         setAuthMode("signup");
         setShowAuthModal(true);
       });
-    });
+    }, 0);
   }, []);
 
   const handleSignIn = useCallback(() => {
-    // Use requestAnimationFrame to allow browser to paint click feedback first
-    requestAnimationFrame(() => {
+    // Use setTimeout with a small delay to allow browser to paint click feedback
+    setTimeout(() => {
       startTransition(() => {
         setHasModalBeenOpened(true);
         setAuthMode("signin");
         setShowAuthModal(true);
       });
-    });
+    }, 0);
   }, []);
 
   return (
