@@ -2,6 +2,13 @@ import React, { useState, useEffect, useCallback, startTransition, Suspense, laz
 import { ArrowRight } from "lucide-react";
 const AuthModal = lazy(() => import("../components/AuthModal"));
 
+const messagePopStyle = `
+  @keyframes message-pop {
+    0% { opacity: 0; transform: translateY(6px) scale(0.97); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+`;
+
 // Animation timing constants (in milliseconds)
 const ANIMATION_TIMING = {
   MESSAGE_DELAY: 1200,
@@ -77,10 +84,8 @@ const PhoneMockup = () => {
   }, [convoIndex]);
 
   return (
-    <div 
-      className="relative z-10 max-w-sm"
-      style={{ filter: 'drop-shadow(0 40px 80px rgba(0,0,0,0.5))' }}
-    >
+    <div className="relative z-10 w-full lg:max-w-sm lg:drop-shadow-[0_40px_80px_rgba(0,0,0,0.5)]">
+      <style>{messagePopStyle}</style>
       <img
         src="/phone-mockup.png"
         alt="Gully chat interface"
@@ -229,11 +234,11 @@ const LandingPage = () => {
       </nav>
 
       {/* ==================== HERO SECTION (WHITE) ==================== */}
-      <section className="min-h-screen relative flex items-center bg-white pt-20 pb-0">
-        <div className="w-full lg:max-w-[1800px] lg:mx-auto lg:px-8 relative z-20">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+      <section className="min-h-screen relative bg-white pt-20 pb-0">
+        <div className="w-full lg:max-w-[1800px] lg:mx-auto lg:px-8 relative z-20 lg:flex lg:items-center lg:min-h-screen">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between lg:w-full lg:gap-8">
             {/* Left — text */}
-            <div className="max-w-2xl w-full lg:w-auto px-8 lg:px-0 mb-8 lg:mb-0">
+            <div className="max-w-2xl w-full lg:w-auto px-8 lg:px-0 pt-12 lg:pt-0 mb-10 lg:mb-0">
               <div className="animate-fade-up mb-8">
                 <span className="font-mono text-xs tracking-[0.3em] text-gray-900 lowercase">
                   the superconnector
@@ -271,11 +276,11 @@ const LandingPage = () => {
             </div>
 
             {/* Right — phone + footer */}
-            <div className="flex flex-col items-center justify-center flex-shrink-0 w-full lg:w-[520px] lg:pr-[140px] gap-4 lg:mx-0">
-              <div className="w-full lg:max-w-sm">
+            <div className="flex flex-col items-center flex-shrink-0 w-full lg:w-[520px] lg:pr-[140px] gap-4">
+              <div className="w-full lg:max-w-sm mx-auto">
                 <PhoneMockup />
               </div>
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-6 pb-8 lg:pb-0">
                 <a href="/privacy" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">privacy</a>
                 <a href="/terms" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">terms</a>
                 <a href="/faq" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">faq</a>
