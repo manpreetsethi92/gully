@@ -11,13 +11,9 @@ const NotFoundPage = () => {
       `}</style>
       
       <div className="text-center max-w-md">
-        {/* Butterfly */}
+        {/* Logo */}
         <div className="mb-8 flex justify-center">
-          <img 
-            src="/butterfly.png" 
-            alt="Gully" 
-            className="w-32 h-auto opacity-50"
-          />
+          <span className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-black opacity-50"><span style={{fontFamily:"Georgia,serif",fontSize:"40px",fontWeight:"400",color:"white",lineHeight:1}}>G</span></span>
         </div>
         
         {/* 404 */}
