@@ -15,7 +15,7 @@ import TermsOfService from "./pages/TermsOfService";
 import FAQ from "./pages/FAQ";
 import OAuthCallback from "./pages/OAuthCallback";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://gully-backend-production.up.railway.app";
 export const API = `${BACKEND_URL}/api`;
 
 // Global handler for 429 rate limit - will be set by AuthProvider
