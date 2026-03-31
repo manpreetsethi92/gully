@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://titlii.social/sitemap.xml
+Sitemap: https://trygully.com/sitemap.xml
 
 # Disallow admin/private paths
 Disallow: /api/

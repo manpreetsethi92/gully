@@ -45,7 +45,7 @@ const InviteEarnSection = ({ darkMode, token }) => {
   const handleWhatsAppShare = () => {
     if (!referral?.referral_url) return;
     const text = encodeURIComponent(
-      `Join me on Titlii — find creative gigs and collaborators. ${referral.referral_url}`
+      `Join me on Gully — find creative gigs and collaborators. ${referral.referral_url}`
     );
     window.open(`https://wa.me/?text=${text}`, "_blank");
   };
@@ -55,7 +55,7 @@ const InviteEarnSection = ({ darkMode, token }) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Join me on Titlii",
+          title: "Join me on Gully",
           text: "Find creative gigs and collaborators.",
           url: referral.referral_url,
         });
@@ -132,7 +132,7 @@ const InviteEarnSection = ({ darkMode, token }) => {
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SECTION 2: CONNECTIONS (Titlii work relationships)
+// SECTION 2: CONNECTIONS (Gully work relationships)
 // ══════════════════════════════════════════════════════════════════════════════
 
 const ConnectionCard = ({ conn, darkMode, expanded, onToggle }) => {
@@ -482,7 +482,7 @@ const NetworkPage = ({ darkMode }) => {
             <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
               <Users size={36} className={`mb-3 ${darkMode ? "text-white/20" : "text-gray-200"}`} />
               <p className={`font-semibold text-sm ${darkMode ? "text-white/60" : "text-gray-500"}`}>No connections yet</p>
-              <p className={`text-xs mt-1 ${darkMode ? "text-white/30" : "text-gray-400"}`}>When you match with someone on Titlii, they'll appear here</p>
+              <p className={`text-xs mt-1 ${darkMode ? "text-white/30" : "text-gray-400"}`}>When you match with someone on Gully, they'll appear here</p>
             </div>
           ) : (
             connections.map((conn) => (

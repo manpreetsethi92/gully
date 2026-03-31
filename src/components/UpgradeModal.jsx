@@ -15,7 +15,7 @@ const UpgradeModal = ({ isOpen, onClose, limitType = "requests" }) => {
   // Read dark mode from localStorage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('titli-dark-mode');
+      const stored = localStorage.getItem('gully-dark-mode');
       if (stored) {
         setDarkMode(JSON.parse(stored));
       }

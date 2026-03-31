@@ -390,7 +390,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       }
 
       // Pick up referral code if user landed via a referral link
-      const refCode = localStorage.getItem("titlii_ref") || undefined;
+      const refCode = localStorage.getItem("gully_ref") || undefined;
 
       const response = await axios.post(`${API}/auth/signup-and-call`, {
         name: name.trim(),
@@ -412,10 +412,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         });
 
         // Clear referral code after successful signup so it isn't reused
-        localStorage.removeItem("titlii_ref");
+        localStorage.removeItem("gully_ref");
 
         setShowSuccess(true);
-        toast.success("Welcome to Titlii!");
+        toast.success("Welcome to Gully!");
       }
     } catch (error) {
       if (error.response?.status === 409) {
@@ -631,7 +631,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             ) : internalMode === "signup" ? (
               /* ========== SIGNUP MODE ========== */
               <div>
-                <h2 className="text-xl font-bold mb-1">Join <span className="font-syne text-[#E50914]">titlii</span></h2>
+                <h2 className="text-xl font-bold mb-1">Join <span className="font-syne text-[#E50914]">gully</span></h2>
                 <p className="text-gray-500 text-sm mb-6">Tell us a bit about yourself</p>
 
                 <form onSubmit={handleSignupSubmit} className="space-y-4">

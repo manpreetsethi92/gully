@@ -41,13 +41,13 @@ const DashboardLayout = () => {
   const [stats, setStats] = useState({ opportunities: 0, requests: 0, connections: 0, savedJobs: 0 });
   const [trending, setTrending] = useState([]);
   const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem('titli-dark-mode');
+    const saved = localStorage.getItem('gully-dark-mode');
     return saved ? JSON.parse(saved) : false;
   });
   const [showNotifications, setShowNotifications] = useState(false);
   const [showWhatsAppBanner, setShowWhatsAppBanner] = useState(() => {
     // Show banner if user hasn't dismissed it yet
-    return !sessionStorage.getItem('titli-wa-banner-dismissed');
+    return !sessionStorage.getItem('gully-wa-banner-dismissed');
   });
   const [showConnectSocialsModal, setShowConnectSocialsModal] = useState(false);
 
@@ -116,7 +116,7 @@ const DashboardLayout = () => {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    localStorage.setItem('titli-dark-mode', JSON.stringify(darkMode));
+    localStorage.setItem('gully-dark-mode', JSON.stringify(darkMode));
 
     // Cleanup: remove dark mode when leaving dashboard
     return () => {
@@ -146,8 +146,8 @@ const DashboardLayout = () => {
           <Menu size={24} className={darkMode ? 'text-white' : 'text-gray-900'} />
         </button>
         <div className="flex items-center gap-2">
-          <img src="/butterfly.png" alt="Titlii" className="w-6 h-auto" />
-          <span className="font-syne font-bold text-xl text-[#E50914]">titlii</span>
+          <img src="/butterfly.png" alt="Gully" className="w-6 h-auto" />
+          <span className="font-syne font-bold text-xl text-[#E50914]">gully</span>
         </div>
         <div className="flex items-center gap-1">
           <button 
@@ -184,8 +184,8 @@ const DashboardLayout = () => {
           {/* Logo + Dark Mode Toggle - Added pt-12 for mobile safe area */}
           <div className="px-6 py-6 pt-14 lg:pt-6 flex items-center justify-between">
             <div className="inline-flex items-center gap-3">
-              <img src="/butterfly.png" alt="Titlii" className="w-8 h-auto" />
-              <span className="font-syne font-bold text-2xl tracking-tight text-[#E50914]">titlii</span>
+              <img src="/butterfly.png" alt="Gully" className="w-8 h-auto" />
+              <span className="font-syne font-bold text-2xl tracking-tight text-[#E50914]">gully</span>
             </div>
             <button
               onClick={() => setDarkMode(!darkMode)}
@@ -271,9 +271,9 @@ const DashboardLayout = () => {
               <div className="flex flex-wrap gap-x-4 gap-y-2 font-mono text-xs text-gray-400">
                 <a href="/terms" className="hover:text-gray-600 dark:hover:text-white/60">Terms</a>
                 <a href="/privacy" className="hover:text-gray-600 dark:hover:text-white/60">Privacy</a>
-                <a href="mailto:taj@titlii.social" className="hover:text-gray-600 dark:hover:text-white/60">Contact</a>
+                <a href="mailto:taj@trygully.com" className="hover:text-gray-600 dark:hover:text-white/60">Contact</a>
               </div>
-              <p className="mt-2 font-mono text-xs text-gray-400">© 2025 Titlii</p>
+              <p className="mt-2 font-mono text-xs text-gray-400">© 2026 Gully</p>
             </div>
           </div>
         </aside>
@@ -294,7 +294,7 @@ const DashboardLayout = () => {
               <button
                 onClick={() => {
                   setShowWhatsAppBanner(false);
-                  sessionStorage.setItem('titli-wa-banner-dismissed', 'true');
+                  sessionStorage.setItem('gully-wa-banner-dismissed', 'true');
                 }}
                 className={`absolute top-2 right-2 p-1 rounded-full ${darkMode ? 'hover:bg-white/10 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}
               >
@@ -416,9 +416,9 @@ const DashboardLayout = () => {
               <div className="flex flex-wrap gap-x-3 gap-y-1">
                 <a href="/terms" className="hover:underline">Terms of Service</a>
                 <a href="/privacy" className="hover:underline">Privacy Policy</a>
-                <a href="mailto:taj@titlii.social" className="hover:underline">Contact Us</a>
+                <a href="mailto:taj@trygully.com" className="hover:underline">Contact Us</a>
               </div>
-              <p className="mt-2">© 2026 Titlii</p>
+              <p className="mt-2">© 2026 Gully</p>
             </div>
           </div>
         </aside>

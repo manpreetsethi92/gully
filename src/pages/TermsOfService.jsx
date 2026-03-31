@@ -9,8 +9,8 @@ const TermsOfService = () => {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <a href="/" className="flex items-center gap-3">
-            <img src="/butterfly.png" alt="Titlii" className="w-8 h-auto" />
-            <span className="text-2xl font-bold tracking-tight" style={{ color: '#E50914' }}>titlii</span>
+            <img src="/butterfly.png" alt="Gully" className="w-8 h-auto" />
+            <span className="text-2xl font-bold tracking-tight" style={{ color: '#E50914' }}>gully</span>
           </a>
           <button
             onClick={() => navigate("/")}
@@ -25,18 +25,18 @@ const TermsOfService = () => {
       <main className="pt-24 pb-16 px-6">
         <div className="max-w-4xl mx-auto prose prose-gray">
           <h1 className="text-4xl font-bold mb-2">Terms of Service</h1>
-          <p className="text-gray-500 mb-8">titlii.social — A Service of Made of Drama Studios Inc.</p>
+          <p className="text-gray-500 mb-8">trygully.com — A Service of Gully Inc.</p>
           <p className="text-sm text-gray-400 mb-8">Last Updated: January 28, 2026</p>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
-            <p>Welcome to Titlii ("Platform," "Service," "we," "our," or "us"), operated by Made of Drama Studios Inc., a Texas corporation with its principal place of business in Dallas, Texas. By accessing or using our website (titlii.social), WhatsApp bot, voice services, mobile applications, or any related services (collectively, "Services"), you agree to be bound by these Terms of Service ("Terms").</p>
+            <p>Welcome to Gully ("Platform," "Service," "we," "our," or "us"), operated by Gully Inc., a Texas corporation with its principal place of business in Austin, Texas. By accessing or using our website (trygully.com), WhatsApp bot, voice services, mobile applications, or any related services (collectively, "Services"), you agree to be bound by these Terms of Service ("Terms").</p>
             <p>If you do not agree to these Terms, do not use our Services. We reserve the right to modify these Terms at any time. Your continued use of the Services after any changes constitutes acceptance of the new Terms.</p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">2. Description of Services</h2>
-            <p>Titlii is a creative professional networking platform that connects freelancers and creative professionals through an AI-powered matching system. Our Services include:</p>
+            <p>Gully is a creative professional networking platform that connects freelancers and creative professionals through an AI-powered matching system. Our Services include:</p>
             <ul className="list-disc pl-6 mb-4">
               <li>AI-powered professional matching and introductions via our AI concierge, Taj</li>
               <li>Job and opportunity discovery from internal and external sources</li>
@@ -100,13 +100,13 @@ const TermsOfService = () => {
             <h2 className="text-2xl font-semibold mb-4">6. Marketplace and Connections</h2>
             
             <h3 className="text-xl font-medium mb-3">6.1 Platform Role</h3>
-            <p>Titlii acts as a facilitator connecting creative professionals. We are not a party to any agreements between users and do not guarantee the quality, safety, or legality of services offered by users.</p>
+            <p>Gully acts as a facilitator connecting creative professionals. We are not a party to any agreements between users and do not guarantee the quality, safety, or legality of services offered by users.</p>
 
             <h3 className="text-xl font-medium mb-3">6.2 No Verification Guarantee</h3>
-            <p><strong>We do not routinely verify user identities, backgrounds, licenses, portfolios, credentials, or references.</strong> While we may implement certain verification features, users are solely responsible for conducting their own vetting, background checks, and due diligence before hiring or working with any professional found through Titlii. Any "verified" badges or trust scores are internal indicators based on platform activity and should not be considered a comprehensive background check or endorsement.</p>
+            <p><strong>We do not routinely verify user identities, backgrounds, licenses, portfolios, credentials, or references.</strong> While we may implement certain verification features, users are solely responsible for conducting their own vetting, background checks, and due diligence before hiring or working with any professional found through Gully. Any "verified" badges or trust scores are internal indicators based on platform activity and should not be considered a comprehensive background check or endorsement.</p>
 
             <h3 className="text-xl font-medium mb-3">6.3 External Opportunities</h3>
-            <p>Some job postings and opportunities displayed on Titlii are sourced or aggregated from third-party platforms including but not limited to Reddit, X (Twitter), Craigslist, and Facebook. For these external opportunities:</p>
+            <p>Some job postings and opportunities displayed on Gully are sourced or aggregated from third-party platforms including but not limited to Reddit, X (Twitter), Craigslist, and Facebook. For these external opportunities:</p>
             <ul className="list-disc pl-6 mb-4">
               <li>We are only forwarding or aggregating these postings and are not the original source</li>
               <li>We do not verify the accuracy, legitimacy, or legality of external postings</li>
@@ -126,7 +126,7 @@ const TermsOfService = () => {
             </ul>
 
             <h3 className="text-xl font-medium mb-3">6.5 No Employment Relationship</h3>
-            <p>Titlii does not create any employment, agency, partnership, or joint venture relationship between users or between users and Titlii.</p>
+            <p>Gully does not create any employment, agency, partnership, or joint venture relationship between users or between users and Gully.</p>
           </section>
 
           <section className="mb-8">
@@ -146,12 +146,12 @@ const TermsOfService = () => {
             <p>AI-generated content and recommendations are provided for convenience and may contain errors. Users should verify AI-generated information before relying on it. Match recommendations are suggestions only; users make all final decisions about connections. AI matching does not constitute an endorsement of any user or guarantee of compatibility.</p>
 
             <h3 className="text-xl font-medium mb-3">7.3 Human Review</h3>
-            <p>You may request human review of significant AI-driven decisions affecting your account by contacting support@titlii.social.</p>
+            <p>You may request human review of significant AI-driven decisions affecting your account by contacting support@trygully.com.</p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">8. Changes to Services</h2>
-            <p>We are continuously improving Titlii and may modify the Services at any time:</p>
+            <p>We are continuously improving Gully and may modify the Services at any time:</p>
             <ul className="list-disc pl-6 mb-4">
               <li>We may add, remove, or change features, including AI models, matching algorithms, and communication channels (such as WhatsApp, voice, or web), without prior notice</li>
               <li>Some features may be labeled as "beta," "preview," or "experimental" and are provided "as is" with no guarantees of continued availability</li>
@@ -162,8 +162,8 @@ const TermsOfService = () => {
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">9. Fees and Payments</h2>
-            <p>Currently, basic Titlii Services are provided free of charge. We reserve the right to introduce paid features or subscription plans in the future, with reasonable notice to users.</p>
-            <p>Any payments between users for services are handled directly between those parties. Titlii is not responsible for payment disputes between users.</p>
+            <p>Currently, basic Gully Services are provided free of charge. We reserve the right to introduce paid features or subscription plans in the future, with reasonable notice to users.</p>
+            <p>Any payments between users for services are handled directly between those parties. Gully is not responsible for payment disputes between users.</p>
           </section>
 
           <section className="mb-8">
@@ -259,7 +259,7 @@ const TermsOfService = () => {
             </ul>
 
             <h3 className="text-xl font-medium mb-3">16.2 Termination by You</h3>
-            <p>You may terminate your account at any time by contacting us at support@titlii.social or through your account settings.</p>
+            <p>You may terminate your account at any time by contacting us at support@trygully.com or through your account settings.</p>
 
             <h3 className="text-xl font-medium mb-3">16.3 Effect of Termination</h3>
             <p>Upon termination:</p>
@@ -285,7 +285,7 @@ const TermsOfService = () => {
             <p><strong>YOU AND MADE OF DRAMA STUDIOS INC. AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN YOUR OR ITS INDIVIDUAL CAPACITY AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS OR REPRESENTATIVE PROCEEDING.</strong></p>
             
             <h3 className="text-xl font-medium mb-3">17.4 Opt-Out Right</h3>
-            <p>You may opt out of this arbitration agreement by sending written notice to legal@titlii.social within thirty (30) days of first accepting these Terms. Your notice must include your name, mailing address, phone number, and a clear statement that you wish to opt out of the arbitration agreement. If you opt out, you may pursue claims in court.</p>
+            <p>You may opt out of this arbitration agreement by sending written notice to legal@trygully.com within thirty (30) days of first accepting these Terms. Your notice must include your name, mailing address, phone number, and a clear statement that you wish to opt out of the arbitration agreement. If you opt out, you may pursue claims in court.</p>
             
             <h3 className="text-xl font-medium mb-3">17.5 Exceptions</h3>
             <p>Notwithstanding the foregoing, either party may seek injunctive or other equitable relief in any court of competent jurisdiction to prevent the actual or threatened infringement of intellectual property rights or other irreparable harm.</p>
@@ -315,7 +315,7 @@ const TermsOfService = () => {
             <p>You may not assign or transfer these Terms without our prior written consent. We may assign these Terms without restriction.</p>
 
             <h3 className="text-xl font-medium mb-3">19.5 Notices</h3>
-            <p>We may provide notices to you via email, WhatsApp, or through the Services. You may provide notices to us at legal@titlii.social.</p>
+            <p>We may provide notices to you via email, WhatsApp, or through the Services. You may provide notices to us at legal@trygully.com.</p>
           </section>
 
           <section className="mb-8">
@@ -323,10 +323,10 @@ const TermsOfService = () => {
             <p><strong>Made of Drama Studios Inc.</strong><br />
             Dallas, Texas 75001<br />
             United States</p>
-            <p>General Support: <a href="mailto:support@titlii.social" className="text-red-600 hover:underline">support@titlii.social</a><br />
-            Legal Inquiries: <a href="mailto:legal@titlii.social" className="text-red-600 hover:underline">legal@titlii.social</a><br />
+            <p>General Support: <a href="mailto:support@trygully.com" className="text-red-600 hover:underline">support@trygully.com</a><br />
+            Legal Inquiries: <a href="mailto:legal@trygully.com" className="text-red-600 hover:underline">legal@trygully.com</a><br />
             WhatsApp: <a href="https://wa.me/12134147369" className="text-red-600 hover:underline">+1 (213) 414-7369</a><br />
-            Website: <a href="https://titlii.social" className="text-red-600 hover:underline">https://titlii.social</a></p>
+            Website: <a href="https://trygully.com" className="text-red-600 hover:underline">https://trygully.com</a></p>
           </section>
         </div>
       </main>

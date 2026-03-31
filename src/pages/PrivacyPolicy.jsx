@@ -9,8 +9,8 @@ const PrivacyPolicy = () => {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <a href="/" className="flex items-center gap-3">
-            <img src="/butterfly.png" alt="Titlii" className="w-8 h-auto" />
-            <span className="text-2xl font-bold tracking-tight" style={{ color: '#E50914' }}>titlii</span>
+            <img src="/butterfly.png" alt="Gully" className="w-8 h-auto" />
+            <span className="text-2xl font-bold tracking-tight" style={{ color: '#E50914' }}>gully</span>
           </a>
           <button
             onClick={() => navigate("/")}
@@ -25,12 +25,12 @@ const PrivacyPolicy = () => {
       <main className="pt-24 pb-16 px-6">
         <div className="max-w-4xl mx-auto prose prose-gray">
           <h1 className="text-4xl font-bold mb-2">Privacy Policy</h1>
-          <p className="text-gray-500 mb-8">titlii.social — A Service of Made of Drama Studios Inc.</p>
+          <p className="text-gray-500 mb-8">trygully.com — A Service of Gully Inc.</p>
           <p className="text-sm text-gray-400 mb-8">Last Updated: January 28, 2026</p>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
-            <p>Made of Drama Studios Inc. ("Company," "we," "our," or "us"), a Texas corporation with its principal place of business in Dallas, Texas, operates Titlii (titlii.social). This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use our website, WhatsApp bot, voice services, mobile applications, and related services ("Services").</p>
+            <p>Gully Inc. ("Company," "we," "our," or "us"), operates Gully (trygully.com). This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use our website, WhatsApp bot, voice services, mobile applications, and related services ("Services").</p>
             <p>By using our Services, you consent to the practices described in this Privacy Policy. If you do not agree, do not use our Services.</p>
           </section>
 
@@ -73,7 +73,7 @@ const PrivacyPolicy = () => {
               <li>Request correction of inaccurate information</li>
               <li>Request removal of your profile entirely</li>
             </ul>
-            <p>Contact privacy@titlii.social with subject "Passive Profile Request" to exercise these rights.</p>
+            <p>Contact privacy@trygully.com with subject "Passive Profile Request" to exercise these rights.</p>
 
             <h3 className="text-xl font-medium mb-3">2.5 Cookies and Tracking Technologies</h3>
             <p>We use cookies, web beacons, and similar technologies for essential functionality, analytics, and (where permitted) advertising. You can control cookies through browser settings, but disabling them may limit functionality. We only use advertising-related cookies where legally allowed and with appropriate consent.</p>
@@ -149,7 +149,7 @@ const PrivacyPolicy = () => {
             <p><strong>Match recommendations and suggestions are not legal or similarly significant automated decisions.</strong> They are recommendations only—you always choose whether to act on them. No employment, legal, financial, or other significant decisions are made solely by automated means without human involvement.</p>
 
             <h3 className="text-xl font-medium mb-3">5.4 Your Rights Regarding AI Processing</h3>
-            <p>You may request information about automated decision-making logic and request human review of certain decisions. Contact privacy@titlii.social.</p>
+            <p>You may request information about automated decision-making logic and request human review of certain decisions. Contact privacy@trygully.com.</p>
           </section>
 
           <section className="mb-8">
@@ -174,7 +174,7 @@ const PrivacyPolicy = () => {
             </ul>
 
             <h3 className="text-xl font-medium mb-3">6.3 Contesting Decisions</h3>
-            <p>If you believe your trust score or any related decision is incorrect, you may contact support@titlii.social to understand the decision and request review. We will investigate and correct any errors.</p>
+            <p>If you believe your trust score or any related decision is incorrect, you may contact support@trygully.com to understand the decision and request review.</p>
           </section>
 
           <section className="mb-8">
@@ -243,16 +243,16 @@ const PrivacyPolicy = () => {
             <h2 className="text-2xl font-semibold mb-4">10. Your Rights and Choices</h2>
             
             <h3 className="text-xl font-medium mb-3">10.1 Access and Update</h3>
-            <p>Access and update your information through account settings, our WhatsApp bot, or by contacting privacy@titlii.social.</p>
+            <p>Access and update your information through account settings, our WhatsApp bot, or by contacting privacy@trygully.com.</p>
 
             <h3 className="text-xl font-medium mb-3">10.2 Account Deletion</h3>
-            <p>Request deletion at support@titlii.social. We process requests within 30 days, except where retention is legally required or necessary for platform safety.</p>
+            <p>Request deletion at support@trygully.com.</p>
 
             <h3 className="text-xl font-medium mb-3">10.3 Communication Preferences</h3>
             <p>Opt out of promotional communications via settings or unsubscribe links. Service communications cannot be opted out.</p>
 
             <h3 className="text-xl font-medium mb-3">10.4 Data Portability</h3>
-            <p>Request a copy of your data in machine-readable format at privacy@titlii.social.</p>
+            <p>Request a copy of your data in machine-readable format at privacy@trygully.com.</p>
 
             <h3 className="text-xl font-medium mb-3">10.5 Do Not Track Signals</h3>
             <p>Our Services do not currently respond to "Do Not Track" browser signals. However, you can manage tracking through cookie settings and by opting out of interest-based advertising through the Digital Advertising Alliance (optout.aboutads.info) or Network Advertising Initiative (optout.networkadvertising.org).</p>
@@ -272,10 +272,10 @@ const PrivacyPolicy = () => {
             <p>Request correction of inaccurate personal information we maintain about you.</p>
 
             <h3 className="text-xl font-medium mb-3">11.4 Right to Opt-Out of Sale/Sharing</h3>
-            <p>We do NOT sell personal information. You may opt out of sharing for cross-context behavioral advertising by emailing privacy@titlii.social with subject "Opt-Out of Sharing."</p>
+            <p>You may opt out of sharing for cross-context behavioral advertising by emailing privacy@trygully.com with subject "Opt-Out of Sharing."</p>
 
             <h3 className="text-xl font-medium mb-3">11.5 Right to Limit Use of Sensitive Personal Information</h3>
-            <p>You may limit our use of sensitive personal information to only what is necessary to provide the Services. Email privacy@titlii.social with subject "Limit Sensitive Information."</p>
+            <p>You may limit our use of sensitive personal information to only what is necessary to provide the Services. Email privacy@trygully.com with subject "Limit Sensitive Information."</p>
 
             <h3 className="text-xl font-medium mb-3">11.6 Right to Non-Discrimination</h3>
             <p>We will not discriminate against you for exercising your privacy rights.</p>
@@ -284,23 +284,23 @@ const PrivacyPolicy = () => {
             <p>You may designate an authorized agent to submit requests on your behalf. The agent must provide written authorization signed by you. We may require you to verify your identity directly.</p>
 
             <h3 className="text-xl font-medium mb-3">11.8 Exercising Your Rights</h3>
-            <p>Submit requests to privacy@titlii.social with subject "California Privacy Request." We will verify your identity using information associated with your account. We respond within 45 days (may be extended by 45 days with notice).</p>
+            <p>Submit requests to privacy@trygully.com with subject "California Privacy Request." We will verify your identity using information associated with your account. We respond within 45 days (may be extended by 45 days with notice).</p>
 
             <h3 className="text-xl font-medium mb-3">11.9 Financial Incentives</h3>
             <p>We do not offer financial incentives for the collection, sale, or deletion of personal information.</p>
 
             <h3 className="text-xl font-medium mb-3">11.10 Shine the Light (CA Civil Code Section 1798.83)</h3>
-            <p>California residents may request information about disclosure of personal information to third parties for direct marketing. We do not share personal information with third parties for their direct marketing purposes. Contact privacy@titlii.social for more information.</p>
+            <p>California residents may request information about disclosure of personal information to third parties for direct marketing. We do not share personal information with third parties for their direct marketing purposes. Contact privacy@trygully.com for more information.</p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">12. Other State Privacy Rights</h2>
-            <p>Residents of Virginia, Colorado, Connecticut, Utah, and other states with comprehensive privacy laws may have similar rights to access, delete, correct, and opt-out. Contact privacy@titlii.social to exercise these rights.</p>
+            <p>Residents of Virginia, Colorado, Connecticut, Utah, and other states with comprehensive privacy laws may have similar rights to access, delete, correct, and opt-out. Contact privacy@trygully.com to exercise these rights.</p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">13. International Users</h2>
-            <p>Titlii is operated from the United States (Dallas, Texas). If you are outside the U.S., your information may be transferred to and processed in the United States.</p>
+            <p>Gully is operated from the United States (Austin, Texas). If you are outside the U.S., your information may be transferred to and processed in the United States.</p>
             <p>For EEA, UK, or other regions with data protection laws, we process data based on: consent, contract performance, legal obligations, and legitimate interests (see Section 4.4 for details).</p>
             <p>EEA and UK users may lodge complaints with local data protection authorities.</p>
             <p>Standard Contractual Clauses or other appropriate safeguards apply to international transfers where required.</p>
@@ -308,7 +308,7 @@ const PrivacyPolicy = () => {
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">14. Children's Privacy</h2>
-            <p>Our Services are not for individuals under 18. We do not knowingly collect personal information from children under 18. If we learn we have collected such information, we will delete it promptly. Contact privacy@titlii.social if you believe we have inadvertently collected information from a child.</p>
+            <p>Our Services are not for individuals under 18. We do not knowingly collect personal information from children under 18. If we learn we have collected such information, we will delete it promptly. Contact privacy@trygully.com if you believe we have inadvertently collected information from a child.</p>
           </section>
 
           <section className="mb-8">
@@ -329,15 +329,15 @@ const PrivacyPolicy = () => {
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">17. Contact Us</h2>
-            <p><strong>Made of Drama Studios Inc.</strong><br />
-            Dallas, Texas 75001<br />
+            <p><strong>Gully Inc.</strong><br />
+            Austin, Texas<br />
             United States</p>
-            <p>Privacy Inquiries: <a href="mailto:privacy@titlii.social" className="text-red-600 hover:underline">privacy@titlii.social</a><br />
-            General Support: <a href="mailto:support@titlii.social" className="text-red-600 hover:underline">support@titlii.social</a><br />
+            <p>Privacy Inquiries: <a href="mailto:privacy@trygully.com" className="text-red-600 hover:underline">privacy@trygully.com</a><br />
+            General Support: <a href="mailto:support@trygully.com" className="text-red-600 hover:underline">support@trygully.com</a><br />
             WhatsApp: <a href="https://wa.me/12134147369" className="text-red-600 hover:underline">+1 (213) 414-7369</a><br />
-            Website: <a href="https://titlii.social" className="text-red-600 hover:underline">https://titlii.social</a></p>
+            Website: <a href="https://trygully.com" className="text-red-600 hover:underline">https://trygully.com</a></p>
             <p>For data access, deletion, correction, or other privacy requests:<br />
-            Email: privacy@titlii.social<br />
+            Email: privacy@trygully.com<br />
             Subject line: "Privacy Request"</p>
             <p>We respond within 30 days (45 days for CCPA requests, extendable by 45 days).</p>
           </section>
@@ -347,7 +347,7 @@ const PrivacyPolicy = () => {
       {/* Footer */}
       <footer className="border-t border-gray-100 py-8 px-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-500">© 2026 Made of Drama Studios Inc. All rights reserved.</p>
+          <p className="text-sm text-gray-500">© 2026 Gully Inc. All rights reserved.</p>
           <div className="flex gap-6">
             <a href="/terms" className="text-sm text-gray-500 hover:text-gray-900">Terms of Service</a>
             <a href="/privacy" className="text-sm text-gray-500 hover:text-gray-900">Privacy Policy</a>
