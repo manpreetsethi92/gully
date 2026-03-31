@@ -276,7 +276,7 @@ const LandingPage = () => {
             </div>
 
             {/* Right — phone + footer */}
-            <div className="hidden lg:flex flex-col items-center justify-center flex-shrink-0 w-[380px] gap-6">
+            <div className="hidden lg:flex flex-col items-center justify-center flex-shrink-0 w-[520px] pr-[140px] gap-6">
               <PhoneMockup />
               <div className="flex items-center gap-6">
                 <a href="/privacy" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">privacy</a>
