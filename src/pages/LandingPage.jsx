@@ -204,7 +204,7 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="overflow-x-hidden bg-[#0a0a0a]">
+    <div className="overflow-x-hidden bg-[#0a0a0a] lg:bg-white lg:h-screen lg:overflow-hidden">
 
 
 
@@ -235,10 +235,10 @@ const LandingPage = () => {
 
       {/* ==================== HERO SECTION ==================== */}
       {/* Desktop: full viewport, no scroll. Mobile: stacks vertically */}
-      <section className="bg-white pt-20 flex flex-col lg:block lg:h-screen lg:overflow-hidden">
+      <section className="bg-white pt-20 flex flex-col lg:h-full lg:flex-row lg:items-center">
 
         {/* Desktop layout — absolute positioning for pixel-perfect fit */}
-        <div className="hidden lg:flex h-full items-center justify-between max-w-[1800px] mx-auto px-8">
+        <div className="hidden lg:flex h-full w-full items-center justify-between max-w-[1800px] mx-auto px-8">
           {/* Left */}
           <div className="max-w-2xl">
             <div className="animate-fade-up mb-8">
