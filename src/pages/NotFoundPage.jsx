@@ -13,7 +13,7 @@ const NotFoundPage = () => {
       <div className="text-center max-w-md">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
-          <img src="/favicon-96x96.png" alt="Gully" className="w-20 h-20 opacity-50" />
+          <span className="font-syne font-bold text-5xl tracking-tight text-white/30">gully</span>
         </div>
         
         {/* 404 */}
