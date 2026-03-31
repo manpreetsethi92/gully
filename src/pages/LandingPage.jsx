@@ -229,11 +229,11 @@ const LandingPage = () => {
       </nav>
 
       {/* ==================== HERO SECTION (WHITE) ==================== */}
-      <section className="min-h-screen relative flex items-center bg-white pt-20">
+      <section className="min-h-screen relative flex items-center bg-white pt-20 pb-12 lg:pb-0">
         <div className="max-w-[1800px] mx-auto px-8 relative z-20 w-full">
-          <div className="flex items-center justify-between gap-8">
+          <div className="flex flex-col lg:flex-row items-center lg:items-center lg:justify-between gap-8">
             {/* Left — text */}
-            <div className="max-w-2xl">
+            <div className="max-w-2xl w-full lg:w-auto">
               <div className="animate-fade-up mb-8">
                 <span className="font-mono text-xs tracking-[0.3em] text-gray-900 lowercase">
                   the superconnector
@@ -271,7 +271,7 @@ const LandingPage = () => {
             </div>
 
             {/* Right — phone + footer */}
-            <div className="hidden lg:flex flex-col items-center justify-center flex-shrink-0 w-[520px] pr-[140px] gap-6">
+            <div className="flex flex-col items-center justify-center flex-shrink-0 w-full lg:w-[520px] lg:pr-[140px] gap-6 max-w-[280px] lg:max-w-none mx-auto lg:mx-0">
               <PhoneMockup />
               <div className="flex items-center gap-6">
                 <a href="/privacy" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">privacy</a>
