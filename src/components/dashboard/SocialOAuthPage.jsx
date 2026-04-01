@@ -59,7 +59,7 @@ const PLATFORM_BG = {
 };
 
 const PLATFORMS = [
-  { key: "instagram", label: "Instagram", supportsOAuth: true },
+  { key: "instagram", label: "Instagram", supportsOAuth: false, usesFabric: true },
   { key: "google",    label: "Google",    supportsOAuth: true },
   { key: "linkedin",  label: "LinkedIn",  supportsOAuth: true },
   { key: "github",    label: "GitHub",    supportsOAuth: true },
@@ -425,7 +425,7 @@ const SocialOAuthPage = ({ darkMode }) => {
                     <ShieldCheck size={12} />
                     Verified
                   </span>
-                ) : platform.supportsOAuth ? (
+                ) : (platform.supportsOAuth || platform.usesFabric) ? (
                   <button
                     onClick={() => handleConnect(platform.key)}
                     disabled={isConnecting}
