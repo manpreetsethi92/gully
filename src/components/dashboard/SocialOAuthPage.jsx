@@ -424,14 +424,12 @@ const SocialOAuthPage = ({ darkMode }) => {
                 </div>
 
                 {/* Action */}
-                {isConnected ? (
+                {isVerified ? (
                   <span className={`px-3 py-1.5 text-sm rounded-full flex items-center gap-1 ${
-                    isVerified
-                      ? darkMode ? "bg-blue-500/20 text-blue-300" : "bg-blue-100 text-blue-700"
-                      : darkMode ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"
+                    darkMode ? "bg-blue-500/20 text-blue-300" : "bg-blue-100 text-blue-700"
                   }`}>
-                    {isVerified ? <ShieldCheck size={12} /> : <Check size={12} />}
-                    {isVerified ? "Verified" : "Connected"}
+                    <ShieldCheck size={12} />
+                    Verified
                   </span>
                 ) : platform.supportsOAuth ? (
                   <button
