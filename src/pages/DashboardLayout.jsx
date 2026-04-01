@@ -129,7 +129,7 @@ const DashboardLayout = () => {
     { id: "saved-jobs", label: "Saved Jobs", icon: Bookmark, count: stats.savedJobs },
     { id: "requests", label: "My Requests", icon: Send, count: stats.requests },
     { id: "network", label: "Network", icon: Network },
-    { id: "work-history", label: "My Track Record", icon: History },
+    { id: "work-history", label: "Work History", icon: History },
     { id: "social-connect", label: "Connect Socials", icon: Link2 },
     { id: "settings", label: "Settings", icon: SettingsIcon }
   ];
