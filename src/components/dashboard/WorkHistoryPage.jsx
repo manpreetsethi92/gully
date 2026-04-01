@@ -54,17 +54,17 @@ const WorkHistoryPage = ({ darkMode }) => {
       {/* Skills banner */}
       {skills.length > 0 && (
         <div className={`px-4 py-4 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
-          <div className={`p-4 rounded-2xl ${darkMode ? "bg-green-500/10" : "bg-green-50"}`}>
+          <div className={`p-4 rounded-2xl ${darkMode ? "bg-purple-500/10" : "bg-purple-50"}`}>
             <div className="flex items-center gap-2 mb-3">
-              <TrendingUp size={18} className={darkMode ? "text-green-400" : "text-green-600"} />
+              <TrendingUp size={18} className={darkMode ? "text-purple-400" : "text-purple-600"} />
               <div>
                 <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Your verified track record</p>
-                <p className={`text-xs mt-0.5 ${darkMode ? "text-white/40" : "text-gray-400"}`}>Skills you've proven by actually doing the work</p>
+                <p className={`text-xs mt-0.5 ${darkMode ? "text-white/60" : "text-gray-600"}`}>Skills you've proven by actually doing the work</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
               {skills.slice(0, 8).map((s, i) => (
-                <span key={i} className={`px-3 py-1 text-sm rounded-full font-medium ${darkMode ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"}`}>{s}</span>
+                <span key={i} className={`px-3 py-1 text-sm rounded-full font-medium ${darkMode ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"}`}>{s}</span>
               ))}
             </div>
           </div>
