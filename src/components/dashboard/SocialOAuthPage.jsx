@@ -59,13 +59,9 @@ const PLATFORM_BG = {
 };
 
 const PLATFORMS = [
-  { key: "linkedin",  label: "LinkedIn",  supportsOAuth: true },
   { key: "google",    label: "Google",    supportsOAuth: true },
   { key: "github",    label: "GitHub",    supportsOAuth: true },
   { key: "youtube",   label: "YouTube",   supportsOAuth: true },
-  { key: "instagram", label: "Instagram", supportsOAuth: true },
-  { key: "tiktok",    label: "TikTok",    supportsOAuth: true },
-  { key: "facebook",  label: "Facebook",  supportsOAuth: true },
 ];
 
 const SOCIAL_MANUAL_LINKS = [
