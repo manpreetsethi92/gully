@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { History, Star, TrendingUp, MessageCircle } from "lucide-react";
+import { History, Star, TrendingUp, MessageCircle, ChevronDown } from "lucide-react";
 
 const WorkHistoryPage = ({ darkMode }) => {
   const { token } = useAuth();
   const [savedJobs, setSavedJobs] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [skillsExpanded, setSkillsExpanded] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -54,21 +55,29 @@ const WorkHistoryPage = ({ darkMode }) => {
       {/* Skills banner */}
       {skills.length > 0 && (
         <div className={`px-4 py-4 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
-          <div className={`p-4 rounded-2xl ${darkMode ? "bg-purple-500/10" : "bg-purple-50"}`}>
-            <div className="flex items-start gap-3 mb-3">
+          <div className={`rounded-2xl overflow-hidden ${darkMode ? "bg-purple-500/10" : "bg-purple-50"}`}>
+            {/* Header row — always visible, clickable */}
+            <button
+              onClick={() => setSkillsExpanded(prev => !prev)}
+              className="w-full p-4 flex items-center gap-3 text-left"
+            >
               <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
                 <TrendingUp size={20} className="text-white" />
               </div>
-              <div>
+              <div className="flex-1 min-w-0">
                 <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Your verified track record</p>
-                <p className={`text-sm mt-1 ${darkMode ? "text-white/60" : "text-gray-600"}`}>Skills you've proven by actually doing the work</p>
+                <p className={`text-sm mt-0.5 ${darkMode ? "text-white/60" : "text-gray-600"}`}>Skills you've proven by actually doing the work</p>
               </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {skills.slice(0, 8).map((s, i) => (
-                <span key={i} className={`px-3 py-1 text-sm rounded-full font-medium ${darkMode ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"}`}>{s}</span>
-              ))}
-            </div>
+              <ChevronDown size={18} className={`flex-shrink-0 transition-transform ${skillsExpanded ? "rotate-180" : ""} ${darkMode ? "text-white/50" : "text-gray-400"}`} />
+            </button>
+            {/* Expandable skills */}
+            {skillsExpanded && (
+              <div className="px-4 pb-4 flex flex-wrap gap-2">
+                {skills.slice(0, 8).map((s, i) => (
+                  <span key={i} className={`px-3 py-1 text-sm rounded-full font-medium ${darkMode ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"}`}>{s}</span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
