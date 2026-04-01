@@ -24,12 +24,12 @@ const PrivacyPolicy = () => {
       <main className="pt-24 pb-16 px-6">
         <div className="max-w-4xl mx-auto prose prose-gray">
           <h1 className="text-4xl font-bold mb-2">Privacy Policy</h1>
-          <p className="text-gray-500 mb-8">trygully.com — A Service of Gully Inc.</p>
+          <p className="text-gray-500 mb-8">trygully.com — A Service of Made of Drama Studios Inc., d/b/a Gully</p>
           <p className="text-sm text-gray-400 mb-8">Last Updated: January 28, 2026</p>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
-            <p>Gully Inc. ("Company," "we," "our," or "us"), operates Gully (trygully.com). This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use our website, WhatsApp bot, voice services, mobile applications, and related services ("Services").</p>
+            <p>Made of Drama Studios Inc., d/b/a Gully ("Company," "we," "our," or "us"), operates Gully (trygully.com). This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use our website, WhatsApp bot, voice services, mobile applications, and related services ("Services").</p>
             <p>By using our Services, you consent to the practices described in this Privacy Policy. If you do not agree, do not use our Services.</p>
           </section>
 
@@ -328,7 +328,7 @@ const PrivacyPolicy = () => {
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">17. Contact Us</h2>
-            <p><strong>Gully Inc.</strong><br />
+            <p><strong>Made of Drama Studios Inc., d/b/a Gully</strong><br />
             Austin, Texas<br />
             United States</p>
             <p>Privacy Inquiries: <a href="mailto:privacy@trygully.com" className="text-red-600 hover:underline">privacy@trygully.com</a><br />
@@ -346,7 +346,7 @@ const PrivacyPolicy = () => {
       {/* Footer */}
       <footer className="border-t border-gray-100 py-8 px-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-500">© 2026 Gully Inc. All rights reserved.</p>
+          <p className="text-sm text-gray-500">© 2026 Made of Drama Studios Inc. All rights reserved.</p>
           <div className="flex gap-6">
             <a href="/terms" className="text-sm text-gray-500 hover:text-gray-900">Terms of Service</a>
             <a href="/privacy" className="text-sm text-gray-500 hover:text-gray-900">Privacy Policy</a>
