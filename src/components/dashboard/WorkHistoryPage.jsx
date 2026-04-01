@@ -55,11 +55,13 @@ const WorkHistoryPage = ({ darkMode }) => {
       {skills.length > 0 && (
         <div className={`px-4 py-4 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
           <div className={`p-4 rounded-2xl ${darkMode ? "bg-purple-500/10" : "bg-purple-50"}`}>
-            <div className="flex items-center gap-2 mb-3">
-              <TrendingUp size={18} className={darkMode ? "text-purple-400" : "text-purple-600"} />
+            <div className="flex items-start gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
+                <TrendingUp size={20} className="text-white" />
+              </div>
               <div>
                 <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Your verified track record</p>
-                <p className={`text-xs mt-0.5 ${darkMode ? "text-white/60" : "text-gray-600"}`}>Skills you've proven by actually doing the work</p>
+                <p className={`text-sm mt-1 ${darkMode ? "text-white/60" : "text-gray-600"}`}>Skills you've proven by actually doing the work</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
