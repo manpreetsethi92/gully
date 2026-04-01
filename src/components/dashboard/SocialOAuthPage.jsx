@@ -60,16 +60,17 @@ const PLATFORM_BG = {
 
 const PLATFORMS = [
   { key: "google",    label: "Google",    supportsOAuth: true },
+  { key: "linkedin",  label: "LinkedIn",  supportsOAuth: true },
   { key: "github",    label: "GitHub",    supportsOAuth: true },
   { key: "youtube",   label: "YouTube",   supportsOAuth: true },
 ];
 
 const SOCIAL_MANUAL_LINKS = [
   { key: "instagram", label: "Instagram", placeholder: "https://www.instagram.com/yourusername" },
-  { key: "tiktok", label: "TikTok", placeholder: "https://www.tiktok.com/@yourusername" },
-  { key: "twitter", label: "X / Twitter", placeholder: "https://x.com/yourusername" },
-  { key: "behance", label: "Behance", placeholder: "https://www.behance.net/yourusername" },
-  { key: "dribbble", label: "Dribbble", placeholder: "https://dribbble.com/yourusername" },
+  { key: "twitter",   label: "X / Twitter", placeholder: "https://x.com/yourusername" },
+  { key: "tiktok",    label: "TikTok",    placeholder: "https://www.tiktok.com/@yourusername" },
+  { key: "behance",   label: "Behance",   placeholder: "https://www.behance.net/yourusername" },
+  { key: "dribbble",  label: "Dribbble",  placeholder: "https://dribbble.com/yourusername" },
 ];
 
 const WORK_LINKS = [
