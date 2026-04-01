@@ -24,12 +24,12 @@ const TermsOfService = () => {
       <main className="pt-24 pb-16 px-6">
         <div className="max-w-4xl mx-auto prose prose-gray">
           <h1 className="text-4xl font-bold mb-2">Terms of Service</h1>
-          <p className="text-gray-500 mb-8">trygully.com — A Service of Gully Inc.</p>
+          <p className="text-gray-500 mb-8">trygully.com — A Service of Made of Drama Studios Inc., d/b/a Gully</p>
           <p className="text-sm text-gray-400 mb-8">Last Updated: January 28, 2026</p>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
-            <p>Welcome to Gully ("Platform," "Service," "we," "our," or "us"), operated by Gully Inc., a Texas corporation with its principal place of business in Austin, Texas. By accessing or using our website (trygully.com), WhatsApp bot, voice services, mobile applications, or any related services (collectively, "Services"), you agree to be bound by these Terms of Service ("Terms").</p>
+            <p>Welcome to Gully ("Platform," "Service," "we," "our," or "us"), operated by Made of Drama Studios Inc., d/b/a Gully, a Texas corporation with its principal place of business in Austin, Texas. By accessing or using our website (trygully.com), WhatsApp bot, voice services, mobile applications, or any related services (collectively, "Services"), you agree to be bound by these Terms of Service ("Terms").</p>
             <p>If you do not agree to these Terms, do not use our Services. We reserve the right to modify these Terms at any time. Your continued use of the Services after any changes constitutes acceptance of the new Terms.</p>
           </section>
 
@@ -319,8 +319,8 @@ const TermsOfService = () => {
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">20. Contact Us</h2>
-            <p><strong>Made of Drama Studios Inc.</strong><br />
-            Dallas, Texas 75001<br />
+            <p><strong>Made of Drama Studios Inc., d/b/a Gully</strong><br />
+            Austin, Texas<br />
             United States</p>
             <p>General Support: <a href="mailto:support@trygully.com" className="text-red-600 hover:underline">support@trygully.com</a><br />
             Legal Inquiries: <a href="mailto:legal@trygully.com" className="text-red-600 hover:underline">legal@trygully.com</a><br />
