@@ -229,25 +229,40 @@ const SocialOAuthPage = ({ darkMode }) => {
 
       const authUrl = response.data?.auth_url;
       if (authUrl) {
-        // Open OAuth in popup
-        const width = 600, height = 700;
-        const left = window.screenX + (window.outerWidth - width) / 2;
-        const top = window.screenY + (window.outerHeight - height) / 2;
-        const popup = window.open(
-          authUrl,
-          `oauth_${platform}`,
-          `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
-        );
-
-        // Fallback: if popup closed without postMessage
-        pollTimerRef.current = setInterval(() => {
-          if (popup?.closed) {
+        // Instagram (Fabric) must open in new tab — Chrome blocks accountscenter.instagram.com in popups
+        const isFabricPlatform = platform === "instagram";
+        if (isFabricPlatform) {
+          window.open(authUrl, "_blank");
+          // Poll for completion by checking connected accounts every 3 seconds
+          pollTimerRef.current = setInterval(() => {
+            fetchConnectedAccounts();
+          }, 3000);
+          setTimeout(() => {
             clearInterval(pollTimerRef.current);
             pollTimerRef.current = null;
             setConnecting(null);
             fetchConnectedAccounts();
-          }
-        }, 1000);
+          }, 120000); // stop polling after 2 mins
+        } else {
+          // Standard OAuth popup for Google, LinkedIn, GitHub, YouTube
+          const width = 600, height = 700;
+          const left = window.screenX + (window.outerWidth - width) / 2;
+          const top = window.screenY + (window.outerHeight - height) / 2;
+          const popup = window.open(
+            authUrl,
+            `oauth_${platform}`,
+            `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+          );
+          // Fallback: if popup closed without postMessage
+          pollTimerRef.current = setInterval(() => {
+            if (popup?.closed) {
+              clearInterval(pollTimerRef.current);
+              pollTimerRef.current = null;
+              setConnecting(null);
+              fetchConnectedAccounts();
+            }
+          }, 1000);
+        }
       } else {
         toast.info(`${platform} OAuth not configured yet`);
         setConnecting(null);
