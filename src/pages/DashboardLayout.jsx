@@ -328,7 +328,7 @@ const DashboardLayout = () => {
               <Route path="settings" element={<SettingsPage darkMode={darkMode} />} />
               <Route path="social-connect" element={<SocialOAuthPage darkMode={darkMode} />} />
               <Route path="onboarding" element={<OnboardingFlow />} />
-              <Route path="work-history" element={<WorkHistoryPage />} />
+              <Route path="work-history" element={<WorkHistoryPage darkMode={darkMode} />} />
               <Route path="notifications" element={<NotificationsPage />} />
               <Route path="network" element={<NetworkPage darkMode={darkMode} />} />
             </Routes>
