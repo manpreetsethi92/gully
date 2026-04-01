@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, forwardRef, useCallback, startTransition } from "react";
+import { useState, useEffect, useRef, forwardRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -197,8 +197,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [whatsappAlertsOptIn, setWhatsappAlertsOptIn] = useState(true);
   const [location, setLocation] = useState("");
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [instagramUrl, setInstagramUrl] = useState("");
 
   // OTP state (for signin)
   const [otp, setOtp] = useState("");
@@ -270,8 +268,6 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setName("");
     setEmail("");
     setLocation("");
-    setLinkedinUrl("");
-    setInstagramUrl("");
     setAgreedToTerms(false);
     setShowSuccess(false);
     setShowCountryDropdown(false);
