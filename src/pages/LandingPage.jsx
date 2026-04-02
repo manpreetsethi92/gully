@@ -301,9 +301,11 @@ const LandingPage = () => {
               <span className="w-8 h-px bg-gray-300" />free to start
             </div>
           </div>
-          {/* Phone — full width, no padding */}
-          <div className="w-full -mx-8 bg-white" style={{width: 'calc(100% + 4rem)'}}>
-            <PhoneMockup />
+          {/* Phone — slightly constrained on mobile */}
+          <div className="w-full -mx-8 bg-white flex justify-center" style={{width: 'calc(100% + 4rem)'}}>
+            <div style={{width: '85%'}}>
+              <PhoneMockup />
+            </div>
           </div>
           <div className="flex items-center justify-center gap-6 py-8 bg-white w-full -mx-8 px-8" style={{width: 'calc(100% + 4rem)'}}>
             <a href="/privacy" className="font-mono text-xs text-gray-400 hover:text-gray-600 transition-colors">privacy</a>
