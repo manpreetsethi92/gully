@@ -197,6 +197,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [whatsappAlertsOptIn, setWhatsappAlertsOptIn] = useState(true);
   const [location, setLocation] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [linkedin, setLinkedin] = useState("");
 
   // OTP state (for signin)
   const [otp, setOtp] = useState("");
@@ -268,6 +270,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setName("");
     setEmail("");
     setLocation("");
+    setInstagram("");
+    setLinkedin("");
     setAgreedToTerms(false);
     setShowSuccess(false);
     setShowCountryDropdown(false);
@@ -387,6 +391,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         phone: fullPhone,
         email: email.trim(),
         location: location.trim(),
+        instagram: instagram.trim() || undefined,
+        linkedin: linkedin.trim() || undefined,
         device_fingerprint: deviceFingerprint,
         whatsapp_alerts_opt_in: whatsappAlertsOptIn,
         ...(refCode && { ref_code: refCode })
@@ -691,6 +697,34 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                       placeholder="City, State (e.g., Dallas, TX)"
                       className="h-11"
                     />
+                  </div>
+
+                  {/* Instagram */}
+                  <div>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">INSTAGRAM <span className="text-gray-400 font-normal normal-case">(optional)</span></Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">@</span>
+                      <Input
+                        value={instagram}
+                        onChange={(e) => setInstagram(e.target.value.replace(/^@/, ""))}
+                        placeholder="yourhandle"
+                        className="h-11 pl-7"
+                      />
+                    </div>
+                  </div>
+
+                  {/* LinkedIn */}
+                  <div>
+                    <Label className="text-xs font-medium text-gray-500 mb-1 block">LINKEDIN <span className="text-gray-400 font-normal normal-case">(optional)</span></Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm leading-none">in/</span>
+                      <Input
+                        value={linkedin}
+                        onChange={(e) => setLinkedin(e.target.value.replace(/^(https?:\/\/)?(www\.)?linkedin\.com\/in\/?/, "").replace(/^in\//, ""))}
+                        placeholder="yourname"
+                        className="h-11 pl-8"
+                      />
+                    </div>
                   </div>
 
                   <label className="flex items-start gap-3 mt-5 cursor-pointer select-none">
