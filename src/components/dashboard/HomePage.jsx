@@ -1,7 +1,7 @@
 // HomePage — the unified Taj Inbox.
 //
 // Merges three old pages (Opportunities, Requests, SavedJobs) into one feed.
-// Each item is rendered as a "message from Taj" card via TajMessageCard.
+// Each item renders as a "message from Taj" card via TajMessageCard.
 //
 // Tabs:
 //   - incoming: opportunities (things pitched to you)
@@ -9,8 +9,11 @@
 //   - saved: external jobs you saved for later
 //   - all: everything, sorted by timestamp
 //
-// Phase 2 Commit 1: fetch + render, primary actions open a detail modal or no-op.
-// Phase 2 Commit 2: wire up accept/decline/delete actions.
+// Actions on cards:
+//   - opportunity (internal): accept / pass → POST /opportunities/:id/action
+//   - external gig: save / pass → same endpoint, different UI wording
+//   - my ask: open source url (if any) / close post
+//   - saved: open url / remove → DELETE /saved-jobs/:id
 
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
@@ -19,13 +22,11 @@ import { useAuth, API } from "../../App";
 import TajMessageCard from "./TajMessageCard";
 
 // ===== Taj-voice copy generators =====
-// Convert raw data from endpoints into the way Taj would phrase it.
 
 const tajSaysForOpportunity = (opp) => {
   const isExternal = opp.type === "external" || !opp.from_user_id;
   const requester = opp.from_user?.name || "someone";
   const title = (opp.request_description || opp.request_title || "").toLowerCase().trim();
-
   if (isExternal) {
     const source = opp.from_user?.name || "a site";
     return `found a gig on ${source.toLowerCase()} that fits you — ${title}`;
@@ -37,7 +38,6 @@ const tajSaysForRequest = (req) => {
   const title = (req.title || req.description || "").toLowerCase().trim();
   const matches = req.matches_count || 0;
   const applicants = req.applicants_count || 0;
-
   if (applicants > 0) {
     return `${applicants} ${applicants === 1 ? "person has" : "people have"} applied to your ask — ${title}`;
   }
@@ -64,14 +64,25 @@ const normalizeOpportunity = (opp) => {
     opp.location || from.location
   ].filter(Boolean).join(" · ").toLowerCase();
 
+  const actions = isExternal
+    ? [
+        { id: "save",    label: "save this gig", style: "primary" },
+        { id: "decline", label: "pass",          style: "secondary" }
+      ]
+    : [
+        { id: "accept",  label: "accept",   style: "primary" },
+        { id: "decline", label: "pass",     style: "secondary" }
+      ];
+
   return {
     id: `opp_${opp.id}`,
+    raw_id: opp.id,
     type: isExternal ? "external" : "opportunity",
     kind: isExternal ? "gig_for_you" : "new_match",
     taj_says: tajSaysForOpportunity(opp),
     meta_line: meta,
     timestamp: opp.created_at,
-    primary_action_label: isExternal ? "view gig" : "see profile",
+    actions,
     data: opp
   };
 };
@@ -84,14 +95,20 @@ const normalizeRequest = (req) => {
     req.budget_display
   ].filter(Boolean).join(" · ").toLowerCase();
 
+  const actions = [];
+  if (req.status !== "closed") {
+    actions.push({ id: "close", label: "close ask", style: "secondary" });
+  }
+
   return {
     id: `req_${req.id}`,
+    raw_id: req.id,
     type: "request",
     kind: "my_ask",
     taj_says: tajSaysForRequest(req),
     meta_line: meta,
     timestamp: req.created_at,
-    primary_action_label: "view ask",
+    actions,
     data: req
   };
 };
@@ -104,14 +121,21 @@ const normalizeSavedJob = (job) => {
     job.budget_range
   ].filter(Boolean).join(" · ").toLowerCase();
 
+  const actions = [];
+  if (job.source_url) {
+    actions.push({ id: "open_url", label: "open job", style: "primary" });
+  }
+  actions.push({ id: "remove", label: "remove", style: "danger" });
+
   return {
     id: `saved_${job.id}`,
+    raw_id: job.id,
     type: "saved",
     kind: "saved",
     taj_says: tajSaysForSavedJob(job),
     meta_line: meta,
     timestamp: job.saved_at || job.created_at,
-    primary_action_label: job.source_url ? "open job" : null,
+    actions,
     data: job
   };
 };
@@ -121,7 +145,7 @@ const TABS = [
   { id: "incoming", label: "incoming", kinds: ["new_match", "gig_for_you", "warm_intro"] },
   { id: "my_asks",  label: "my asks",  kinds: ["my_ask"] },
   { id: "saved",    label: "saved",    kinds: ["saved"] },
-  { id: "all",      label: "all",      kinds: null } // null = no filter
+  { id: "all",      label: "all",      kinds: null }
 ];
 
 const HomePage = ({ darkMode, onRefresh }) => {
@@ -129,6 +153,7 @@ const HomePage = ({ darkMode, onRefresh }) => {
   const [activeTab, setActiveTab] = useState("incoming");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingAction, setLoadingAction] = useState(null);
 
   const fetchAll = useCallback(async () => {
     if (!token) return;
@@ -160,9 +185,65 @@ const HomePage = ({ darkMode, onRefresh }) => {
     }
   }, [token]);
 
-  useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
+  useEffect(() => { fetchAll(); }, [fetchAll]);
+
+  // ===== Action handlers =====
+
+  const doAction = async (item, actionId) => {
+    const headers = { Authorization: `Bearer ${token}` };
+    setLoadingAction(item.id);
+
+    try {
+      // Opportunities: accept / save / decline
+      if (item.type === "opportunity" || item.type === "external") {
+        const backendAction = (actionId === "accept" || actionId === "save") ? "accept" : "decline";
+        await axios.post(
+          `${API}/opportunities/${item.raw_id}/action`,
+          { action: backendAction },
+          { headers }
+        );
+        setItems(prev => prev.filter(i => i.id !== item.id));
+        if (backendAction === "accept") {
+          toast.success(item.type === "external" ? "saved — check your saved tab" : "accepted — taj is connecting you");
+        } else {
+          toast.success("passed");
+        }
+        onRefresh?.();
+        return;
+      }
+
+      // Request: close
+      if (item.type === "request" && actionId === "close") {
+        await axios.post(`${API}/requests/${item.raw_id}/close`, {}, { headers });
+        setItems(prev => prev.filter(i => i.id !== item.id));
+        toast.success("ask closed");
+        onRefresh?.();
+        return;
+      }
+
+      // Saved: open or remove
+      if (item.type === "saved") {
+        if (actionId === "open_url") {
+          if (item.data?.source_url) {
+            window.open(item.data.source_url, "_blank", "noopener,noreferrer");
+          }
+          return;
+        }
+        if (actionId === "remove") {
+          await axios.delete(`${API}/saved-jobs/${item.raw_id}`, { headers });
+          setItems(prev => prev.filter(i => i.id !== item.id));
+          toast.success("removed");
+          onRefresh?.();
+          return;
+        }
+      }
+    } catch (error) {
+      console.error("Action failed:", error);
+      toast.error("something went wrong");
+    } finally {
+      setLoadingAction(null);
+    }
+  };
 
   const counts = {
     incoming: items.filter(i => TABS[0].kinds.includes(i.kind)).length,
@@ -176,19 +257,9 @@ const HomePage = ({ darkMode, onRefresh }) => {
     ? items.filter(i => activeTabDef.kinds.includes(i.kind))
     : items;
 
-  const handlePrimaryAction = (item) => {
-    // Phase 2 Commit 1: stub. Commit 2 opens detail modal / wires accept/decline.
-    if (item.type === "saved" && item.data?.source_url) {
-      window.open(item.data.source_url, "_blank", "noopener,noreferrer");
-      return;
-    }
-    toast("detail view coming in the next update", { duration: 2000 });
-  };
-
 
   return (
     <div>
-      {/* Header */}
       <div className="mb-1">
         <div className={`font-mono text-[11px] tracking-[0.25em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
           taj's inbox
@@ -198,7 +269,6 @@ const HomePage = ({ darkMode, onRefresh }) => {
         what's new, taj?
       </h1>
 
-      {/* Tabs */}
       <div className={`flex gap-1 mb-6 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
         {TABS.map((tab) => {
           const isActive = tab.id === activeTab;
@@ -226,7 +296,6 @@ const HomePage = ({ darkMode, onRefresh }) => {
         })}
       </div>
 
-      {/* Feed */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <div className="spinner" />
@@ -240,7 +309,8 @@ const HomePage = ({ darkMode, onRefresh }) => {
               key={item.id}
               item={item}
               darkMode={darkMode}
-              onPrimaryAction={handlePrimaryAction}
+              onAction={doAction}
+              loadingAction={loadingAction}
             />
           ))}
           <div className={`text-center py-8 font-mono text-[11px] tracking-[0.1em] lowercase ${darkMode ? "text-white/30" : "text-gray-400"}`}>

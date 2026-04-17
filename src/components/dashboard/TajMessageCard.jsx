@@ -1,7 +1,11 @@
 // TajMessageCard — one card type, every feed item.
 //
 // Renders an inbox item as if Taj is speaking to the user.
-// Every feed item gets normalized to this shape upstream in HomePage.
+// Supports:
+//  - primary action button (e.g. "see profile", "view gig")
+//  - accept/decline inline actions (for opportunities)
+//  - custom secondary actions (array, for requests with "view matches" / "close")
+//  - "reply in whatsapp" shortcut (always present)
 
 import React from "react";
 import { WhatsAppIcon } from "./WhatsAppIcon";
@@ -27,8 +31,9 @@ const formatRelativeTime = (iso) => {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 };
 
-const TajMessageCard = ({ item, darkMode, onPrimaryAction }) => {
+const TajMessageCard = ({ item, darkMode, onAction, loadingAction }) => {
   const badge = KIND_BADGES[item.kind] || KIND_BADGES.new_match;
+  const isLoading = loadingAction === item.id;
 
   return (
     <article
@@ -39,7 +44,6 @@ const TajMessageCard = ({ item, darkMode, onPrimaryAction }) => {
       }`}
     >
       <div className="flex gap-3 items-start mb-2">
-        {/* Taj avatar */}
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
           style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}
@@ -74,19 +78,25 @@ const TajMessageCard = ({ item, darkMode, onPrimaryAction }) => {
           )}
         </div>
       </div>
-      <div className="flex gap-2 ml-12 mt-3">
-        {item.primary_action_label && (
+
+      {/* Action row */}
+      <div className="flex flex-wrap gap-2 ml-12 mt-3">
+        {(item.actions || []).map((action) => (
           <button
-            onClick={() => onPrimaryAction?.(item)}
-            className={`px-4 py-2 rounded-full font-syne text-[12.5px] font-medium transition-colors lowercase ${
-              darkMode
-                ? "bg-white text-black hover:bg-gray-200"
-                : "bg-gray-900 text-white hover:bg-black"
+            key={action.id}
+            onClick={() => onAction?.(item, action.id)}
+            disabled={isLoading}
+            className={`px-4 py-2 rounded-full font-syne text-[12.5px] font-medium transition-colors lowercase disabled:opacity-50 ${
+              action.style === "primary"
+                ? (darkMode ? "bg-white text-black hover:bg-gray-200" : "bg-gray-900 text-white hover:bg-black")
+                : action.style === "danger"
+                  ? (darkMode ? "bg-transparent text-red-400 border border-red-400/30 hover:border-red-400/60" : "bg-white text-red-600 border border-red-200 hover:border-red-400")
+                  : (darkMode ? "bg-transparent text-white border border-white/20 hover:border-white/40" : "bg-white text-gray-900 border border-gray-200 hover:border-gray-400")
             }`}
           >
-            {item.primary_action_label}
+            {action.label}
           </button>
-        )}
+        ))}
         <a
           href={WHATSAPP_BOT_URL}
           target="_blank"
