@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import { History, Star, TrendingUp, MessageCircle, ChevronDown } from "lucide-react";
 
-const WorkHistoryPage = ({ darkMode }) => {
+const WorkHistoryPage = ({ darkMode, hideHeader = false }) => {
   const { token } = useAuth();
   const [savedJobs, setSavedJobs] = useState([]);
   const [user, setUser] = useState(null);
@@ -45,12 +45,14 @@ const WorkHistoryPage = ({ darkMode }) => {
 
   return (
     <div>
-      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? "bg-[#0a0a0a] border-white/10" : "bg-white border-gray-100"}`}>
-        <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Work History</h1>
-        {closedJobs.length > 0 && (
-          <p className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>{closedJobs.length} verified gig{closedJobs.length !== 1 ? "s" : ""}</p>
-        )}
-      </div>
+      {!hideHeader && (
+        <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? "bg-[#0a0a0a] border-white/10" : "bg-white border-gray-100"}`}>
+          <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Work History</h1>
+          {closedJobs.length > 0 && (
+            <p className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>{closedJobs.length} verified gig{closedJobs.length !== 1 ? "s" : ""}</p>
+          )}
+        </div>
+      )}
 
       {/* Skills banner */}
       {skills.length > 0 && (

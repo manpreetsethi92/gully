@@ -87,7 +87,7 @@ const WORK_LINKS = [
 
 const PORTFOLIO_LINKS = [...SOCIAL_MANUAL_LINKS, ...WORK_LINKS];
 
-const SocialOAuthPage = ({ darkMode }) => {
+const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
   const { token, user } = useAuth();
   const [connected, setConnected] = useState({});
   const [verified, setVerified] = useState({});
@@ -325,28 +325,49 @@ const SocialOAuthPage = ({ darkMode }) => {
 
   return (
     <div>
-      {/* Header */}
-      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? "bg-[#0a0a0a] border-white/10" : "bg-white border-gray-100"}`}>
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Connect Socials</h1>
-            <p className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>
-              {connectedCount} of {PLATFORMS.length} connected
-            </p>
+      {/* Header — hidden when rendered inside YouPage */}
+      {!hideHeader && (
+        <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? "bg-[#0a0a0a] border-white/10" : "bg-white border-gray-100"}`}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Connect Socials</h1>
+              <p className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+                {connectedCount} of {PLATFORMS.length} connected
+              </p>
+            </div>
+            <button
+              onClick={() => setShowAddLinkModal(true)}
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                darkMode
+                  ? "bg-white/10 text-white hover:bg-white/15"
+                  : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+              }`}
+            >
+              <span className="text-lg leading-none">+</span>
+              Add Link
+            </button>
           </div>
+        </div>
+      )}
+
+      {hideHeader && (
+        <div className="flex items-center justify-between mb-4">
+          <p className={`font-mono text-[11px] tracking-[0.2em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            {connectedCount} of {PLATFORMS.length} connected
+          </p>
           <button
             onClick={() => setShowAddLinkModal(true)}
-            className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full font-syne text-[12px] font-medium lowercase transition-colors ${
               darkMode
-                ? "bg-white/10 text-white hover:bg-white/15"
-                : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                ? "bg-white/5 text-white border border-white/10 hover:bg-white/10"
+                : "bg-white text-gray-900 border border-gray-200 hover:border-gray-400"
             }`}
           >
             <span className="text-lg leading-none">+</span>
-            Add Link
+            add link
           </button>
         </div>
-      </div>
+      )}
 
       {/* Info Banner */}
       <div className={`px-4 py-4 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
