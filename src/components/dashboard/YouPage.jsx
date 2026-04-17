@@ -78,7 +78,7 @@ const YouPage = ({ darkMode }) => {
       {/* Active panel */}
       <div className="you-panel">
         <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="spinner" /></div>}>
-          {ActiveComponent && <ActiveComponent darkMode={darkMode} />}
+          {ActiveComponent && <ActiveComponent darkMode={darkMode} hideHeader />}
         </Suspense>
       </div>
     </div>

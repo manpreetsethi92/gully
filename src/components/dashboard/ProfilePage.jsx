@@ -70,7 +70,7 @@ const ALL_SKILLS = [
   "Catering", "Food Styling", "Culinary Arts"
 ];
 
-const ProfilePage = () => {
+const ProfilePage = ({ hideHeader = false } = {}) => {
   const { user, token, updateUser } = useAuth();
   const [showEditModal, setShowEditModal] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -223,6 +223,8 @@ const ProfilePage = () => {
     setSaving(true);
     try {
       const response = await axios.put(`${API}/users/me`, {
+        name: formData.name,
+        age: formData.age ? parseInt(formData.age, 10) : null,
         bio: formData.bio,
         skills: formData.skills,
         social_links: formData.social_links,
@@ -269,34 +271,46 @@ const ProfilePage = () => {
   const completionPercent = calculateCompletion();
   const displayPhoto = (!imageError && user?.photo_url) ? user.photo_url : null;
 
+  const EditProfileButton = () => (
+    <button
+      onClick={() => {
+        startTransition(() => {
+          setFormData({
+            name: user?.name || "",
+            age: user?.age || "",
+            location: user?.location || "",
+            bio: user?.bio || "",
+            skills: user?.skills || [],
+            photo_url: user?.photo_url || "",
+            social_links: user?.social_links || {}
+          });
+          setPreviewPhoto(null);
+          setSkillSearch("");
+          setShowEditModal(true);
+        });
+      }}
+      className="px-4 py-2 rounded-full border border-gray-200 dark:border-[#333] font-syne font-medium text-[13px] lowercase hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors"
+      data-testid="edit-profile-btn"
+    >
+      edit profile
+    </button>
+  );
+
   return (
     <div>
-      {/* Header */}
-      <div className="sticky top-0 bg-white/80 dark:bg-[#111]/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-100 dark:border-[#222] flex items-center justify-between">
-        <h1 className="text-xl font-bold">Profile</h1>
-        <button
-          onClick={() => {
-            startTransition(() => {
-            setFormData({
-              name: user?.name || "",
-              age: user?.age || "",
-              location: user?.location || "",
-              bio: user?.bio || "",
-              skills: user?.skills || [],
-              photo_url: user?.photo_url || "",
-              social_links: user?.social_links || {}
-            });
-            setPreviewPhoto(null);
-            setSkillSearch("");
-            setShowEditModal(true);
-            });
-          }}
-          className="px-4 py-2 rounded-2xl border border-gray-200 dark:border-[#333] font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors"
-          data-testid="edit-profile-btn"
-        >
-          Edit profile
-        </button>
-      </div>
+      {/* Header — hidden when rendered inside YouPage (which has its own header) */}
+      {!hideHeader && (
+        <div className="sticky top-0 bg-white/80 dark:bg-[#111]/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-100 dark:border-[#222] flex items-center justify-between">
+          <h1 className="text-xl font-bold">Profile</h1>
+          <EditProfileButton />
+        </div>
+      )}
+
+      {hideHeader && (
+        <div className="flex justify-end mb-4">
+          <EditProfileButton />
+        </div>
+      )}
 
       {/* Profile Content */}
       <div className="p-6">

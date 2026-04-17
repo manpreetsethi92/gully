@@ -289,11 +289,11 @@ const HomePage = ({ darkMode, onRefresh }) => {
     <div>
       <div className="mb-1">
         <div className={`font-mono text-[11px] tracking-[0.25em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
-          taj's inbox
+          your inbox
         </div>
       </div>
       <h1 className={`font-display text-[clamp(2rem,5vw,44px)] leading-none font-normal tracking-tight mb-7 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
-        what's new, taj?
+        here's what taj found.
       </h1>
 
       <div className={`flex gap-1 mb-6 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
