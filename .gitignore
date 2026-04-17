@@ -3,3 +3,6 @@ node_modules/
 build/
 .cache/
 .env*.local
+
+# local backups of pre-redesign files — kept on disk, not in git
+*.old.jsx
