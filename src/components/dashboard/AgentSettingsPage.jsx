@@ -31,11 +31,11 @@ const Switch = ({ checked, onChange, disabled, darkMode }) => (
 );
 
 const SETTINGS_CONFIG = [
-  { key: "agent_pitch", label: "auto-pitch to hirers", description: "taj reaches out to matching hirers for you, no ask needed", pro: true },
-  { key: "agent_negotiate", label: "auto-negotiate rate", description: "taj handles rate talks within your stated range", pro: true },
-  { key: "agent_calendar", label: "auto-confirm bookings", description: "taj accepts gig invites that match your availability", pro: true },
-  { key: "agent_invoice", label: "chase unpaid invoices", description: "taj follows up on late payments from hirers", pro: false },
-  { key: "agent_portfolio", label: "auto-update work history", description: "taj adds closed gigs to your history automatically", pro: false },
+  { key: "agent_pitch", label: "Auto-pitch to hirers", description: "Taj reaches out to matching hirers for you, no ask needed", pro: true },
+  { key: "agent_negotiate", label: "Auto-negotiate rate", description: "Taj handles rate talks within your stated range", pro: true },
+  { key: "agent_calendar", label: "Auto-confirm bookings", description: "Taj accepts gig invites that match your availability", pro: true },
+  { key: "agent_invoice", label: "Chase unpaid invoices", description: "Taj follows up on late payments from hirers", pro: false },
+  { key: "agent_portfolio", label: "Auto-update work history", description: "Taj adds closed gigs to your history automatically", pro: false },
 ];
 
 const AgentSettingsPage = ({ darkMode }) => {
@@ -87,14 +87,14 @@ const AgentSettingsPage = ({ darkMode }) => {
 
   return (
     <div>
-      <section className={`rounded-2xl border p-5 mb-5 ${darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"}`}>
+      <section className={`rounded-2xl border p-5 mb-5 ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}>
         <div className="flex gap-3 items-start">
           <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
             style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}>
             T
           </div>
           <div className="flex-1">
-            <p className={`text-[14.5px] leading-[1.55] lowercase ${darkMode ? "text-white/90" : "text-gray-900"}`}>
+            <p className={`text-[14.5px] leading-[1.55] ${darkMode ?"text-white/90" :"text-gray-900"}`}>
               i can work for you automatically — you pick how much. toggle what you want on; i'll handle the rest.
             </p>
           </div>
@@ -106,23 +106,23 @@ const AgentSettingsPage = ({ darkMode }) => {
           <div
             key={key}
             className={`rounded-2xl border p-4 flex items-start gap-3 mb-2 transition-colors ${
-              darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"
-            }`}
+ darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"
+ }`}
           >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap mb-1">
-                <span className={`font-syne text-[14px] font-medium lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+                <span className={`text-[14px] font-medium ${darkMode ?"text-white" :"text-gray-900"}`}>
                   {label}
                 </span>
                 {pro && (
-                  <span className={`font-mono text-[9.5px] px-2 py-0.5 rounded-md tracking-wide lowercase ${
-                    darkMode ? "bg-yellow-500/20 text-yellow-300" : "bg-yellow-50 text-yellow-700"
-                  }`}>
+                  <span className={`font-mono text-[9.5px] px-2 py-0.5 rounded-md tracking-wide ${
+ darkMode ?"bg-yellow-500/20 text-yellow-300" :"bg-yellow-50 text-yellow-700"
+ }`}>
                     pro
                   </span>
                 )}
               </div>
-              <p className={`font-syne text-[12.5px] lowercase leading-relaxed ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+              <p className={`text-[12.5px] leading-relaxed ${darkMode ?"text-white/50" :"text-gray-500"}`}>
                 {description}
               </p>
             </div>
@@ -136,7 +136,7 @@ const AgentSettingsPage = ({ darkMode }) => {
           href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20want%20to%20upgrade%20to%20Pro"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-white font-syne text-[13px] font-medium lowercase"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-white text-[13px] font-medium"
           style={{ background: "#25D366" }}
         >
           <WhatsAppIcon size={13} />

@@ -18,8 +18,8 @@ const ProfilePage = lazy(() => import("./ProfilePage"));
 const SocialOAuthPage = lazy(() => import("./SocialOAuthPage"));
 
 const TABS = [
-  { id: "about",   label: "about",   icon: User,  component: ProfilePage },
-  { id: "socials", label: "socials", icon: Link2, component: SocialOAuthPage }
+  { id: "about",   label: "About",   icon: User,  component: ProfilePage },
+  { id: "socials", label: "Socials", icon: Link2, component: SocialOAuthPage }
 ];
 
 const YouPage = ({ darkMode }) => {
@@ -39,18 +39,12 @@ const YouPage = ({ darkMode }) => {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-1">
-        <div className={`font-mono text-[11px] tracking-[0.25em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
-          your identity
-        </div>
-      </div>
-      <h1 className={`font-display text-[clamp(2rem,5vw,44px)] leading-none font-normal tracking-tight mb-7 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
-        you.
+      <h1 className={`text-[20px] font-semibold mb-5 ${darkMode ?"text-white" :"text-gray-900"}`}>
+        Profile
       </h1>
 
       {/* Tabs */}
-      <div className={`flex gap-1 mb-6 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+      <div className={`flex gap-1 mb-6 border-b ${darkMode ?"border-white/10" :"border-gray-100"}`}>
         {TABS.map((tab) => {
           const isActive = tab.id === activeTab;
           const Icon = tab.icon;
@@ -58,16 +52,16 @@ const YouPage = ({ darkMode }) => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`inline-flex items-center gap-1.5 font-syne text-[13.5px] py-2.5 pr-5 transition-colors lowercase relative ${
-                isActive
-                  ? (darkMode ? "text-white font-semibold" : "text-gray-900 font-semibold")
-                  : (darkMode ? "text-white/50 hover:text-white/80" : "text-gray-500 hover:text-gray-700")
-              }`}
+              className={`inline-flex items-center gap-1.5 text-[13.5px] py-2.5 pr-5 transition-colors relative ${
+ isActive
+ ? (darkMode ?"text-white font-semibold" :"text-gray-900 font-semibold")
+ : (darkMode ?"text-white/50 hover:text-white/80" :"text-gray-500 hover:text-gray-700")
+ }`}
             >
               <Icon size={14} strokeWidth={isActive ? 2 : 1.5} />
               {tab.label}
               {isActive && (
-                <span className={`absolute bottom-[-0.5px] left-0 right-5 h-[2px] ${darkMode ? "bg-white" : "bg-gray-900"}`} />
+                <span className={`absolute bottom-[-0.5px] left-0 right-5 h-[2px] ${darkMode ?"bg-white" :"bg-gray-900"}`} />
               )}
             </button>
           );

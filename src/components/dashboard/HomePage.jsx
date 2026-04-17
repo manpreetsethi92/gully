@@ -29,37 +29,37 @@ const NetworkPage = lazy(() => import("./NetworkPage"));
 
 const tajSaysForOpportunity = (opp) => {
   const isExternal = opp.type === "external" || !opp.from_user_id;
-  const requester = opp.from_user?.name || "someone";
-  const title = (opp.request_description || opp.request_title || "").toLowerCase().trim();
+  const requester = opp.from_user?.name || "Someone";
+  const title = (opp.request_description || opp.request_title || "").trim();
   if (isExternal) {
     const source = opp.from_user?.name || "a site";
-    return `found a gig on ${source.toLowerCase()} that fits you — ${title}`;
+    return `Found a gig on ${source} that fits you — ${title}`;
   }
-  return `${requester.toLowerCase()} is looking for exactly what you do — ${title}`;
+  return `${requester} is looking for exactly what you do — ${title}`;
 };
 
 const tajSaysForRequest = (req) => {
-  const title = (req.title || req.description || "").toLowerCase().trim();
+  const title = (req.title || req.description || "").trim();
   const matches = req.matches_count || 0;
   const applicants = req.applicants_count || 0;
   if (applicants > 0) {
     return `${applicants} ${applicants === 1 ? "person has" : "people have"} applied to your ask — ${title}`;
   }
   if (matches > 0) {
-    return `i found ${matches} ${matches === 1 ? "person" : "people"} for your ask — ${title}`;
+    return `I found ${matches} ${matches === 1 ? "person" : "people"} for your ask — ${title}`;
   }
-  return `still scanning for your ask — ${title}`;
+  return `Still scanning for your ask — ${title}`;
 };
 
 const tajSaysForSavedJob = (job) => {
-  const title = (job.title || "").toLowerCase().trim();
-  const src = (job.source || "a site").toLowerCase();
-  return `you saved this gig from ${src} — ${title}`;
+  const title = (job.title || "").trim();
+  const src = job.source || "a site";
+  return `You saved this gig from ${src} — ${title}`;
 };
 
 const tajSaysForDone = (job) => {
-  const title = (job.title || "").toLowerCase().trim();
-  return `you closed this one — ${title}`;
+  const title = (job.title || "").trim();
+  return `You closed this one — ${title}`;
 };
 
 // ===== Normalize each source into InboxItem =====
@@ -75,12 +75,12 @@ const normalizeOpportunity = (opp) => {
 
   const actions = isExternal
     ? [
-        { id: "save",    label: "save this gig", style: "primary" },
-        { id: "decline", label: "pass",          style: "secondary" }
+        { id: "save",    label: "Save this gig", style: "primary" },
+        { id: "decline", label: "Pass",          style: "secondary" }
       ]
     : [
-        { id: "accept",  label: "accept",   style: "primary" },
-        { id: "decline", label: "pass",     style: "secondary" }
+        { id: "accept",  label: "Accept",   style: "primary" },
+        { id: "decline", label: "Pass",     style: "secondary" }
       ];
 
   return {
@@ -106,7 +106,7 @@ const normalizeRequest = (req) => {
 
   const actions = [];
   if (req.status !== "closed") {
-    actions.push({ id: "close", label: "close ask", style: "secondary" });
+    actions.push({ id: "close", label: "Close ask", style: "secondary" });
   }
 
   return {
@@ -136,7 +136,7 @@ const normalizeSavedJob = (job) => {
   if (isDone) {
     const actions = [];
     if (job.source_url) {
-      actions.push({ id: "open_url", label: "open job", style: "secondary" });
+      actions.push({ id: "open_url", label: "Open job", style: "secondary" });
     }
     return {
       id: `done_${job.id}`,
@@ -154,9 +154,9 @@ const normalizeSavedJob = (job) => {
   // Saved (not yet closed) — still in saved tab
   const actions = [];
   if (job.source_url) {
-    actions.push({ id: "open_url", label: "open job", style: "primary" });
+    actions.push({ id: "open_url", label: "Open job", style: "primary" });
   }
-  actions.push({ id: "remove", label: "remove", style: "danger" });
+  actions.push({ id: "remove", label: "Remove", style: "danger" });
 
   return {
     id: `saved_${job.id}`,
@@ -173,12 +173,12 @@ const normalizeSavedJob = (job) => {
 
 
 const TABS = [
-  { id: "incoming", label: "incoming", kinds: ["new_match", "gig_for_you", "warm_intro"] },
-  { id: "my_asks",  label: "my asks",  kinds: ["my_ask"] },
-  { id: "saved",    label: "saved",    kinds: ["saved"] },
-  { id: "history",  label: "history",  kinds: ["done"] },
-  { id: "network",  label: "network",  kinds: "__network" },
-  { id: "all",      label: "all",      kinds: null }
+  { id: "incoming", label: "Incoming", kinds: ["new_match", "gig_for_you", "warm_intro"] },
+  { id: "my_asks",  label: "My asks",  kinds: ["my_ask"] },
+  { id: "saved",    label: "Saved",    kinds: ["saved"] },
+  { id: "history",  label: "History",  kinds: ["done"] },
+  { id: "network",  label: "Network",  kinds: "__network" },
+  { id: "all",      label: "All",      kinds: null }
 ];
 
 const HomePage = ({ darkMode, onRefresh }) => {
@@ -316,36 +316,31 @@ const HomePage = ({ darkMode, onRefresh }) => {
   return (
     <>
     <div>
-      <div className="mb-1">
-        <div className={`font-mono text-[11px] tracking-[0.25em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
-          your inbox
-        </div>
-      </div>
-      <h1 className={`font-display text-[clamp(2rem,5vw,44px)] leading-none font-normal tracking-tight mb-7 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
-        here's what taj found.
+      <h1 className={`text-[20px] font-semibold mb-5 ${darkMode ?"text-white" :"text-gray-900"}`}>
+        Inbox
       </h1>
 
-      <div className={`flex gap-1 mb-6 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+      <div className={`flex gap-1 mb-6 border-b ${darkMode ?"border-white/10" :"border-gray-100"}`}>
         {TABS.map((tab) => {
           const isActive = tab.id === activeTab;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`font-syne text-[13.5px] py-2.5 pr-5 transition-colors lowercase relative ${
-                isActive
-                  ? (darkMode ? "text-white font-semibold" : "text-gray-900 font-semibold")
-                  : (darkMode ? "text-white/50 hover:text-white/80" : "text-gray-500 hover:text-gray-700")
-              }`}
+              className={`text-[13.5px] py-2.5 pr-5 transition-colors relative ${
+ isActive
+ ? (darkMode ?"text-white font-semibold" :"text-gray-900 font-semibold")
+ : (darkMode ?"text-white/50 hover:text-white/80" :"text-gray-500 hover:text-gray-700")
+ }`}
             >
               {tab.label}
               {counts[tab.id] > 0 && (
-                <span className={`ml-1.5 font-mono text-[10.5px] ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                <span className={`ml-1.5 font-mono text-[10.5px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                   {counts[tab.id]}
                 </span>
               )}
               {isActive && (
-                <span className={`absolute bottom-[-0.5px] left-0 right-5 h-[2px] ${darkMode ? "bg-white" : "bg-gray-900"}`} />
+                <span className={`absolute bottom-[-0.5px] left-0 right-5 h-[2px] ${darkMode ?"bg-white" :"bg-gray-900"}`} />
               )}
             </button>
           );
@@ -374,7 +369,7 @@ const HomePage = ({ darkMode, onRefresh }) => {
               loadingAction={loadingAction}
             />
           ))}
-          <div className={`text-center py-8 font-mono text-[11px] tracking-[0.1em] lowercase ${darkMode ? "text-white/30" : "text-gray-400"}`}>
+          <div className={`text-center py-8 font-mono text-[11px] tracking-[0.1em] ${darkMode ?"text-white/30" :"text-gray-400"}`}>
             you're caught up. taj keeps watching ·
           </div>
         </div>
@@ -395,24 +390,24 @@ const HomePage = ({ darkMode, onRefresh }) => {
 const EmptyState = ({ tab, darkMode }) => {
   const copy = {
     incoming: {
-      title: "nothing in the queue yet.",
-      body: "taj is scanning. when she finds a match, it lands here first."
+      title: "Nothing in the queue yet.",
+      body: "Taj is scanning. When she finds a match, it lands here first."
     },
     my_asks: {
-      title: "you haven't asked for anything yet.",
-      body: "text taj what you need — a plumber, a dp, a wedding singer. she'll go find them."
+      title: "You haven't asked for anything yet.",
+      body: "Text Taj what you need — a plumber, a DP, a wedding singer. She'll go find them."
     },
     saved: {
-      title: "no saved gigs.",
-      body: "when taj shows you external gigs, save the ones you want for later."
+      title: "No saved gigs.",
+      body: "When Taj shows you external gigs, save the ones you want for later."
     },
     history: {
-      title: "nothing closed yet.",
-      body: "every gig you finish through gully shows up here. your verified track record."
+      title: "Nothing closed yet.",
+      body: "Every gig you finish through Gully shows up here. Your verified track record."
     },
     all: {
-      title: "your inbox is empty.",
-      body: "give taj a minute. she's building your world."
+      title: "Your inbox is empty.",
+      body: "Give Taj a minute. She's building your world."
     }
   }[tab] || { title: "empty.", body: "" };
 
@@ -424,10 +419,10 @@ const EmptyState = ({ tab, darkMode }) => {
       >
         T
       </div>
-      <h3 className={`font-display text-[22px] leading-tight font-normal mb-2 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+      <h3 className={`text-[16px] font-semibold mb-2 ${darkMode ?"text-white" :"text-gray-900"}`}>
         {copy.title}
       </h3>
-      <p className={`font-syne text-[14px] max-w-sm lowercase ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+      <p className={`text-[14px] max-w-sm ${darkMode ?"text-white/50" :"text-gray-500"}`}>
         {copy.body}
       </p>
     </div>

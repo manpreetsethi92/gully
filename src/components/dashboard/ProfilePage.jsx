@@ -288,7 +288,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
           setShowEditModal(true);
         });
       }}
-      className="px-4 py-2 rounded-full border border-gray-200 dark:border-[#333] font-syne font-medium text-[13px] lowercase hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors"
+      className="px-4 py-2 rounded-full border border-gray-200 dark:border-[#333] font-medium text-[13px] hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors"
       data-testid="edit-profile-btn"
     >
       edit profile
@@ -333,18 +333,18 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
             )}
           </div>
           <div className="flex items-center gap-1.5 mb-1">
-            <h2 className="font-display text-[28px] leading-none font-normal lowercase">
+            <h2 className="text-[18px] font-semibold">
               {(user?.name || "unnamed").toLowerCase()}
             </h2>
             {user?.is_verified && (
               <BadgeCheck size={18} className="text-blue-500" fill="currentColor" strokeWidth={0} />
             )}
           </div>
-          <p className="font-mono text-[11px] tracking-wide text-gray-400 lowercase">
+          <p className="font-mono text-[11px] tracking-wide text-gray-400">
             {user?.phone}
           </p>
           {(user?.location || user?.age) && (
-            <p className="font-mono text-[11px] tracking-wide text-gray-400 lowercase mt-1">
+            <p className="font-mono text-[11px] tracking-wide text-gray-400 mt-1">
               {[user.location?.toLowerCase(), user.age ? `${user.age}` : null].filter(Boolean).join(" · ")}
             </p>
           )}
@@ -352,25 +352,25 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
 
         {/* About */}
         <section className="mb-5">
-          <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-2">
+          <div className="font-mono text-[10px] text-gray-400 mb-2">
             about
           </div>
           <p className="text-[14.5px] leading-relaxed text-gray-800 dark:text-white/90">
-            {user?.bio || <span className="text-gray-400 italic lowercase">no bio yet — tap edit profile to add one.</span>}
+            {user?.bio || <span className="text-gray-400 italic">no bio yet — tap edit profile to add one.</span>}
           </p>
         </section>
 
         {/* Skills */}
         {user?.skills?.length > 0 && (
           <section className="mb-5">
-            <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-2">
+            <div className="font-mono text-[10px] text-gray-400 mb-2">
               skills
             </div>
             <div className="flex flex-wrap gap-1.5">
               {user.skills.map(skill => (
                 <span
                   key={skill}
-                  className="px-3 py-1 rounded-full text-[12px] lowercase bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-white/80"
+                  className="px-3 py-1 rounded-full text-[12px] bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-white/80"
                 >
                   {skill.toLowerCase()}
                 </span>
@@ -382,7 +382,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
         {/* Social Links */}
         {activeSocials.length > 0 && (
           <section className="mb-5">
-            <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-2">
+            <div className="font-mono text-[10px] text-gray-400 mb-2">
               links
             </div>
             <div className="flex flex-wrap gap-2">
@@ -392,7 +392,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
                   href={user.social_links[key].startsWith('http') ? user.social_links[key] : `https://${user.social_links[key]}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[12px] lowercase bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/30 transition-colors"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[12px] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/30 transition-colors"
                 >
                   <Icon size={12} style={{ color }} />
                   <span className="text-gray-800 dark:text-white/80">{label.toLowerCase()}</span>
@@ -406,7 +406,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
         {/* Profile Completion */}
         <section className="rounded-2xl border border-gray-100 dark:border-white/10 p-4 mt-6">
           <div className="flex items-center justify-between mb-2">
-            <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400">
+            <div className="font-mono text-[10px] text-gray-400">
               profile completion
             </div>
             <span
@@ -426,7 +426,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
             />
           </div>
           {completionPercent < 100 && (
-            <p className="font-syne text-[12px] text-gray-500 dark:text-white/50 mt-2 lowercase">
+            <p className="text-[12px] text-gray-500 dark:text-white/50 mt-2">
               complete your profile to get better matches from taj.
             </p>
           )}
@@ -437,10 +437,10 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
       <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
         <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto p-0">
           <DialogHeader className="px-6 pt-6 pb-2">
-            <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-1">
+            <div className="font-mono text-[10px] text-gray-400 mb-1">
               edit profile
             </div>
-            <DialogTitle className="font-display text-[26px] leading-none font-normal lowercase">
+            <DialogTitle className="text-[18px] font-semibold">
               who are you, really?
             </DialogTitle>
           </DialogHeader>
@@ -484,7 +484,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
                   className="hidden"
                 />
               </div>
-              <p className="font-mono text-[10.5px] tracking-wide text-gray-400 mt-2 lowercase">
+              <p className="font-mono text-[10.5px] tracking-wide text-gray-400 mt-2">
                 {uploadingPhoto ? "uploading…" : "tap the camera to upload a photo"}
               </p>
             </div>
@@ -492,18 +492,18 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
             {/* Name & Age */}
             <div className="grid grid-cols-[1fr_auto] gap-3">
               <div>
-                <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-1.5">
+                <div className="font-mono text-[10px] text-gray-400 mb-1.5">
                   name
                 </div>
                 <Input
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="your name"
-                  className="h-11 rounded-xl font-syne text-[14px] lowercase placeholder:lowercase"
+                  className="h-11 rounded-xl text-[14px] placeholder:"
                 />
               </div>
               <div>
-                <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-1.5">
+                <div className="font-mono text-[10px] text-gray-400 mb-1.5">
                   age
                 </div>
                 <Input
@@ -518,27 +518,27 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
 
             {/* Location */}
             <div>
-              <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-1.5">
+              <div className="font-mono text-[10px] text-gray-400 mb-1.5">
                 location
               </div>
               <Input
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 placeholder="brooklyn, ny"
-                className="h-11 rounded-xl font-syne text-[14px] lowercase placeholder:lowercase"
+                className="h-11 rounded-xl text-[14px] placeholder:"
               />
             </div>
 
             {/* Bio */}
             <div>
-              <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-1.5">
+              <div className="font-mono text-[10px] text-gray-400 mb-1.5">
                 bio
               </div>
               <Textarea
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                 placeholder="what do you do? how should taj pitch you?"
-                className="resize-none h-20 rounded-xl font-syne text-[14px] placeholder:lowercase"
+                className="resize-none h-20 rounded-xl text-[14px] placeholder:"
                 maxLength={300}
               />
             </div>
@@ -546,11 +546,11 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
             {/* Skills */}
             <div>
               <div className="flex items-baseline justify-between mb-1.5">
-                <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400">
+                <div className="font-mono text-[10px] text-gray-400">
                   skills — {formData.skills.length}/10
                 </div>
                 {formData.skills.length < 5 && (
-                  <div className="font-mono text-[10px] text-gray-400 lowercase">
+                  <div className="font-mono text-[10px] text-gray-400">
                     min 5 recommended
                   </div>
                 )}
@@ -561,7 +561,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
                   {formData.skills.map(skill => (
                     <span
                       key={skill}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[12px] lowercase bg-gray-900 text-white dark:bg-white dark:text-gray-900"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[12px] bg-gray-900 text-white dark:bg-white dark:text-gray-900"
                     >
                       {skill.toLowerCase()}
                       <button
@@ -587,7 +587,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
                     }}
                     onFocus={() => setShowSkillDropdown(true)}
                     placeholder="search skills…"
-                    className="h-11 pl-9 rounded-xl font-syne text-[14px] lowercase placeholder:lowercase"
+                    className="h-11 pl-9 rounded-xl text-[14px] placeholder:"
                   />
 
                   {showSkillDropdown && filteredSkills.length > 0 && (
@@ -597,7 +597,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
                           key={skill}
                           type="button"
                           onClick={() => addSkill(skill)}
-                          className="w-full px-4 py-2.5 text-left text-[13px] lowercase hover:bg-gray-50 dark:hover:bg-white/5 transition-colors first:rounded-t-xl last:rounded-b-xl"
+                          className="w-full px-4 py-2.5 text-left text-[13px] hover:bg-gray-50 dark:hover:bg-white/5 transition-colors first:rounded-t-xl last:rounded-b-xl"
                         >
                           {skill.toLowerCase()}
                         </button>
@@ -607,13 +607,13 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
 
                   {showSkillDropdown && skillSearch.trim() && filteredSkills.length === 0 && (
                     <div className="absolute z-50 w-full mt-1 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-lg p-3">
-                      <p className="font-mono text-[11px] text-gray-500 lowercase">
+                      <p className="font-mono text-[11px] text-gray-500">
                         no matches for "{skillSearch.toLowerCase()}"
                       </p>
                       <button
                         type="button"
                         onClick={() => addSkill(skillSearch.trim())}
-                        className="mt-2 font-syne text-[12px] font-medium text-[#E50914] hover:underline lowercase"
+                        className="mt-2 text-[12px] font-medium text-[#E50914] hover:underline"
                       >
                         + add "{skillSearch.trim().toLowerCase()}" anyway
                       </button>
@@ -625,7 +625,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
 
             {/* Social Links */}
             <div>
-              <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-2">
+              <div className="font-mono text-[10px] text-gray-400 mb-2">
                 social links
               </div>
               <div className="space-y-2">
@@ -641,7 +641,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
                         ...formData,
                         social_links: { ...formData.social_links, [key]: e.target.value }
                       })}
-                      className="h-10 rounded-xl font-syne text-[13px] lowercase placeholder:lowercase"
+                      className="h-10 rounded-xl text-[13px] placeholder:"
                     />
                   </div>
                 ))}
@@ -652,7 +652,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
             <button
               onClick={handleSave}
               disabled={saving || uploadingPhoto}
-              className="w-full h-11 rounded-full text-white font-syne font-medium text-[13.5px] transition-colors hover:opacity-90 disabled:opacity-50 lowercase"
+              className="w-full h-11 rounded-full text-white font-medium text-[13.5px] transition-colors hover:opacity-90 disabled:opacity-50"
               style={{ background: '#0a0a0a' }}
             >
               {saving ? 'saving…' : uploadingPhoto ? 'uploading photo…' : 'save changes'}

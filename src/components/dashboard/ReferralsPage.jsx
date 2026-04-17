@@ -69,14 +69,14 @@ const ReferralsPage = ({ darkMode }) => {
   return (
     <div>
       {/* Intro */}
-      <section className={`rounded-2xl border p-5 mb-5 ${darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"}`}>
+      <section className={`rounded-2xl border p-5 mb-5 ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}>
         <div className="flex gap-3 items-start">
           <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
             style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}>
             T
           </div>
           <div className="flex-1">
-            <p className={`text-[14.5px] leading-[1.55] lowercase ${darkMode ? "text-white/90" : "text-gray-900"}`}>
+            <p className={`text-[14.5px] leading-[1.55] ${darkMode ?"text-white/90" :"text-gray-900"}`}>
               share your link. every signup earns you one free month of pro — no limits.
             </p>
           </div>
@@ -86,19 +86,19 @@ const ReferralsPage = ({ darkMode }) => {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2 mb-5">
         {[
-          { label: "clicks", value: clicks },
-          { label: "signups", value: signups },
-          { label: "pro months", value: proMonths > 0 ? `+${proMonths}` : "—", highlight: proMonths > 0 },
+          { label: "Clicks", value: clicks },
+          { label: "Signups", value: signups },
+          { label: "Pro months", value: proMonths > 0 ? `+${proMonths}` : "—", highlight: proMonths > 0 },
         ].map((stat) => (
           <div
             key={stat.label}
-            className={`rounded-2xl border p-4 ${darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"}`}
+            className={`rounded-2xl border p-4 ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}
           >
-            <div className={`font-mono text-[10px] tracking-[0.2em] lowercase mb-1 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            <div className={`font-mono text-[10px] mb-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
               {stat.label}
             </div>
             <div
-              className="font-display text-[28px] leading-none font-normal"
+              className="text-[18px] font-semibold"
               style={{ color: stat.highlight ? "#E50914" : undefined }}
             >
               {stat.value}
@@ -108,42 +108,42 @@ const ReferralsPage = ({ darkMode }) => {
       </div>
 
       {/* Referral link */}
-      <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+      <div className={`font-mono text-[10px] mb-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
         your link
       </div>
       {referralUrl ? (
         <>
-          <div className={`flex items-center gap-2 p-3 rounded-xl border mb-3 ${darkMode ? "bg-white/5 border-white/10" : "bg-white border-gray-100"}`}>
-            <p className={`flex-1 text-[12px] truncate font-mono lowercase ${darkMode ? "text-white/70" : "text-gray-600"}`}>
+          <div className={`flex items-center gap-2 p-3 rounded-xl border mb-3 ${darkMode ?"bg-white/5 border-white/10" :"bg-white border-gray-100"}`}>
+            <p className={`flex-1 text-[12px] truncate font-mono ${darkMode ?"text-white/70" :"text-gray-600"}`}>
               {referralUrl}
             </p>
             <button
               onClick={handleCopy}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full font-syne text-[12px] font-medium lowercase flex-shrink-0 text-white hover:opacity-90"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 text-white hover:opacity-90"
               style={{ background: "#0a0a0a" }}
             >
-              <Copy size={12} /> copy
+              <Copy size={12} /> Copy
             </button>
           </div>
 
           <div className="flex gap-2 mb-5">
             <button
               onClick={handleWhatsAppShare}
-              className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 rounded-full font-syne text-[13px] font-medium lowercase text-white"
+              className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 rounded-full text-[13px] font-medium text-white"
               style={{ background: "#25D366" }}
             >
-              <WhatsAppIcon size={13} /> share on whatsapp
+              <WhatsAppIcon size={13} /> Share on WhatsApp
             </button>
             <button
               onClick={handleNativeShare}
-              className={`inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full font-syne text-[13px] font-medium lowercase border ${darkMode ? "border-white/20 text-white hover:bg-white/5" : "border-gray-200 text-gray-900 hover:border-gray-400"}`}
+              className={`inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-medium border ${darkMode ?"border-white/20 text-white hover:bg-white/5" :"border-gray-200 text-gray-900 hover:border-gray-400"}`}
             >
-              <Share2 size={12} /> share
+              <Share2 size={12} /> Share
             </button>
           </div>
         </>
       ) : (
-        <p className={`font-mono text-[11px] lowercase mb-5 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+        <p className={`font-mono text-[11px] mb-5 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
           couldn't load your link. try refreshing.
         </p>
       )}
@@ -157,19 +157,19 @@ const ReferralsPage = ({ darkMode }) => {
           >
             T
           </div>
-          <h3 className={`font-display text-[22px] leading-tight font-normal mb-2 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+          <h3 className={`text-[16px] font-semibold mb-2 ${darkMode ?"text-white" :"text-gray-900"}`}>
             no referrals yet.
           </h3>
-          <p className={`font-syne text-[14px] max-w-sm lowercase ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+          <p className={`text-[14px] max-w-sm ${darkMode ?"text-white/50" :"text-gray-500"}`}>
             share your link — every signup earns you a free month of pro.
           </p>
         </div>
       ) : (
-        <section className={`rounded-2xl border p-5 ${darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"}`}>
-          <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+        <section className={`rounded-2xl border p-5 ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}>
+          <div className={`font-mono text-[10px] mb-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
             {signups} {signups === 1 ? "person" : "people"} joined
           </div>
-          <p className={`text-[14px] leading-relaxed lowercase ${darkMode ? "text-white/80" : "text-gray-700"}`}>
+          <p className={`text-[14px] leading-relaxed ${darkMode ?"text-white/80" :"text-gray-700"}`}>
             you've earned <span className="font-semibold" style={{ color: "#E50914" }}>{proMonths} month{proMonths !== 1 ? "s" : ""}</span> of pro through referrals.
             {proMonths > 0 && " keep sharing to keep earning."}
           </p>

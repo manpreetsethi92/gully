@@ -11,12 +11,12 @@ import React from "react";
 import { WhatsAppIcon } from "./WhatsAppIcon";
 
 const KIND_BADGES = {
-  new_match:    { label: "new match",   fg: "#E50914", bg: "#fff1f1" },
-  gig_for_you:  { label: "gig for you", fg: "#10b981", bg: "#ecfdf5" },
-  warm_intro:   { label: "warm intro",  fg: "#7c3aed", bg: "#f5f3ff" },
-  my_ask:       { label: "your ask",    fg: "#0a0a0a", bg: "#f4f4f3" },
-  saved:        { label: "saved",       fg: "#d97706", bg: "#fffbeb" },
-  done:         { label: "done",        fg: "#059669", bg: "#d1fae5" }
+  new_match:    { label: "New match",   fg: "#E50914", bg: "#fff1f1" },
+  gig_for_you:  { label: "Gig for you", fg: "#10b981", bg: "#ecfdf5" },
+  warm_intro:   { label: "Warm intro",  fg: "#7c3aed", bg: "#f5f3ff" },
+  my_ask:       { label: "Your ask",    fg: "#0a0a0a", bg: "#f4f4f3" },
+  saved:        { label: "Saved",       fg: "#d97706", bg: "#fffbeb" },
+  done:         { label: "Done",        fg: "#059669", bg: "#d1fae5" }
 };
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
@@ -43,10 +43,10 @@ const TajMessageCard = ({ item, darkMode, onAction, onOpen, loadingAction }) => 
     <article
       onClick={() => onOpen?.(item)}
       className={`rounded-2xl border p-5 mb-3 transition-colors cursor-pointer ${
-        darkMode
-          ? "bg-white/[0.03] border-white/10 hover:bg-white/[0.05]"
-          : "bg-white border-gray-100 hover:border-gray-200"
-      }`}
+ darkMode
+ ?"bg-white/[0.03] border-white/10 hover:bg-white/[0.05]"
+ :"bg-white border-gray-100 hover:border-gray-200"
+ }`}
     >
       <div className="flex gap-3 items-start mb-2">
         <div
@@ -57,14 +57,14 @@ const TajMessageCard = ({ item, darkMode, onAction, onOpen, loadingAction }) => 
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2 flex-wrap mb-1">
-            <span className={`text-[14px] font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>
+            <span className={`text-[14px] font-semibold ${darkMode ?"text-white" :"text-gray-900"}`}>
               taj
             </span>
-            <span className={`font-mono text-[10.5px] ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            <span className={`font-mono text-[10.5px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
               · {formatRelativeTime(item.timestamp)}
             </span>
             <span
-              className="ml-auto font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide lowercase"
+              className="ml-auto font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide"
               style={{
                 color: badge.fg,
                 background: darkMode ? `${badge.fg}22` : badge.bg
@@ -73,11 +73,11 @@ const TajMessageCard = ({ item, darkMode, onAction, onOpen, loadingAction }) => 
               {badge.label}
             </span>
           </div>
-          <p className={`text-[14.5px] leading-[1.55] mb-1 ${darkMode ? "text-white/90" : "text-gray-900"} lowercase`}>
+          <p className={`text-[14.5px] leading-[1.55] mb-1 ${darkMode ?"text-white/90" :"text-gray-900"}`}>
             {item.taj_says}
           </p>
           {item.meta_line && (
-            <p className={`font-mono text-[11px] tracking-wide lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            <p className={`font-mono text-[11px] tracking-wide ${darkMode ?"text-white/40" :"text-gray-400"}`}>
               {item.meta_line}
             </p>
           )}
@@ -91,13 +91,13 @@ const TajMessageCard = ({ item, darkMode, onAction, onOpen, loadingAction }) => 
             key={action.id}
             onClick={(e) => { e.stopPropagation(); onAction?.(item, action.id); }}
             disabled={isLoading}
-            className={`px-4 py-2 rounded-full font-syne text-[12.5px] font-medium transition-colors lowercase disabled:opacity-50 ${
-              action.style === "primary"
-                ? (darkMode ? "bg-white text-black hover:bg-gray-200" : "bg-gray-900 text-white hover:bg-black")
-                : action.style === "danger"
-                  ? (darkMode ? "bg-transparent text-red-400 border border-red-400/30 hover:border-red-400/60" : "bg-white text-red-600 border border-red-200 hover:border-red-400")
-                  : (darkMode ? "bg-transparent text-white border border-white/20 hover:border-white/40" : "bg-white text-gray-900 border border-gray-200 hover:border-gray-400")
-            }`}
+            className={`px-4 py-2 rounded-full text-[12.5px] font-medium transition-colors disabled:opacity-50 ${
+ action.style ==="primary"
+ ? (darkMode ?"bg-white text-black hover:bg-gray-200" :"bg-gray-900 text-white hover:bg-black")
+ : action.style ==="danger"
+ ? (darkMode ?"bg-transparent text-red-400 border border-red-400/30 hover:border-red-400/60" :"bg-white text-red-600 border border-red-200 hover:border-red-400")
+ : (darkMode ?"bg-transparent text-white border border-white/20 hover:border-white/40" :"bg-white text-gray-900 border border-gray-200 hover:border-gray-400")
+ }`}
           >
             {action.label}
           </button>
@@ -107,11 +107,11 @@ const TajMessageCard = ({ item, darkMode, onAction, onOpen, loadingAction }) => 
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-syne text-[12.5px] font-medium transition-colors lowercase ${
-            darkMode
-              ? "bg-transparent text-white border border-white/20 hover:border-white/40"
-              : "bg-white text-gray-900 border border-gray-200 hover:border-gray-400"
-          }`}
+          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[12.5px] font-medium transition-colors ${
+ darkMode
+ ?"bg-transparent text-white border border-white/20 hover:border-white/40"
+ :"bg-white text-gray-900 border border-gray-200 hover:border-gray-400"
+ }`}
         >
           <WhatsAppIcon size={12} color="#25D366" />
           reply in whatsapp
