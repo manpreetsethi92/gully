@@ -1,26 +1,25 @@
-// YouPage — unified identity page.
+// YouPage — identity page.
 //
-// Merges three old pages into one tabbed view:
+// Tabbed view:
 //   - about:   ProfilePage (name, bio, skills, photo, social links)
-//   - work:    WorkHistoryPage (past gigs, both as hirer and as worker)
 //   - socials: SocialOAuthPage (connect IG, LinkedIn, GitHub, etc.)
 //
-// Phase 3 is a shell: it tabs between the three existing components rather
-// than rewriting them. They continue to own their own API calls and state.
-// Future cleanup in Phase 6 can de-duplicate their internal headers.
+// Work history moved to Home (history tab) — that belongs with
+// the rest of your gig-related stuff, not with your identity.
+//
+// Supports ?tab=socials query param so the Connect Socials modal
+// jumps straight to the right tab.
 
 import { useState, Suspense, lazy, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { User, Briefcase, Link2 } from "lucide-react";
+import { User, Link2 } from "lucide-react";
 
 const ProfilePage = lazy(() => import("./ProfilePage"));
-const WorkHistoryPage = lazy(() => import("./WorkHistoryPage"));
 const SocialOAuthPage = lazy(() => import("./SocialOAuthPage"));
 
 const TABS = [
-  { id: "about",   label: "about",   icon: User,      component: ProfilePage },
-  { id: "work",    label: "work",    icon: Briefcase, component: WorkHistoryPage },
-  { id: "socials", label: "socials", icon: Link2,     component: SocialOAuthPage }
+  { id: "about",   label: "about",   icon: User,  component: ProfilePage },
+  { id: "socials", label: "socials", icon: Link2, component: SocialOAuthPage }
 ];
 
 const YouPage = ({ darkMode }) => {

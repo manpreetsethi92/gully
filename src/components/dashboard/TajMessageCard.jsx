@@ -15,7 +15,8 @@ const KIND_BADGES = {
   gig_for_you:  { label: "gig for you", fg: "#10b981", bg: "#ecfdf5" },
   warm_intro:   { label: "warm intro",  fg: "#7c3aed", bg: "#f5f3ff" },
   my_ask:       { label: "your ask",    fg: "#0a0a0a", bg: "#f4f4f3" },
-  saved:        { label: "saved",       fg: "#d97706", bg: "#fffbeb" }
+  saved:        { label: "saved",       fg: "#d97706", bg: "#fffbeb" },
+  done:         { label: "done",        fg: "#059669", bg: "#d1fae5" }
 };
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
