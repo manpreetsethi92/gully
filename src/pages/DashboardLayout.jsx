@@ -28,6 +28,7 @@ import {
   BadgeCheck
 } from "lucide-react";
 
+const HomePage = lazy(() => import("../components/dashboard/HomePage"));
 const OpportunitiesPage = lazy(() => import("../components/dashboard/OpportunitiesPage"));
 const RequestsPage = lazy(() => import("../components/dashboard/RequestsPage"));
 const SettingsPage = lazy(() => import("../components/dashboard/SettingsPage"));
@@ -283,12 +284,12 @@ const DashboardLayout = () => {
           <div className="max-w-[720px] mx-auto px-6 lg:px-8 py-6 lg:py-10">
             <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="spinner" /></div>}>
               <Routes>
-                {/* === HOME (Phase 2 will replace with unified feed) === */}
-                <Route index element={<OpportunitiesPage onRefresh={fetchStats} darkMode={darkMode} />} />
-                <Route path="home" element={<OpportunitiesPage onRefresh={fetchStats} darkMode={darkMode} />} />
+                {/* === HOME (Phase 2 — unified Taj inbox) === */}
+                <Route index element={<HomePage onRefresh={fetchStats} darkMode={darkMode} />} />
+                <Route path="home" element={<HomePage onRefresh={fetchStats} darkMode={darkMode} />} />
 
                 {/* === LEGACY ROUTES — still rendered so old links don't 404 === */}
-                {/* Phase 2 will redirect these to /app (unified Home) */}
+                {/* Phase 2 Commit 3 will redirect these to /app (unified Home) */}
                 <Route path="opportunities" element={<OpportunitiesPage onRefresh={fetchStats} darkMode={darkMode} />} />
                 <Route path="requests" element={<RequestsPage onRefresh={fetchStats} darkMode={darkMode} />} />
                 <Route path="saved-jobs" element={<SavedJobsPage onRefresh={fetchStats} darkMode={darkMode} />} />
