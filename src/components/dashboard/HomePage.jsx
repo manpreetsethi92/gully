@@ -57,6 +57,11 @@ const tajSaysForSavedJob = (job) => {
   return `you saved this gig from ${src} — ${title}`;
 };
 
+const tajSaysForDone = (job) => {
+  const title = (job.title || "").toLowerCase().trim();
+  return `you closed this one — ${title}`;
+};
+
 // ===== Normalize each source into InboxItem =====
 
 const normalizeOpportunity = (opp) => {
@@ -125,6 +130,28 @@ const normalizeSavedJob = (job) => {
     job.budget_range
   ].filter(Boolean).join(" · ").toLowerCase();
 
+  const isDone = job.status === "closed" || job.status === "completed";
+
+  // Done / closed gigs go to the history tab — read-only, different copy
+  if (isDone) {
+    const actions = [];
+    if (job.source_url) {
+      actions.push({ id: "open_url", label: "open job", style: "secondary" });
+    }
+    return {
+      id: `done_${job.id}`,
+      raw_id: job.id,
+      type: "saved",
+      kind: "done",
+      taj_says: tajSaysForDone(job),
+      meta_line: meta,
+      timestamp: job.saved_at || job.created_at,
+      actions,
+      data: job
+    };
+  }
+
+  // Saved (not yet closed) — still in saved tab
   const actions = [];
   if (job.source_url) {
     actions.push({ id: "open_url", label: "open job", style: "primary" });
@@ -149,6 +176,7 @@ const TABS = [
   { id: "incoming", label: "incoming", kinds: ["new_match", "gig_for_you", "warm_intro"] },
   { id: "my_asks",  label: "my asks",  kinds: ["my_ask"] },
   { id: "saved",    label: "saved",    kinds: ["saved"] },
+  { id: "history",  label: "history",  kinds: ["done"] },
   { id: "network",  label: "network",  kinds: "__network" },
   { id: "all",      label: "all",      kinds: null }
 ];
@@ -271,6 +299,7 @@ const HomePage = ({ darkMode, onRefresh }) => {
     incoming: items.filter(i => TABS[0].kinds.includes(i.kind)).length,
     my_asks:  items.filter(i => TABS[1].kinds.includes(i.kind)).length,
     saved:    items.filter(i => TABS[2].kinds.includes(i.kind)).length,
+    history:  items.filter(i => TABS[3].kinds.includes(i.kind)).length,
     network:  null, // count comes from NetworkPage itself
     all:      items.length
   };
@@ -376,6 +405,10 @@ const EmptyState = ({ tab, darkMode }) => {
     saved: {
       title: "no saved gigs.",
       body: "when taj shows you external gigs, save the ones you want for later."
+    },
+    history: {
+      title: "nothing closed yet.",
+      body: "every gig you finish through gully shows up here. your verified track record."
     },
     all: {
       title: "your inbox is empty.",

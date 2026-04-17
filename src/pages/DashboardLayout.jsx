@@ -54,8 +54,8 @@ const DashboardLayout = () => {
   // Legacy paths map to their new homes. /app/network maps to "home" now.
   const pathSegment = location.pathname.split("/").pop() || "";
   const activeNav = (() => {
-    if (["", "app", "home", "opportunities", "requests", "saved-jobs", "network"].includes(pathSegment)) return "home";
-    if (["you", "profile", "work-history", "social-connect"].includes(pathSegment)) return "you";
+    if (["", "app", "home", "opportunities", "requests", "saved-jobs", "network", "work-history"].includes(pathSegment)) return "home";
+    if (["you", "profile", "social-connect"].includes(pathSegment)) return "you";
     if (["settings", "notifications"].includes(pathSegment)) return "settings";
     return "home";
   })();
@@ -285,7 +285,7 @@ const DashboardLayout = () => {
                 {/* === YOU (Phase 3 — tabbed identity page) === */}
                 <Route path="you" element={<YouPage darkMode={darkMode} />} />
                 <Route path="profile" element={<Navigate to="/app/you" replace />} />
-                <Route path="work-history" element={<Navigate to="/app/you?tab=work" replace />} />
+                <Route path="work-history" element={<Navigate to="/app?tab=history" replace />} />
                 <Route path="social-connect" element={<Navigate to="/app/you?tab=socials" replace />} />
 
                 {/* === SETTINGS (Phase 4 — unified settings with sub-nav) === */}
