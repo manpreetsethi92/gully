@@ -1,459 +1,109 @@
-import { useState, useEffect, useCallback } from "react";
-import { toast } from "sonner";
-import { useAuth, API } from "../../App";
-import axios from "axios";
-import { LogOut, Trash2, Crown, CheckCircle, ExternalLink, HelpCircle, MessageCircle, Bug, Mail, Bot, Zap } from "lucide-react";
+// SettingsPage — unified settings with left-rail sub-nav.
+//
+// Replaces the mess of 6 separate nav items (settings, notifications, payments,
+// referrals, agent-settings, ads) with one page containing 6 sub-sections.
+//
+// Sub-pages are rendered as-is for now (they already take darkMode and own their
+// state). Phase 6 cleanup can de-duplicate their internal headers.
+//
+// Supports ?section=notifications query param to deep-link into a specific section.
 
-const Switch = ({ checked, onChange, disabled, darkMode }) => (
-  <button
-    role="switch"
-    aria-checked={checked}
-    disabled={disabled}
-    onClick={() => !disabled && onChange?.(!checked)}
-    style={{
-      display: "inline-flex", alignItems: "center", width: "44px", height: "24px",
-      borderRadius: "9999px", border: "none", cursor: disabled ? "not-allowed" : "pointer",
-      padding: "2px", transition: "background-color 0.2s",
-      backgroundColor: checked ? "#E50914" : (darkMode ? "rgba(255,255,255,0.15)" : "#D1D5DB"),
-      opacity: disabled ? 0.5 : 1, flexShrink: 0,
-    }}
-  >
-    <span style={{
-      display: "block", width: "20px", height: "20px", borderRadius: "50%",
-      backgroundColor: "white", transition: "transform 0.2s",
-      transform: checked ? "translateX(20px)" : "translateX(0)",
-      boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
-    }} />
-  </button>
-);
+import { useState, Suspense, lazy, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { User, Bell, CreditCard, Gift, Sparkles, Megaphone } from "lucide-react";
 
-const AGENT_SETTINGS_CONFIG = [
-  { key: "agent_pitch", label: "Auto-pitch to hirers", description: "Taj reaches out to matching hirers on your behalf without asking first", pro: true },
-  { key: "agent_negotiate", label: "Auto-negotiate rate", description: "Taj handles rate negotiations within your stated range", pro: true },
-  { key: "agent_calendar", label: "Auto-confirm bookings", description: "Taj accepts gig invites that match your availability", pro: true },
-  { key: "agent_invoice", label: "Chase unpaid invoices", description: "Taj follows up on late payments from hirers", pro: false },
-  { key: "agent_portfolio", label: "Auto-update work history", description: "Taj adds closed gigs to your work history automatically", pro: false },
+const AccountSettingsPage = lazy(() => import("./AccountSettingsPage"));
+const NotificationsPage = lazy(() => import("./NotificationsPage"));
+const PaymentsPage = lazy(() => import("./PaymentsPage"));
+const ReferralsPage = lazy(() => import("./ReferralsPage"));
+const AgentSettingsPage = lazy(() => import("./AgentSettingsPage"));
+const AdsPage = lazy(() => import("./AdsPage"));
+
+const SECTIONS = [
+  { id: "account",       label: "account",       icon: User,       component: AccountSettingsPage,
+    desc: "subscription, logout, delete account" },
+  { id: "notifications", label: "notifications", icon: Bell,       component: NotificationsPage,
+    desc: "how and when taj pings you" },
+  { id: "agent",         label: "taj's brain",   icon: Sparkles,   component: AgentSettingsPage,
+    desc: "tune how taj pitches you" },
+  { id: "payments",      label: "payments",      icon: CreditCard, component: PaymentsPage,
+    desc: "billing and invoices" },
+  { id: "referrals",     label: "referrals",     icon: Gift,       component: ReferralsPage,
+    desc: "invite friends, earn perks" },
+  { id: "ads",           label: "ads",           icon: Megaphone,  component: AdsPage,
+    desc: "promote your asks" }
 ];
 
 const SettingsPage = ({ darkMode }) => {
-  const { logout, token } = useAuth();
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [subscription, setSubscription] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [agentSettings, setAgentSettings] = useState({
-    agent_pitch: false, agent_negotiate: false,
-    agent_calendar: false, agent_invoice: false, agent_portfolio: false,
-  });
-  const [agentLoading, setAgentLoading] = useState(true);
-  const [savingAgent, setSavingAgent] = useState(null);
-  const [upgrading, setUpgrading] = useState(false);
-
-  const fetchSubscriptionStatus = useCallback(async () => {
-    try {
-      const response = await axios.get(`${API}/subscription/status`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setSubscription(response.data);
-    } catch (error) {
-      console.error("Failed to fetch subscription:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [token]);
-
-  const fetchAgentSettings = useCallback(async () => {
-    try {
-      const res = await axios.get(`${API}/users/me`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const prefs = res.data?.agent_settings || res.data?.preferences || {};
-      setAgentSettings(prev => ({ ...prev, ...prefs }));
-    } catch (error) {
-      console.error("Failed to fetch agent settings:", error);
-    } finally {
-      setAgentLoading(false);
-    }
-  }, [token]);
+  const location = useLocation();
+  const [activeSection, setActiveSection] = useState("account");
 
   useEffect(() => {
-    fetchSubscriptionStatus();
-    fetchAgentSettings();
-  }, [fetchSubscriptionStatus, fetchAgentSettings]);
-
-  const handleUpgrade = async (plan) => {
-    setUpgrading(true);
-    try {
-      const response = await axios.post(
-        `${API}/subscription/checkout`,
-        null,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { plan }
-        }
-      );
-      // Redirect to Stripe checkout
-      window.location.href = response.data.checkout_url;
-    } catch (error) {
-      console.error("Failed to start checkout:", error);
-      toast.error("Failed to start checkout");
-      setUpgrading(false);
+    const params = new URLSearchParams(location.search);
+    const section = params.get("section");
+    if (section && SECTIONS.some(s => s.id === section)) {
+      setActiveSection(section);
     }
-  };
+  }, [location.search]);
 
-  const handleManageSubscription = async () => {
-    try {
-      const response = await axios.post(
-        `${API}/subscription/portal`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      window.location.href = response.data.portal_url;
-    } catch (error) {
-      console.error("Failed to open portal:", error);
-      toast.error("Failed to open subscription portal");
-    }
-  };
-
-  const handleAgentToggle = async (key) => {
-    const newVal = !agentSettings[key];
-    setAgentSettings(prev => ({ ...prev, [key]: newVal }));
-    setSavingAgent(key);
-    try {
-      await axios.put(`${API}/users/me`, {
-        agent_settings: { ...agentSettings, [key]: newVal }
-      }, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success("Saved");
-    } catch (error) {
-      setAgentSettings(prev => ({ ...prev, [key]: !newVal }));
-      toast.error("Failed to save");
-      console.error("Failed to save agent setting:", error);
-    } finally {
-      setSavingAgent(null);
-    }
-  };
-
-  const handleLogout = () => {
-    logout();
-    toast.success("Logged out");
-    window.location.href = "/";
-  };
-
-  const handleDeleteAccount = async () => {
-    setDeleting(true);
-    try {
-      await axios.delete(`${API}/users/me`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast.success("Account deleted");
-      logout();
-      window.location.href = "/";
-    } catch (error) {
-      console.error("Failed to delete account:", error);
-      toast.error("Failed to delete account");
-    } finally {
-      setDeleting(false);
-      setShowDeleteConfirm(false);
-    }
-  };
-
-  const getTierDisplay = (tier) => {
-    switch (tier) {
-      case "pro": return { label: "Pro", color: "text-purple-500", bg: "bg-purple-500/10" };
-      case "verified": return { label: "Verified", color: "text-blue-500", bg: "bg-blue-500/10" };
-      default: return { label: "Free", color: "text-gray-500", bg: "bg-gray-500/10" };
-    }
-  };
-
-  const tierDisplay = subscription ? getTierDisplay(subscription.tier) : getTierDisplay("free");
+  const active = SECTIONS.find(s => s.id === activeSection);
+  const ActiveComponent = active?.component;
 
   return (
     <div>
       {/* Header */}
-      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-gray-100'}`}>
-        <h1 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Settings</h1>
+      <div className="mb-1">
+        <div className={`font-mono text-[11px] tracking-[0.25em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+          settings
+        </div>
       </div>
+      <h1 className={`font-display text-[clamp(2rem,5vw,44px)] leading-none font-normal tracking-tight mb-7 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+        fine-tune everything.
+      </h1>
 
-      <div className="content-body" style={{ maxWidth: 600 }}>
-        {/* Subscription Section */}
-        <div className="settings-section">
-          <h2 className={darkMode ? 'text-white' : ''}>Subscription</h2>
-
-          {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="spinner"></div>
-            </div>
-          ) : (
-            <>
-              {/* Current Plan */}
-              <div className={`p-4 rounded-xl mb-4 ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className={`text-sm font-medium ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                      Your Plan
-                    </span>
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${tierDisplay.color} ${tierDisplay.bg}`}>
-                      {tierDisplay.label}
-                    </span>
-                  </div>
-                  {subscription?.is_verified && (
-                    <div className="flex items-center gap-1 text-blue-500">
-                      <CheckCircle size={16} />
-                      <span className="text-xs font-medium">Verified</span>
-                    </div>
-                  )}
-                </div>
-
-                {subscription?.subscription_status === "active" && subscription?.subscription_expires_at && (
-                  <p className={`text-xs ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
-                    Renews {new Date(subscription.subscription_expires_at).toLocaleDateString()}
-                  </p>
-                )}
-
-                {subscription?.subscription_status === "canceled" && (
-                  <p className={`text-xs text-amber-500`}>
-                    Cancels at end of billing period
-                  </p>
-                )}
-              </div>
-              {/* Upgrade Buttons - Only show if show_pricing_ui is true */}
-              {subscription?.show_pricing_ui && subscription?.tier === "free" && (
-                <div className="space-y-3">
-                  <button
-                    onClick={() => handleUpgrade("pro_monthly")}
-                    disabled={upgrading}
-                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-purple-500 text-white font-semibold hover:from-purple-700 hover:to-purple-600 transition-all"
-                  >
-                    <Crown size={18} />
-                    Upgrade to Pro - ${subscription?.pricing?.pro_monthly}/mo
-                  </button>
-                  <button
-                    onClick={() => handleUpgrade("verified_monthly")}
-                    disabled={upgrading}
-                    className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition-all ${darkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                  >
-                    <CheckCircle size={18} />
-                    Get Verified - ${subscription?.pricing?.verified_monthly}/mo
-                  </button>
-                </div>
-              )}
-
-              {/* Manage Subscription - Show if subscribed */}
-              {subscription?.tier !== "free" && subscription?.subscription_status === "active" && (
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Sub-nav rail (left on md+, top on mobile) */}
+        <nav className={`md:w-[220px] flex-shrink-0 md:border-r ${darkMode ? "md:border-white/10" : "md:border-gray-100"} md:pr-4`}>
+          <div className="flex md:flex-col gap-1 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
+            {SECTIONS.map((section) => {
+              const isActive = section.id === activeSection;
+              const Icon = section.icon;
+              return (
                 <button
-                  onClick={handleManageSubscription}
-                  className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition-all ${darkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                  key={section.id}
+                  onClick={() => setActiveSection(section.id)}
+                  className={`inline-flex items-center gap-2.5 px-3 py-2 rounded-xl flex-shrink-0 transition-colors text-left lowercase ${
+                    isActive
+                      ? (darkMode ? "bg-white/10" : "bg-gray-100")
+                      : (darkMode ? "hover:bg-white/5" : "hover:bg-gray-50")
+                  }`}
                 >
-                  <ExternalLink size={18} />
-                  Manage Subscription
+                  <Icon
+                    size={16}
+                    strokeWidth={isActive ? 2 : 1.6}
+                    className={isActive ? (darkMode ? "text-white" : "text-gray-900") : (darkMode ? "text-white/60" : "text-gray-500")}
+                  />
+                  <span className={`font-syne text-[13.5px] whitespace-nowrap ${isActive ? (darkMode ? "font-semibold text-white" : "font-semibold text-gray-900") : (darkMode ? "font-medium text-white/60" : "font-medium text-gray-500")}`}>
+                    {section.label}
+                  </span>
                 </button>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* Taj Agent Section */}
-        <div className="settings-section">
-          <h2 className={darkMode ? 'text-white' : ''}>Taj Agent</h2>
-
-          {agentLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="spinner"></div>
-            </div>
-          ) : (
-            <>
-              {/* Info Banner */}
-              <div className={`p-4 rounded-2xl mb-4 ${darkMode ? "bg-red-500/10" : "bg-red-50"}`}>
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#E50914] flex items-center justify-center flex-shrink-0">
-                    <Bot size={20} className="text-white" />
-                  </div>
-                  <div>
-                    <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Taj works for you, automatically</p>
-                    <p className={`text-sm mt-1 ${darkMode ? "text-white/60" : "text-gray-600"}`}>
-                      Choose how much Taj does on your behalf. Toggle what you want — she handles the rest.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Agent Settings Toggles */}
-              <div className={`space-y-0 -mx-4 divide-y ${darkMode ? "divide-white/10" : "divide-gray-100"}`}>
-                {AGENT_SETTINGS_CONFIG.map(({ key, label, description, pro }) => (
-                  <div key={key} className={`px-4 py-4 flex items-start gap-3 ${darkMode ? "hover:bg-white/5" : "hover:bg-gray-50"} transition-colors`}>
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${agentSettings[key] ? (darkMode ? "bg-red-500/20" : "bg-red-100") : (darkMode ? "bg-white/5" : "bg-gray-100")}`}>
-                      <Zap size={18} className={agentSettings[key] ? (darkMode ? "text-red-400" : "text-red-500") : (darkMode ? "text-white/30" : "text-gray-400")} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className={`font-semibold text-sm ${darkMode ? "text-white" : "text-gray-900"}`}>{label}</p>
-                        {pro && <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${darkMode ? "bg-yellow-500/20 text-yellow-300" : "bg-yellow-100 text-yellow-700"}`}>Pro</span>}
-                      </div>
-                      <p className={`text-sm mt-1 ${darkMode ? "text-white/50" : "text-gray-500"}`}>{description}</p>
-                    </div>
-                    <Switch checked={agentSettings[key]} onChange={() => handleAgentToggle(key)} disabled={savingAgent === key} darkMode={darkMode} />
-                  </div>
-                ))}
-              </div>
-
-              {/* Upgrade CTA */}
-              <a
-                href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20want%20to%20upgrade%20to%20Pro"
-                target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-white font-semibold mt-4"
-                style={{ background: "#E50914" }}
-              >
-                <MessageCircle size={18} />
-                Upgrade to Pro for full autonomy
-              </a>
-            </>
-          )}
-        </div>
-
-        {/* Support Section */}
-        <div className="settings-section">
-          <h2 className={darkMode ? 'text-white' : ''}>Support</h2>
-
-          <a
-            href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20have%20a%20question..."
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
-          >
-            <div className="settings-item-info">
-              <h3 className={darkMode ? 'text-white' : ''}>Chat with Taj</h3>
-              <p className={darkMode ? 'text-white/50' : ''}>Ask questions or get help via WhatsApp</p>
-            </div>
-            <MessageCircle size={20} className={darkMode ? 'text-white/40' : 'text-gray-400'} />
-          </a>
-
-          <a
-            href="mailto:taj@trygully.com?subject=Support%20Request"
-            className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
-          >
-            <div className="settings-item-info">
-              <h3 className={darkMode ? 'text-white' : ''}>Email Support</h3>
-              <p className={darkMode ? 'text-white/50' : ''}>taj@trygully.com</p>
-            </div>
-            <Mail size={20} className={darkMode ? 'text-white/40' : 'text-gray-400'} />
-          </a>
-
-          <a
-            href="mailto:taj@trygully.com?subject=Bug%20Report"
-            className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
-          >
-            <div className="settings-item-info">
-              <h3 className={darkMode ? 'text-white' : ''}>Report a Bug</h3>
-              <p className={darkMode ? 'text-white/50' : ''}>Found something broken? Let us know</p>
-            </div>
-            <Bug size={20} className={darkMode ? 'text-white/40' : 'text-gray-400'} />
-          </a>
-
-          <a
-            href="https://trygully.com/faq"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
-          >
-            <div className="settings-item-info">
-              <h3 className={darkMode ? 'text-white' : ''}>FAQ</h3>
-              <p className={darkMode ? 'text-white/50' : ''}>Frequently asked questions</p>
-            </div>
-            <HelpCircle size={20} className={darkMode ? 'text-white/40' : 'text-gray-400'} />
-          </a>
-        </div>
-
-        {/* Account Section */}
-        <div className="settings-section">
-          <h2 className={darkMode ? 'text-white' : ''}>Account</h2>
-
-          <div
-            className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
-            onClick={() => setShowLogoutConfirm(true)}
-          >
-            <div className="settings-item-info">
-              <h3 style={{ color: '#E50914' }}>Log out</h3>
-            </div>
-            <LogOut size={20} style={{ color: '#E50914' }} />
+              );
+            })}
           </div>
+        </nav>
 
-          <div
-            className={`settings-item cursor-pointer -mx-4 px-4 rounded-lg ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
-            onClick={() => setShowDeleteConfirm(true)}
-          >
-            <div className="settings-item-info">
-              <h3 className={darkMode ? 'text-white/60' : ''} style={{ color: darkMode ? undefined : '#536471' }}>Delete account</h3>
-              <p className={darkMode ? 'text-white/40' : ''}>Permanently remove your data</p>
+        {/* Active panel */}
+        <div className="flex-1 min-w-0">
+          {active && (
+            <div className={`font-mono text-[10.5px] tracking-[0.2em] lowercase mb-3 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+              {active.desc}
             </div>
-            <Trash2 size={20} style={{ color: darkMode ? 'rgba(255,255,255,0.4)' : '#536471' }} />
-          </div>
+          )}
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="spinner" /></div>}>
+            {ActiveComponent && <ActiveComponent darkMode={darkMode} />}
+          </Suspense>
         </div>
       </div>
-
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setShowDeleteConfirm(false)}
-          />
-          <div className={`relative w-full max-w-sm mx-4 p-6 rounded-2xl shadow-2xl ${darkMode ? 'bg-[#111]' : 'bg-white'}`}>
-            <h2 className={`text-xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Delete Account?</h2>
-            <p className={`text-sm mb-6 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
-              This action cannot be undone. All your data will be permanently deleted.
-            </p>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
-                className={`flex-1 py-3 rounded-full font-semibold ${darkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                disabled={deleting}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteAccount}
-                className="flex-1 py-3 rounded-full font-semibold bg-[#E50914] text-white hover:bg-[#c50810]"
-                disabled={deleting}
-              >
-                {deleting ? "Deleting..." : "Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Logout Confirmation Modal */}
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setShowLogoutConfirm(false)}
-          />
-          <div className={`relative w-full max-w-sm mx-4 p-6 rounded-2xl shadow-2xl ${darkMode ? 'bg-[#111]' : 'bg-white'}`}>
-            <h2 className={`text-xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Log out?</h2>
-            <p className={`text-sm mb-6 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
-              Are you sure you want to log out?
-            </p>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowLogoutConfirm(false)}
-                className={`flex-1 py-3 rounded-full font-semibold ${darkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleLogout}
-                className="flex-1 py-3 rounded-full font-semibold bg-[#E50914] text-white hover:bg-[#c50810]"
-              >
-                Log out
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
