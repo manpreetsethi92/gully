@@ -29,11 +29,8 @@ import {
 } from "lucide-react";
 
 const HomePage = lazy(() => import("../components/dashboard/HomePage"));
-const OpportunitiesPage = lazy(() => import("../components/dashboard/OpportunitiesPage"));
-const RequestsPage = lazy(() => import("../components/dashboard/RequestsPage"));
 const SettingsPage = lazy(() => import("../components/dashboard/SettingsPage"));
 const ProfilePage = lazy(() => import("../components/dashboard/ProfilePage"));
-const SavedJobsPage = lazy(() => import("../components/dashboard/SavedJobsPage"));
 const SocialOAuthPage = lazy(() => import("../components/dashboard/SocialOAuthPage"));
 const OnboardingFlow = lazy(() => import("../components/dashboard/OnboardingFlow"));
 const WorkHistoryPage = lazy(() => import("../components/dashboard/WorkHistoryPage"));
@@ -288,11 +285,10 @@ const DashboardLayout = () => {
                 <Route index element={<HomePage onRefresh={fetchStats} darkMode={darkMode} />} />
                 <Route path="home" element={<HomePage onRefresh={fetchStats} darkMode={darkMode} />} />
 
-                {/* === LEGACY ROUTES — still rendered so old links don't 404 === */}
-                {/* Phase 2 Commit 3 will redirect these to /app (unified Home) */}
-                <Route path="opportunities" element={<OpportunitiesPage onRefresh={fetchStats} darkMode={darkMode} />} />
-                <Route path="requests" element={<RequestsPage onRefresh={fetchStats} darkMode={darkMode} />} />
-                <Route path="saved-jobs" element={<SavedJobsPage onRefresh={fetchStats} darkMode={darkMode} />} />
+                {/* === LEGACY ROUTES — redirect to the unified inbox === */}
+                <Route path="opportunities" element={<Navigate to="/app" replace />} />
+                <Route path="requests" element={<Navigate to="/app" replace />} />
+                <Route path="saved-jobs" element={<Navigate to="/app" replace />} />
 
                 {/* === NETWORK === */}
                 <Route path="network" element={<NetworkPage darkMode={darkMode} />} />

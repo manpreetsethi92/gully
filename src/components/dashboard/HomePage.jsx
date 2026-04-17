@@ -20,6 +20,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import TajMessageCard from "./TajMessageCard";
+import InboxDetailDrawer from "./InboxDetailDrawer";
 
 // ===== Taj-voice copy generators =====
 
@@ -154,6 +155,7 @@ const HomePage = ({ darkMode, onRefresh }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingAction, setLoadingAction] = useState(null);
+  const [detailItem, setDetailItem] = useState(null);
 
   const fetchAll = useCallback(async () => {
     if (!token) return;
@@ -193,6 +195,12 @@ const HomePage = ({ darkMode, onRefresh }) => {
     const headers = { Authorization: `Bearer ${token}` };
     setLoadingAction(item.id);
 
+    const removeFromList = () => {
+      setItems(prev => prev.filter(i => i.id !== item.id));
+      // If the drawer is showing this exact item, close it
+      setDetailItem(prev => (prev?.id === item.id ? null : prev));
+    };
+
     try {
       // Opportunities: accept / save / decline
       if (item.type === "opportunity" || item.type === "external") {
@@ -202,7 +210,7 @@ const HomePage = ({ darkMode, onRefresh }) => {
           { action: backendAction },
           { headers }
         );
-        setItems(prev => prev.filter(i => i.id !== item.id));
+        removeFromList();
         if (backendAction === "accept") {
           toast.success(item.type === "external" ? "saved — check your saved tab" : "accepted — taj is connecting you");
         } else {
@@ -215,7 +223,7 @@ const HomePage = ({ darkMode, onRefresh }) => {
       // Request: close
       if (item.type === "request" && actionId === "close") {
         await axios.post(`${API}/requests/${item.raw_id}/close`, {}, { headers });
-        setItems(prev => prev.filter(i => i.id !== item.id));
+        removeFromList();
         toast.success("ask closed");
         onRefresh?.();
         return;
@@ -231,7 +239,7 @@ const HomePage = ({ darkMode, onRefresh }) => {
         }
         if (actionId === "remove") {
           await axios.delete(`${API}/saved-jobs/${item.raw_id}`, { headers });
-          setItems(prev => prev.filter(i => i.id !== item.id));
+          removeFromList();
           toast.success("removed");
           onRefresh?.();
           return;
@@ -259,6 +267,7 @@ const HomePage = ({ darkMode, onRefresh }) => {
 
 
   return (
+    <>
     <div>
       <div className="mb-1">
         <div className={`font-mono text-[11px] tracking-[0.25em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
@@ -310,6 +319,7 @@ const HomePage = ({ darkMode, onRefresh }) => {
               item={item}
               darkMode={darkMode}
               onAction={doAction}
+              onOpen={setDetailItem}
               loadingAction={loadingAction}
             />
           ))}
@@ -319,6 +329,15 @@ const HomePage = ({ darkMode, onRefresh }) => {
         </div>
       )}
     </div>
+    <InboxDetailDrawer
+      item={detailItem}
+      isOpen={!!detailItem}
+      onClose={() => setDetailItem(null)}
+      onAction={doAction}
+      loadingAction={loadingAction}
+      darkMode={darkMode}
+    />
+    </>
   );
 };
 

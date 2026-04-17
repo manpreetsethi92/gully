@@ -31,13 +31,17 @@ const formatRelativeTime = (iso) => {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 };
 
-const TajMessageCard = ({ item, darkMode, onAction, loadingAction }) => {
+const TajMessageCard = ({ item, darkMode, onAction, onOpen, loadingAction }) => {
   const badge = KIND_BADGES[item.kind] || KIND_BADGES.new_match;
   const isLoading = loadingAction === item.id;
 
+  // Stop propagation so button clicks don't also open the drawer
+  const stop = (e) => e.stopPropagation();
+
   return (
     <article
-      className={`rounded-2xl border p-5 mb-3 transition-colors ${
+      onClick={() => onOpen?.(item)}
+      className={`rounded-2xl border p-5 mb-3 transition-colors cursor-pointer ${
         darkMode
           ? "bg-white/[0.03] border-white/10 hover:bg-white/[0.05]"
           : "bg-white border-gray-100 hover:border-gray-200"
@@ -79,12 +83,12 @@ const TajMessageCard = ({ item, darkMode, onAction, loadingAction }) => {
         </div>
       </div>
 
-      {/* Action row */}
-      <div className="flex flex-wrap gap-2 ml-12 mt-3">
+      {/* Action row — stopPropagation so buttons don't open the drawer */}
+      <div className="flex flex-wrap gap-2 ml-12 mt-3" onClick={stop}>
         {(item.actions || []).map((action) => (
           <button
             key={action.id}
-            onClick={() => onAction?.(item, action.id)}
+            onClick={(e) => { e.stopPropagation(); onAction?.(item, action.id); }}
             disabled={isLoading}
             className={`px-4 py-2 rounded-full font-syne text-[12.5px] font-medium transition-colors lowercase disabled:opacity-50 ${
               action.style === "primary"
@@ -101,6 +105,7 @@ const TajMessageCard = ({ item, darkMode, onAction, loadingAction }) => {
           href={WHATSAPP_BOT_URL}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
           className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-syne text-[12.5px] font-medium transition-colors lowercase ${
             darkMode
               ? "bg-transparent text-white border border-white/20 hover:border-white/40"
