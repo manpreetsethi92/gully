@@ -15,12 +15,15 @@
 //   - my ask: open source url (if any) / close post
 //   - saved: open url / remove → DELETE /saved-jobs/:id
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense, lazy } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import TajMessageCard from "./TajMessageCard";
 import InboxDetailDrawer from "./InboxDetailDrawer";
+
+const NetworkPage = lazy(() => import("./NetworkPage"));
 
 // ===== Taj-voice copy generators =====
 
@@ -146,11 +149,13 @@ const TABS = [
   { id: "incoming", label: "incoming", kinds: ["new_match", "gig_for_you", "warm_intro"] },
   { id: "my_asks",  label: "my asks",  kinds: ["my_ask"] },
   { id: "saved",    label: "saved",    kinds: ["saved"] },
+  { id: "network",  label: "network",  kinds: "__network" },
   { id: "all",      label: "all",      kinds: null }
 ];
 
 const HomePage = ({ darkMode, onRefresh }) => {
   const { token } = useAuth();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState("incoming");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -188,6 +193,15 @@ const HomePage = ({ darkMode, onRefresh }) => {
   }, [token]);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
+
+  // Respect ?tab=network style query param (used by /app/network redirect)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get("tab");
+    if (tab && TABS.some(t => t.id === tab)) {
+      setActiveTab(tab);
+    }
+  }, [location.search]);
 
   // ===== Action handlers =====
 
@@ -257,13 +271,17 @@ const HomePage = ({ darkMode, onRefresh }) => {
     incoming: items.filter(i => TABS[0].kinds.includes(i.kind)).length,
     my_asks:  items.filter(i => TABS[1].kinds.includes(i.kind)).length,
     saved:    items.filter(i => TABS[2].kinds.includes(i.kind)).length,
+    network:  null, // count comes from NetworkPage itself
     all:      items.length
   };
 
   const activeTabDef = TABS.find(t => t.id === activeTab);
-  const visible = activeTabDef.kinds
-    ? items.filter(i => activeTabDef.kinds.includes(i.kind))
-    : items;
+  const isNetworkTab = activeTabDef?.kinds === "__network";
+  const visible = isNetworkTab
+    ? []
+    : (activeTabDef.kinds
+      ? items.filter(i => activeTabDef.kinds.includes(i.kind))
+      : items);
 
 
   return (
@@ -305,7 +323,11 @@ const HomePage = ({ darkMode, onRefresh }) => {
         })}
       </div>
 
-      {loading ? (
+      {isNetworkTab ? (
+        <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="spinner" /></div>}>
+          <NetworkPage darkMode={darkMode} />
+        </Suspense>
+      ) : loading ? (
         <div className="flex items-center justify-center py-20">
           <div className="spinner" />
         </div>

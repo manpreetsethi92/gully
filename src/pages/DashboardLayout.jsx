@@ -1,15 +1,13 @@
-// DashboardLayout v2 — Phase 1 of dashboard redesign.
+// DashboardLayout v3 — Network folded into Home.
 //
-// Changes:
-// - 4-item nav: Home, Network, You, Settings (was 7 items)
+// Changes from v2:
+// - 3-item nav: Home, You, Settings (Network is now a tab on Home)
+// - /app/network redirects to /app?tab=network
+//
+// Previous notes preserved:
 // - Single centered column layout (was Twitter-style 3-column)
-// - No right rail with "What's happening" trending
-// - No search bar / bell icon header
-// - No persistent green "Text Taj" banner
-// - Persistent "message taj" button lives at the bottom of the sidebar only
+// - No right rail, search bar, bell icon, or "Text Taj" banner
 // - Phase 2 will replace OpportunitiesPage with a unified HomePage
-// - Phase 3 will replace ProfilePage with a tabbed YouPage
-// - All legacy routes preserved as redirects so old links don't 404
 
 import React, { useState, useEffect, useCallback, Suspense, lazy } from "react";
 import { Routes, Route, useNavigate, useLocation, Link, Navigate } from "react-router-dom";
@@ -17,7 +15,6 @@ import { useAuth, API } from "../App";
 import axios from "axios";
 import {
   Sparkles,
-  Network as NetworkIcon,
   User,
   Settings as SettingsIcon,
   Menu,
@@ -32,7 +29,6 @@ const HomePage = lazy(() => import("../components/dashboard/HomePage"));
 const YouPage = lazy(() => import("../components/dashboard/YouPage"));
 const SettingsPage = lazy(() => import("../components/dashboard/SettingsPage"));
 const OnboardingFlow = lazy(() => import("../components/dashboard/OnboardingFlow"));
-const NetworkPage = lazy(() => import("../components/dashboard/NetworkPage"));
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
 
@@ -55,13 +51,10 @@ const DashboardLayout = () => {
   const [showConnectSocialsModal, setShowConnectSocialsModal] = useState(false);
 
   // Determine active nav item from the current path.
-  // Legacy paths (/app/opportunities, /app/requests, /app/saved-jobs) map to "home"
-  // Legacy /app/profile, /app/work-history, /app/social-connect map to "you"
-  // Legacy /app/notifications maps to "settings"
+  // Legacy paths map to their new homes. /app/network maps to "home" now.
   const pathSegment = location.pathname.split("/").pop() || "";
   const activeNav = (() => {
-    if (["", "app", "home", "opportunities", "requests", "saved-jobs"].includes(pathSegment)) return "home";
-    if (["network"].includes(pathSegment)) return "network";
+    if (["", "app", "home", "opportunities", "requests", "saved-jobs", "network"].includes(pathSegment)) return "home";
     if (["you", "profile", "work-history", "social-connect"].includes(pathSegment)) return "you";
     if (["settings", "notifications"].includes(pathSegment)) return "settings";
     return "home";
@@ -127,7 +120,6 @@ const DashboardLayout = () => {
 
   const navItems = [
     { id: "home", label: "home", icon: Sparkles, path: "/app", count: homeCount },
-    { id: "network", label: "network", icon: NetworkIcon, path: "/app/network" },
     { id: "you", label: "you", icon: User, path: "/app/you" },
     { id: "settings", label: "settings", icon: SettingsIcon, path: "/app/settings" }
   ];
@@ -287,8 +279,8 @@ const DashboardLayout = () => {
                 <Route path="requests" element={<Navigate to="/app" replace />} />
                 <Route path="saved-jobs" element={<Navigate to="/app" replace />} />
 
-                {/* === NETWORK === */}
-                <Route path="network" element={<NetworkPage darkMode={darkMode} />} />
+                {/* === NETWORK — now folded into Home as a tab === */}
+                <Route path="network" element={<Navigate to="/app?tab=network" replace />} />
 
                 {/* === YOU (Phase 3 — tabbed identity page) === */}
                 <Route path="you" element={<YouPage darkMode={darkMode} />} />
