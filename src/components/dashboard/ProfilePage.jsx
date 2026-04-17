@@ -3,7 +3,6 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Instagram, Linkedin, Twitter, Film, Music, ExternalLink, Camera, Search, X, Loader2, BadgeCheck } from "lucide-react";
@@ -434,34 +433,37 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
         </section>
       </div>
 
-      {/* Edit Profile Modal */}
+      {/* Edit Profile Modal — editorial redesign */}
       <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-        <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+        <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto p-0">
+          <DialogHeader className="px-6 pt-6 pb-2">
+            <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-1">
+              edit profile
+            </div>
+            <DialogTitle className="font-display text-[26px] leading-none font-normal lowercase">
+              who are you, really?
+            </DialogTitle>
           </DialogHeader>
-          
-          <div className="space-y-5 py-4">
+
+          <div className="px-6 pb-6 pt-2 space-y-6">
             {/* Profile Photo */}
             <div className="flex flex-col items-center">
               <div className="relative">
                 {(previewPhoto || (formData.photo_url && !imageError)) ? (
-                  <img 
-                    src={previewPhoto || formData.photo_url} 
+                  <img
+                    src={previewPhoto || formData.photo_url}
                     alt="Profile"
                     className="w-24 h-24 rounded-full object-cover"
                     onError={() => setImageError(true)}
                   />
                 ) : (
-                  <div 
-                    className="w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-bold"
+                  <div
+                    className="w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-semibold"
                     style={{ background: 'linear-gradient(135deg, #E50914 0%, #ff4757 100%)' }}
                   >
                     {formData.name?.charAt(0).toUpperCase() || "?"}
                   </div>
                 )}
-                
-                {/* Upload button / loading state */}
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
@@ -482,153 +484,164 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
                   className="hidden"
                 />
               </div>
-              <p className="text-xs text-gray-400 mt-2">
-                {uploadingPhoto ? "Uploading..." : "Click camera to upload photo"}
+              <p className="font-mono text-[10.5px] tracking-wide text-gray-400 mt-2 lowercase">
+                {uploadingPhoto ? "uploading…" : "tap the camera to upload a photo"}
               </p>
             </div>
 
             {/* Name & Age */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-[1fr_auto] gap-3">
               <div>
-                <Label className="text-xs font-semibold text-gray-500 mb-1.5 block">NAME</Label>
+                <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-1.5">
+                  name
+                </div>
                 <Input
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Your name"
-                  className="h-10"
+                  placeholder="your name"
+                  className="h-11 rounded-xl font-syne text-[14px] lowercase placeholder:lowercase"
                 />
               </div>
               <div>
-                <Label className="text-xs font-semibold text-gray-500 mb-1.5 block">AGE</Label>
+                <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-1.5">
+                  age
+                </div>
                 <Input
                   type="number"
                   value={formData.age}
                   onChange={(e) => setFormData({ ...formData, age: e.target.value })}
                   placeholder="25"
-                  className="h-10"
+                  className="h-11 rounded-xl font-mono text-[14px] w-20 text-center"
                 />
               </div>
             </div>
 
             {/* Location */}
             <div>
-              <Label className="text-xs font-semibold text-gray-500 mb-1.5 block">LOCATION</Label>
+              <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-1.5">
+                location
+              </div>
               <Input
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                placeholder="New York, NY"
-                className="h-10"
+                placeholder="brooklyn, ny"
+                className="h-11 rounded-xl font-syne text-[14px] lowercase placeholder:lowercase"
               />
             </div>
 
             {/* Bio */}
             <div>
-              <Label className="text-xs font-semibold text-gray-500 mb-1.5 block">BIO</Label>
+              <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-1.5">
+                bio
+              </div>
               <Textarea
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                placeholder="Tell us about yourself..."
-                className="resize-none h-20"
+                placeholder="what do you do? how should taj pitch you?"
+                className="resize-none h-20 rounded-xl font-syne text-[14px] placeholder:lowercase"
                 maxLength={300}
               />
             </div>
 
-            {/* Skills - Searchable */}
+            {/* Skills */}
             <div>
-              <Label className="text-xs font-semibold text-gray-500 mb-1.5 block">
-                SKILLS YOU WANT WORK IN ({formData.skills.length}/10) - Min 5
-              </Label>
-              
-              {/* Selected Skills */}
+              <div className="flex items-baseline justify-between mb-1.5">
+                <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400">
+                  skills — {formData.skills.length}/10
+                </div>
+                {formData.skills.length < 5 && (
+                  <div className="font-mono text-[10px] text-gray-400 lowercase">
+                    min 5 recommended
+                  </div>
+                )}
+              </div>
+
               {formData.skills.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-3">
+                <div className="flex flex-wrap gap-1.5 mb-3">
                   {formData.skills.map(skill => (
-                    <span 
+                    <span
                       key={skill}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-black dark:bg-white text-white dark:text-black rounded-full text-sm font-medium"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[12px] lowercase bg-gray-900 text-white dark:bg-white dark:text-gray-900"
                     >
-                      {skill}
-                      <button 
+                      {skill.toLowerCase()}
+                      <button
                         type="button"
                         onClick={() => removeSkill(skill)}
-                        className="hover:bg-white/20 dark:hover:bg-black/20 rounded-full p-0.5"
+                        className="hover:bg-white/20 dark:hover:bg-black/20 rounded-full p-0.5 -mr-1"
                       >
-                        <X size={14} />
+                        <X size={11} />
                       </button>
                     </span>
                   ))}
                 </div>
               )}
-              
-              {/* Search Input */}
+
               {formData.skills.length < 10 && (
                 <div className="relative">
-                  <div className="relative">
-                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <Input
-                      value={skillSearch}
-                      onChange={(e) => {
-                        setSkillSearch(e.target.value);
-                        setShowSkillDropdown(true);
-                      }}
-                      onFocus={() => setShowSkillDropdown(true)}
-                      placeholder="Search skills... (e.g. Makeup Artist, Video Editing)"
-                      className="h-10 pl-9"
-                    />
-                  </div>
-                  
-                  {/* Dropdown */}
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Input
+                    value={skillSearch}
+                    onChange={(e) => {
+                      setSkillSearch(e.target.value);
+                      setShowSkillDropdown(true);
+                    }}
+                    onFocus={() => setShowSkillDropdown(true)}
+                    placeholder="search skills…"
+                    className="h-11 pl-9 rounded-xl font-syne text-[14px] lowercase placeholder:lowercase"
+                  />
+
                   {showSkillDropdown && filteredSkills.length > 0 && (
-                    <div className="absolute z-50 w-full mt-1 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#333] rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                    <div className="absolute z-50 w-full mt-1 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-lg max-h-48 overflow-y-auto">
                       {filteredSkills.map(skill => (
                         <button
                           key={skill}
                           type="button"
                           onClick={() => addSkill(skill)}
-                          className="w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 dark:hover:bg-[#222] transition-colors first:rounded-t-xl last:rounded-b-xl"
+                          className="w-full px-4 py-2.5 text-left text-[13px] lowercase hover:bg-gray-50 dark:hover:bg-white/5 transition-colors first:rounded-t-xl last:rounded-b-xl"
                         >
-                          {skill}
+                          {skill.toLowerCase()}
                         </button>
                       ))}
                     </div>
                   )}
-                  
-                  {/* No results */}
+
                   {showSkillDropdown && skillSearch.trim() && filteredSkills.length === 0 && (
-                    <div className="absolute z-50 w-full mt-1 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#333] rounded-xl shadow-lg p-3">
-                      <p className="text-sm text-gray-500">No skills found for "{skillSearch}"</p>
+                    <div className="absolute z-50 w-full mt-1 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-lg p-3">
+                      <p className="font-mono text-[11px] text-gray-500 lowercase">
+                        no matches for "{skillSearch.toLowerCase()}"
+                      </p>
                       <button
                         type="button"
                         onClick={() => addSkill(skillSearch.trim())}
-                        className="mt-2 text-sm font-medium text-red-600 hover:underline"
+                        className="mt-2 font-syne text-[12px] font-medium text-[#E50914] hover:underline lowercase"
                       >
-                        + Add "{skillSearch.trim()}" as custom skill
+                        + add "{skillSearch.trim().toLowerCase()}" anyway
                       </button>
                     </div>
                   )}
                 </div>
               )}
-              
-              <p className="text-xs text-gray-400 mt-2">
-                These are the skills people will find you for
-              </p>
             </div>
 
             {/* Social Links */}
             <div>
-              <Label className="text-xs font-semibold text-gray-500 mb-1.5 block">SOCIAL LINKS</Label>
-              <div className="space-y-3">
-                {socialLinks.map(({ key, icon: Icon, label }) => (
-                  <div key={key} className="flex items-center gap-3">
-                    <Icon size={18} className="text-gray-400 flex-shrink-0" />
+              <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-2">
+                social links
+              </div>
+              <div className="space-y-2">
+                {socialLinks.map(({ key, icon: Icon, label, color }) => (
+                  <div key={key} className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `${color}15` }}>
+                      <Icon size={15} style={{ color }} />
+                    </div>
                     <Input
-                      placeholder={`${label} URL`}
+                      placeholder={`${label.toLowerCase()} url or @handle`}
                       value={formData.social_links[key] || ""}
                       onChange={(e) => setFormData({
                         ...formData,
                         social_links: { ...formData.social_links, [key]: e.target.value }
                       })}
-                      className="h-10"
+                      className="h-10 rounded-xl font-syne text-[13px] lowercase placeholder:lowercase"
                     />
                   </div>
                 ))}
@@ -639,10 +652,10 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
             <button
               onClick={handleSave}
               disabled={saving || uploadingPhoto}
-              className="w-full h-11 rounded-2xl text-white font-semibold transition-all hover:shadow-lg hover:shadow-red-500/25 disabled:opacity-50"
-              style={{ background: '#E50914' }}
+              className="w-full h-11 rounded-full text-white font-syne font-medium text-[13.5px] transition-colors hover:opacity-90 disabled:opacity-50 lowercase"
+              style={{ background: '#0a0a0a' }}
             >
-              {saving ? 'Saving...' : uploadingPhoto ? 'Uploading photo...' : 'Save changes'}
+              {saving ? 'saving…' : uploadingPhoto ? 'uploading photo…' : 'save changes'}
             </button>
           </div>
         </DialogContent>
