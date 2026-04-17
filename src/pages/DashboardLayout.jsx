@@ -29,11 +29,9 @@ import {
 } from "lucide-react";
 
 const HomePage = lazy(() => import("../components/dashboard/HomePage"));
+const YouPage = lazy(() => import("../components/dashboard/YouPage"));
 const SettingsPage = lazy(() => import("../components/dashboard/SettingsPage"));
-const ProfilePage = lazy(() => import("../components/dashboard/ProfilePage"));
-const SocialOAuthPage = lazy(() => import("../components/dashboard/SocialOAuthPage"));
 const OnboardingFlow = lazy(() => import("../components/dashboard/OnboardingFlow"));
-const WorkHistoryPage = lazy(() => import("../components/dashboard/WorkHistoryPage"));
 const NotificationsPage = lazy(() => import("../components/dashboard/NotificationsPage"));
 const NetworkPage = lazy(() => import("../components/dashboard/NetworkPage"));
 
@@ -293,12 +291,11 @@ const DashboardLayout = () => {
                 {/* === NETWORK === */}
                 <Route path="network" element={<NetworkPage darkMode={darkMode} />} />
 
-                {/* === YOU (Phase 3 will replace with tabbed YouPage) === */}
-                {/* For now, /app/you renders ProfilePage. Legacy routes still work. */}
-                <Route path="you" element={<ProfilePage darkMode={darkMode} />} />
-                <Route path="profile" element={<ProfilePage darkMode={darkMode} />} />
-                <Route path="work-history" element={<WorkHistoryPage darkMode={darkMode} />} />
-                <Route path="social-connect" element={<SocialOAuthPage darkMode={darkMode} />} />
+                {/* === YOU (Phase 3 — tabbed identity page) === */}
+                <Route path="you" element={<YouPage darkMode={darkMode} />} />
+                <Route path="profile" element={<Navigate to="/app/you" replace />} />
+                <Route path="work-history" element={<Navigate to="/app/you?tab=work" replace />} />
+                <Route path="social-connect" element={<Navigate to="/app/you?tab=socials" replace />} />
 
                 {/* === SETTINGS === */}
                 <Route path="settings" element={<SettingsPage darkMode={darkMode} />} />
@@ -338,7 +335,7 @@ const DashboardLayout = () => {
               <button
                 onClick={() => {
                   setShowConnectSocialsModal(false);
-                  navigate('/app/social-connect');
+                  navigate('/app/you?tab=socials');
                 }}
                 className="w-full h-11 rounded-full text-white font-syne font-semibold bg-[#E50914] hover:bg-red-700 transition-colors text-[14px] lowercase"
               >
