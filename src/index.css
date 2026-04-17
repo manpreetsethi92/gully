@@ -90,315 +90,109 @@ body {
   }
 }
 
-/* ==================== DARK MODE GLOBAL OVERRIDES ==================== */
+/* ==================== DARK MODE ====================
+ *
+ * This block intercepts light-mode Tailwind classes when `html.dark` is set.
+ *
+ * Why it exists: most dashboard components hardcode `bg-white`, `text-gray-900`,
+ * etc. rather than using `dark:` variants. Rewriting every component to use
+ * dark: variants is a separate effort (tracked as future tech debt).
+ *
+ * Design:
+ *   - CSS variables below are the single source of truth for dark-mode colors
+ *   - Each override uses `html.dark .class` specificity (0,1,1) instead of
+ *     !important — cleaner cascade, easier to override in one-off cases
+ *   - Retired selectors from deleted pages (match-card, skill-tag,
+ *     settings-tab, connection-skill-tag, request-content-card, info-banner,
+ *     social-link-btn) have been removed
+ * ========================================================== */
 
-/* Body background */
-.dark body,
+html.dark {
+  /* Core tokens — change these to re-theme dark mode */
+  --surface:        #0a0a0a;  /* page background */
+  --surface-1:      #111111;  /* cards on top of surface */
+  --surface-2:      #151515;  /* inputs, muted containers */
+  --surface-3:      #1a1a1a;  /* hover, subtle elevation */
+  --surface-4:      #222222;  /* stronger hover / badge bg */
+  --text:           #f0f0f0;
+  --text-muted:     #a0a0a0;
+  --text-faint:     #666666;
+  --border:         #222222;
+  --border-strong:  #333333;
+}
+
 html.dark body {
-  background: #0a0a0a !important;
+  background: var(--surface);
 }
 
-/* Main content cards and containers */
-html.dark .bg-white,
-.dark .bg-white {
-  background-color: #111 !important;
-}
+/* Backgrounds */
+html.dark .bg-white                 { background-color: var(--surface-1); }
+html.dark .bg-white\/80             { background-color: rgba(17, 17, 17, 0.8); }
+html.dark .bg-gray-50               { background-color: var(--surface-2); }
+html.dark .bg-gray-100              { background-color: var(--surface-3); }
+html.dark .rounded-full.bg-gray-100,
+html.dark .rounded-full.bg-gray-50  { background-color: var(--surface-4); }
 
-/* Backdrop blur headers - CRITICAL for sticky headers */
-html.dark .bg-white\/80,
-.dark .bg-white\/80 {
-  background-color: rgba(17, 17, 17, 0.8) !important;
-}
-
-html.dark .bg-gray-50,
-.dark .bg-gray-50 {
-  background-color: #151515 !important;
-}
-
-html.dark .bg-gray-100,
-.dark .bg-gray-100 {
-  background-color: #1a1a1a !important;
-}
-
-/* Gradient backgrounds for info banners */
-html.dark .from-purple-50,
-.dark .from-purple-50 {
-  --tw-gradient-from: #1a1a2e !important;
-}
-
-html.dark .to-blue-50,
-.dark .to-blue-50 {
-  --tw-gradient-to: #1a1a2e !important;
-}
-
-html.dark .bg-gradient-to-r.from-purple-50.to-blue-50,
-.dark .bg-gradient-to-r.from-purple-50.to-blue-50 {
-  background: linear-gradient(to right, #1a1a2e, #1a2a2e) !important;
-}
-
-/* Text colors */
+/* Text */
 html.dark .text-gray-900,
 html.dark .text-gray-800,
-html.dark .text-gray-700,
-.dark .text-gray-900,
-.dark .text-gray-800,
-.dark .text-gray-700 {
-  color: #f0f0f0 !important;
-}
-
+html.dark .text-gray-700            { color: var(--text); }
 html.dark .text-gray-600,
-html.dark .text-gray-500,
-.dark .text-gray-600,
-.dark .text-gray-500 {
-  color: #a0a0a0 !important;
-}
+html.dark .text-gray-500            { color: var(--text-muted); }
+html.dark .text-gray-400            { color: var(--text-faint); }
+html.dark .text-black               { color: #ffffff; }
 
-html.dark .text-gray-400,
-.dark .text-gray-400 {
-  color: #666666 !important;
-}
-
-html.dark .text-black,
-.dark .text-black {
-  color: #ffffff !important;
-}
-
-/* Borders */
+/* Borders & dividers */
 html.dark .border-gray-100,
 html.dark .border-gray-200,
-html.dark .border-gray-300,
-.dark .border-gray-100,
-.dark .border-gray-200,
-.dark .border-gray-300 {
-  border-color: #222 !important;
-}
-
+html.dark .border-gray-300          { border-color: var(--border); }
 html.dark .divide-gray-100 > * + *,
-html.dark .divide-gray-200 > * + *,
-.dark .divide-gray-100 > * + *,
-.dark .divide-gray-200 > * + * {
-  border-color: #222 !important;
-}
+html.dark .divide-gray-200 > * + *  { border-color: var(--border); }
 
 /* Hover states */
-html.dark .hover\:bg-gray-50:hover,
-.dark .hover\:bg-gray-50:hover {
-  background-color: #1a1a1a !important;
-}
+html.dark .hover\:bg-gray-50:hover  { background-color: var(--surface-3); }
+html.dark .hover\:bg-gray-100:hover { background-color: var(--surface-4); }
 
-html.dark .hover\:bg-gray-100:hover,
-.dark .hover\:bg-gray-100:hover {
-  background-color: #222 !important;
-}
-
-/* Input fields */
+/* Form controls */
 html.dark input,
 html.dark textarea,
-html.dark select,
-.dark input,
-.dark textarea,
-.dark select {
-  background-color: #151515 !important;
-  border-color: #333 !important;
-  color: #f0f0f0 !important;
+html.dark select {
+  background-color: var(--surface-2);
+  border-color: var(--border-strong);
+  color: var(--text);
 }
-
 html.dark input::placeholder,
-html.dark textarea::placeholder,
-.dark input::placeholder,
-.dark textarea::placeholder {
-  color: #666 !important;
-}
-
+html.dark textarea::placeholder     { color: var(--text-faint); }
 html.dark input:focus,
-html.dark textarea:focus,
-.dark input:focus,
-.dark textarea:focus {
-  background-color: #1a1a1a !important;
-  border-color: #E50914 !important;
+html.dark textarea:focus {
+  background-color: var(--surface-3);
+  border-color: #E50914;
 }
 
-/* Buttons - secondary/outline */
-html.dark button.bg-white,
-html.dark .bg-white button,
-.dark button.bg-white,
-.dark .bg-white button {
-  background-color: #1a1a1a !important;
-  color: #f0f0f0 !important;
-}
-
-/* Cards with shadows */
+/* Shadows */
 html.dark .shadow-sm,
-html.dark .shadow,
-.dark .shadow-sm,
-.dark .shadow {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
-}
+html.dark .shadow                   { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
 
-/* Dialog/Modal backgrounds */
+/* Dialog/modal */
 html.dark [role="dialog"],
-html.dark .dialog-content,
-.dark [role="dialog"],
-.dark .dialog-content {
-  background-color: #111 !important;
+html.dark .dialog-content           { background-color: var(--surface-1); }
+
+/* Gradient banners (home page, signup modal, etc.) */
+html.dark .from-purple-50           { --tw-gradient-from: #1a1a2e; }
+html.dark .to-blue-50               { --tw-gradient-to:   #1a1a2e; }
+html.dark .bg-gradient-to-r.from-purple-50.to-blue-50 {
+  background: linear-gradient(to right, #1a1a2e, #1a2a2e);
 }
 
-/* Badge/Tag backgrounds */
-html.dark .rounded-full.bg-gray-100,
-html.dark .rounded-full.bg-gray-50,
-.dark .rounded-full.bg-gray-100,
-.dark .rounded-full.bg-gray-50 {
-  background-color: #222 !important;
-}
-
-/* Skill tags - both class and inline */
-html.dark .skill-tag,
-.dark .skill-tag {
-  background-color: #1a1a1a !important;
-  border-color: #333 !important;
-  color: #a0a0a0 !important;
-}
-
-html.dark .skill-tag:hover,
-.dark .skill-tag:hover {
-  border-color: #666 !important;
-  color: #f0f0f0 !important;
-}
-
-html.dark .skill-tag.selected,
-.dark .skill-tag.selected {
-  background-color: #f0f0f0 !important;
-  color: #0a0a0a !important;
-  border-color: #f0f0f0 !important;
-}
-
-/* ==================== PAGE-SPECIFIC DARK MODE FIXES ==================== */
-
-/* Info banner backgrounds (RequestsPage, OpportunitiesPage) */
-html.dark .info-banner,
-.dark .info-banner {
-  background: #1a1a1a !important;
-  border: 1px solid #333 !important;
-}
-
-/* Connection skill tags */
-html.dark .connection-skill-tag,
-.dark .connection-skill-tag {
-  background-color: #222 !important;
-  color: #a0a0a0 !important;
-}
-
-/* Social link buttons */
-html.dark .social-link-btn,
-.dark .social-link-btn {
-  background-color: #222 !important;
-  color: #a0a0a0 !important;
-}
-
-html.dark .social-link-btn:hover,
-.dark .social-link-btn:hover {
-  background-color: #333 !important;
-  color: #f0f0f0 !important;
-}
-
-/* Request content cards (gray-50 backgrounds) */
-html.dark .request-content-card,
-.dark .request-content-card {
-  background-color: #1a1a1a !important;
-}
-
-/* Match cards border */
-html.dark .match-card,
-.dark .match-card {
-  border-color: #333 !important;
-  background-color: #111 !important;
-}
-
-/* ==================== END DARK MODE OVERRIDES ==================== */
-
-/* Settings sections */
-html.dark .settings-section h2,
-.dark .settings-section h2 {
-  color: #f0f0f0 !important;
-}
-
-html.dark .settings-item,
-.dark .settings-item {
-  border-color: #222 !important;
-}
-
-html.dark .settings-item-info h3,
-.dark .settings-item-info h3 {
-  color: #f0f0f0 !important;
-}
-
-html.dark .settings-item-info p,
-.dark .settings-item-info p {
-  color: #888 !important;
-}
-
-html.dark .settings-tab,
-.dark .settings-tab {
-  background-color: #1a1a1a !important;
-  border-color: #333 !important;
-  color: #a0a0a0 !important;
-}
-
-html.dark .settings-tab.active,
-.dark .settings-tab.active {
-  background-color: #222 !important;
-  border-color: #f0f0f0 !important;
-  color: #f0f0f0 !important;
-}
-
-/* Content header */
-html.dark .content-header,
-.dark .content-header {
-  border-color: #222 !important;
-}
-
-html.dark .content-header h1,
-.dark .content-header h1 {
-  color: #f0f0f0 !important;
-}
-
-/* Empty state */
-html.dark .empty-state h3,
-.dark .empty-state h3 {
-  color: #f0f0f0 !important;
-}
-
-html.dark .empty-state p,
-.dark .empty-state p {
-  color: #888 !important;
-}
-
-/* Toggle switch */
-html.dark .toggle-switch,
-.dark .toggle-switch {
-  background: #333 !important;
-}
-
-/* Scrollbar in dark mode */
-html.dark ::-webkit-scrollbar-thumb,
-.dark ::-webkit-scrollbar-thumb {
-  background: #333;
-}
-
-html.dark ::-webkit-scrollbar-thumb:hover,
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #444;
-}
-
-/* Ring/focus colors */
+/* Ring / focus */
 html.dark .ring-gray-200,
-html.dark .focus\:ring-gray-200:focus,
-.dark .ring-gray-200,
-.dark .focus\:ring-gray-200:focus {
-  --tw-ring-color: #333 !important;
-}
+html.dark .focus\:ring-gray-200:focus { --tw-ring-color: var(--border-strong); }
 
-/* ==================== END DARK MODE OVERRIDES ==================== */
+/* Scrollbar */
+html.dark ::-webkit-scrollbar-thumb         { background: var(--border-strong); }
+html.dark ::-webkit-scrollbar-thumb:hover   { background: #444; }
+
+/* ==================== END DARK MODE ==================== */
 
 /* Animations */
 @keyframes fadeIn {
@@ -656,153 +450,6 @@ html.dark .focus\:ring-gray-200:focus,
   }
 }
 
-
-/* ===== LandingPage animations and global styles ===== */
-        html, body, #root {
-          background-color: #0a0a0a !important;
-          min-height: 100% !important;
-        }
-        
-        @keyframes pulse-glow {
-          0%, 100% { filter: drop-shadow(0 0 30px rgba(229, 9, 20, 0.4)); }
-          50% { filter: drop-shadow(0 0 50px rgba(229, 9, 20, 0.6)); }
-        }
-        
-        @keyframes flicker {
-          0%, 100% { opacity: 1; filter: drop-shadow(0 0 20px rgba(229, 9, 20, 0.6)) brightness(1); }
-          5% { opacity: 0.95; filter: drop-shadow(0 0 35px rgba(229, 9, 20, 0.8)) brightness(1.1); }
-          10% { opacity: 1; filter: drop-shadow(0 0 25px rgba(229, 9, 20, 0.5)) brightness(1); }
-          15% { opacity: 0.97; filter: drop-shadow(0 0 40px rgba(229, 9, 20, 0.9)) brightness(1.15); }
-          20% { opacity: 1; filter: drop-shadow(0 0 20px rgba(229, 9, 20, 0.6)) brightness(1); }
-          35% { opacity: 0.98; filter: drop-shadow(0 0 45px rgba(229, 9, 20, 1)) brightness(1.2); }
-          40% { opacity: 1; filter: drop-shadow(0 0 30px rgba(229, 9, 20, 0.7)) brightness(1.05); }
-          55% { opacity: 0.96; filter: drop-shadow(0 0 38px rgba(229, 9, 20, 0.85)) brightness(1.1); }
-          60% { opacity: 1; filter: drop-shadow(0 0 22px rgba(229, 9, 20, 0.55)) brightness(1); }
-          75% { opacity: 0.99; filter: drop-shadow(0 0 42px rgba(229, 9, 20, 0.95)) brightness(1.18); }
-          80% { opacity: 1; filter: drop-shadow(0 0 28px rgba(229, 9, 20, 0.65)) brightness(1.02); }
-        }
-        
-        .butterfly-flicker {
-          animation: flicker 2s ease-in-out infinite, pulse-glow 4s ease-in-out infinite;
-        }
-        
-        @keyframes flap-left {
-          0%, 5% { transform: rotateY(0deg) scaleX(1); }
-          10% { transform: rotateY(45deg) scaleX(0.85); }
-          15%, 20% { transform: rotateY(0deg) scaleX(1); }
-          25% { transform: rotateY(45deg) scaleX(0.85); }
-          30%, 100% { transform: rotateY(0deg) scaleX(1); }
-        }
-        
-        @keyframes flap-right {
-          0%, 5% { transform: rotateY(0deg) scaleX(1); }
-          10% { transform: rotateY(-45deg) scaleX(0.85); }
-          15%, 20% { transform: rotateY(0deg) scaleX(1); }
-          25% { transform: rotateY(-45deg) scaleX(0.85); }
-          30%, 100% { transform: rotateY(0deg) scaleX(1); }
-        }
-        
-        .butterfly-wrapper {
-          position: relative;
-          perspective: 500px;
-        }
-        
-        .wing-left {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 50%;
-          height: 100%;
-          overflow: hidden;
-          transform-origin: right center;
-          animation: flap-left 3s ease-in-out infinite;
-        }
-        
-        .wing-left img {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 200%;
-          height: 100%;
-          object-fit: cover;
-          object-position: left center;
-        }
-        
-        .wing-right {
-          position: absolute;
-          top: 0;
-          right: 0;
-          width: 50%;
-          height: 100%;
-          overflow: hidden;
-          transform-origin: left center;
-          animation: flap-right 3s ease-in-out infinite;
-        }
-        
-        .wing-right img {
-          position: absolute;
-          top: 0;
-          right: 0;
-          width: 200%;
-          height: 100%;
-          object-fit: cover;
-          object-position: right center;
-        }
-        
-        .butterfly-glow {
-          animation: pulse-glow 4s ease-in-out infinite;
-        }
-        
-        @keyframes float-card {
-          0%, 100% { 
-            transform: translateY(0) rotate(var(--rotation, 0deg));
-          }
-          50% { 
-            transform: translateY(-15px) rotate(var(--rotation, 0deg));
-          }
-        }
-        
-        @keyframes message-pop {
-          0% { 
-            opacity: 0;
-            transform: scale(0.8) translateY(10px);
-          }
-          100% { 
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-        }
-        
-        @keyframes fade-up {
-          from { opacity: 0; transform: translateY(40px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fade-up {
-          animation: fade-up 1s ease-out forwards;
-        }
-        
-        .animate-fade-up-delay-1 {
-          animation: fade-up 1s ease-out 0.2s forwards;
-          opacity: 0;
-        }
-        
-        .animate-fade-up-delay-2 {
-          animation: fade-up 1s ease-out 0.4s forwards;
-          opacity: 0;
-        }
-        
-        .animate-fade-up-delay-3 {
-          animation: fade-up 1s ease-out 0.6s forwards;
-          opacity: 0;
-        }
-        
-        .hover-lift {
-          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .hover-lift:hover {
-          transform: translateY(-8px);
-        }
 
 
 /* ===== Landing page redesign v2 animations ===== */
