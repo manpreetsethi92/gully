@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Instagram, Linkedin, Twitter, Film, Music, MapPin, ExternalLink, Camera, Search, X, Loader2, BadgeCheck } from "lucide-react";
+import { Instagram, Linkedin, Twitter, Film, Music, ExternalLink, Camera, Search, X, Loader2, BadgeCheck } from "lucide-react";
 
 // Cloudinary config — cloud name only, no preset (signed uploads via backend)
 const CLOUDINARY_CLOUD_NAME = "ds7znu6zd";
@@ -312,131 +312,126 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
         </div>
       )}
 
-      {/* Profile Content */}
-      <div className="p-6">
-        {/* Avatar */}
-        <div className="flex flex-col items-center mb-6">
+      {/* Profile Content — editorial layout */}
+      <div>
+        {/* Avatar + name block */}
+        <div className="flex flex-col items-center text-center mb-6">
           <div className="relative mb-4">
             {displayPhoto ? (
-              <img 
-                src={displayPhoto} 
+              <img
+                src={displayPhoto}
                 alt={user?.name}
                 className="w-28 h-28 rounded-full object-cover"
                 onError={() => setImageError(true)}
               />
             ) : (
-              <div 
-                className="w-28 h-28 rounded-full flex items-center justify-center text-white text-4xl font-bold"
+              <div
+                className="w-28 h-28 rounded-full flex items-center justify-center text-white text-4xl font-semibold"
                 style={{ background: 'linear-gradient(135deg, #E50914 0%, #ff4757 100%)' }}
               >
-                {user?.name?.charAt(0).toUpperCase()}
+                {user?.name?.charAt(0).toUpperCase() || "?"}
               </div>
             )}
           </div>
-          <div className="flex items-center gap-1.5">
-            <h2 className="text-2xl font-bold">{user?.name}</h2>
+          <div className="flex items-center gap-1.5 mb-1">
+            <h2 className="font-display text-[28px] leading-none font-normal lowercase">
+              {(user?.name || "unnamed").toLowerCase()}
+            </h2>
             {user?.is_verified && (
-              <BadgeCheck size={22} className="text-blue-500" fill="currentColor" strokeWidth={0} />
+              <BadgeCheck size={18} className="text-blue-500" fill="currentColor" strokeWidth={0} />
             )}
           </div>
-          <p className="text-gray-500 text-sm">{user?.phone}</p>
-        </div>
-
-        {/* Info */}
-        <div className="space-y-4">
-          {/* Location & Age */}
+          <p className="font-mono text-[11px] tracking-wide text-gray-400 lowercase">
+            {user?.phone}
+          </p>
           {(user?.location || user?.age) && (
-            <div className="flex items-center justify-center gap-4 text-gray-500 text-sm">
-              {user?.location && (
-                <>
-                  <div className="flex items-center gap-1.5">
-                    <MapPin size={16} />
-                    <span>{user.location}</span>
-                  </div>
-                  {user?.age && <span className="text-gray-300 dark:text-gray-600">•</span>}
-                </>
-              )}
-              {user?.age && <span>{user.age} years old</span>}
-            </div>
+            <p className="font-mono text-[11px] tracking-wide text-gray-400 lowercase mt-1">
+              {[user.location?.toLowerCase(), user.age ? `${user.age}` : null].filter(Boolean).join(" · ")}
+            </p>
           )}
-
-          {/* Bio */}
-          <div className="bg-gray-50 dark:bg-[#1a1a1a] rounded-2xl p-4">
-            <h3 className="font-semibold text-xs text-gray-400 uppercase tracking-wide mb-2">About</h3>
-            <p className="text-sm leading-relaxed">{user?.bio || "No bio yet"}</p>
-          </div>
-
-          {/* Skills */}
-          {user?.skills?.length > 0 && (
-            <div className="bg-gray-50 dark:bg-[#1a1a1a] rounded-2xl p-4">
-              <h3 className="font-semibold text-xs text-gray-400 uppercase tracking-wide mb-2">Skills</h3>
-              <div className="flex flex-wrap gap-2">
-                {user.skills.map(skill => (
-                  <span 
-                    key={skill}
-                    className="px-3 py-1.5 bg-white dark:bg-[#222] rounded-full text-sm font-medium shadow-sm dark:shadow-none dark:border dark:border-[#333]"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Social Links */}
-          {activeSocials.length > 0 && (
-            <div className="bg-gray-50 dark:bg-[#1a1a1a] rounded-2xl p-4">
-              <h3 className="font-semibold text-xs text-gray-400 uppercase tracking-wide mb-3">Links</h3>
-              <div className="space-y-2">
-                {activeSocials.map(({ key, icon: Icon, label, color }) => (
-                  <a
-                    key={key}
-                    href={user.social_links[key].startsWith('http') ? user.social_links[key] : `https://${user.social_links[key]}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-white dark:hover:bg-[#222] transition-colors"
-                  >
-                    <div 
-                      className="w-9 h-9 rounded-full flex items-center justify-center"
-                      style={{ background: color }}
-                    >
-                      <Icon size={18} className="text-white" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm">{label}</div>
-                      <div className="text-gray-400 text-xs truncate">{user.social_links[key]}</div>
-                    </div>
-                    <ExternalLink size={14} className="text-gray-300 dark:text-gray-500" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Profile Completion */}
-          <div className="bg-gray-50 dark:bg-[#1a1a1a] rounded-2xl p-4">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-semibold text-xs text-gray-400 uppercase tracking-wide">Profile Completion</h3>
-              <span className="text-sm font-bold" style={{ color: completionPercent === 100 ? '#22c55e' : '#E50914' }}>
-                {completionPercent}%
-              </span>
-            </div>
-            <div className="h-2 bg-gray-200 dark:bg-[#333] rounded-full overflow-hidden">
-              <div 
-                className="h-full rounded-full transition-all duration-500"
-                style={{ 
-                  width: `${completionPercent}%`,
-                  background: completionPercent === 100 ? '#22c55e' : '#E50914'
-                }}
-              />
-            </div>
-            {completionPercent < 100 && (
-              <p className="text-xs text-gray-400 mt-2">
-                Complete your profile to get better matches from Taj
-              </p>
-            )}
-          </div>
         </div>
+
+        {/* About */}
+        <section className="mb-5">
+          <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-2">
+            about
+          </div>
+          <p className="text-[14.5px] leading-relaxed text-gray-800 dark:text-white/90">
+            {user?.bio || <span className="text-gray-400 italic lowercase">no bio yet — tap edit profile to add one.</span>}
+          </p>
+        </section>
+
+        {/* Skills */}
+        {user?.skills?.length > 0 && (
+          <section className="mb-5">
+            <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-2">
+              skills
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {user.skills.map(skill => (
+                <span
+                  key={skill}
+                  className="px-3 py-1 rounded-full text-[12px] lowercase bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-white/80"
+                >
+                  {skill.toLowerCase()}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Social Links */}
+        {activeSocials.length > 0 && (
+          <section className="mb-5">
+            <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400 mb-2">
+              links
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {activeSocials.map(({ key, icon: Icon, label, color }) => (
+                <a
+                  key={key}
+                  href={user.social_links[key].startsWith('http') ? user.social_links[key] : `https://${user.social_links[key]}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[12px] lowercase bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/30 transition-colors"
+                >
+                  <Icon size={12} style={{ color }} />
+                  <span className="text-gray-800 dark:text-white/80">{label.toLowerCase()}</span>
+                  <ExternalLink size={10} className="text-gray-300 dark:text-white/30" />
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Profile Completion */}
+        <section className="rounded-2xl border border-gray-100 dark:border-white/10 p-4 mt-6">
+          <div className="flex items-center justify-between mb-2">
+            <div className="font-mono text-[10px] tracking-[0.25em] lowercase text-gray-400">
+              profile completion
+            </div>
+            <span
+              className="font-mono text-[12px] font-semibold"
+              style={{ color: completionPercent === 100 ? '#22c55e' : '#E50914' }}
+            >
+              {completionPercent}%
+            </span>
+          </div>
+          <div className="h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${completionPercent}%`,
+                background: completionPercent === 100 ? '#22c55e' : '#E50914'
+              }}
+            />
+          </div>
+          {completionPercent < 100 && (
+            <p className="font-syne text-[12px] text-gray-500 dark:text-white/50 mt-2 lowercase">
+              complete your profile to get better matches from taj.
+            </p>
+          )}
+        </section>
       </div>
 
       {/* Edit Profile Modal */}
