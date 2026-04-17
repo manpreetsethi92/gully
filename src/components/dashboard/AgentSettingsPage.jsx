@@ -1,9 +1,11 @@
-/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
+// AgentSettingsPage — 'taj's brain' section inside Settings.
+// Editorial redesign. Same Switch component + same handlers.
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { Bot, MessageCircle, Zap } from "lucide-react";
+import { WhatsAppIcon } from "./WhatsAppIcon";
 
 const Switch = ({ checked, onChange, disabled, darkMode }) => (
   <button
@@ -12,7 +14,7 @@ const Switch = ({ checked, onChange, disabled, darkMode }) => (
     disabled={disabled}
     onClick={() => !disabled && onChange?.(!checked)}
     style={{
-      display: "inline-flex", alignItems: "center", width: "44px", height: "24px",
+      display: "inline-flex", alignItems: "center", width: "40px", height: "22px",
       borderRadius: "9999px", border: "none", cursor: disabled ? "not-allowed" : "pointer",
       padding: "2px", transition: "background-color 0.2s",
       backgroundColor: checked ? "#E50914" : (darkMode ? "rgba(255,255,255,0.15)" : "#D1D5DB"),
@@ -20,20 +22,20 @@ const Switch = ({ checked, onChange, disabled, darkMode }) => (
     }}
   >
     <span style={{
-      display: "block", width: "20px", height: "20px", borderRadius: "50%",
+      display: "block", width: "18px", height: "18px", borderRadius: "50%",
       backgroundColor: "white", transition: "transform 0.2s",
-      transform: checked ? "translateX(20px)" : "translateX(0)",
+      transform: checked ? "translateX(18px)" : "translateX(0)",
       boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
     }} />
   </button>
 );
 
 const SETTINGS_CONFIG = [
-  { key: "agent_pitch", label: "Auto-pitch to hirers", description: "Taj reaches out to matching hirers on your behalf without asking first", pro: true },
-  { key: "agent_negotiate", label: "Auto-negotiate rate", description: "Taj handles rate negotiations within your stated range", pro: true },
-  { key: "agent_calendar", label: "Auto-confirm bookings", description: "Taj accepts gig invites that match your availability", pro: true },
-  { key: "agent_invoice", label: "Chase unpaid invoices", description: "Taj follows up on late payments from hirers", pro: false },
-  { key: "agent_portfolio", label: "Auto-update work history", description: "Taj adds closed gigs to your work history automatically", pro: false },
+  { key: "agent_pitch", label: "auto-pitch to hirers", description: "taj reaches out to matching hirers for you, no ask needed", pro: true },
+  { key: "agent_negotiate", label: "auto-negotiate rate", description: "taj handles rate talks within your stated range", pro: true },
+  { key: "agent_calendar", label: "auto-confirm bookings", description: "taj accepts gig invites that match your availability", pro: true },
+  { key: "agent_invoice", label: "chase unpaid invoices", description: "taj follows up on late payments from hirers", pro: false },
+  { key: "agent_portfolio", label: "auto-update work history", description: "taj adds closed gigs to your history automatically", pro: false },
 ];
 
 const AgentSettingsPage = ({ darkMode }) => {
@@ -48,14 +50,13 @@ const AgentSettingsPage = ({ darkMode }) => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        // Agent settings live on the user object
         const res = await axios.get(`${API}/users/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const prefs = res.data?.agent_settings || res.data?.preferences || {};
         setSettings(prev => ({ ...prev, ...prefs }));
       } catch {
-        // use defaults
+        // defaults
       } finally {
         setLoading(false);
       }
@@ -71,10 +72,10 @@ const AgentSettingsPage = ({ darkMode }) => {
       await axios.put(`${API}/users/me`, {
         agent_settings: { ...settings, [key]: newVal }
       }, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success("Saved");
+      toast.success("saved");
     } catch {
       setSettings(prev => ({ ...prev, [key]: !newVal }));
-      toast.error("Failed to save");
+      toast.error("couldn't save");
     } finally {
       setSaving(null);
     }
@@ -86,53 +87,60 @@ const AgentSettingsPage = ({ darkMode }) => {
 
   return (
     <div>
-      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? "bg-[#0a0a0a] border-white/10" : "bg-white border-gray-100"}`}>
-        <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Taj Agent</h1>
-      </div>
-
-      <div className={`px-4 py-4 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
-        <div className={`p-4 rounded-2xl ${darkMode ? "bg-red-500/10" : "bg-red-50"}`}>
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#E50914] flex items-center justify-center flex-shrink-0">
-              <Bot size={20} className="text-white" />
-            </div>
-            <div>
-              <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Taj works for you, automatically</p>
-              <p className={`text-sm mt-1 ${darkMode ? "text-white/60" : "text-gray-600"}`}>
-                Choose how much Taj does on your behalf. Toggle what you want — she handles the rest.
-              </p>
-            </div>
+      <section className={`rounded-2xl border p-5 mb-5 ${darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"}`}>
+        <div className="flex gap-3 items-start">
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
+            style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}>
+            T
+          </div>
+          <div className="flex-1">
+            <p className={`text-[14.5px] leading-[1.55] lowercase ${darkMode ? "text-white/90" : "text-gray-900"}`}>
+              i can work for you automatically — you pick how much. toggle what you want on; i'll handle the rest.
+            </p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className={`divide-y ${darkMode ? "divide-white/10" : "divide-gray-100"}`}>
+      <div className="space-y-1">
         {SETTINGS_CONFIG.map(({ key, label, description, pro }) => (
-          <div key={key} className={`px-4 py-5 flex items-start gap-3 ${darkMode ? "hover:bg-white/5" : "hover:bg-gray-50"} transition-colors`}>
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${settings[key] ? (darkMode ? "bg-red-500/20" : "bg-red-100") : (darkMode ? "bg-white/5" : "bg-gray-100")}`}>
-              <Zap size={18} className={settings[key] ? (darkMode ? "text-red-400" : "text-red-500") : (darkMode ? "text-white/30" : "text-gray-400")} />
-            </div>
+          <div
+            key={key}
+            className={`rounded-2xl border p-4 flex items-start gap-3 mb-2 transition-colors ${
+              darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"
+            }`}
+          >
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <p className={`font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>{label}</p>
-                {pro && <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${darkMode ? "bg-yellow-500/20 text-yellow-300" : "bg-yellow-100 text-yellow-700"}`}>Pro</span>}
+              <div className="flex items-center gap-2 flex-wrap mb-1">
+                <span className={`font-syne text-[14px] font-medium lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+                  {label}
+                </span>
+                {pro && (
+                  <span className={`font-mono text-[9.5px] px-2 py-0.5 rounded-md tracking-wide lowercase ${
+                    darkMode ? "bg-yellow-500/20 text-yellow-300" : "bg-yellow-50 text-yellow-700"
+                  }`}>
+                    pro
+                  </span>
+                )}
               </div>
-              <p className={`text-sm mt-1 ${darkMode ? "text-white/50" : "text-gray-500"}`}>{description}</p>
+              <p className={`font-syne text-[12.5px] lowercase leading-relaxed ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+                {description}
+              </p>
             </div>
             <Switch checked={settings[key]} onChange={() => handleToggle(key)} disabled={saving === key} darkMode={darkMode} />
           </div>
         ))}
       </div>
 
-      <div className={`px-4 py-4 border-t ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+      <div className="mt-5">
         <a
           href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20want%20to%20upgrade%20to%20Pro"
-          target="_blank" rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full py-3 rounded-full text-white font-semibold"
-          style={{ background: "#E50914" }}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-white font-syne text-[13px] font-medium lowercase"
+          style={{ background: "#25D366" }}
         >
-          <MessageCircle size={18} />
-          Upgrade to Pro for full autonomy
+          <WhatsAppIcon size={13} />
+          upgrade to pro for full autonomy
         </a>
       </div>
     </div>

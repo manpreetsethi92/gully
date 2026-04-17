@@ -1,9 +1,10 @@
-/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
+// AdsPage — editorial redesign.
+
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { Megaphone, MessageCircle, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
+import { WhatsAppIcon } from "./WhatsAppIcon";
 
 const AdsPage = ({ darkMode }) => {
   const { token } = useAuth();
@@ -35,87 +36,96 @@ const AdsPage = ({ darkMode }) => {
 
   return (
     <div>
-      <div className={`sticky top-14 lg:top-0 z-40 px-4 py-3 border-b ${darkMode ? "bg-[#0a0a0a] border-white/10" : "bg-white border-gray-100"}`}>
-        <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Promote</h1>
-        {isPromoted && <p className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>Promotion active</p>}
-      </div>
-
       {/* How it works */}
-      <div className={`px-4 py-4 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
-        <div className={`p-4 rounded-2xl ${darkMode ? "bg-yellow-500/10" : "bg-yellow-50"}`}>
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center flex-shrink-0">
-              <Megaphone size={20} className="text-white" />
-            </div>
-            <div>
-              <p className={`font-bold text-[15px] ${darkMode ? "text-white" : "text-gray-900"}`}>Show up first in your category</p>
-              <p className={`text-sm mt-1 ${darkMode ? "text-white/60" : "text-gray-600"}`}>
-                Promoted profiles appear at the top of results for hirers searching your skill and city.
-                You only show up in searches you already qualify for — vetting is never compromised.
-              </p>
-            </div>
+      <section className={`rounded-2xl border p-5 mb-5 ${darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"}`}>
+        <div className="flex gap-3 items-start">
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
+            style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}>
+            T
+          </div>
+          <div className="flex-1">
+            <p className={`text-[14.5px] leading-[1.55] lowercase ${darkMode ? "text-white/90" : "text-gray-900"}`}>
+              show up first in your category. promoted profiles land at the top of search results for hirers looking for your skill in your city. you only show up in searches you already qualify for — vetting stays strict.
+            </p>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Current promotion status */}
       {isPromoted ? (
-        <div className={`divide-y ${darkMode ? "divide-white/10" : "divide-gray-100"}`}>
+        <div>
+          <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-3 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            active campaigns
+          </div>
           {campaigns.map((c, i) => (
-            <div key={i} className={`px-4 py-5 ${darkMode ? "hover:bg-white/5" : "hover:bg-gray-50"} transition-colors`}>
+            <article
+              key={i}
+              className={`rounded-2xl border p-5 mb-3 transition-colors ${
+                darkMode ? "bg-white/[0.03] border-white/10 hover:bg-white/[0.05]" : "bg-white border-gray-100 hover:border-gray-200"
+              }`}
+            >
               <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${darkMode ? "bg-yellow-500/20" : "bg-yellow-100"}`}>
-                  <Megaphone size={18} className={darkMode ? "text-yellow-400" : "text-yellow-600"} />
-                </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <p className={`font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>{c.category} · {c.location}</p>
-                    <span className={`px-2 py-0.5 text-xs rounded-full ${darkMode ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"}`}>Active</span>
+                  <div className="flex items-baseline gap-2 flex-wrap mb-0.5">
+                    <span className={`text-[15px] font-semibold lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+                      {[c.category, c.location].filter(Boolean).join(" · ").toLowerCase()}
+                    </span>
+                    <span className="ml-auto font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide lowercase"
+                      style={{ color: "#059669", background: darkMode ? "rgba(16,185,129,0.2)" : "#d1fae5" }}>
+                      active
+                    </span>
                   </div>
                   {c.impressions > 0 && (
-                    <p className={`flex items-center gap-1 text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>
-                      <Eye size={12} /> {c.impressions.toLocaleString()} views
-                    </p>
+                    <div className={`inline-flex items-center gap-1 mt-1 font-mono text-[11px] tracking-wide lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                      <Eye size={11} /> {c.impressions.toLocaleString()} views
+                    </div>
                   )}
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       ) : (
         <>
           {/* Pricing tiers */}
-          <div className={`px-4 py-4 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
-            <p className={`text-xs font-semibold uppercase tracking-wider mb-3 ${darkMode ? "text-white/40" : "text-gray-400"}`}>Pricing</p>
-            <div className="space-y-3">
-              {[
-                { label: "Weekly", price: "$9", description: "Try it for a week" },
-                { label: "Monthly", price: "$29", description: "Best value — save 20%" },
-              ].map((tier) => (
-                <div key={tier.label} className={`p-4 rounded-2xl border ${darkMode ? "border-white/10 bg-white/5" : "border-gray-200 bg-gray-50"}`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className={`font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>{tier.label}</p>
-                      <p className={`text-sm ${darkMode ? "text-white/50" : "text-gray-500"}`}>{tier.description}</p>
-                    </div>
-                    <p className={`text-2xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>{tier.price}</p>
+          <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-3 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            pricing
+          </div>
+          <div className="space-y-2 mb-5">
+            {[
+              { label: "weekly", price: "$9", description: "try it for a week" },
+              { label: "monthly", price: "$29", description: "best value — save 20%" },
+            ].map((tier) => (
+              <div
+                key={tier.label}
+                className={`rounded-2xl border p-5 flex items-center justify-between ${darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"}`}
+              >
+                <div>
+                  <div className={`font-syne text-[14px] font-semibold lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+                    {tier.label}
+                  </div>
+                  <div className={`font-mono text-[11px] tracking-wide lowercase mt-0.5 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                    {tier.description}
                   </div>
                 </div>
-              ))}
-            </div>
+                <div className={`font-display text-[28px] leading-none font-normal ${darkMode ? "text-white" : "text-gray-900"}`}>
+                  {tier.price}
+                </div>
+              </div>
+            ))}
           </div>
 
-          <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-            <p className={`mb-6 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
-              Message Taj to set up your first promoted placement. Pick your skill category, city, and budget.
+          <div className="flex flex-col items-center justify-center py-8 px-6 text-center">
+            <p className={`font-syne text-[14px] max-w-sm lowercase mb-4 ${darkMode ? "text-white/60" : "text-gray-600"}`}>
+              message taj to set up your first promoted placement. pick skill, city, and budget — she does the rest.
             </p>
             <a
               href="https://wa.me/12134147369?text=Hi%20Taj!%20I%20want%20to%20promote%20my%20profile"
-              target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-bold text-sm"
-              style={{ background: "#E50914" }}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full font-syne text-[12.5px] font-medium lowercase text-white"
+              style={{ background: "#25D366" }}
             >
-              <MessageCircle size={18} /> Set up promotion via Taj
+              <WhatsAppIcon size={12} /> set up promotion via taj
             </a>
           </div>
         </>
