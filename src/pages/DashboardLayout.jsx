@@ -32,7 +32,6 @@ const HomePage = lazy(() => import("../components/dashboard/HomePage"));
 const YouPage = lazy(() => import("../components/dashboard/YouPage"));
 const SettingsPage = lazy(() => import("../components/dashboard/SettingsPage"));
 const OnboardingFlow = lazy(() => import("../components/dashboard/OnboardingFlow"));
-const NotificationsPage = lazy(() => import("../components/dashboard/NotificationsPage"));
 const NetworkPage = lazy(() => import("../components/dashboard/NetworkPage"));
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";
@@ -297,9 +296,9 @@ const DashboardLayout = () => {
                 <Route path="work-history" element={<Navigate to="/app/you?tab=work" replace />} />
                 <Route path="social-connect" element={<Navigate to="/app/you?tab=socials" replace />} />
 
-                {/* === SETTINGS === */}
+                {/* === SETTINGS (Phase 4 — unified settings with sub-nav) === */}
                 <Route path="settings" element={<SettingsPage darkMode={darkMode} />} />
-                <Route path="notifications" element={<NotificationsPage />} />
+                <Route path="notifications" element={<Navigate to="/app/settings?section=notifications" replace />} />
 
                 {/* === ONBOARDING (shown from signup redirect) === */}
                 <Route path="onboarding" element={<OnboardingFlow />} />
