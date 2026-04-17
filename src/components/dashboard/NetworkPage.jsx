@@ -9,7 +9,7 @@
 //   - connections: people you've matched with on gully
 //   - contacts: imported from linkedin/gmail/instagram
 //
-// Tab style matches the inbox tabs (underline, lowercase, counts inline).
+// Tab style matches the inbox tabs (underline, , counts inline).
 // Card style matches TajMessageCard (rounded-2xl, subtle border).
 
 import { useState, useEffect, useCallback } from "react";
@@ -37,10 +37,10 @@ const ConnectionCard = ({ conn, darkMode, expanded, onToggle }) => {
     <article
       onClick={onToggle}
       className={`rounded-2xl border p-5 mb-3 transition-colors cursor-pointer ${
-        darkMode
-          ? "bg-white/[0.03] border-white/10 hover:bg-white/[0.05]"
-          : "bg-white border-gray-100 hover:border-gray-200"
-      }`}
+ darkMode
+ ?"bg-white/[0.03] border-white/10 hover:bg-white/[0.05]"
+ :"bg-white border-gray-100 hover:border-gray-200"
+ }`}
     >
       <div className="flex items-start gap-3">
         {connection.photo_url ? (
@@ -55,21 +55,21 @@ const ConnectionCard = ({ conn, darkMode, expanded, onToggle }) => {
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2 flex-wrap mb-0.5">
-            <span className={`text-[15px] font-semibold flex items-center gap-1 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+            <span className={`text-[15px] font-semibold flex items-center gap-1 ${darkMode ?"text-white" :"text-gray-900"}`}>
               {connection.name || "someone"}
               {connection.is_verified && <BadgeCheck size={12} className="text-blue-500 flex-shrink-0" fill="currentColor" strokeWidth={0} />}
             </span>
-            <span className={`font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide lowercase ml-auto ${darkMode ? "bg-green-500/20 text-green-300" : "bg-green-50 text-green-700"}`}>
+            <span className={`font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide ml-auto ${darkMode ?"bg-green-500/20 text-green-300" :"bg-green-50 text-green-700"}`}>
               connected
             </span>
           </div>
           {connection.location && (
-            <div className={`font-mono text-[11px] tracking-wide lowercase mb-1 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            <div className={`font-mono text-[11px] tracking-wide mb-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
               {connection.location}
             </div>
           )}
           {connection.bio && (
-            <p className={`text-[13.5px] leading-relaxed lowercase ${darkMode ? "text-white/80" : "text-gray-700"}`}>
+            <p className={`text-[13.5px] leading-relaxed ${darkMode ?"text-white/80" :"text-gray-700"}`}>
               {connection.bio}
             </p>
           )}
@@ -78,7 +78,7 @@ const ConnectionCard = ({ conn, darkMode, expanded, onToggle }) => {
               {Array.isArray(connection.skills) && connection.skills.slice(0, 8).map((skill, i) => (
                 <span
                   key={i}
-                  className={`px-2.5 py-1 rounded-full text-[11.5px] lowercase ${darkMode ? "bg-white/10 text-white/70" : "bg-gray-100 text-gray-700"}`}
+                  className={`px-2.5 py-1 rounded-full text-[11.5px] ${darkMode ?"bg-white/10 text-white/70" :"bg-gray-100 text-gray-700"}`}
                 >
                   {skill}
                 </span>
@@ -92,9 +92,9 @@ const ConnectionCard = ({ conn, darkMode, expanded, onToggle }) => {
                   href={`https://instagram.com/${String(instagramValue).replace(/^@/, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-syne text-[11.5px] font-medium lowercase ${darkMode ? "bg-white/5 text-white/80 hover:bg-white/10" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] font-medium ${darkMode ?"bg-white/5 text-white/80 hover:bg-white/10" :"bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
                 >
-                  <Instagram size={11} /> instagram
+                  <Instagram size={11} /> Instagram
                 </a>
               )}
               {linkedinValue && (
@@ -102,23 +102,23 @@ const ConnectionCard = ({ conn, darkMode, expanded, onToggle }) => {
                   href={String(linkedinValue).startsWith("http") ? linkedinValue : `https://linkedin.com/in/${linkedinValue}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-syne text-[11.5px] font-medium lowercase ${darkMode ? "bg-white/5 text-white/80 hover:bg-white/10" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] font-medium ${darkMode ?"bg-white/5 text-white/80 hover:bg-white/10" :"bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
                 >
-                  <Linkedin size={11} /> linkedin
+                  <Linkedin size={11} /> LinkedIn
                 </a>
               )}
               <a
                 href={WHATSAPP_BOT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-syne text-[11.5px] font-medium lowercase ${darkMode ? "bg-transparent text-white border border-white/20 hover:border-white/40" : "bg-white text-gray-900 border border-gray-200 hover:border-gray-400"}`}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] font-medium ${darkMode ?"bg-transparent text-white border border-white/20 hover:border-white/40" :"bg-white text-gray-900 border border-gray-200 hover:border-gray-400"}`}
               >
-                <WhatsAppIcon size={10} color="#25D366" /> ask taj
+                <WhatsAppIcon size={10} color="#25D366" /> Ask Taj
               </a>
             </div>
           )}
         </div>
-        <ChevronDown size={16} className={`flex-shrink-0 transition-transform mt-1 ${expanded ? "rotate-180" : ""} ${darkMode ? "text-white/40" : "text-gray-400"}`} />
+        <ChevronDown size={16} className={`flex-shrink-0 transition-transform mt-1 ${expanded ?"rotate-180" :""} ${darkMode ?"text-white/40" :"text-gray-400"}`} />
       </div>
     </article>
   );
@@ -142,10 +142,10 @@ const ContactCard = ({ contact, darkMode, expanded, onToggle }) => {
     <article
       onClick={onToggle}
       className={`rounded-2xl border p-5 mb-3 transition-colors cursor-pointer ${
-        darkMode
-          ? "bg-white/[0.03] border-white/10 hover:bg-white/[0.05]"
-          : "bg-white border-gray-100 hover:border-gray-200"
-      }`}
+ darkMode
+ ?"bg-white/[0.03] border-white/10 hover:bg-white/[0.05]"
+ :"bg-white border-gray-100 hover:border-gray-200"
+ }`}
     >
       <div className="flex items-start gap-3">
         <div
@@ -156,23 +156,23 @@ const ContactCard = ({ contact, darkMode, expanded, onToggle }) => {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2 flex-wrap mb-0.5">
-            <span className={`text-[15px] font-semibold lowercase truncate ${darkMode ? "text-white" : "text-gray-900"}`}>
+            <span className={`text-[15px] font-semibold truncate ${darkMode ?"text-white" :"text-gray-900"}`}>
               {(contact.contact_name || "unknown").toLowerCase()}
             </span>
             {contact.warm_lead_label && (
-              <span className={`inline-flex items-center gap-0.5 font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide lowercase ${darkMode ? "bg-orange-500/20 text-orange-300" : "bg-orange-50 text-orange-600"}`}>
-                <Flame size={9} fill="currentColor" /> warm
+              <span className={`inline-flex items-center gap-0.5 font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide ${darkMode ?"bg-orange-500/20 text-orange-300" :"bg-orange-50 text-orange-600"}`}>
+                <Flame size={9} fill="currentColor" /> Warm
               </span>
             )}
             <span
-              className="ml-auto font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide lowercase"
+              className="ml-auto font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide"
               style={{ color: src.fg, background: darkMode ? `${src.fg}22` : src.bg }}
             >
               {src.label}
             </span>
           </div>
           {(contact.contact_role || contact.contact_company) && (
-            <div className={`font-mono text-[11px] tracking-wide lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            <div className={`font-mono text-[11px] tracking-wide ${darkMode ?"text-white/40" :"text-gray-400"}`}>
               {[contact.contact_role, contact.contact_company].filter(Boolean).join(" · ").toLowerCase()}
             </div>
           )}
@@ -184,18 +184,18 @@ const ContactCard = ({ contact, darkMode, expanded, onToggle }) => {
                   href={contact.contact_linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-syne text-[11.5px] font-medium lowercase mr-2 mb-1 ${darkMode ? "bg-white/5 text-white/80 hover:bg-white/10" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] font-medium mr-2 mb-1 ${darkMode ?"bg-white/5 text-white/80 hover:bg-white/10" :"bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
                 >
-                  <Link2 size={11} /> open linkedin
+                  <Link2 size={11} /> Open LinkedIn
                 </a>
               )}
               {Array.isArray(contact.interaction_log) && contact.interaction_log.length > 0 ? (
-                <div className={`mt-3 pt-3 border-t ${darkMode ? "border-white/10" : "border-gray-100"}`}>
-                  <div className={`font-mono text-[10px] tracking-[0.2em] lowercase mb-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                <div className={`mt-3 pt-3 border-t ${darkMode ?"border-white/10" :"border-gray-100"}`}>
+                  <div className={`font-mono text-[10px] mb-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                     history
                   </div>
                   {contact.interaction_log.slice(-3).map((ev, i) => (
-                    <div key={i} className={`flex items-start gap-2 text-[11.5px] lowercase mb-1 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+                    <div key={i} className={`flex items-start gap-2 text-[11.5px] mb-1 ${darkMode ?"text-white/50" :"text-gray-500"}`}>
                       <Clock size={11} className="mt-0.5 flex-shrink-0" />
                       <span>
                         {(ev.description || ev.type || "interaction").toLowerCase()}
@@ -205,14 +205,14 @@ const ContactCard = ({ contact, darkMode, expanded, onToggle }) => {
                   ))}
                 </div>
               ) : (
-                <div className={`mt-2 font-mono text-[10.5px] lowercase tracking-wide ${darkMode ? "text-white/30" : "text-gray-400"}`}>
+                <div className={`mt-2 font-mono text-[10.5px] tracking-wide ${darkMode ?"text-white/30" :"text-gray-400"}`}>
                   no interactions yet
                 </div>
               )}
             </div>
           )}
         </div>
-        <ChevronDown size={16} className={`flex-shrink-0 transition-transform mt-1 ${expanded ? "rotate-180" : ""} ${darkMode ? "text-white/40" : "text-gray-400"}`} />
+        <ChevronDown size={16} className={`flex-shrink-0 transition-transform mt-1 ${expanded ?"rotate-180" :""} ${darkMode ?"text-white/40" :"text-gray-400"}`} />
       </div>
     </article>
   );
@@ -229,8 +229,8 @@ const ImportControls = ({ darkMode, onConnect, connecting }) => {
     { id: "instagram", icon: Instagram, label: "instagram", fg: "#7c3aed" }
   ];
   return (
-    <div className={`rounded-2xl border p-4 mb-5 ${darkMode ? "bg-white/[0.03] border-white/10" : "bg-white border-gray-100"}`}>
-      <div className={`font-mono text-[10.5px] tracking-[0.2em] lowercase mb-3 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+    <div className={`rounded-2xl border p-4 mb-5 ${darkMode ?"bg-white/[0.03] border-white/10" :"bg-white border-gray-100"}`}>
+      <div className={`font-mono text-[10.5px] mb-3 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
         import contacts
       </div>
       <div className="flex flex-wrap gap-2">
@@ -242,7 +242,7 @@ const ImportControls = ({ darkMode, onConnect, connecting }) => {
               key={p.id}
               onClick={() => onConnect(p.id)}
               disabled={isLoading}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full font-syne text-[12px] font-medium transition-colors lowercase disabled:opacity-50 ${darkMode ? "bg-white/5 text-white/80 border border-white/10 hover:bg-white/10" : "bg-white text-gray-900 border border-gray-200 hover:border-gray-400"}`}
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[12px] font-medium transition-colors disabled:opacity-50 ${darkMode ?"bg-white/5 text-white/80 border border-white/10 hover:bg-white/10" :"bg-white text-gray-900 border border-gray-200 hover:border-gray-400"}`}
               style={{ color: isLoading ? undefined : p.fg }}
             >
               <Icon size={12} />
@@ -364,27 +364,27 @@ const NetworkPage = ({ darkMode }) => {
   return (
     <div>
       {/* Sub-tabs — matches Home's tab style, just inside the Network tab */}
-      <div className={`flex gap-1 mb-5 border-b ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+      <div className={`flex gap-1 mb-5 border-b ${darkMode ?"border-white/10" :"border-gray-100"}`}>
         {SUB_TABS.map((tab) => {
           const isActive = tab.id === activeSubTab;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveSubTab(tab.id)}
-              className={`font-syne text-[13px] py-2.5 pr-5 transition-colors lowercase relative ${
-                isActive
-                  ? (darkMode ? "text-white font-semibold" : "text-gray-900 font-semibold")
-                  : (darkMode ? "text-white/50 hover:text-white/80" : "text-gray-500 hover:text-gray-700")
-              }`}
+              className={`text-[13px] py-2.5 pr-5 transition-colors relative ${
+ isActive
+ ? (darkMode ?"text-white font-semibold" :"text-gray-900 font-semibold")
+ : (darkMode ?"text-white/50 hover:text-white/80" :"text-gray-500 hover:text-gray-700")
+ }`}
             >
               {tab.label}
               {tab.count > 0 && (
-                <span className={`ml-1.5 font-mono text-[10.5px] ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                <span className={`ml-1.5 font-mono text-[10.5px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                   {tab.count}
                 </span>
               )}
               {isActive && (
-                <span className={`absolute bottom-[-0.5px] left-0 right-5 h-[2px] ${darkMode ? "bg-white" : "bg-gray-900"}`} />
+                <span className={`absolute bottom-[-0.5px] left-0 right-5 h-[2px] ${darkMode ?"bg-white" :"bg-gray-900"}`} />
               )}
             </button>
           );
@@ -420,12 +420,12 @@ const NetworkPage = ({ darkMode }) => {
           {/* Import toggle + search/filter toolbar */}
           <div className="mb-4">
             <div className="flex items-center justify-between mb-3">
-              <div className={`font-mono text-[10.5px] tracking-[0.2em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+              <div className={`font-mono text-[10.5px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                 imported from linkedin, gmail, instagram
               </div>
               <button
                 onClick={() => setShowImport(!showImport)}
-                className={`font-syne text-[12px] font-medium lowercase transition-colors ${darkMode ? "text-white/70 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}
+                className={`text-[12px] font-medium transition-colors ${darkMode ?"text-white/70 hover:text-white" :"text-gray-600 hover:text-gray-900"}`}
               >
                 {showImport ? "hide" : "+ import"}
               </button>
@@ -436,14 +436,14 @@ const NetworkPage = ({ darkMode }) => {
           {contacts.length > 0 && (
             <>
               {/* Search */}
-              <div className={`flex items-center gap-2 px-3 py-2 rounded-xl mb-3 ${darkMode ? "bg-white/5 border border-white/10" : "bg-white border border-gray-100"}`}>
+              <div className={`flex items-center gap-2 px-3 py-2 rounded-xl mb-3 ${darkMode ?"bg-white/5 border border-white/10" :"bg-white border border-gray-100"}`}>
                 <Search size={13} className={darkMode ? "text-white/40" : "text-gray-400"} />
                 <input
                   type="text"
                   placeholder="search contacts…"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className={`flex-1 bg-transparent text-[12.5px] outline-none lowercase font-syne ${darkMode ? "text-white placeholder-white/30" : "text-gray-900"}`}
+                  className={`flex-1 bg-transparent text-[12.5px] outline-none ${darkMode ?"text-white placeholder-white/30" :"text-gray-900"}`}
                 />
               </div>
 
@@ -452,7 +452,7 @@ const NetworkPage = ({ darkMode }) => {
                 {[
                   { id: "all",       label: "all",       count: contacts.length },
                   { id: "warm",      label: "warm",      count: warmCount },
-                  { id: "linkedin",  label: "linkedin",  count: contacts.filter(c => c.source === "linkedin").length },
+                  { id: "linkedin",  label: "LinkedIn",  count: contacts.filter(c => c.source === "linkedin").length },
                   { id: "gmail",     label: "gmail",     count: contacts.filter(c => c.source === "gmail").length },
                   { id: "instagram", label: "instagram", count: contacts.filter(c => c.source === "instagram").length }
                 ].filter(f => f.count > 0 || f.id === "all").map((f) => {
@@ -461,14 +461,14 @@ const NetworkPage = ({ darkMode }) => {
                     <button
                       key={f.id}
                       onClick={() => setFilter(f.id)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-syne text-[11.5px] transition-colors lowercase ${
-                        isActive
-                          ? (darkMode ? "bg-white text-black" : "bg-gray-900 text-white")
-                          : (darkMode ? "bg-transparent text-white/60 border border-white/10 hover:border-white/30" : "bg-white text-gray-600 border border-gray-200 hover:border-gray-400")
-                      }`}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] transition-colors ${
+ isActive
+ ? (darkMode ?"bg-white text-black" :"bg-gray-900 text-white")
+ : (darkMode ?"bg-transparent text-white/60 border border-white/10 hover:border-white/30" :"bg-white text-gray-600 border border-gray-200 hover:border-gray-400")
+ }`}
                     >
                       {f.label}
-                      <span className={`font-mono text-[10px] ${isActive ? (darkMode ? "text-black/60" : "text-white/70") : (darkMode ? "text-white/30" : "text-gray-400")}`}>
+                      <span className={`font-mono text-[10px] ${isActive ? (darkMode ?"text-black/60" :"text-white/70") : (darkMode ?"text-white/30" :"text-gray-400")}`}>
                         {f.count}
                       </span>
                     </button>
@@ -509,10 +509,10 @@ const EmptyState = ({ title, body, darkMode }) => (
     >
       T
     </div>
-    <h3 className={`font-display text-[22px] leading-tight font-normal mb-2 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+    <h3 className={`text-[16px] font-semibold mb-2 ${darkMode ?"text-white" :"text-gray-900"}`}>
       {title}
     </h3>
-    <p className={`font-syne text-[14px] max-w-sm lowercase ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+    <p className={`text-[14px] max-w-sm ${darkMode ?"text-white/50" :"text-gray-500"}`}>
       {body}
     </p>
   </div>

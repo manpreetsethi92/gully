@@ -28,9 +28,9 @@ const SocialLinks = ({ links, darkMode }) => {
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className={`font-mono text-[10.5px] tracking-wide px-2.5 py-1 rounded-md lowercase ${
-              darkMode ? "bg-white/10 text-white/80 hover:bg-white/20" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
+            className={`font-mono text-[10.5px] tracking-wide px-2.5 py-1 rounded-md ${
+ darkMode ?"bg-white/10 text-white/80 hover:bg-white/20" :"bg-gray-100 text-gray-700 hover:bg-gray-200"
+ }`}
           >
             {platform}
           </a>
@@ -44,10 +44,10 @@ const Field = ({ label, value, darkMode }) => {
   if (!value) return null;
   return (
     <div className="mb-4">
-      <div className={`font-mono text-[10px] tracking-[0.2em] lowercase mb-1 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+      <div className={`font-mono text-[10px] mb-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
         {label}
       </div>
-      <div className={`text-[14px] leading-relaxed ${darkMode ? "text-white/90" : "text-gray-900"}`}>
+      <div className={`text-[14px] leading-relaxed ${darkMode ?"text-white/90" :"text-gray-900"}`}>
         {value}
       </div>
     </div>
@@ -76,16 +76,16 @@ const OpportunityDetail = ({ item, darkMode }) => {
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <div className={`text-[16px] font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>
+            <div className={`text-[16px] font-semibold ${darkMode ?"text-white" :"text-gray-900"}`}>
               {from.name}
             </div>
             {from.location && (
-              <div className={`text-[12px] ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+              <div className={`text-[12px] ${darkMode ?"text-white/50" :"text-gray-500"}`}>
                 {from.location}
               </div>
             )}
             {from.bio && (
-              <div className={`text-[13px] mt-1 ${darkMode ? "text-white/70" : "text-gray-600"}`}>
+              <div className={`text-[13px] mt-1 ${darkMode ?"text-white/70" :"text-gray-600"}`}>
                 {from.bio}
               </div>
             )}
@@ -94,7 +94,7 @@ const OpportunityDetail = ({ item, darkMode }) => {
         </div>
       )}
 
-      <div className={`h-px w-full ${darkMode ? "bg-white/10" : "bg-gray-100"} my-4`} />
+      <div className={`h-px w-full ${darkMode ?"bg-white/10" :"bg-gray-100"} my-4`} />
 
       <Field
         label={isExternal ? "job" : "the ask"}
@@ -111,18 +111,18 @@ const OpportunityDetail = ({ item, darkMode }) => {
 
       {Array.isArray(data.matched_skills) && data.matched_skills.length > 0 && (
         <div className="mt-2">
-          <div className={`font-mono text-[10px] tracking-[0.2em] lowercase mb-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+          <div className={`font-mono text-[10px] mb-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
             {isExternal ? "skills needed" : "why you matched"}
           </div>
           <div className="flex flex-wrap gap-1.5">
             {data.matched_skills.map((skill, i) => (
               <span
                 key={i}
-                className={`px-2.5 py-1 rounded-full text-[12px] lowercase ${
-                  isExternal
-                    ? (darkMode ? "bg-green-500/20 text-green-300" : "bg-green-50 text-green-700")
-                    : (darkMode ? "bg-purple-500/20 text-purple-300" : "bg-purple-50 text-purple-700")
-                }`}
+                className={`px-2.5 py-1 rounded-full text-[12px] ${
+ isExternal
+ ? (darkMode ?"bg-green-500/20 text-green-300" :"bg-green-50 text-green-700")
+ : (darkMode ?"bg-purple-500/20 text-purple-300" :"bg-purple-50 text-purple-700")
+ }`}
               >
                 {skill}
               </span>
@@ -151,21 +151,21 @@ const RequestDetail = ({ item, darkMode }) => {
         {data.category && <Field label="category" value={data.category} darkMode={darkMode} />}
       </div>
 
-      <div className={`rounded-xl p-4 mt-3 ${darkMode ? "bg-white/5" : "bg-gray-50"}`}>
+      <div className={`rounded-xl p-4 mt-3 ${darkMode ?"bg-white/5" :"bg-gray-50"}`}>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <div className={`font-mono text-[10px] tracking-[0.2em] lowercase mb-1 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            <div className={`font-mono text-[10px] mb-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
               matches found
             </div>
-            <div className={`text-[22px] font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>
+            <div className={`text-[16px] font-semibold ${darkMode ?"text-white" :"text-gray-900"}`}>
               {data.matches_count || 0}
             </div>
           </div>
           <div>
-            <div className={`font-mono text-[10px] tracking-[0.2em] lowercase mb-1 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            <div className={`font-mono text-[10px] mb-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
               applicants
             </div>
-            <div className={`text-[22px] font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>
+            <div className={`text-[16px] font-semibold ${darkMode ?"text-white" :"text-gray-900"}`}>
               {data.applicants_count || 0}
             </div>
           </div>
@@ -174,16 +174,16 @@ const RequestDetail = ({ item, darkMode }) => {
 
       {Array.isArray(data.skills_needed) && data.skills_needed.length > 0 && (
         <div className="mt-4">
-          <div className={`font-mono text-[10px] tracking-[0.2em] lowercase mb-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+          <div className={`font-mono text-[10px] mb-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
             skills you asked for
           </div>
           <div className="flex flex-wrap gap-1.5">
             {data.skills_needed.map((skill, i) => (
               <span
                 key={i}
-                className={`px-2.5 py-1 rounded-full text-[12px] lowercase ${
-                  darkMode ? "bg-white/10 text-white/80" : "bg-gray-100 text-gray-700"
-                }`}
+                className={`px-2.5 py-1 rounded-full text-[12px] ${
+ darkMode ?"bg-white/10 text-white/80" :"bg-gray-100 text-gray-700"
+ }`}
               >
                 {skill}
               </span>
@@ -210,16 +210,16 @@ const SavedJobDetail = ({ item, darkMode }) => {
       </div>
       {Array.isArray(data.skills_needed) && data.skills_needed.length > 0 && (
         <div className="mt-2">
-          <div className={`font-mono text-[10px] tracking-[0.2em] lowercase mb-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+          <div className={`font-mono text-[10px] mb-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
             skills needed
           </div>
           <div className="flex flex-wrap gap-1.5">
             {data.skills_needed.map((skill, i) => (
               <span
                 key={i}
-                className={`px-2.5 py-1 rounded-full text-[12px] lowercase ${
-                  darkMode ? "bg-amber-500/20 text-amber-300" : "bg-amber-50 text-amber-700"
-                }`}
+                className={`px-2.5 py-1 rounded-full text-[12px] ${
+ darkMode ?"bg-amber-500/20 text-amber-300" :"bg-amber-50 text-amber-700"
+ }`}
               >
                 {skill}
               </span>
@@ -264,42 +264,42 @@ const InboxDetailDrawer = ({ item, isOpen, onClose, onAction, loadingAction, dar
       {/* Backdrop */}
       <div
         className={`fixed inset-0 z-[100] transition-opacity duration-200 ${
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        } bg-black/40`}
+ isOpen ?"opacity-100 pointer-events-auto" :"opacity-0 pointer-events-none"
+ } bg-black/40`}
         onClick={onClose}
       />
 
       {/* Panel */}
       <div
         className={`fixed top-0 right-0 h-full w-full sm:w-[480px] z-[101] transform transition-transform duration-300 ease-out overflow-y-auto ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        } ${darkMode ? "bg-[#0a0a0a] border-l border-white/10" : "bg-white border-l border-gray-100"}`}
+ isOpen ?"translate-x-0" :"translate-x-full"
+ } ${darkMode ?"bg-[#0a0a0a] border-l border-white/10" :"bg-white border-l border-gray-100"}`}
       >
         {/* Header */}
         <div className={`sticky top-0 z-10 px-6 py-4 border-b flex items-center justify-between ${
-          darkMode ? "bg-[#0a0a0a]/90 border-white/10 backdrop-blur" : "bg-white/90 border-gray-100 backdrop-blur"
-        }`}>
+ darkMode ?"bg-[#0a0a0a]/90 border-white/10 backdrop-blur" :"bg-white/90 border-gray-100 backdrop-blur"
+ }`}>
           <div>
-            <div className={`font-mono text-[10px] tracking-[0.25em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            <div className={`font-mono text-[10px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
               taj's note
             </div>
-            <div className={`font-syne text-[15px] font-semibold lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+            <div className={`text-[15px] font-semibold ${darkMode ?"text-white" :"text-gray-900"}`}>
               {title}
             </div>
           </div>
           <button
             onClick={onClose}
             className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
-              darkMode ? "hover:bg-white/10 text-white" : "hover:bg-gray-100 text-gray-600"
-            }`}
-            aria-label="close details"
+ darkMode ?"hover:bg-white/10 text-white" :"hover:bg-gray-100 text-gray-600"
+ }`}
+            aria-label="Close details"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Taj's message reproduced */}
-        <div className={`px-6 py-4 ${darkMode ? "bg-white/[0.03]" : "bg-gray-50"}`}>
+        <div className={`px-6 py-4 ${darkMode ?"bg-white/[0.03]" :"bg-gray-50"}`}>
           <div className="flex gap-3 items-start">
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[12px] flex-shrink-0"
@@ -307,7 +307,7 @@ const InboxDetailDrawer = ({ item, isOpen, onClose, onAction, loadingAction, dar
             >
               T
             </div>
-            <p className={`text-[13.5px] leading-[1.55] lowercase ${darkMode ? "text-white/90" : "text-gray-800"}`}>
+            <p className={`text-[13.5px] leading-[1.55] ${darkMode ?"text-white/90" :"text-gray-800"}`}>
               {item.taj_says}
             </p>
           </div>
@@ -320,20 +320,20 @@ const InboxDetailDrawer = ({ item, isOpen, onClose, onAction, loadingAction, dar
 
         {/* Sticky action footer */}
         <div className={`sticky bottom-0 z-10 px-6 py-4 border-t flex gap-2 ${
-          darkMode ? "bg-[#0a0a0a]/95 border-white/10 backdrop-blur" : "bg-white/95 border-gray-100 backdrop-blur"
-        }`}>
+ darkMode ?"bg-[#0a0a0a]/95 border-white/10 backdrop-blur" :"bg-white/95 border-gray-100 backdrop-blur"
+ }`}>
           {(item.actions || []).map((action) => (
             <button
               key={action.id}
               onClick={() => onAction?.(item, action.id)}
               disabled={isLoading}
-              className={`flex-1 py-2.5 rounded-full font-syne text-[13px] font-medium transition-colors lowercase disabled:opacity-50 ${
-                action.style === "primary"
-                  ? (darkMode ? "bg-white text-black hover:bg-gray-200" : "bg-gray-900 text-white hover:bg-black")
-                  : action.style === "danger"
-                    ? (darkMode ? "bg-transparent text-red-400 border border-red-400/30 hover:border-red-400/60" : "bg-white text-red-600 border border-red-200 hover:border-red-400")
-                    : (darkMode ? "bg-transparent text-white border border-white/20 hover:border-white/40" : "bg-white text-gray-900 border border-gray-200 hover:border-gray-400")
-              }`}
+              className={`flex-1 py-2.5 rounded-full text-[13px] font-medium transition-colors disabled:opacity-50 ${
+ action.style ==="primary"
+ ? (darkMode ?"bg-white text-black hover:bg-gray-200" :"bg-gray-900 text-white hover:bg-black")
+ : action.style ==="danger"
+ ? (darkMode ?"bg-transparent text-red-400 border border-red-400/30 hover:border-red-400/60" :"bg-white text-red-600 border border-red-200 hover:border-red-400")
+ : (darkMode ?"bg-transparent text-white border border-white/20 hover:border-white/40" :"bg-white text-gray-900 border border-gray-200 hover:border-gray-400")
+ }`}
             >
               {action.label}
             </button>
@@ -342,9 +342,9 @@ const InboxDetailDrawer = ({ item, isOpen, onClose, onAction, loadingAction, dar
             href={WHATSAPP_BOT_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full font-syne text-[13px] font-medium transition-colors lowercase flex-shrink-0 ${
-              darkMode ? "bg-transparent text-white border border-white/20 hover:border-white/40" : "bg-white text-gray-900 border border-gray-200 hover:border-gray-400"
-            }`}
+            className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-medium transition-colors flex-shrink-0 ${
+ darkMode ?"bg-transparent text-white border border-white/20 hover:border-white/40" :"bg-white text-gray-900 border border-gray-200 hover:border-gray-400"
+ }`}
           >
             <WhatsAppIcon size={12} color="#25D366" />
             taj

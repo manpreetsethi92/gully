@@ -100,36 +100,36 @@ const AccountSettingsPage = ({ darkMode }) => {
   return (
     <div>
       {/* Subscription section */}
-      <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-3 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+      <div className={`font-mono text-[10px] mb-3 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
         subscription
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-12"><div className="spinner"></div></div>
       ) : (
-        <section className={`rounded-2xl border p-5 mb-5 ${darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"}`}>
+        <section className={`rounded-2xl border p-5 mb-5 ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}>
           <div className="flex items-start justify-between mb-1">
-            <div className={`font-mono text-[10px] tracking-[0.25em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            <div className={`font-mono text-[10px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
               your plan
             </div>
             <span
-              className="font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide lowercase"
+              className="font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide"
               style={{ color: tierMeta.fg, background: darkMode ? `${tierMeta.fg}22` : tierMeta.bg }}
             >
               {tierMeta.label}
             </span>
           </div>
-          <div className={`font-display text-[32px] leading-none font-normal lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+          <div className={`text-[18px] font-semibold ${darkMode ?"text-white" :"text-gray-900"}`}>
             {tierMeta.label}
           </div>
 
           {subscription?.subscription_status === "active" && subscription?.subscription_expires_at && (
-            <div className={`font-mono text-[11px] tracking-wide lowercase mt-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            <div className={`font-mono text-[11px] tracking-wide mt-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
               renews {new Date(subscription.subscription_expires_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }).toLowerCase()}
             </div>
           )}
           {subscription?.subscription_status === "canceled" && (
-            <div className="font-mono text-[11px] tracking-wide lowercase mt-2 text-amber-600">
+            <div className="font-mono text-[11px] tracking-wide mt-2 text-amber-600">
               cancels at end of billing period
             </div>
           )}
@@ -139,7 +139,7 @@ const AccountSettingsPage = ({ darkMode }) => {
               <button
                 onClick={() => handleUpgrade("pro_monthly")}
                 disabled={upgrading}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-syne text-[12.5px] font-medium lowercase text-white disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[12.5px] font-medium text-white disabled:opacity-50"
                 style={{ background: "#0a0a0a" }}
               >
                 upgrade to pro — ${subscription?.pricing?.pro_monthly}/mo
@@ -147,10 +147,10 @@ const AccountSettingsPage = ({ darkMode }) => {
               <button
                 onClick={() => handleUpgrade("verified_monthly")}
                 disabled={upgrading}
-                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-syne text-[12.5px] font-medium lowercase border ${
-                  darkMode ? "bg-transparent text-white border-white/20 hover:border-white/40"
-                           : "bg-white text-gray-900 border-gray-200 hover:border-gray-400"
-                }`}
+                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[12.5px] font-medium border ${
+ darkMode ?"bg-transparent text-white border-white/20 hover:border-white/40"
+ :"bg-white text-gray-900 border-gray-200 hover:border-gray-400"
+ }`}
               >
                 get verified — ${subscription?.pricing?.verified_monthly}/mo
               </button>
@@ -160,19 +160,19 @@ const AccountSettingsPage = ({ darkMode }) => {
           {subscription?.tier !== "free" && subscription?.subscription_status === "active" && (
             <button
               onClick={handleManageSubscription}
-              className={`mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-syne text-[12.5px] font-medium lowercase transition-colors ${
-                darkMode ? "bg-transparent text-white border border-white/20 hover:border-white/40"
-                         : "bg-white text-gray-900 border border-gray-200 hover:border-gray-400"
-              }`}
+              className={`mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[12.5px] font-medium transition-colors ${
+ darkMode ?"bg-transparent text-white border border-white/20 hover:border-white/40"
+ :"bg-white text-gray-900 border border-gray-200 hover:border-gray-400"
+ }`}
             >
-              <ExternalLink size={12} /> manage billing
+              <ExternalLink size={12} /> Manage billing
             </button>
           )}
         </section>
       )}
 
       {/* Support section */}
-      <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-3 mt-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+      <div className={`font-mono text-[10px] mb-3 mt-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
         support
       </div>
 
@@ -203,20 +203,20 @@ const AccountSettingsPage = ({ darkMode }) => {
             target={item.external ? "_blank" : undefined}
             rel={item.external ? "noopener noreferrer" : undefined}
             className={`rounded-2xl border p-4 flex items-center gap-3 transition-colors ${
-              darkMode ? "border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
-                       : "border-gray-100 bg-white hover:border-gray-200"
-            }`}
+ darkMode ?"border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
+ :"border-gray-100 bg-white hover:border-gray-200"
+ }`}
           >
             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-              darkMode ? "bg-white/5 text-white/60" : "bg-gray-100 text-gray-600"
-            }`}>
+ darkMode ?"bg-white/5 text-white/60" :"bg-gray-100 text-gray-600"
+ }`}>
               {item.icon}
             </div>
             <div className="flex-1 min-w-0">
-              <div className={`font-syne text-[13.5px] font-medium lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+              <div className={`text-[13.5px] font-medium ${darkMode ?"text-white" :"text-gray-900"}`}>
                 {item.label}
               </div>
-              <div className={`font-mono text-[11px] tracking-wide lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+              <div className={`font-mono text-[11px] tracking-wide ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                 {item.meta}
               </div>
             </div>
@@ -226,7 +226,7 @@ const AccountSettingsPage = ({ darkMode }) => {
       </div>
 
       {/* Account section — destructive actions */}
-      <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-3 mt-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+      <div className={`font-mono text-[10px] mb-3 mt-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
         account
       </div>
 
@@ -234,16 +234,16 @@ const AccountSettingsPage = ({ darkMode }) => {
         <button
           onClick={() => setShowLogoutConfirm(true)}
           className={`w-full rounded-2xl border p-4 flex items-center gap-3 text-left transition-colors ${
-            darkMode ? "border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
-                     : "border-gray-100 bg-white hover:border-gray-200"
-          }`}
+ darkMode ?"border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
+ :"border-gray-100 bg-white hover:border-gray-200"
+ }`}
         >
           <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
             style={{ background: darkMode ? "rgba(229,9,20,0.15)" : "#fff1f1" }}>
             <LogOut size={13} style={{ color: "#E50914" }} />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-syne text-[13.5px] font-medium lowercase" style={{ color: "#E50914" }}>
+            <div className="text-[13.5px] font-medium" style={{ color: "#E50914" }}>
               log out
             </div>
           </div>
@@ -253,20 +253,20 @@ const AccountSettingsPage = ({ darkMode }) => {
         <button
           onClick={() => setShowDeleteConfirm(true)}
           className={`w-full rounded-2xl border p-4 flex items-center gap-3 text-left transition-colors ${
-            darkMode ? "border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
-                     : "border-gray-100 bg-white hover:border-gray-200"
-          }`}
+ darkMode ?"border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
+ :"border-gray-100 bg-white hover:border-gray-200"
+ }`}
         >
           <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-            darkMode ? "bg-white/5 text-white/60" : "bg-gray-100 text-gray-600"
-          }`}>
+ darkMode ?"bg-white/5 text-white/60" :"bg-gray-100 text-gray-600"
+ }`}>
             <Trash2 size={13} />
           </div>
           <div className="flex-1 min-w-0">
-            <div className={`font-syne text-[13.5px] font-medium lowercase ${darkMode ? "text-white/70" : "text-gray-700"}`}>
+            <div className={`text-[13.5px] font-medium ${darkMode ?"text-white/70" :"text-gray-700"}`}>
               delete account
             </div>
-            <div className={`font-mono text-[11px] tracking-wide lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+            <div className={`font-mono text-[11px] tracking-wide ${darkMode ?"text-white/40" :"text-gray-400"}`}>
               permanently remove your data
             </div>
           </div>
@@ -278,32 +278,32 @@ const AccountSettingsPage = ({ darkMode }) => {
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(false)} />
-          <div className={`relative w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden ${darkMode ? "bg-[#0a0a0a] border border-white/10" : "bg-white border border-gray-100"}`}>
+          <div className={`relative w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden ${darkMode ?"bg-[#0a0a0a] border border-white/10" :"bg-white border border-gray-100"}`}>
             <div className="p-6">
-              <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-1 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+              <div className={`font-mono text-[10px] mb-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                 confirm
               </div>
-              <h2 className={`font-display text-[22px] leading-tight font-normal lowercase mb-2 ${darkMode ? "text-white" : "text-gray-900"}`}>
+              <h2 className={`text-[16px] font-semibold mb-2 ${darkMode ?"text-white" :"text-gray-900"}`}>
                 delete your account?
               </h2>
-              <p className={`font-syne text-[13px] lowercase mb-5 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+              <p className={`text-[13px] mb-5 ${darkMode ?"text-white/50" :"text-gray-500"}`}>
                 this can't be undone. all your data will be permanently deleted.
               </p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
                   disabled={deleting}
-                  className={`flex-1 py-2.5 rounded-full font-syne text-[13px] font-medium lowercase border ${
-                    darkMode ? "border-white/20 text-white hover:bg-white/5"
-                             : "border-gray-200 text-gray-900 hover:border-gray-400"
-                  }`}
+                  className={`flex-1 py-2.5 rounded-full text-[13px] font-medium border ${
+ darkMode ?"border-white/20 text-white hover:bg-white/5"
+ :"border-gray-200 text-gray-900 hover:border-gray-400"
+ }`}
                 >
                   cancel
                 </button>
                 <button
                   onClick={handleDeleteAccount}
                   disabled={deleting}
-                  className="flex-1 py-2.5 rounded-full font-syne text-[13px] font-medium lowercase text-white disabled:opacity-50"
+                  className="flex-1 py-2.5 rounded-full text-[13px] font-medium text-white disabled:opacity-50"
                   style={{ background: "#E50914" }}
                 >
                   {deleting ? "deleting…" : "delete"}
@@ -318,30 +318,30 @@ const AccountSettingsPage = ({ darkMode }) => {
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowLogoutConfirm(false)} />
-          <div className={`relative w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden ${darkMode ? "bg-[#0a0a0a] border border-white/10" : "bg-white border border-gray-100"}`}>
+          <div className={`relative w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden ${darkMode ?"bg-[#0a0a0a] border border-white/10" :"bg-white border border-gray-100"}`}>
             <div className="p-6">
-              <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-1 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+              <div className={`font-mono text-[10px] mb-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                 confirm
               </div>
-              <h2 className={`font-display text-[22px] leading-tight font-normal lowercase mb-2 ${darkMode ? "text-white" : "text-gray-900"}`}>
+              <h2 className={`text-[16px] font-semibold mb-2 ${darkMode ?"text-white" :"text-gray-900"}`}>
                 log out?
               </h2>
-              <p className={`font-syne text-[13px] lowercase mb-5 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+              <p className={`text-[13px] mb-5 ${darkMode ?"text-white/50" :"text-gray-500"}`}>
                 you'll need to sign back in to see your inbox.
               </p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowLogoutConfirm(false)}
-                  className={`flex-1 py-2.5 rounded-full font-syne text-[13px] font-medium lowercase border ${
-                    darkMode ? "border-white/20 text-white hover:bg-white/5"
-                             : "border-gray-200 text-gray-900 hover:border-gray-400"
-                  }`}
+                  className={`flex-1 py-2.5 rounded-full text-[13px] font-medium border ${
+ darkMode ?"border-white/20 text-white hover:bg-white/5"
+ :"border-gray-200 text-gray-900 hover:border-gray-400"
+ }`}
                 >
                   cancel
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="flex-1 py-2.5 rounded-full font-syne text-[13px] font-medium lowercase text-white"
+                  className="flex-1 py-2.5 rounded-full text-[13px] font-medium text-white"
                   style={{ background: "#0a0a0a" }}
                 >
                   log out

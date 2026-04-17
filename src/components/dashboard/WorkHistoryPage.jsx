@@ -52,43 +52,43 @@ const WorkHistoryPage = ({ darkMode, hideHeader = false }) => {
     <div>
       {!hideHeader && (
         <div className="mb-1">
-          <div className={`font-mono text-[11px] tracking-[0.25em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+          <div className={`font-mono text-[11px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
             your track record
           </div>
         </div>
       )}
       {!hideHeader && (
-        <h1 className={`font-display text-[clamp(2rem,5vw,44px)] leading-none font-normal tracking-tight mb-7 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+        <h1 className={`text-[18px] font-semibold mb-7 ${darkMode ?"text-white" :"text-gray-900"}`}>
           work history.
         </h1>
       )}
 
       {/* Skills banner — editorial version */}
       {skills.length > 0 && (
-        <section className={`rounded-2xl border mb-5 overflow-hidden ${darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"}`}>
+        <section className={`rounded-2xl border mb-5 overflow-hidden ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}>
           <button
             onClick={() => setSkillsExpanded(prev => !prev)}
             className="w-full px-5 py-4 flex items-center gap-3 text-left"
           >
             <div className="flex-1 min-w-0">
-              <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-1 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+              <div className={`font-mono text-[10px] mb-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                 verified skills
               </div>
-              <p className={`font-syne text-[13.5px] lowercase ${darkMode ? "text-white/80" : "text-gray-700"}`}>
+              <p className={`text-[13.5px] ${darkMode ?"text-white/80" :"text-gray-700"}`}>
                 what you've proven by actually doing the work
               </p>
             </div>
-            <span className={`font-mono text-[11px] lowercase mr-2 ${darkMode ? "text-white/60" : "text-gray-500"}`}>
+            <span className={`font-mono text-[11px] mr-2 ${darkMode ?"text-white/60" :"text-gray-500"}`}>
               {skills.length}
             </span>
-            <ChevronDown size={16} className={`flex-shrink-0 transition-transform ${skillsExpanded ? "rotate-180" : ""} ${darkMode ? "text-white/40" : "text-gray-400"}`} />
+            <ChevronDown size={16} className={`flex-shrink-0 transition-transform ${skillsExpanded ?"rotate-180" :""} ${darkMode ?"text-white/40" :"text-gray-400"}`} />
           </button>
           {skillsExpanded && (
-            <div className={`px-5 pb-4 pt-0 flex flex-wrap gap-1.5 border-t ${darkMode ? "border-white/10" : "border-gray-100"}`}>
+            <div className={`px-5 pb-4 pt-0 flex flex-wrap gap-1.5 border-t ${darkMode ?"border-white/10" :"border-gray-100"}`}>
               {skills.slice(0, 12).map((s, i) => (
                 <span
                   key={i}
-                  className={`px-3 py-1 rounded-full text-[12px] lowercase mt-3 ${darkMode ? "bg-white/10 text-white/80" : "bg-gray-100 text-gray-700"}`}
+                  className={`px-3 py-1 rounded-full text-[12px] mt-3 ${darkMode ?"bg-white/10 text-white/80" :"bg-gray-100 text-gray-700"}`}
                 >
                   {s.toLowerCase()}
                 </span>
@@ -107,17 +107,17 @@ const WorkHistoryPage = ({ darkMode, hideHeader = false }) => {
           >
             T
           </div>
-          <h3 className={`font-display text-[22px] leading-tight font-normal mb-2 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+          <h3 className={`text-[16px] font-semibold mb-2 ${darkMode ?"text-white" :"text-gray-900"}`}>
             nothing closed yet.
           </h3>
-          <p className={`font-syne text-[14px] max-w-sm lowercase mb-5 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+          <p className={`text-[14px] max-w-sm mb-5 ${darkMode ?"text-white/50" :"text-gray-500"}`}>
             every gig you finish through gully shows up here as your verified portfolio. hirers see this when they're deciding.
           </p>
           <a
             href={WHATSAPP_BOT_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full font-syne text-[12.5px] font-medium lowercase text-white"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12.5px] font-medium text-white"
             style={{ background: "#25D366" }}
           >
             <WhatsAppIcon size={12} /> ask taj for gigs
@@ -131,35 +131,35 @@ const WorkHistoryPage = ({ darkMode, hideHeader = false }) => {
               <article
                 key={job.id || i}
                 className={`rounded-2xl border p-5 mb-3 transition-colors ${
-                  darkMode
-                    ? "bg-white/[0.03] border-white/10 hover:bg-white/[0.05]"
-                    : "bg-white border-gray-100 hover:border-gray-200"
-                }`}
+ darkMode
+ ?"bg-white/[0.03] border-white/10 hover:bg-white/[0.05]"
+ :"bg-white border-gray-100 hover:border-gray-200"
+ }`}
               >
                 <div className="flex items-start gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2 flex-wrap mb-0.5">
-                      <span className={`text-[15px] font-semibold lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+                      <span className={`text-[15px] font-semibold ${darkMode ?"text-white" :"text-gray-900"}`}>
                         {(job.title || job.description || "gig").toLowerCase()}
                       </span>
                       <span
-                        className={`ml-auto font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide lowercase ${
-                          isVerified
-                            ? (darkMode ? "bg-green-500/20 text-green-300" : "bg-green-50 text-green-700")
-                            : (darkMode ? "bg-white/10 text-white/60" : "bg-gray-100 text-gray-600")
-                        }`}
+                        className={`ml-auto font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide ${
+ isVerified
+ ? (darkMode ?"bg-green-500/20 text-green-300" :"bg-green-50 text-green-700")
+ : (darkMode ?"bg-white/10 text-white/60" :"bg-gray-100 text-gray-600")
+ }`}
                       >
                         {isVerified ? "verified" : "saved"}
                       </span>
                     </div>
-                    <div className={`font-mono text-[11px] tracking-wide lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                    <div className={`font-mono text-[11px] tracking-wide ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                       {[
                         job.budget_display,
                         job.saved_at ? formatDate(job.saved_at).toLowerCase() : null
                       ].filter(Boolean).join(" · ")}
                     </div>
                     {job.rating > 0 && (
-                      <div className={`inline-flex items-center gap-1 mt-2 ${darkMode ? "text-yellow-400" : "text-yellow-600"}`}>
+                      <div className={`inline-flex items-center gap-1 mt-2 ${darkMode ?"text-yellow-400" :"text-yellow-600"}`}>
                         <Star size={12} fill="currentColor" />
                         <span className="font-mono text-[11px]">{job.rating?.toFixed(1)}</span>
                       </div>

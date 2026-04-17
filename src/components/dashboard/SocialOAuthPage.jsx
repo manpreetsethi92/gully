@@ -44,23 +44,23 @@ const PLATFORM_BG = {
 };
 
 const PLATFORMS = [
-  { key: "instagram", label: "instagram", supportsOAuth: false, usesFabric: true },
-  { key: "google",    label: "google",    supportsOAuth: true },
-  { key: "linkedin",  label: "linkedin",  supportsOAuth: true },
-  { key: "github",    label: "github",    supportsOAuth: true },
+  { key: "instagram", label: "Instagram", supportsOAuth: false, usesFabric: true },
+  { key: "google",    label: "Google",    supportsOAuth: true },
+  { key: "linkedin",  label: "LinkedIn",  supportsOAuth: true },
+  { key: "github",    label: "GitHub",    supportsOAuth: true },
 ];
 
 const WORK_LINKS = [
-  { key: "twitter",   label: "x / twitter", placeholder: "https://x.com/yourusername" },
-  { key: "tiktok",    label: "tiktok",      placeholder: "https://www.tiktok.com/@yourusername" },
-  { key: "behance",   label: "behance",     placeholder: "https://www.behance.net/yourusername" },
-  { key: "dribbble",  label: "dribbble",    placeholder: "https://dribbble.com/yourusername" },
-  { key: "spotify",   label: "spotify",     placeholder: "https://open.spotify.com/artist/..." },
-  { key: "imdb",      label: "imdb",        placeholder: "https://www.imdb.com/name/nm..." },
-  { key: "vimeo",     label: "vimeo",       placeholder: "https://vimeo.com/yourusername" },
-  { key: "soundcloud", label: "soundcloud", placeholder: "https://soundcloud.com/yourusername" },
-  { key: "website",   label: "personal website", placeholder: "https://yourwebsite.com" },
-  { key: "portfolio", label: "portfolio",   placeholder: "https://yourportfolio.com" },
+  { key: "twitter",   label: "X / Twitter", placeholder: "https://x.com/yourusername" },
+  { key: "tiktok",    label: "TikTok",      placeholder: "https://www.tiktok.com/@yourusername" },
+  { key: "behance",   label: "Behance",     placeholder: "https://www.behance.net/yourusername" },
+  { key: "dribbble",  label: "Dribbble",    placeholder: "https://dribbble.com/yourusername" },
+  { key: "spotify",   label: "Spotify",     placeholder: "https://open.spotify.com/artist/..." },
+  { key: "imdb",      label: "IMDb",        placeholder: "https://www.imdb.com/name/nm..." },
+  { key: "vimeo",     label: "Vimeo",       placeholder: "https://vimeo.com/yourusername" },
+  { key: "soundcloud", label: "SoundCloud", placeholder: "https://soundcloud.com/yourusername" },
+  { key: "website",   label: "Personal website", placeholder: "https://yourwebsite.com" },
+  { key: "portfolio", label: "Portfolio",   placeholder: "https://yourportfolio.com" },
 ];
 
 const PORTFOLIO_LINKS = [
@@ -242,10 +242,10 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
     <div>
       {!hideHeader && (
         <div className="mb-1">
-          <div className={`font-mono text-[11px] tracking-[0.25em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+          <div className={`font-mono text-[11px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
             how people find you
           </div>
-          <h1 className={`font-display text-[clamp(2rem,5vw,44px)] leading-none font-normal tracking-tight mb-7 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+          <h1 className={`text-[18px] font-semibold mb-7 ${darkMode ?"text-white" :"text-gray-900"}`}>
             connect socials.
           </h1>
         </div>
@@ -253,15 +253,15 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
 
       {/* Top meta row: count + add link */}
       <div className="flex items-center justify-between mb-4">
-        <p className={`font-mono text-[10.5px] tracking-[0.25em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+        <p className={`font-mono text-[10.5px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
           {connectedCount} of {PLATFORMS.length} connected
         </p>
         <button
           onClick={() => setShowAddLinkModal(true)}
-          className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full font-syne text-[12px] font-medium lowercase transition-colors ${
-            darkMode ? "bg-white/5 text-white border border-white/10 hover:bg-white/10"
-                     : "bg-white text-gray-900 border border-gray-200 hover:border-gray-400"
-          }`}
+          className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${
+ darkMode ?"bg-white/5 text-white border border-white/10 hover:bg-white/10"
+ :"bg-white text-gray-900 border border-gray-200 hover:border-gray-400"
+ }`}
         >
           <span className="text-lg leading-none">+</span>
           add link
@@ -269,14 +269,14 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
       </div>
 
       {/* Taj-voice intro */}
-      <section className={`rounded-2xl border p-5 mb-5 ${darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"}`}>
+      <section className={`rounded-2xl border p-5 mb-5 ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}>
         <div className="flex gap-3 items-start">
           <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
             style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}>
             T
           </div>
           <div className="flex-1">
-            <p className={`text-[14.5px] leading-[1.55] lowercase ${darkMode ? "text-white/90" : "text-gray-900"}`}>
+            <p className={`text-[14.5px] leading-[1.55] ${darkMode ?"text-white/90" :"text-gray-900"}`}>
               verify yourself and i can match you better. oauth-verified profiles rank higher and get a verified badge. 10 seconds per platform.
             </p>
           </div>
@@ -284,7 +284,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
       </section>
 
       {/* Platforms section label */}
-      <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+      <div className={`font-mono text-[10px] mb-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
         verified accounts
       </div>
 
@@ -299,9 +299,9 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
             <article
               key={platform.key}
               className={`rounded-2xl border p-4 mb-2 flex items-center gap-3 transition-colors ${
-                darkMode ? "border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
-                         : "border-gray-100 bg-white hover:border-gray-200"
-              }`}
+ darkMode ?"border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
+ :"border-gray-100 bg-white hover:border-gray-200"
+ }`}
             >
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
@@ -311,7 +311,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className={`font-syne text-[14px] font-medium lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+                  <span className={`text-[14px] font-medium ${darkMode ?"text-white" :"text-gray-900"}`}>
                     {platform.label}
                   </span>
                   {isVerified && <ShieldCheck size={12} className="text-blue-400 flex-shrink-0" />}
@@ -321,24 +321,24 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                     <a
                       href={connected[platform.key]}
                       target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 font-mono text-[11px] lowercase text-green-600"
+                      className="inline-flex items-center gap-1 font-mono text-[11px] text-green-600"
                     >
                       <Check size={10} /> {isVerified ? "verified" : "connected"} <ExternalLink size={9} />
                     </a>
                   ) : (
-                    <p className="inline-flex items-center gap-1 font-mono text-[11px] lowercase text-green-600">
+                    <p className="inline-flex items-center gap-1 font-mono text-[11px] text-green-600">
                       <Check size={10} /> {isVerified ? "verified" : "connected"}
                     </p>
                   )
                 ) : (
-                  <p className={`font-mono text-[11px] tracking-wide lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                  <p className={`font-mono text-[11px] tracking-wide ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                     {platform.supportsOAuth || platform.usesFabric ? "verify with oauth" : "add your profile link"}
                   </p>
                 )}
               </div>
               {isVerified ? (
                 <span
-                  className="font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide lowercase"
+                  className="font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide"
                   style={{ color: "#2563eb", background: darkMode ? "rgba(37,99,235,0.2)" : "#eff6ff" }}
                 >
                   verified
@@ -347,13 +347,13 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                 <button
                   onClick={() => handleConnect(platform.key)}
                   disabled={isConnecting}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full font-syne text-[12px] font-medium lowercase text-white disabled:opacity-50"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-medium text-white disabled:opacity-50"
                   style={{ background: "#0a0a0a" }}
                 >
                   {isConnecting ? "…" : "verify"}
                 </button>
               ) : (
-                <span className={`font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide lowercase ${darkMode ? "bg-white/5 text-white/30" : "bg-gray-100 text-gray-400"}`}>
+                <span className={`font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide ${darkMode ?"bg-white/5 text-white/30" :"bg-gray-100 text-gray-400"}`}>
                   soon
                 </span>
               )}
@@ -365,7 +365,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
       {/* Portfolio links */}
       {addedLinks.length > 0 && (
         <>
-          <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+          <div className={`font-mono text-[10px] mb-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
             portfolio & work
           </div>
           <div className="mb-4">
@@ -378,23 +378,23 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
               return (
                 <article
                   key={key}
-                  className={`rounded-2xl border p-4 mb-2 ${darkMode ? "border-white/10 bg-white/[0.03]" : "border-gray-100 bg-white"}`}
+                  className={`rounded-2xl border p-4 mb-2 ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-mono font-semibold text-[11px] flex-shrink-0 ${darkMode ? "bg-white/10 text-white" : "bg-gray-900 text-white"}`}>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-mono font-semibold text-[11px] flex-shrink-0 ${darkMode ?"bg-white/10 text-white" :"bg-gray-900 text-white"}`}>
                       {iconText}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className={`font-syne text-[14px] font-medium lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+                      <div className={`text-[14px] font-medium ${darkMode ?"text-white" :"text-gray-900"}`}>
                         {label}
                       </div>
-                      <div className={`font-mono text-[11px] tracking-wide lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                      <div className={`font-mono text-[11px] tracking-wide ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                         add your link
                       </div>
                     </div>
                     <button
                       onClick={() => handleRemoveLink(key)}
-                      className={`p-1.5 rounded-full transition-colors ${darkMode ? "hover:bg-white/10 text-white/40 hover:text-white/70" : "hover:bg-gray-100 text-gray-400 hover:text-gray-700"}`}
+                      className={`p-1.5 rounded-full transition-colors ${darkMode ?"hover:bg-white/10 text-white/40 hover:text-white/70" :"hover:bg-gray-100 text-gray-400 hover:text-gray-700"}`}
                     >
                       <X size={14} />
                     </button>
@@ -404,10 +404,10 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                     value={url}
                     onChange={(e) => setPortfolioLinks(prev => ({ ...prev, [key]: e.target.value }))}
                     placeholder={linkInfo?.placeholder || "https://..."}
-                    className={`w-full px-3 py-2 rounded-xl border font-mono text-[12px] lowercase placeholder:lowercase focus:outline-none ${
-                      darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/30"
-                               : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-400"
-                    }`}
+                    className={`w-full px-3 py-2 rounded-xl border font-mono text-[12px] placeholder:focus:outline-none ${
+ darkMode ?"bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/30"
+ :"bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-400"
+ }`}
                   />
                 </article>
               );
@@ -417,7 +417,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
           <button
             onClick={handleSavePortfolio}
             disabled={savingPortfolio}
-            className="w-full py-2.5 rounded-full font-syne text-[13px] font-medium lowercase text-white transition-colors disabled:opacity-50 inline-flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-full text-[13px] font-medium text-white transition-colors disabled:opacity-50 inline-flex items-center justify-center gap-2"
             style={{ background: "#0a0a0a" }}
           >
             {savingPortfolio ? (
@@ -443,7 +443,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
           aria-modal="true"
         >
           <div
-            className={`relative w-full max-w-md rounded-2xl shadow-2xl overflow-hidden ${darkMode ? "bg-[#0a0a0a] border border-white/10" : "bg-white border border-gray-100"}`}
+            className={`relative w-full max-w-md rounded-2xl shadow-2xl overflow-hidden ${darkMode ?"bg-[#0a0a0a] border border-white/10" :"bg-white border border-gray-100"}`}
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -453,20 +453,20 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                 setCustomLinkLabel("");
                 setCustomLinkUrl("");
               }}
-              className={`absolute top-4 right-4 p-2 rounded-full ${darkMode ? "hover:bg-white/10 text-white/60" : "hover:bg-gray-100 text-gray-500"}`}
+              className={`absolute top-4 right-4 p-2 rounded-full ${darkMode ?"hover:bg-white/10 text-white/60" :"hover:bg-gray-100 text-gray-500"}`}
               aria-label="close"
             >
               <X size={16} />
             </button>
 
             <div className="p-6 max-h-[85vh] overflow-y-auto">
-              <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-1 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+              <div className={`font-mono text-[10px] mb-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                 add portfolio link
               </div>
-              <h2 className={`font-display text-[24px] leading-none font-normal lowercase mb-1 ${darkMode ? "text-white" : "text-gray-900"}`}>
+              <h2 className={`text-[18px] font-semibold mb-1 ${darkMode ?"text-white" :"text-gray-900"}`}>
                 where else do you live?
               </h2>
-              <p className={`font-syne text-[13px] lowercase mb-5 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+              <p className={`text-[13px] mb-5 ${darkMode ?"text-white/50" :"text-gray-500"}`}>
                 pick a preset or add a custom link.
               </p>
 
@@ -477,13 +477,13 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                     <button
                       key={link.key}
                       onClick={() => setSelectedLinkType(link.key)}
-                      className={`px-3 py-1.5 rounded-full font-syne text-[12px] font-medium lowercase border transition-colors ${
-                        selected
-                          ? "text-white border-transparent"
-                          : darkMode
-                            ? "bg-white/5 border-white/10 text-white/80 hover:bg-white/10"
-                            : "bg-white border-gray-200 text-gray-800 hover:border-gray-400"
-                      }`}
+                      className={`px-3 py-1.5 rounded-full text-[12px] font-medium border transition-colors ${
+ selected
+ ?"text-white border-transparent"
+ : darkMode
+ ?"bg-white/5 border-white/10 text-white/80 hover:bg-white/10"
+ :"bg-white border-gray-200 text-gray-800 hover:border-gray-400"
+ }`}
                       style={selected ? { background: "#E50914" } : {}}
                     >
                       {link.label}
@@ -492,13 +492,13 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                 })}
                 <button
                   onClick={() => setSelectedLinkType("custom")}
-                  className={`px-3 py-1.5 rounded-full font-syne text-[12px] font-medium lowercase border transition-colors ${
-                    selectedLinkType === "custom"
-                      ? "text-white border-transparent"
-                      : darkMode
-                        ? "bg-white/5 border-white/10 text-white/80 hover:bg-white/10"
-                        : "bg-white border-gray-200 text-gray-800 hover:border-gray-400"
-                  }`}
+                  className={`px-3 py-1.5 rounded-full text-[12px] font-medium border transition-colors ${
+ selectedLinkType ==="custom"
+ ?"text-white border-transparent"
+ : darkMode
+ ?"bg-white/5 border-white/10 text-white/80 hover:bg-white/10"
+ :"bg-white border-gray-200 text-gray-800 hover:border-gray-400"
+ }`}
                   style={selectedLinkType === "custom" ? { background: "#E50914" } : {}}
                 >
                   other (custom)
@@ -508,7 +508,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
               {selectedLinkType === "custom" && (
                 <div className="space-y-3 mb-4">
                   <div>
-                    <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-1.5 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                    <div className={`font-mono text-[10px] mb-1.5 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                       label
                     </div>
                     <input
@@ -516,14 +516,14 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                       value={customLinkLabel}
                       onChange={(e) => setCustomLinkLabel(e.target.value)}
                       placeholder="e.g. my portfolio"
-                      className={`w-full px-3 py-2.5 rounded-xl border font-syne text-[13px] lowercase placeholder:lowercase focus:outline-none ${
-                        darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/30"
-                                 : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-400"
-                      }`}
+                      className={`w-full px-3 py-2.5 rounded-xl border text-[13px] placeholder:focus:outline-none ${
+ darkMode ?"bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/30"
+ :"bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-400"
+ }`}
                     />
                   </div>
                   <div>
-                    <div className={`font-mono text-[10px] tracking-[0.25em] lowercase mb-1.5 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                    <div className={`font-mono text-[10px] mb-1.5 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                       url
                     </div>
                     <input
@@ -531,10 +531,10 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                       value={customLinkUrl}
                       onChange={(e) => setCustomLinkUrl(e.target.value)}
                       placeholder="https://..."
-                      className={`w-full px-3 py-2.5 rounded-xl border font-mono text-[12px] lowercase placeholder:lowercase focus:outline-none ${
-                        darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/30"
-                                 : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-400"
-                      }`}
+                      className={`w-full px-3 py-2.5 rounded-xl border font-mono text-[12px] placeholder:focus:outline-none ${
+ darkMode ?"bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/30"
+ :"bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-400"
+ }`}
                     />
                   </div>
                 </div>
@@ -543,7 +543,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
               <button
                 onClick={handleAddLink}
                 disabled={!selectedLinkType}
-                className="w-full py-2.5 rounded-full font-syne text-[13px] font-medium lowercase text-white disabled:opacity-50"
+                className="w-full py-2.5 rounded-full text-[13px] font-medium text-white disabled:opacity-50"
                 style={{ background: "#0a0a0a" }}
               >
                 add link

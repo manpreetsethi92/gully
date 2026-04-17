@@ -135,7 +135,7 @@ const DashboardLayout = () => {
         <button onClick={() => setMobileMenuOpen(true)} className="p-2 -ml-2">
           <Menu size={22} className={darkMode ? 'text-white' : 'text-gray-900'} />
         </button>
-        <span className={`font-syne font-semibold text-xl tracking-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}>gully</span>
+        <span className={`font-semibold text-xl ${darkMode ? 'text-white' : 'text-gray-900'}`}>gully</span>
         <div className="w-8" />
       </header>
 
@@ -143,12 +143,12 @@ const DashboardLayout = () => {
         {/* ========== SIDEBAR ========== */}
         <aside
           className={`
-            fixed lg:sticky top-0 left-0 h-screen z-50
-            w-[220px] border-r flex flex-col flex-shrink-0
-            transition-all duration-300 ease-out
-            ${darkMode ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-gray-100'}
-            ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          `}
+ fixed lg:sticky top-0 left-0 h-screen z-50
+ w-[220px] border-r flex flex-col flex-shrink-0
+ transition-all duration-300 ease-out
+ ${darkMode ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-gray-100'}
+ ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+`}
         >
           <button
             onClick={() => setMobileMenuOpen(false)}
@@ -160,7 +160,7 @@ const DashboardLayout = () => {
 
           {/* Logo + dark mode toggle */}
           <div className="px-6 pt-14 lg:pt-6 pb-8 flex items-center justify-between">
-            <span className={`font-syne font-semibold text-xl tracking-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <span className={`font-semibold text-xl ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               gully
             </span>
             <button
@@ -182,20 +182,20 @@ const DashboardLayout = () => {
                   to={item.path}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`
-                    flex items-center gap-3 px-3 py-2.5 rounded-xl mb-0.5
-                    transition-colors
-                    ${isActive
-                      ? (darkMode ? 'bg-white/10' : 'bg-gray-100')
-                      : (darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50')
-                    }
-                  `}
+ flex items-center gap-3 px-3 py-2.5 rounded-xl mb-0.5
+ transition-colors
+ ${isActive
+ ? (darkMode ? 'bg-white/10' : 'bg-gray-100')
+ : (darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50')
+ }
+`}
                 >
                   <item.icon
                     size={18}
                     strokeWidth={isActive ? 2 : 1.6}
                     className={isActive ? (darkMode ? 'text-white' : 'text-gray-900') : (darkMode ? 'text-white/60' : 'text-gray-500')}
                   />
-                  <span className={`font-syne text-[14.5px] lowercase ${isActive ? (darkMode ? 'font-semibold text-white' : 'font-semibold text-gray-900') : (darkMode ? 'font-medium text-white/60' : 'font-medium text-gray-500')}`}>
+                  <span className={`text-[14.5px] ${isActive ? (darkMode ? 'font-semibold text-white' : 'font-semibold text-gray-900') : (darkMode ? 'font-medium text-white/60' : 'font-medium text-gray-500')}`}>
                     {item.label}
                   </span>
                   {item.count > 0 && (
@@ -213,7 +213,7 @@ const DashboardLayout = () => {
             {/* Persistent message taj button */}
             <button
               onClick={handleMessageTaj}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-white font-syne font-medium text-[13px] transition-colors hover:opacity-90 lowercase"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-white font-medium text-[13px] transition-colors hover:opacity-90"
               style={{ background: '#25D366' }}
             >
               <WhatsAppIcon size={13} />
@@ -226,13 +226,13 @@ const DashboardLayout = () => {
               className={`w-full flex items-center gap-3 p-2.5 rounded-xl transition-colors ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
             >
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-white font-syne font-semibold text-xs flex-shrink-0"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs flex-shrink-0"
                 style={{ background: 'linear-gradient(135deg, #E50914 0%, #ff4757 100%)' }}
               >
                 {user?.name?.charAt(0).toUpperCase() || 'G'}
               </div>
               <div className="flex-1 text-left min-w-0">
-                <div className={`font-syne font-medium text-[13px] truncate flex items-center gap-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                <div className={`font-medium text-[13px] truncate flex items-center gap-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                   {user?.name || 'you'}
                   {user?.is_verified && <BadgeCheck size={12} className="text-blue-500 flex-shrink-0" fill="currentColor" strokeWidth={0} />}
                 </div>
@@ -317,10 +317,10 @@ const DashboardLayout = () => {
               <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #E50914 0%, #ff4757 100%)' }}>
                 <User size={32} className="text-white" />
               </div>
-              <h2 className={`font-display text-[28px] leading-tight font-normal mb-2 lowercase ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              <h2 className={`text-[18px] font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 let taj know you.
               </h2>
-              <p className={`font-syne text-sm mb-6 lowercase ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+              <p className={`text-sm mb-6 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                 connect your socials so taj can learn your style and pitch you better.
               </p>
               <button
@@ -328,7 +328,7 @@ const DashboardLayout = () => {
                   setShowConnectSocialsModal(false);
                   navigate('/app/you?tab=socials');
                 }}
-                className="w-full h-11 rounded-full text-white font-syne font-semibold bg-[#E50914] hover:bg-red-700 transition-colors text-[14px] lowercase"
+                className="w-full h-11 rounded-full text-white font-semibold bg-[#E50914] hover:bg-red-700 transition-colors text-[14px]"
               >
                 connect socials
               </button>

@@ -65,9 +65,9 @@ const NotificationsPage = ({ darkMode }) => {
   return (
     <div>
       {unreadCount > 0 && (
-        <div className={`flex items-center justify-between mb-4 font-mono text-[10.5px] tracking-[0.2em] lowercase ${darkMode ? "text-white/40" : "text-gray-400"}`}>
-          <span>notifications</span>
-          <span className="font-mono text-[10px] px-2 py-0.5 rounded-md lowercase"
+        <div className={`flex items-center justify-between mb-4 font-mono text-[10.5px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
+          <span>Notifications</span>
+          <span className="font-mono text-[10px] px-2 py-0.5 rounded-md"
             style={{ color: "#E50914", background: darkMode ? "rgba(229,9,20,0.15)" : "#fff1f1" }}>
             {unreadCount} new
           </span>
@@ -82,17 +82,17 @@ const NotificationsPage = ({ darkMode }) => {
           >
             T
           </div>
-          <h3 className={`font-display text-[22px] leading-tight font-normal mb-2 lowercase ${darkMode ? "text-white" : "text-gray-900"}`}>
+          <h3 className={`text-[16px] font-semibold mb-2 ${darkMode ?"text-white" :"text-gray-900"}`}>
             all caught up.
           </h3>
-          <p className={`font-syne text-[14px] max-w-sm lowercase mb-5 ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+          <p className={`text-[14px] max-w-sm mb-5 ${darkMode ?"text-white/50" :"text-gray-500"}`}>
             matches, connections, and updates land here as they happen.
           </p>
           <a
             href="https://wa.me/12134147369?text=Hi%20Taj!"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full font-syne text-[12.5px] font-medium lowercase text-white"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12.5px] font-medium text-white"
             style={{ background: "#25D366" }}
           >
             <WhatsAppIcon size={12} /> message taj
@@ -106,10 +106,10 @@ const NotificationsPage = ({ darkMode }) => {
               <article
                 key={n.id}
                 className={`rounded-2xl border p-5 mb-3 transition-colors ${
-                  !n.read
-                    ? (darkMode ? "border-red-500/30 bg-white/[0.04]" : "border-red-100 bg-red-50/30")
-                    : (darkMode ? "border-white/10 bg-white/[0.02]" : "border-gray-100 bg-white")
-                }`}
+ !n.read
+ ? (darkMode ?"border-red-500/30 bg-white/[0.04]" :"border-red-100 bg-red-50/30")
+ : (darkMode ?"border-white/10 bg-white/[0.02]" :"border-gray-100 bg-white")
+ }`}
               >
                 <div className="flex gap-3 items-start">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
@@ -118,29 +118,29 @@ const NotificationsPage = ({ darkMode }) => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2 flex-wrap mb-1">
-                      <span className={`text-[14px] font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>
+                      <span className={`text-[14px] font-semibold ${darkMode ?"text-white" :"text-gray-900"}`}>
                         taj
                       </span>
-                      <span className={`font-mono text-[10.5px] ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                      <span className={`font-mono text-[10.5px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                         · {formatDate(n.created_at)}
                       </span>
                       <span
-                        className="ml-auto font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide lowercase"
+                        className="ml-auto font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide"
                         style={{ color: pill.fg, background: darkMode ? `${pill.fg}22` : pill.bg }}
                       >
                         {pill.label}
                       </span>
                     </div>
-                    <p className={`text-[14.5px] leading-[1.5] lowercase ${darkMode ? "text-white/90" : "text-gray-900"}`}>
+                    <p className={`text-[14.5px] leading-[1.5] ${darkMode ?"text-white/90" :"text-gray-900"}`}>
                       {(n.title || "").toLowerCase()}
                     </p>
                     {n.body && (
-                      <p className={`font-mono text-[11px] tracking-wide lowercase mt-1 ${darkMode ? "text-white/40" : "text-gray-400"}`}>
+                      <p className={`font-mono text-[11px] tracking-wide mt-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
                         {n.body.toLowerCase()}
                       </p>
                     )}
                   </div>
-                  {n.read && <Check size={14} className={`flex-shrink-0 mt-2 ${darkMode ? "text-white/20" : "text-gray-300"}`} />}
+                  {n.read && <Check size={14} className={`flex-shrink-0 mt-2 ${darkMode ?"text-white/20" :"text-gray-300"}`} />}
                 </div>
               </article>
             );
