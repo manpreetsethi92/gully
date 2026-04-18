@@ -13,6 +13,7 @@
 import { useEffect, useState } from "react";
 
 const WHATSAPP_NUMBER = "12134147369";
+const WHATSAPP_DISPLAY = "+1 (213) 414-7369";
 const WHATSAPP_MESSAGE = "hey taj! just signed up on gully";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
@@ -68,14 +69,33 @@ const FirstTextPrompt = () => {
         </div>
 
         {/* Big headline */}
-        <h2 className="text-[32px] leading-[1.05] tracking-tight text-gray-900 font-semibold mb-3">
+        <h2 className="text-[32px] leading-[1.05] tracking-tight text-gray-900 font-semibold mb-6">
           first — text taj.
         </h2>
 
-        <p className="text-[15px] text-gray-500 leading-relaxed mb-7 px-4">
-          whatsapp rules: she can't message you until you say hi.
-          tap below to start — we've pre-filled the message.
-        </p>
+        {/* Numbered steps */}
+        <ol className="text-left mb-7 space-y-3 px-2">
+          <li className="flex gap-3 items-start">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-[12px] font-semibold flex items-center justify-center mt-0.5">1</span>
+            <div className="text-[14.5px] text-gray-700 leading-snug">
+              text taj on <span className="font-mono text-gray-900">{WHATSAPP_DISPLAY}</span>
+              <br />
+              <span className="text-gray-400 text-[13px]">say "hey" — we'll pre-fill it for you</span>
+            </div>
+          </li>
+          <li className="flex gap-3 items-start">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-[12px] font-semibold flex items-center justify-center mt-0.5">2</span>
+            <div className="text-[14.5px] text-gray-700 leading-snug">
+              she'll ask 2 quick questions
+            </div>
+          </li>
+          <li className="flex gap-3 items-start">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-[12px] font-semibold flex items-center justify-center mt-0.5">3</span>
+            <div className="text-[14.5px] text-gray-700 leading-snug">
+              she'll find your first match
+            </div>
+          </li>
+        </ol>
 
         {/* Big green WhatsApp CTA */}
         <a
@@ -98,11 +118,6 @@ const FirstTextPrompt = () => {
         >
           i'll do this later
         </button>
-
-        {/* Tiny footer hint */}
-        <p className="text-[11px] text-gray-400 mt-6 font-mono tracking-wide">
-          she'll ask 2 qs, then find your first match
-        </p>
       </div>
     </div>
   );
