@@ -13,6 +13,7 @@
 import { useState, Suspense, lazy, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { User, Link2 } from "lucide-react";
+import FirstTextPrompt from "./FirstTextPrompt";
 
 const ProfilePage = lazy(() => import("./ProfilePage"));
 const SocialOAuthPage = lazy(() => import("./SocialOAuthPage"));
@@ -39,6 +40,9 @@ const YouPage = ({ darkMode }) => {
 
   return (
     <div>
+      {/* Signup handoff popup — shows once after signup, triggered by sessionStorage flag */}
+      <FirstTextPrompt />
+
       <h1 className={`text-[20px] font-semibold mb-5 ${darkMode ?"text-white" :"text-gray-900"}`}>
         Profile
       </h1>

@@ -309,7 +309,14 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       login(data.token, data.user);
       // Fire-and-forget cleanup of referral code
       if (refCode) localStorage.removeItem("gully_ref");
-      setStep("handoff");
+
+      // ── Onboarding v2 handoff ──
+      // Skip the old handoff screen entirely. Send the user to their socials
+      // connect page (that's where Taj's OAuth button will land them anyway)
+      // with a flag so the page shows a "text taj to get started" prompt.
+      sessionStorage.setItem("gully_needs_first_text", "1");
+      onClose();
+      navigate("/app/you?tab=socials");
     } catch (e) {
       const msg = e?.response?.data?.detail || "something went wrong, try again";
       setError(typeof msg === "string" ? msg.toLowerCase() : "signup failed");
