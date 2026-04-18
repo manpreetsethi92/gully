@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
-import { Check, ExternalLink, ShieldCheck, Save, X } from "lucide-react";
+import { Check, ExternalLink, ShieldCheck, Save, X, Lightbulb } from "lucide-react";
 
 const PlatformIcon = ({ platformKey }) => {
   const icons = {
@@ -268,24 +268,17 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
         </button>
       </div>
 
-      {/* Taj-voice intro */}
-      <section className={`rounded-2xl border p-5 mb-5 ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}>
-        <div className="flex gap-3 items-start">
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
-            style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}>
-            T
-          </div>
-          <div className="flex-1">
-            <p className={`text-[14.5px] leading-[1.55] ${darkMode ?"text-white/90" :"text-gray-900"}`}>
-              verify yourself and i can match you better. oauth-verified profiles rank higher and get a verified badge. 10 seconds per platform.
-            </p>
-          </div>
-        </div>
+      {/* Info note — why verify */}
+      <section className={`rounded-2xl border p-4 mb-5 flex gap-3 items-start ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-gray-50"}`}>
+        <Lightbulb size={16} strokeWidth={1.75} className={`flex-shrink-0 mt-0.5 ${darkMode ?"text-amber-300" :"text-amber-500"}`} />
+        <p className={`text-[13.5px] leading-[1.55] ${darkMode ?"text-white/75" :"text-gray-700"}`}>
+          verify yourself and we'll match you better. oauth-verified profiles rank higher and get a verified badge. 10 seconds per platform.
+        </p>
       </section>
 
       {/* Platforms section label */}
       <div className={`font-mono text-[10px] mb-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
-        verified accounts
+        Verified accounts
       </div>
 
       {/* Platform rows */}
@@ -366,7 +359,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
       {addedLinks.length > 0 && (
         <>
           <div className={`font-mono text-[10px] mb-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
-            portfolio & work
+            Portfolio & work
           </div>
           <div className="mb-4">
             {addedLinks.map((key) => {
@@ -389,7 +382,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                         {label}
                       </div>
                       <div className={`font-mono text-[11px] tracking-wide ${darkMode ?"text-white/40" :"text-gray-400"}`}>
-                        add your link
+                        Add Your link
                       </div>
                     </div>
                     <button
@@ -421,9 +414,9 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
             style={{ background: "#0a0a0a" }}
           >
             {savingPortfolio ? (
-              <><div className="spinner w-4 h-4" /> saving…</>
+              <><div className="spinner w-4 h-4" /> Saving…</>
             ) : (
-              <><Save size={13} /> save all links</>
+              <><Save size={13} /> Save all links</>
             )}
           </button>
         </>
