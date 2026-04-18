@@ -9,7 +9,7 @@ const FAQ = () => {
       questions: [
         {
           q: "What is Gully?",
-          a: "Gully is a professional matching platform that connects creative professionals with opportunities. Think of it as having a well-connected friend in the industry who knows exactly who you need and can make the introduction instantly."
+          a: "Gully is a matching platform that connects folks with gigs, hires, and each other. Think of it as having a well-connected friend in the industry who knows exactly who you need and can make the introduction instantly."
         },
         {
           q: "Who is Taj?",
@@ -25,7 +25,7 @@ const FAQ = () => {
         },
         {
           q: "What cities are you in?",
-          a: "Worldwide. Taj has access to our entire network of creative professionals, no matter where you are. If you're looking for work or looking to hire, we'll match you."
+          a: "Worldwide. Taj has access to our entire network, no matter where you are. If you're looking for work or looking to hire, we'll match you."
         }
       ]
     },
@@ -55,7 +55,7 @@ const FAQ = () => {
       ]
     },
     {
-      category: "For Creative Professionals",
+      category: "For Freelancers",
       questions: [
         {
           q: "How do I get matched with opportunities?",

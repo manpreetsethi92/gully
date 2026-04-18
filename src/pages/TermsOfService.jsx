@@ -35,7 +35,7 @@ const TermsOfService = () => {
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">2. Description of Services</h2>
-            <p>Gully is a creative professional networking platform that connects freelancers and creative professionals through an AI-powered matching system. Our Services include:</p>
+            <p>Gully is a networking platform that connects freelancers, hirers, and folks across every industry through an AI-powered matching system. Our Services include:</p>
             <ul className="list-disc pl-6 mb-4">
               <li>AI-powered professional matching and introductions via our AI concierge, Taj</li>
               <li>Job and opportunity discovery from internal and external sources</li>
@@ -43,7 +43,7 @@ const TermsOfService = () => {
               <li>Messaging through WhatsApp integration and voice calls</li>
               <li>Dashboard for managing connections and opportunities</li>
             </ul>
-            <p>We serve creative industries including but not limited to: film/video, photography, music/audio, design, technology, writing, marketing, events, fashion, voice acting, education, wellness, culinary, sports, real estate, legal, and trades.</p>
+            <p>We serve every industry including but not limited to: film/video, photography, music/audio, design, technology, writing, marketing, events, fashion, voice acting, education, wellness, culinary, sports, real estate, legal, and trades.</p>
           </section>
 
           <section className="mb-8">
@@ -99,7 +99,7 @@ const TermsOfService = () => {
             <h2 className="text-2xl font-semibold mb-4">6. Marketplace and Connections</h2>
             
             <h3 className="text-xl font-medium mb-3">6.1 Platform Role</h3>
-            <p>Gully acts as a facilitator connecting creative professionals. We are not a party to any agreements between users and do not guarantee the quality, safety, or legality of services offered by users.</p>
+            <p>Gully acts as a facilitator connecting folks. We are not a party to any agreements between users and do not guarantee the quality, safety, or legality of services offered by users.</p>
 
             <h3 className="text-xl font-medium mb-3">6.2 No Verification Guarantee</h3>
             <p><strong>We do not routinely verify user identities, backgrounds, licenses, portfolios, credentials, or references.</strong> While we may implement certain verification features, users are solely responsible for conducting their own vetting, background checks, and due diligence before hiring or working with any professional found through Gully. Any "verified" badges or trust scores are internal indicators based on platform activity and should not be considered a comprehensive background check or endorsement.</p>

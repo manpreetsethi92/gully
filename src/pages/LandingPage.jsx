@@ -46,7 +46,7 @@ const TWO_SIDES_SCENARIOS = [
     ]
   },
   {
-    label: "creative",
+    label: "folks",
     posting: [
       { from: "user", text: "need a videographer for a 2-day brand shoot in austin. budget $3k." },
       { from: "taj", text: "pulling DPs in austin with brand work in their reel." },

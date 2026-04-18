@@ -71,7 +71,7 @@ const FILTERS = [
   { id: "all", label: "all" },
   { id: "healthcare", label: "healthcare" },
   { id: "service", label: "service" },
-  { id: "creative", label: "creative" },
+  { id: "creative", label: "folks" },
   { id: "trades", label: "trades" },
   { id: "tech", label: "tech" }
 ];
