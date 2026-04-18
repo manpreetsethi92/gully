@@ -79,8 +79,6 @@ const FirstTextPrompt = () => {
             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-[12px] font-semibold flex items-center justify-center mt-0.5">1</span>
             <div className="text-[14.5px] text-gray-700 leading-snug">
               text taj on <span className="font-mono text-gray-900">{WHATSAPP_DISPLAY}</span>
-              <br />
-              <span className="text-gray-400 text-[13px]">say "hey" — we'll pre-fill it for you</span>
             </div>
           </li>
           <li className="flex gap-3 items-start">
