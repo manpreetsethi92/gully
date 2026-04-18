@@ -30,41 +30,59 @@ const WHATSAPP_DISPLAY = "+1 (213) 414-7369";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("hey taj! just signed up on gully")}`;
 
 const COUNTRY_CODES = [
-  { code: "+1", country: "United States", flag: "🇺🇸" },
-  { code: "+1", country: "Canada", flag: "🇨🇦" },
-  { code: "+44", country: "United Kingdom", flag: "🇬🇧" },
-  { code: "+91", country: "India", flag: "🇮🇳" },
-  { code: "+61", country: "Australia", flag: "🇦🇺" },
-  { code: "+49", country: "Germany", flag: "🇩🇪" },
-  { code: "+33", country: "France", flag: "🇫🇷" },
-  { code: "+81", country: "Japan", flag: "🇯🇵" },
-  { code: "+86", country: "China", flag: "🇨🇳" },
-  { code: "+55", country: "Brazil", flag: "🇧🇷" },
-  { code: "+52", country: "Mexico", flag: "🇲🇽" },
-  { code: "+34", country: "Spain", flag: "🇪🇸" },
-  { code: "+39", country: "Italy", flag: "🇮🇹" },
-  { code: "+82", country: "South Korea", flag: "🇰🇷" },
-  { code: "+31", country: "Netherlands", flag: "🇳🇱" },
-  { code: "+46", country: "Sweden", flag: "🇸🇪" },
-  { code: "+41", country: "Switzerland", flag: "🇨🇭" },
-  { code: "+65", country: "Singapore", flag: "🇸🇬" },
-  { code: "+971", country: "UAE", flag: "🇦🇪" },
-  { code: "+966", country: "Saudi Arabia", flag: "🇸🇦" },
-  { code: "+27", country: "South Africa", flag: "🇿🇦" },
-  { code: "+234", country: "Nigeria", flag: "🇳🇬" },
-  { code: "+63", country: "Philippines", flag: "🇵🇭" },
-  { code: "+84", country: "Vietnam", flag: "🇻🇳" },
-  { code: "+66", country: "Thailand", flag: "🇹🇭" },
-  { code: "+60", country: "Malaysia", flag: "🇲🇾" },
-  { code: "+62", country: "Indonesia", flag: "🇮🇩" },
-  { code: "+48", country: "Poland", flag: "🇵🇱" },
-  { code: "+90", country: "Turkey", flag: "🇹🇷" },
-  { code: "+20", country: "Egypt", flag: "🇪🇬" },
-  { code: "+92", country: "Pakistan", flag: "🇵🇰" },
-  { code: "+880", country: "Bangladesh", flag: "🇧🇩" },
-  { code: "+64", country: "New Zealand", flag: "🇳🇿" },
-  { code: "+353", country: "Ireland", flag: "🇮🇪" }
+  { code: "+1",   iso: "US", country: "United States",   flag: "🇺🇸", len: 10, placeholder: "(000) 000-0000",   format: "(ddd) ddd-dddd" },
+  { code: "+1",   iso: "CA", country: "Canada",          flag: "🇨🇦", len: 10, placeholder: "(000) 000-0000",   format: "(ddd) ddd-dddd" },
+  { code: "+44",  iso: "GB", country: "United Kingdom",  flag: "🇬🇧", len: 10, placeholder: "0000 000000",      format: "dddd dddddd" },
+  { code: "+91",  iso: "IN", country: "India",           flag: "🇮🇳", len: 10, placeholder: "00000 00000",      format: "ddddd ddddd" },
+  { code: "+61",  iso: "AU", country: "Australia",       flag: "🇦🇺", len: 9,  placeholder: "000 000 000",      format: "ddd ddd ddd" },
+  { code: "+49",  iso: "DE", country: "Germany",         flag: "🇩🇪", len: 11, placeholder: "000 00000000",     format: "ddd dddddddd" },
+  { code: "+33",  iso: "FR", country: "France",          flag: "🇫🇷", len: 9,  placeholder: "0 00 00 00 00",    format: "d dd dd dd dd" },
+  { code: "+81",  iso: "JP", country: "Japan",           flag: "🇯🇵", len: 10, placeholder: "00 0000 0000",     format: "dd dddd dddd" },
+  { code: "+86",  iso: "CN", country: "China",           flag: "🇨🇳", len: 11, placeholder: "000 0000 0000",    format: "ddd dddd dddd" },
+  { code: "+55",  iso: "BR", country: "Brazil",          flag: "🇧🇷", len: 11, placeholder: "(00) 00000-0000",  format: "(dd) ddddd-dddd" },
+  { code: "+52",  iso: "MX", country: "Mexico",          flag: "🇲🇽", len: 10, placeholder: "00 0000 0000",     format: "dd dddd dddd" },
+  { code: "+34",  iso: "ES", country: "Spain",           flag: "🇪🇸", len: 9,  placeholder: "000 000 000",      format: "ddd ddd ddd" },
+  { code: "+39",  iso: "IT", country: "Italy",           flag: "🇮🇹", len: 10, placeholder: "000 000 0000",     format: "ddd ddd dddd" },
+  { code: "+82",  iso: "KR", country: "South Korea",     flag: "🇰🇷", len: 10, placeholder: "00 0000 0000",     format: "dd dddd dddd" },
+  { code: "+31",  iso: "NL", country: "Netherlands",     flag: "🇳🇱", len: 9,  placeholder: "0 00000000",       format: "d dddddddd" },
+  { code: "+46",  iso: "SE", country: "Sweden",          flag: "🇸🇪", len: 9,  placeholder: "00 000 00 00",     format: "dd ddd dd dd" },
+  { code: "+41",  iso: "CH", country: "Switzerland",     flag: "🇨🇭", len: 9,  placeholder: "00 000 00 00",     format: "dd ddd dd dd" },
+  { code: "+65",  iso: "SG", country: "Singapore",       flag: "🇸🇬", len: 8,  placeholder: "0000 0000",        format: "dddd dddd" },
+  { code: "+971", iso: "AE", country: "UAE",             flag: "🇦🇪", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
+  { code: "+966", iso: "SA", country: "Saudi Arabia",    flag: "🇸🇦", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
+  { code: "+27",  iso: "ZA", country: "South Africa",    flag: "🇿🇦", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
+  { code: "+234", iso: "NG", country: "Nigeria",         flag: "🇳🇬", len: 10, placeholder: "000 000 0000",     format: "ddd ddd dddd" },
+  { code: "+63",  iso: "PH", country: "Philippines",     flag: "🇵🇭", len: 10, placeholder: "000 000 0000",     format: "ddd ddd dddd" },
+  { code: "+84",  iso: "VN", country: "Vietnam",         flag: "🇻🇳", len: 9,  placeholder: "000 000 000",      format: "ddd ddd ddd" },
+  { code: "+66",  iso: "TH", country: "Thailand",        flag: "🇹🇭", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
+  { code: "+60",  iso: "MY", country: "Malaysia",        flag: "🇲🇾", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
+  { code: "+62",  iso: "ID", country: "Indonesia",       flag: "🇮🇩", len: 10, placeholder: "000 0000 0000",    format: "ddd dddd dddd" },
+  { code: "+48",  iso: "PL", country: "Poland",          flag: "🇵🇱", len: 9,  placeholder: "000 000 000",      format: "ddd ddd ddd" },
+  { code: "+90",  iso: "TR", country: "Turkey",          flag: "🇹🇷", len: 10, placeholder: "000 000 00 00",    format: "ddd ddd dd dd" },
+  { code: "+20",  iso: "EG", country: "Egypt",           flag: "🇪🇬", len: 10, placeholder: "00 0000 0000",     format: "dd dddd dddd" },
+  { code: "+92",  iso: "PK", country: "Pakistan",        flag: "🇵🇰", len: 10, placeholder: "000 0000000",      format: "ddd ddddddd" },
+  { code: "+880", iso: "BD", country: "Bangladesh",      flag: "🇧🇩", len: 10, placeholder: "0000 000000",      format: "dddd dddddd" },
+  { code: "+64",  iso: "NZ", country: "New Zealand",     flag: "🇳🇿", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
+  { code: "+353", iso: "IE", country: "Ireland",         flag: "🇮🇪", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" }
 ];
+
+// Format a digit string according to a mask. 'd' = digit slot. Other chars passed through.
+// "1234567890" with "(ddd) ddd-dddd" → "(123) 456-7890"
+const formatPhoneByMask = (digits, mask) => {
+  if (!mask) return digits;
+  let out = "";
+  let i = 0;
+  for (const ch of mask) {
+    if (i >= digits.length) break;
+    if (ch === "d") {
+      out += digits[i];
+      i++;
+    } else {
+      out += ch;
+    }
+  }
+  return out;
+};
 
 
 // Country code picker — rendered INLINE (no portal).
@@ -99,7 +117,7 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, searchValue, onSearchChang
             key={`${country.code}-${country.country}-${idx}`}
             className="w-full flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors text-left"
             onClick={() => {
-              onSelect(country.code);
+              onSelect(country);
               onClose();
             }}
           >
@@ -125,6 +143,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const [step, setStep] = useState("phone");
   const [phone, setPhone] = useState("");
   const [countryCode, setCountryCode] = useState("+1");
+  const [countryIso, setCountryIso] = useState("US");
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
   const [name, setName] = useState("");
@@ -149,19 +168,66 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     }
   }, [isOpen]);
 
+  // IP-based geolocation → default country code on first modal open.
+  // Runs only once per app session; cached in sessionStorage so it doesn't
+  // re-fetch if the user opens/closes the modal multiple times.
+  useEffect(() => {
+    if (!isOpen) return;
+    const cached = sessionStorage.getItem("gully:geo_country");
+    if (cached) {
+      try {
+        const { iso, code } = JSON.parse(cached);
+        if (iso && code) {
+          setCountryIso(iso);
+          setCountryCode(code);
+          return;
+        }
+      } catch {}
+    }
+    // Free, no-auth, ~60 req/min per IP. Good enough for a signup screen.
+    // If this fails we silently keep the +1 default.
+    fetch("https://ipapi.co/json/", { cache: "no-store" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (!data?.country_code) return;
+        const iso = data.country_code.toUpperCase();
+        const match = COUNTRY_CODES.find((c) => c.iso === iso);
+        if (match) {
+          setCountryIso(iso);
+          setCountryCode(match.code);
+          sessionStorage.setItem(
+            "gully:geo_country",
+            JSON.stringify({ iso, code: match.code })
+          );
+        }
+      })
+      .catch(() => { /* silent fallback to +1 */ });
+  }, [isOpen]);
+
   const fullPhone = `${countryCode}${phone.replace(/\D/g, "")}`;
   const filteredCountries = COUNTRY_CODES.filter(
     (c) =>
       c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
       c.code.includes(countrySearch)
   );
-  const selectedFlag = COUNTRY_CODES.find((c) => c.code === countryCode)?.flag || "🇺🇸";
+
+  // Prefer exact iso match (so +1 US vs +1 CA both resolve correctly).
+  // Falls back to first country with matching code.
+  const selectedCountry =
+    COUNTRY_CODES.find((c) => c.iso === countryIso && c.code === countryCode) ||
+    COUNTRY_CODES.find((c) => c.code === countryCode) ||
+    COUNTRY_CODES[0];
+  const selectedFlag = selectedCountry.flag;
+  const selectedMaxDigits = selectedCountry.len;
+  const selectedPlaceholder = selectedCountry.placeholder;
+  const selectedMask = selectedCountry.format;
 
   // ===== Step 1: phone → route to OTP or details =====
   const handlePhoneSubmit = async () => {
     setError("");
-    if (phone.replace(/\D/g, "").length < 10) {
-      setError("enter a valid phone number");
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length !== selectedMaxDigits) {
+      setError(`enter a valid ${selectedCountry.country.toLowerCase()} number (${selectedMaxDigits} digits)`);
       return;
     }
     if (!agreedToTerms) {
@@ -310,7 +376,15 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                         setShowCountryDropdown(false);
                         setCountrySearch("");
                       }}
-                      onSelect={setCountryCode}
+                      onSelect={(c) => {
+                        setCountryCode(c.code);
+                        setCountryIso(c.iso);
+                        // Re-format any typed digits to the new country's mask,
+                        // and truncate if they typed more digits than the new country allows.
+                        const digits = phone.replace(/\D/g, "").slice(0, c.len);
+                        setPhone(formatPhoneByMask(digits, c.format));
+                        setError("");
+                      }}
                       searchValue={countrySearch}
                       onSearchChange={setCountrySearch}
                       filteredCountries={filteredCountries}
@@ -320,8 +394,12 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     ref={phoneInputRef}
                     type="tel"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="(000) 000-0000"
+                    onChange={(e) => {
+                      // Strip non-digits, cap at country's max, then format with country mask.
+                      const raw = e.target.value.replace(/\D/g, "").slice(0, selectedMaxDigits);
+                      setPhone(formatPhoneByMask(raw, selectedMask));
+                    }}
+                    placeholder={selectedPlaceholder}
                     className="flex-1 h-12 rounded-xl font-mono text-[15px]"
                     autoComplete="tel"
                     autoFocus
