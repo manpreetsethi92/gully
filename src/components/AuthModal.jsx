@@ -563,8 +563,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                 say hi to <em className="text-[#E50914]">taj.</em>
               </h2>
               <p className="font-syne text-[15px] text-gray-500 leading-relaxed mb-8 lowercase">
-                text her first and she'll take it from there.<br />
-                (whatsapp rules — she can't message you until you say hi.)
+                text her first — she'll ask 2 quick qs,<br />
+                then find you your first match.
               </p>
 
               <div className="inline-flex flex-col items-center gap-3 p-6 border border-gray-200 rounded-2xl mb-2">

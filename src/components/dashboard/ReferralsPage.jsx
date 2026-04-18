@@ -37,7 +37,7 @@ const ReferralsPage = ({ darkMode }) => {
   const handleWhatsAppShare = () => {
     if (!referral?.referral_url) return;
     const text = encodeURIComponent(
-      `join me on gully — find creative gigs and collaborators. ${referral.referral_url}`
+      `join me on gully — find gigs and people to collab with. ${referral.referral_url}`
     );
     window.open(`https://wa.me/?text=${text}`, "_blank");
   };
@@ -48,7 +48,7 @@ const ReferralsPage = ({ darkMode }) => {
       try {
         await navigator.share({
           title: "Join me on Gully",
-          text: "Find creative gigs and collaborators.",
+          text: "Find gigs and people to collab with.",
           url: referral.referral_url,
         });
       } catch {}
@@ -109,7 +109,7 @@ const ReferralsPage = ({ darkMode }) => {
 
       {/* Referral link */}
       <div className={`font-mono text-[10px] mb-2 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
-        your link
+        Your link
       </div>
       {referralUrl ? (
         <>
@@ -158,10 +158,10 @@ const ReferralsPage = ({ darkMode }) => {
             T
           </div>
           <h3 className={`text-[16px] font-semibold mb-2 ${darkMode ?"text-white" :"text-gray-900"}`}>
-            no referrals yet.
+            No referrals yet.
           </h3>
           <p className={`text-[14px] max-w-sm ${darkMode ?"text-white/50" :"text-gray-500"}`}>
-            share your link — every signup earns you a free month of pro.
+            Share your link — every signup earns you a free month of Pro.
           </p>
         </div>
       ) : (
