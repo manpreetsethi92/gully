@@ -6,3 +6,8 @@ build/
 
 # local backups of pre-redesign files — kept on disk, not in git
 *.old.jsx
+target/
+.DS_Store
+*.dylib
+*.so
+.env
