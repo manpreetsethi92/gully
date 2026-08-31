@@ -17,9 +17,10 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useAuth, API } from "../../App";
 import {
-  Search, Link2, Mail, Instagram, Linkedin, Flame, Clock,
+  Search, Link2, Mail, Flame, Clock,
   ChevronDown, BadgeCheck
 } from "lucide-react";
+import { Instagram, Linkedin } from "./BrandIcons";
 import { WhatsAppIcon } from "./WhatsAppIcon";
 
 const WHATSAPP_BOT_URL = "https://wa.me/12134147369?text=Hi%20Taj!";

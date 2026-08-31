@@ -5,7 +5,8 @@ import { useAuth, API } from "../../App";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Instagram, Linkedin, Twitter, Film, Music, ExternalLink, Camera, Search, X, Loader2, BadgeCheck } from "lucide-react";
+import { Film, Music, ExternalLink, Camera, Search, X, Loader2, BadgeCheck } from "lucide-react";
+import { Instagram, Linkedin, Twitter } from "./BrandIcons";
 
 // Cloudinary config — cloud name only, no preset (signed uploads via backend)
 const CLOUDINARY_CLOUD_NAME = "ds7znu6zd";
