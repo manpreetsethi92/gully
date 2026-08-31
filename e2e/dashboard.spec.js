@@ -70,6 +70,22 @@ test.describe('authenticated dashboard', () => {
     }
   })
 
+  test('network page loads its data without an API error', async ({ page }) => {
+    // Regression: GET /api/network used to 422 on every request because
+    // api/network.py declared Depends(verify_token), a dependency written for
+    // query-param tokens, so FastAPI ignored the Authorization header.
+    const failed = []
+    page.on('response', (r) => {
+      if (r.url().includes('/api/network') && !r.ok()) failed.push(`${r.status()} ${r.url()}`)
+    })
+
+    await page.goto('/app/network')
+    await page.waitForLoadState('networkidle')
+
+    expect(failed, `network API errors:\n${failed.join('\n')}`).toEqual([])
+    await expect(page.locator('#root')).not.toBeEmpty()
+  })
+
   test('lazy-loaded route chunks actually load', async ({ page }) => {
     await page.goto('/app/home')
     await page.waitForLoadState('networkidle')
