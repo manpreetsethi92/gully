@@ -1,6 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind v4: one import replaces the three v3 directives. */
+@import "tailwindcss";
+
+/* Replaces the tailwindcss-animate plugin, which was v3-only. */
+@import "tw-animate-css";
+
+/* Keeps the existing JS theme (colours, fonts, keyframes) without porting it to
+   CSS-first @theme yet. v4 no longer auto-detects tailwind.config.js. */
+@config "../tailwind.config.js";
+
+/* Replaces darkMode: ["class"]. The app toggles a `dark` class on <html>
+   from DashboardLayout. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 * {
   box-sizing: border-box;
@@ -170,8 +180,8 @@ html.dark textarea:focus {
 }
 
 /* Shadows */
-html.dark .shadow-sm,
-html.dark .shadow                   { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
+html.dark .shadow-xs,
+html.dark .shadow-sm                   { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
 
 /* Dialog/modal */
 html.dark [role="dialog"],

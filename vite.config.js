@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     // Mirrors the "@/*" -> "src/*" mapping in jsconfig.json, which exists for
     // editor resolution. Currently unused by the source, but kept in sync so
