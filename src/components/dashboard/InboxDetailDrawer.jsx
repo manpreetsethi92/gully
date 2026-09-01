@@ -66,10 +66,10 @@ const OpportunityDetail = ({ item, darkMode }) => {
       {from.name && (
         <div className="flex items-start gap-3 mb-5">
           {from.photo_url ? (
-            <img src={from.photo_url} alt={from.name} className="w-12 h-12 rounded-full object-cover flex-shrink-0" />
+            <img src={from.photo_url} alt={from.name} className="w-12 h-12 rounded-full object-cover shrink-0" />
           ) : (
             <div
-              className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
+              className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-sm shrink-0"
               style={{ background: isExternal ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}
             >
               {isExternal ? <ExternalLink size={20} /> : (from.name?.charAt(0).toUpperCase() || "?")}
@@ -302,7 +302,7 @@ const InboxDetailDrawer = ({ item, isOpen, onClose, onAction, loadingAction, dar
         <div className={`px-6 py-4 ${darkMode ?"bg-white/[0.03]" :"bg-gray-50"}`}>
           <div className="flex gap-3 items-start">
             <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[12px] flex-shrink-0"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[12px] shrink-0"
               style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}
             >
               T
@@ -342,7 +342,7 @@ const InboxDetailDrawer = ({ item, isOpen, onClose, onAction, loadingAction, dar
             href={WHATSAPP_BOT_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-medium transition-colors flex-shrink-0 ${
+            className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-medium transition-colors shrink-0 ${
  darkMode ?"bg-transparent text-white border border-white/20 hover:border-white/40" :"bg-white text-gray-900 border border-gray-200 hover:border-gray-400"
  }`}
           >

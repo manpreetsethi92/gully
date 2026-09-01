@@ -632,7 +632,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
               <div className="space-y-2">
                 {socialLinks.map(({ key, icon: Icon, label, color }) => (
                   <div key={key} className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `${color}15` }}>
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: `${color}15` }}>
                       <Icon size={15} style={{ color }} />
                     </div>
                     <Input

@@ -45,10 +45,10 @@ const ConnectionCard = ({ conn, darkMode, expanded, onToggle }) => {
     >
       <div className="flex items-start gap-3">
         {connection.photo_url ? (
-          <img src={connection.photo_url} alt={connection.name || "user"} className="w-11 h-11 rounded-full object-cover flex-shrink-0" />
+          <img src={connection.photo_url} alt={connection.name || "user"} className="w-11 h-11 rounded-full object-cover shrink-0" />
         ) : (
           <div
-            className="w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold text-[14px] flex-shrink-0"
+            className="w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold text-[14px] shrink-0"
             style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}
           >
             {(connection.name || "?").charAt(0).toUpperCase()}
@@ -58,7 +58,7 @@ const ConnectionCard = ({ conn, darkMode, expanded, onToggle }) => {
           <div className="flex items-baseline gap-2 flex-wrap mb-0.5">
             <span className={`text-[15px] font-semibold flex items-center gap-1 ${darkMode ?"text-white" :"text-gray-900"}`}>
               {connection.name || "someone"}
-              {connection.is_verified && <BadgeCheck size={12} className="text-blue-500 flex-shrink-0" fill="currentColor" strokeWidth={0} />}
+              {connection.is_verified && <BadgeCheck size={12} className="text-blue-500 shrink-0" fill="currentColor" strokeWidth={0} />}
             </span>
             <span className={`font-mono text-[10px] px-2 py-0.5 rounded-md tracking-wide ml-auto ${darkMode ?"bg-green-500/20 text-green-300" :"bg-green-50 text-green-700"}`}>
               connected
@@ -119,7 +119,7 @@ const ConnectionCard = ({ conn, darkMode, expanded, onToggle }) => {
             </div>
           )}
         </div>
-        <ChevronDown size={16} className={`flex-shrink-0 transition-transform mt-1 ${expanded ?"rotate-180" :""} ${darkMode ?"text-white/40" :"text-gray-400"}`} />
+        <ChevronDown size={16} className={`shrink-0 transition-transform mt-1 ${expanded ?"rotate-180" :""} ${darkMode ?"text-white/40" :"text-gray-400"}`} />
       </div>
     </article>
   );
@@ -150,7 +150,7 @@ const ContactCard = ({ contact, darkMode, expanded, onToggle }) => {
     >
       <div className="flex items-start gap-3">
         <div
-          className="w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold text-[14px] flex-shrink-0"
+          className="w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold text-[14px] shrink-0"
           style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}
         >
           {(contact.contact_name || "?").charAt(0).toUpperCase()}
@@ -197,7 +197,7 @@ const ContactCard = ({ contact, darkMode, expanded, onToggle }) => {
                   </div>
                   {contact.interaction_log.slice(-3).map((ev, i) => (
                     <div key={i} className={`flex items-start gap-2 text-[11.5px] mb-1 ${darkMode ?"text-white/50" :"text-gray-500"}`}>
-                      <Clock size={11} className="mt-0.5 flex-shrink-0" />
+                      <Clock size={11} className="mt-0.5 shrink-0" />
                       <span>
                         {(ev.description || ev.type || "interaction").toLowerCase()}
                         {ev.ts && <span className="font-mono text-[10px] ml-1">· {new Date(ev.ts).toLocaleDateString()}</span>}
@@ -213,7 +213,7 @@ const ContactCard = ({ contact, darkMode, expanded, onToggle }) => {
             </div>
           )}
         </div>
-        <ChevronDown size={16} className={`flex-shrink-0 transition-transform mt-1 ${expanded ?"rotate-180" :""} ${darkMode ?"text-white/40" :"text-gray-400"}`} />
+        <ChevronDown size={16} className={`shrink-0 transition-transform mt-1 ${expanded ?"rotate-180" :""} ${darkMode ?"text-white/40" :"text-gray-400"}`} />
       </div>
     </article>
   );

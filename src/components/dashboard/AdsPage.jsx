@@ -39,7 +39,7 @@ const AdsPage = ({ darkMode }) => {
       {/* How it works */}
       <section className={`rounded-2xl border p-5 mb-5 ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}>
         <div className="flex gap-3 items-start">
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0"
             style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}>
             T
           </div>

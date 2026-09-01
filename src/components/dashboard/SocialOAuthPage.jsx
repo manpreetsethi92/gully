@@ -270,7 +270,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
 
       {/* Info note — why verify */}
       <section className={`rounded-2xl border p-4 mb-5 flex gap-3 items-start ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-gray-50"}`}>
-        <Lightbulb size={16} strokeWidth={1.75} className={`flex-shrink-0 mt-0.5 ${darkMode ?"text-amber-300" :"text-amber-500"}`} />
+        <Lightbulb size={16} strokeWidth={1.75} className={`shrink-0 mt-0.5 ${darkMode ?"text-amber-300" :"text-amber-500"}`} />
         <p className={`text-[13.5px] leading-[1.55] ${darkMode ?"text-white/75" :"text-gray-700"}`}>
           verify yourself and we'll match you better. oauth-verified profiles rank higher and get a verified badge. 10 seconds per platform.
         </p>
@@ -297,7 +297,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
  }`}
             >
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
                 style={{ background: PLATFORM_BG[platform.key] || "#333" }}
               >
                 <PlatformIcon platformKey={platform.key} />
@@ -307,7 +307,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                   <span className={`text-[14px] font-medium ${darkMode ?"text-white" :"text-gray-900"}`}>
                     {platform.label}
                   </span>
-                  {isVerified && <ShieldCheck size={12} className="text-blue-400 flex-shrink-0" />}
+                  {isVerified && <ShieldCheck size={12} className="text-blue-400 shrink-0" />}
                 </div>
                 {isConnected ? (
                   connected[platform.key] ? (
@@ -374,7 +374,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                   className={`rounded-2xl border p-4 mb-2 ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-mono font-semibold text-[11px] flex-shrink-0 ${darkMode ?"bg-white/10 text-white" :"bg-gray-900 text-white"}`}>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-mono font-semibold text-[11px] shrink-0 ${darkMode ?"bg-white/10 text-white" :"bg-gray-900 text-white"}`}>
                       {iconText}
                     </div>
                     <div className="flex-1 min-w-0">

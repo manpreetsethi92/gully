@@ -207,7 +207,7 @@ const AccountSettingsPage = ({ darkMode }) => {
  :"border-gray-100 bg-white hover:border-gray-200"
  }`}
           >
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
  darkMode ?"bg-white/5 text-white/60" :"bg-gray-100 text-gray-600"
  }`}>
               {item.icon}
@@ -238,7 +238,7 @@ const AccountSettingsPage = ({ darkMode }) => {
  :"border-gray-100 bg-white hover:border-gray-200"
  }`}
         >
-          <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+          <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
             style={{ background: darkMode ? "rgba(229,9,20,0.15)" : "#fff1f1" }}>
             <LogOut size={13} style={{ color: "#E50914" }} />
           </div>
@@ -257,7 +257,7 @@ const AccountSettingsPage = ({ darkMode }) => {
  :"border-gray-100 bg-white hover:border-gray-200"
  }`}
         >
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
  darkMode ?"bg-white/5 text-white/60" :"bg-gray-100 text-gray-600"
  }`}>
             <Trash2 size={13} />

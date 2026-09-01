@@ -119,7 +119,7 @@ const LiveTicker = () => {
             {doubled.map((item, i) => (
               <span
                 key={`${filter}-${i}`}
-                className="font-mono text-xs text-gray-700 inline-flex items-center gap-2.5 flex-shrink-0"
+                className="font-mono text-xs text-gray-700 inline-flex items-center gap-2.5 shrink-0"
               >
                 <span className="w-1.5 h-1.5 bg-[#E50914] rounded-full inline-block" />
                 {item}

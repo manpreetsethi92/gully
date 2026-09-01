@@ -76,19 +76,19 @@ const FirstTextPrompt = () => {
         {/* Numbered steps */}
         <ol className="text-left mb-7 space-y-3 px-2">
           <li className="flex gap-3 items-start">
-            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-[12px] font-semibold flex items-center justify-center mt-0.5">1</span>
+            <span className="shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-[12px] font-semibold flex items-center justify-center mt-0.5">1</span>
             <div className="text-[14.5px] text-gray-700 leading-snug">
               text taj on <span className="font-mono text-gray-900">{WHATSAPP_DISPLAY}</span>
             </div>
           </li>
           <li className="flex gap-3 items-start">
-            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-[12px] font-semibold flex items-center justify-center mt-0.5">2</span>
+            <span className="shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-[12px] font-semibold flex items-center justify-center mt-0.5">2</span>
             <div className="text-[14.5px] text-gray-700 leading-snug">
               she'll ask 2 quick questions
             </div>
           </li>
           <li className="flex gap-3 items-start">
-            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-[12px] font-semibold flex items-center justify-center mt-0.5">3</span>
+            <span className="shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-[12px] font-semibold flex items-center justify-center mt-0.5">3</span>
             <div className="text-[14.5px] text-gray-700 leading-snug">
               she'll find your first match
             </div>

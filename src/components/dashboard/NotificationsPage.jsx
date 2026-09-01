@@ -112,7 +112,7 @@ const NotificationsPage = ({ darkMode }) => {
  }`}
               >
                 <div className="flex gap-3 items-start">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0"
                     style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}>
                     T
                   </div>
@@ -140,7 +140,7 @@ const NotificationsPage = ({ darkMode }) => {
                       </p>
                     )}
                   </div>
-                  {n.read && <Check size={14} className={`flex-shrink-0 mt-2 ${darkMode ?"text-white/20" :"text-gray-300"}`} />}
+                  {n.read && <Check size={14} className={`shrink-0 mt-2 ${darkMode ?"text-white/20" :"text-gray-300"}`} />}
                 </div>
               </article>
             );

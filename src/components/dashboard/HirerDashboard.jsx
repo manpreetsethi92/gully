@@ -259,7 +259,7 @@ const HirerDashboard = ({ darkMode }) => {
                 onClick={() => { setSelectedGig(gig); fetchCandidates(gig.id); }}
               >
                 <div className="flex items-start gap-3">
-                  <span className={`w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0 ${
+                  <span className={`w-2.5 h-2.5 rounded-full mt-1.5 shrink-0 ${
                     gig.status === "closed" || gig.status === "expired" ? "bg-gray-400" :
                     gig.status === "review" || gig.status === "awaiting_approval" ? "bg-green-500" : "bg-blue-500"
                   }`} />
@@ -321,9 +321,9 @@ const HirerDashboard = ({ darkMode }) => {
                   <div key={c.id} className={`rounded-xl p-4 ${darkMode ? "bg-white/5" : "bg-gray-50"}`}>
                     <div className="flex items-start gap-3">
                       {c.matched_user?.photo_url ? (
-                        <img src={c.matched_user.photo_url} alt={c.matched_user.name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                        <img src={c.matched_user.photo_url} alt={c.matched_user.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
                       ) : (
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0"
                           style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}>
                           {c.matched_user?.name?.charAt(0).toUpperCase() || "?"}
                         </div>
@@ -341,7 +341,7 @@ const HirerDashboard = ({ darkMode }) => {
                         {c.match_reason && <p className={`text-xs mt-2 ${darkMode ? "text-white/40" : "text-gray-400"}`}>{c.match_reason}</p>}
                       </div>
                       {c.status === "suggested" && (
-                        <div className="flex gap-2 flex-shrink-0">
+                        <div className="flex gap-2 shrink-0">
                           <button onClick={() => handleAction(c.id, "approve")} disabled={actionLoading === c.id}
                             className="w-9 h-9 rounded-full flex items-center justify-center bg-green-500 text-white hover:bg-green-600">
                             <Check size={18} />

@@ -417,7 +417,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
 
               <label className="flex items-start gap-3 mb-6 cursor-pointer select-none">
                 <div
-                  className={`w-5 h-5 rounded-md border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
+                  className={`w-5 h-5 rounded-md border-2 shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
                     agreedToTerms ? "bg-[#E50914] border-[#E50914]" : "bg-white border-gray-300"
                   }`}
                   onClick={() => setAgreedToTerms(!agreedToTerms)}
