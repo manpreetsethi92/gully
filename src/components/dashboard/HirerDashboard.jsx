@@ -155,7 +155,7 @@ const HirerDashboard = ({ darkMode }) => {
                 value={form.title}
                 onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                 placeholder="e.g. Videographer for product launch in Austin"
-                className={`w-full px-4 py-3 rounded-xl border text-[15px] outline-none focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
+                className={`w-full px-4 py-3 rounded-xl border text-[15px] outline-hidden focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
               />
             </div>
             <div>
@@ -165,7 +165,7 @@ const HirerDashboard = ({ darkMode }) => {
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 placeholder="Describe the project, skills needed, timeline..."
                 rows={3}
-                className={`w-full px-4 py-3 rounded-xl border text-[15px] resize-none outline-none focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
+                className={`w-full px-4 py-3 rounded-xl border text-[15px] resize-none outline-hidden focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -175,7 +175,7 @@ const HirerDashboard = ({ darkMode }) => {
                   value={form.budget}
                   onChange={e => setForm(f => ({ ...f, budget: e.target.value }))}
                   placeholder="e.g. $500"
-                  className={`w-full px-3 py-2.5 rounded-xl border text-sm outline-none focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
+                  className={`w-full px-3 py-2.5 rounded-xl border text-sm outline-hidden focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
                 />
               </div>
               <div>
@@ -184,7 +184,7 @@ const HirerDashboard = ({ darkMode }) => {
                   value={form.location}
                   onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
                   placeholder="e.g. Austin, TX"
-                  className={`w-full px-3 py-2.5 rounded-xl border text-sm outline-none focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
+                  className={`w-full px-3 py-2.5 rounded-xl border text-sm outline-hidden focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
                 />
               </div>
             </div>
@@ -193,7 +193,7 @@ const HirerDashboard = ({ darkMode }) => {
               <select
                 value={form.category}
                 onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-                className={`w-full px-4 py-3 rounded-xl border text-[15px] outline-none focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white" : "bg-gray-50 border-gray-200 text-gray-900"}`}
+                className={`w-full px-4 py-3 rounded-xl border text-[15px] outline-hidden focus:ring-2 focus:ring-red-500 ${darkMode ? "bg-white/5 border-white/10 text-white" : "bg-gray-50 border-gray-200 text-gray-900"}`}
               >
                 <option value="">Select category</option>
                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}

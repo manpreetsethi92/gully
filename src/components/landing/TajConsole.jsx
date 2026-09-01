@@ -39,7 +39,7 @@ const TajConsole = () => {
   }, []);
 
   return (
-    <div className="max-w-[640px] mx-auto bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-sm">
+    <div className="max-w-[640px] mx-auto bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-xs">
       <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div

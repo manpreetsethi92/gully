@@ -277,7 +277,7 @@ const AccountSettingsPage = ({ darkMode }) => {
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(false)} />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setShowDeleteConfirm(false)} />
           <div className={`relative w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden ${darkMode ?"bg-[#0a0a0a] border border-white/10" :"bg-white border border-gray-100"}`}>
             <div className="p-6">
               <div className={`font-mono text-[10px] mb-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>
@@ -317,7 +317,7 @@ const AccountSettingsPage = ({ darkMode }) => {
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowLogoutConfirm(false)} />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setShowLogoutConfirm(false)} />
           <div className={`relative w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden ${darkMode ?"bg-[#0a0a0a] border border-white/10" :"bg-white border border-gray-100"}`}>
             <div className="p-6">
               <div className={`font-mono text-[10px] mb-1 ${darkMode ?"text-white/40" :"text-gray-400"}`}>

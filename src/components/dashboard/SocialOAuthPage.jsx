@@ -397,7 +397,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                     value={url}
                     onChange={(e) => setPortfolioLinks(prev => ({ ...prev, [key]: e.target.value }))}
                     placeholder={linkInfo?.placeholder || "https://..."}
-                    className={`w-full px-3 py-2 rounded-xl border font-mono text-[12px] placeholder:focus:outline-none ${
+                    className={`w-full px-3 py-2 rounded-xl border font-mono text-[12px] placeholder:focus:outline-hidden ${
  darkMode ?"bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/30"
  :"bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-400"
  }`}
@@ -425,7 +425,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
       {/* Add Link Modal */}
       {showAddLinkModal && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
           onClick={() => {
             setShowAddLinkModal(false);
             setSelectedLinkType("");
@@ -509,7 +509,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                       value={customLinkLabel}
                       onChange={(e) => setCustomLinkLabel(e.target.value)}
                       placeholder="e.g. my portfolio"
-                      className={`w-full px-3 py-2.5 rounded-xl border text-[13px] placeholder:focus:outline-none ${
+                      className={`w-full px-3 py-2.5 rounded-xl border text-[13px] placeholder:focus:outline-hidden ${
  darkMode ?"bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/30"
  :"bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-400"
  }`}
@@ -524,7 +524,7 @@ const SocialOAuthPage = ({ darkMode, hideHeader = false }) => {
                       value={customLinkUrl}
                       onChange={(e) => setCustomLinkUrl(e.target.value)}
                       placeholder="https://..."
-                      className={`w-full px-3 py-2.5 rounded-xl border font-mono text-[12px] placeholder:focus:outline-none ${
+                      className={`w-full px-3 py-2.5 rounded-xl border font-mono text-[12px] placeholder:focus:outline-hidden ${
  darkMode ?"bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-white/30"
  :"bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-400"
  }`}

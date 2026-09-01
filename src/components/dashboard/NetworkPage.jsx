@@ -444,7 +444,7 @@ const NetworkPage = ({ darkMode }) => {
                   placeholder="search contacts…"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className={`flex-1 bg-transparent text-[12.5px] outline-none ${darkMode ?"text-white placeholder-white/30" :"text-gray-900"}`}
+                  className={`flex-1 bg-transparent text-[12.5px] outline-hidden ${darkMode ?"text-white placeholder-white/30" :"text-gray-900"}`}
                 />
               </div>
 

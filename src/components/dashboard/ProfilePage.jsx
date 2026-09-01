@@ -469,7 +469,7 @@ const ProfilePage = ({ hideHeader = false } = {}) => {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingPhoto}
-                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-white dark:bg-[#222] border-2 border-gray-100 dark:border-[#333] flex items-center justify-center shadow-sm hover:bg-gray-50 dark:hover:bg-[#333] transition-colors disabled:opacity-50"
+                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-white dark:bg-[#222] border-2 border-gray-100 dark:border-[#333] flex items-center justify-center shadow-xs hover:bg-gray-50 dark:hover:bg-[#333] transition-colors disabled:opacity-50"
                 >
                   {uploadingPhoto ? (
                     <Loader2 size={14} className="text-gray-600 dark:text-gray-300 animate-spin" />

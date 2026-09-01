@@ -305,7 +305,7 @@ const DashboardLayout = () => {
 
       {/* Connect Socials modal (shown after signup) */}
       {showConnectSocialsModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
           <div className={`relative w-full max-w-md rounded-3xl shadow-2xl overflow-hidden ${darkMode ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
             <button
               onClick={() => setShowConnectSocialsModal(false)}

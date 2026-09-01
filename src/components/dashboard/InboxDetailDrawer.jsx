@@ -277,7 +277,7 @@ const InboxDetailDrawer = ({ item, isOpen, onClose, onAction, loadingAction, dar
       >
         {/* Header */}
         <div className={`sticky top-0 z-10 px-6 py-4 border-b flex items-center justify-between ${
- darkMode ?"bg-[#0a0a0a]/90 border-white/10 backdrop-blur" :"bg-white/90 border-gray-100 backdrop-blur"
+ darkMode ?"bg-[#0a0a0a]/90 border-white/10 backdrop-blur-sm" :"bg-white/90 border-gray-100 backdrop-blur-sm"
  }`}>
           <div>
             <div className={`font-mono text-[10px] ${darkMode ?"text-white/40" :"text-gray-400"}`}>
@@ -320,7 +320,7 @@ const InboxDetailDrawer = ({ item, isOpen, onClose, onAction, loadingAction, dar
 
         {/* Sticky action footer */}
         <div className={`sticky bottom-0 z-10 px-6 py-4 border-t flex gap-2 ${
- darkMode ?"bg-[#0a0a0a]/95 border-white/10 backdrop-blur" :"bg-white/95 border-gray-100 backdrop-blur"
+ darkMode ?"bg-[#0a0a0a]/95 border-white/10 backdrop-blur-sm" :"bg-white/95 border-gray-100 backdrop-blur-sm"
  }`}>
           {(item.actions || []).map((action) => (
             <button

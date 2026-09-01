@@ -105,7 +105,7 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, searchValue, onSearchChang
             placeholder="search country"
             value={searchValue}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:border-gray-400 lowercase font-mono"
+            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-hidden focus:border-gray-400 lowercase font-mono"
             autoFocus
           />
         </div>
