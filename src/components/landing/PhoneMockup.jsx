@@ -75,7 +75,7 @@ const PhoneMockup = () => {
         src="/phone-mockup.png"
         alt="Gully chat interface"
         className="w-full h-auto"
-        fetchpriority="high"
+        fetchPriority="high"
         decoding="async"
       />
       <div

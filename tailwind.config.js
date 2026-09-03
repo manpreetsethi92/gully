@@ -83,5 +83,7 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  // tailwindcss-animate was a v3 plugin; v4 uses tw-animate-css,
+  // imported from src/index.css instead.
+  plugins: [],
 }

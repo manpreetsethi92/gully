@@ -1,6 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind v4: one import replaces the three v3 directives. */
+@import "tailwindcss";
+
+/* Replaces the tailwindcss-animate plugin, which was v3-only. */
+@import "tw-animate-css";
+
+/* Keeps the existing JS theme (colours, fonts, keyframes) without porting it to
+   CSS-first @theme yet. v4 no longer auto-detects tailwind.config.js. */
+@config "../tailwind.config.js";
+
+/* Replaces darkMode: ["class"]. The app toggles a `dark` class on <html>
+   from DashboardLayout. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 * {
   box-sizing: border-box;
@@ -43,12 +53,12 @@ body {
     --ring: 358 84% 50%;
     --radius: 0.5rem;
     
-    --titli-red: #E50914;
-    --titli-black: #0f1419;
-    --titli-white: #ffffff;
-    --titli-gray: #536471;
-    --titli-light: #f7f9f9;
-    --titli-border: #eff3f4;
+    --gully-red: #E50914;
+    --gully-black: #0f1419;
+    --gully-white: #ffffff;
+    --gully-gray: #536471;
+    --gully-light: #f7f9f9;
+    --gully-border: #eff3f4;
   }
 
   /* Dark mode variables */
@@ -73,11 +83,11 @@ body {
     --input: 0 0% 15%;
     --ring: 358 84% 50%;
     
-    --titli-black: #ffffff;
-    --titli-white: #0a0a0a;
-    --titli-gray: #a0a0a0;
-    --titli-light: #151515;
-    --titli-border: #222222;
+    --gully-black: #ffffff;
+    --gully-white: #0a0a0a;
+    --gully-gray: #a0a0a0;
+    --gully-light: #151515;
+    --gully-border: #222222;
   }
 }
 
@@ -170,8 +180,8 @@ html.dark textarea:focus {
 }
 
 /* Shadows */
-html.dark .shadow-sm,
-html.dark .shadow                   { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
+html.dark .shadow-xs,
+html.dark .shadow-sm                   { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
 
 /* Dialog/modal */
 html.dark [role="dialog"],
@@ -252,7 +262,7 @@ html.dark ::-webkit-scrollbar-thumb:hover   { background: #444; }
   width: 20px;
   height: 20px;
   border: 2px solid #f0f0f0;
-  border-top-color: var(--titli-red);
+  border-top-color: var(--gully-red);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -263,7 +273,7 @@ html.dark ::-webkit-scrollbar-thumb:hover   { background: #444; }
 
 /* CTA Button */
 .cta-button {
-  background: var(--titli-red);
+  background: var(--gully-red);
   color: white;
   border: none;
   padding: 14px 28px;
@@ -291,7 +301,7 @@ html.dark ::-webkit-scrollbar-thumb:hover   { background: #444; }
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 16px;
-  color: var(--titli-black);
+  color: var(--gully-black);
 }
 
 .settings-item {
@@ -299,7 +309,7 @@ html.dark ::-webkit-scrollbar-thumb:hover   { background: #444; }
   align-items: center;
   justify-content: space-between;
   padding: 16px 0;
-  border-bottom: 1px solid var(--titli-border);
+  border-bottom: 1px solid var(--gully-border);
 }
 
 .settings-item:last-child {
@@ -314,7 +324,7 @@ html.dark ::-webkit-scrollbar-thumb:hover   { background: #444; }
 
 .settings-item-info p {
   font-size: 13px;
-  color: var(--titli-gray);
+  color: var(--gully-gray);
 }
 
 .settings-tabs {
@@ -328,14 +338,14 @@ html.dark ::-webkit-scrollbar-thumb:hover   { background: #444; }
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  border: 1px solid var(--titli-border);
+  border: 1px solid var(--gully-border);
   background: white;
   transition: all 0.15s ease;
 }
 
 .settings-tab.active {
-  background: var(--titli-light);
-  border-color: var(--titli-black);
+  background: var(--gully-light);
+  border-color: var(--gully-black);
 }
 
 /* Toggle Switch */
@@ -350,7 +360,7 @@ html.dark ::-webkit-scrollbar-thumb:hover   { background: #444; }
 }
 
 .toggle-switch.active {
-  background: var(--titli-red);
+  background: var(--gully-red);
 }
 
 .toggle-switch::after {
@@ -384,32 +394,32 @@ html.dark ::-webkit-scrollbar-thumb:hover   { background: #444; }
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
-  border: 1px solid var(--titli-border);
+  border: 1px solid var(--gully-border);
   background: white;
-  color: var(--titli-gray);
+  color: var(--gully-gray);
 }
 
 .skill-tag:hover {
-  border-color: var(--titli-black);
-  color: var(--titli-black);
+  border-color: var(--gully-black);
+  color: var(--gully-black);
 }
 
 .skill-tag.selected {
-  background: var(--titli-black);
+  background: var(--gully-black);
   color: white;
-  border-color: var(--titli-black);
+  border-color: var(--gully-black);
 }
 
 /* Content Header */
 .content-header {
   padding: 24px 32px;
-  border-bottom: 1px solid var(--titli-border);
+  border-bottom: 1px solid var(--gully-border);
 }
 
 .content-header h1 {
   font-size: 22px;
   font-weight: 700;
-  color: var(--titli-black);
+  color: var(--gully-black);
   margin: 0;
 }
 
@@ -433,12 +443,12 @@ html.dark ::-webkit-scrollbar-thumb:hover   { background: #444; }
 .empty-state h3 {
   font-size: 18px;
   font-weight: 600;
-  color: var(--titli-black);
+  color: var(--gully-black);
   margin-bottom: 8px;
 }
 
 .empty-state p {
-  color: var(--titli-gray);
+  color: var(--gully-gray);
   font-size: 14px;
 }
 

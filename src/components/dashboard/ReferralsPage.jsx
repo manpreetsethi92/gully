@@ -71,7 +71,7 @@ const ReferralsPage = ({ darkMode }) => {
       {/* Intro */}
       <section className={`rounded-2xl border p-5 mb-5 ${darkMode ?"border-white/10 bg-white/[0.03]" :"border-gray-100 bg-white"}`}>
         <div className="flex gap-3 items-start">
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0"
             style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}>
             T
           </div>
@@ -119,7 +119,7 @@ const ReferralsPage = ({ darkMode }) => {
             </p>
             <button
               onClick={handleCopy}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 text-white hover:opacity-90"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-medium shrink-0 text-white hover:opacity-90"
               style={{ background: "#0a0a0a" }}
             >
               <Copy size={12} /> Copy

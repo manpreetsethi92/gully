@@ -91,7 +91,7 @@ const OnboardingFlow = ({ darkMode }) => {
           onChange={(e) => setAnswers(prev => ({ ...prev, [current.id]: e.target.value }))}
           placeholder={current.placeholder}
           rows={4}
-          className={`w-full p-4 rounded-2xl border text-[15px] resize-none outline-none focus:ring-2 focus:ring-red-500 transition-all ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
+          className={`w-full p-4 rounded-2xl border text-[15px] resize-none outline-hidden focus:ring-2 focus:ring-red-500 transition-all ${darkMode ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"}`}
         />
 
         <button

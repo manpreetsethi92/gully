@@ -30,7 +30,7 @@ class ErrorBoundary extends Component {
     });
 
     // Optionally send error to monitoring service (e.g., Sentry)
-    if (process.env.REACT_APP_SENTRY_DSN) {
+    if (import.meta.env.VITE_SENTRY_DSN) {
       // window.Sentry?.captureException(error, { extra: errorInfo });
     }
   }
@@ -88,7 +88,7 @@ class ErrorBoundary extends Component {
                 "We're sorry, but something unexpected happened. Please try again."}
             </p>
 
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <details className="mb-6 text-left bg-[#1a1a1a] p-4 rounded-lg">
                 <summary className="cursor-pointer text-sm text-gray-500 mb-2">
                   Error Details (Development Only)

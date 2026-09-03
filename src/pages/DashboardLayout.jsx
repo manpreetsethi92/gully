@@ -144,7 +144,7 @@ const DashboardLayout = () => {
         <aside
           className={`
  fixed lg:sticky top-0 left-0 h-screen z-50
- w-[220px] border-r flex flex-col flex-shrink-0
+ w-[220px] border-r flex flex-col shrink-0
  transition-all duration-300 ease-out
  ${darkMode ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-gray-100'}
  ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
@@ -226,7 +226,7 @@ const DashboardLayout = () => {
               className={`w-full flex items-center gap-3 p-2.5 rounded-xl transition-colors ${darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
             >
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs flex-shrink-0"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0"
                 style={{ background: 'linear-gradient(135deg, #E50914 0%, #ff4757 100%)' }}
               >
                 {user?.name?.charAt(0).toUpperCase() || 'G'}
@@ -234,7 +234,7 @@ const DashboardLayout = () => {
               <div className="flex-1 text-left min-w-0">
                 <div className={`font-medium text-[13px] truncate flex items-center gap-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                   {user?.name || 'you'}
-                  {user?.is_verified && <BadgeCheck size={12} className="text-blue-500 flex-shrink-0" fill="currentColor" strokeWidth={0} />}
+                  {user?.is_verified && <BadgeCheck size={12} className="text-blue-500 shrink-0" fill="currentColor" strokeWidth={0} />}
                 </div>
                 <div className={`font-mono text-[10px] truncate ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
                   {user?.phone || ''}
@@ -305,7 +305,7 @@ const DashboardLayout = () => {
 
       {/* Connect Socials modal (shown after signup) */}
       {showConnectSocialsModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
           <div className={`relative w-full max-w-md rounded-3xl shadow-2xl overflow-hidden ${darkMode ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
             <button
               onClick={() => setShowConnectSocialsModal(false)}

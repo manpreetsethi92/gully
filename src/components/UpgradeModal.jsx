@@ -64,7 +64,7 @@ const UpgradeModal = ({ isOpen, onClose, limitType = "requests" }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60 backdrop-blur-xs"
         onClick={onClose}
       />
 
@@ -94,19 +94,19 @@ const UpgradeModal = ({ isOpen, onClose, limitType = "requests" }) => {
             <h3 className={`text-sm font-semibold mb-3 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>PRO BENEFITS</h3>
             <ul className="space-y-3">
               <li className="flex items-center gap-3">
-                <CheckCircle size={18} className="text-purple-500 flex-shrink-0" />
+                <CheckCircle size={18} className="text-purple-500 shrink-0" />
                 <span className={darkMode ? 'text-white/80' : 'text-gray-700'}>40 requests per day</span>
               </li>
               <li className="flex items-center gap-3">
-                <CheckCircle size={18} className="text-purple-500 flex-shrink-0" />
+                <CheckCircle size={18} className="text-purple-500 shrink-0" />
                 <span className={darkMode ? 'text-white/80' : 'text-gray-700'}>25 job alerts daily</span>
               </li>
               <li className="flex items-center gap-3">
-                <CheckCircle size={18} className="text-purple-500 flex-shrink-0" />
+                <CheckCircle size={18} className="text-purple-500 shrink-0" />
                 <span className={darkMode ? 'text-white/80' : 'text-gray-700'}>Verified badge on your profile</span>
               </li>
               <li className="flex items-center gap-3">
-                <CheckCircle size={18} className="text-purple-500 flex-shrink-0" />
+                <CheckCircle size={18} className="text-purple-500 shrink-0" />
                 <span className={darkMode ? 'text-white/80' : 'text-gray-700'}>Priority matching</span>
               </li>
             </ul>

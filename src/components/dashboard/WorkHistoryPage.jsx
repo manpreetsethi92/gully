@@ -81,7 +81,7 @@ const WorkHistoryPage = ({ darkMode, hideHeader = false }) => {
             <span className={`font-mono text-[11px] mr-2 ${darkMode ?"text-white/60" :"text-gray-500"}`}>
               {skills.length}
             </span>
-            <ChevronDown size={16} className={`flex-shrink-0 transition-transform ${skillsExpanded ?"rotate-180" :""} ${darkMode ?"text-white/40" :"text-gray-400"}`} />
+            <ChevronDown size={16} className={`shrink-0 transition-transform ${skillsExpanded ?"rotate-180" :""} ${darkMode ?"text-white/40" :"text-gray-400"}`} />
           </button>
           {skillsExpanded && (
             <div className={`px-5 pb-4 pt-0 flex flex-wrap gap-1.5 border-t ${darkMode ?"border-white/10" :"border-gray-100"}`}>

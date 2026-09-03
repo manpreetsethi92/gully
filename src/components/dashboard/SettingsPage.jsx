@@ -58,7 +58,7 @@ const SettingsPage = ({ darkMode }) => {
 
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sub-nav rail (left on md+, top on mobile) */}
-        <nav className={`md:w-[220px] flex-shrink-0 md:border-r ${darkMode ?"md:border-white/10" :"md:border-gray-100"} md:pr-4`}>
+        <nav className={`md:w-[220px] shrink-0 md:border-r ${darkMode ?"md:border-white/10" :"md:border-gray-100"} md:pr-4`}>
           <div className="flex md:flex-col gap-1 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
             {SECTIONS.map((section) => {
               const isActive = section.id === activeSection;
@@ -67,7 +67,7 @@ const SettingsPage = ({ darkMode }) => {
                 <button
                   key={section.id}
                   onClick={() => setActiveSection(section.id)}
-                  className={`inline-flex items-center gap-2.5 px-3 py-2 rounded-xl flex-shrink-0 transition-colors text-left ${
+                  className={`inline-flex items-center gap-2.5 px-3 py-2 rounded-xl shrink-0 transition-colors text-left ${
  isActive
  ? (darkMode ?"bg-white/10" :"bg-gray-100")
  : (darkMode ?"hover:bg-white/5" :"hover:bg-gray-50")

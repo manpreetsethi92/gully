@@ -105,7 +105,7 @@ const CountryDropdown = ({ isOpen, onClose, onSelect, searchValue, onSearchChang
             placeholder="search country"
             value={searchValue}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:border-gray-400 lowercase font-mono"
+            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-hidden focus:border-gray-400 lowercase font-mono"
             autoFocus
           />
         </div>
@@ -417,7 +417,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
 
               <label className="flex items-start gap-3 mb-6 cursor-pointer select-none">
                 <div
-                  className={`w-5 h-5 rounded-md border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
+                  className={`w-5 h-5 rounded-md border-2 shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
                     agreedToTerms ? "bg-[#E50914] border-[#E50914]" : "bg-white border-gray-300"
                   }`}
                   onClick={() => setAgreedToTerms(!agreedToTerms)}

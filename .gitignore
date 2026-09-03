@@ -1,6 +1,12 @@
 .vercel
 node_modules/
-build/
+dist/
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/.playwright/
 .cache/
 .env*.local
 

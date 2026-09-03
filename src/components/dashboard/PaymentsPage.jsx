@@ -95,7 +95,7 @@ const PaymentsPage = ({ darkMode }) => {
       {!isPaid && (
         <section className={`rounded-2xl border p-5 mb-5 ${darkMode ?"border-red-500/20 bg-red-500/5" :"border-red-100 bg-red-50/40"}`}>
           <div className="flex gap-3 items-start mb-3">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0"
+            <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0"
               style={{ background: "linear-gradient(135deg, #E50914 0%, #ff4757 100%)" }}>
               T
             </div>
