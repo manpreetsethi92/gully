@@ -1,13 +1,16 @@
-// AuthModal v2 — radical simplification.
+// AuthModal v3 — ButtrBase OTP login (Saumya's launch spec, 2026-10-01).
 //
 // Flow:
-//   Step 1 (phone):   user types phone → we check if account exists
-//                     → if exists:  go to Step 2a (OTP signin)
-//                     → if new:     go to Step 2b (name + location signup)
-//   Step 2a (otp):    user enters OTP → /auth/verify-otp → done
-//   Step 2b (name):   user enters name + location → /auth/signup-and-call → done
-//   Step 3 (handoff): "message taj" CTA + QR code. The real onboarding
-//                     (email, IG, LinkedIn, skills) happens in WhatsApp.
+//   Step 1 (contact):  email (default) or phone → POST /auth/bb/otp/send
+//   Step 2 (otp):      6-digit code → POST /auth/bb/otp/verify
+//                      → profile complete?  done, go to /app
+//                      → new bare user?     Step 3
+//   Step 3 (details):  name + location → POST /auth/bb/complete-profile
+//                      → socials connect page with the "text taj" flag
+//
+// Legacy phone login (Twilio Verify) stays reachable behind one link for the
+// pre-ButtrBase users until the migration/cutover decision lands - removing
+// it is a cutover-step action, not part of this rework.
 //
 // Voice/tone: lowercase, editorial, matches the landing.
 
@@ -15,19 +18,11 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
-import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { useAuth, API } from "../App";
 import { ArrowLeft, ArrowRight, ChevronDown, Search, Check } from "lucide-react";
-
-// Same WhatsApp number as landing + dashboard.
-// Note: WhatsApp policy requires user to send the FIRST message before Taj can respond.
-// We pre-fill a friendly opener so the user just has to hit send.
-const WHATSAPP_NUMBER = "12134147369";
-const WHATSAPP_DISPLAY = "+1 (213) 414-7369";
-const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("hey taj! just signed up on gully")}`;
 
 const COUNTRY_CODES = [
   { code: "+1",   iso: "US", country: "United States",   flag: "🇺🇸", len: 10, placeholder: "(000) 000-0000",   format: "(ddd) ddd-dddd" },
@@ -45,25 +40,25 @@ const COUNTRY_CODES = [
   { code: "+39",  iso: "IT", country: "Italy",           flag: "🇮🇹", len: 10, placeholder: "000 000 0000",     format: "ddd ddd dddd" },
   { code: "+82",  iso: "KR", country: "South Korea",     flag: "🇰🇷", len: 10, placeholder: "00 0000 0000",     format: "dd dddd dddd" },
   { code: "+31",  iso: "NL", country: "Netherlands",     flag: "🇳🇱", len: 9,  placeholder: "0 00000000",       format: "d dddddddd" },
-  { code: "+46",  iso: "SE", country: "Sweden",          flag: "🇸🇪", len: 9,  placeholder: "00 000 00 00",     format: "dd ddd dd dd" },
-  { code: "+41",  iso: "CH", country: "Switzerland",     flag: "🇨🇭", len: 9,  placeholder: "00 000 00 00",     format: "dd ddd dd dd" },
+  { code: "+46",  iso: "SE", country: "Sweden",          flag: "🇸🇪", len: 9,  placeholder: "000 000 000",      format: "ddd ddd ddd" },
+  { code: "+41",  iso: "CH", country: "Switzerland",     flag: "🇨🇭", len: 9,  placeholder: "000 00 00 00",     format: "ddd dd dd dd" },
   { code: "+65",  iso: "SG", country: "Singapore",       flag: "🇸🇬", len: 8,  placeholder: "0000 0000",        format: "dddd dddd" },
-  { code: "+971", iso: "AE", country: "UAE",             flag: "🇦🇪", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
-  { code: "+966", iso: "SA", country: "Saudi Arabia",    flag: "🇸🇦", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
-  { code: "+27",  iso: "ZA", country: "South Africa",    flag: "🇿🇦", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
+  { code: "+971", iso: "AE", country: "UAE",             flag: "🇦🇪", len: 9,  placeholder: "000 000 0000",     format: "ddd ddd dddd" },
+  { code: "+966", iso: "SA", country: "Saudi Arabia",    flag: "🇸🇦", len: 9,  placeholder: "000 000 0000",     format: "ddd ddd dddd" },
+  { code: "+27",  iso: "ZA", country: "South Africa",    flag: "🇿🇦", len: 9,  placeholder: "000 000 0000",     format: "ddd ddd dddd" },
   { code: "+234", iso: "NG", country: "Nigeria",         flag: "🇳🇬", len: 10, placeholder: "000 000 0000",     format: "ddd ddd dddd" },
   { code: "+63",  iso: "PH", country: "Philippines",     flag: "🇵🇭", len: 10, placeholder: "000 000 0000",     format: "ddd ddd dddd" },
   { code: "+84",  iso: "VN", country: "Vietnam",         flag: "🇻🇳", len: 9,  placeholder: "000 000 000",      format: "ddd ddd ddd" },
-  { code: "+66",  iso: "TH", country: "Thailand",        flag: "🇹🇭", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
-  { code: "+60",  iso: "MY", country: "Malaysia",        flag: "🇲🇾", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
-  { code: "+62",  iso: "ID", country: "Indonesia",       flag: "🇮🇩", len: 10, placeholder: "000 0000 0000",    format: "ddd dddd dddd" },
+  { code: "+66",  iso: "TH", country: "Thailand",        flag: "🇹🇭", len: 9,  placeholder: "0000 000 000",     format: "dddd ddd ddd" },
+  { code: "+60",  iso: "MY", country: "Malaysia",        flag: "🇲🇾", len: 9,  placeholder: "000 000 0000",     format: "ddd ddd dddd" },
+  { code: "+62",  iso: "ID", country: "Indonesia",       flag: "🇮🇩", len: 10, placeholder: "0000 0000 0000",   format: "dddd dddd dddd" },
   { code: "+48",  iso: "PL", country: "Poland",          flag: "🇵🇱", len: 9,  placeholder: "000 000 000",      format: "ddd ddd ddd" },
   { code: "+90",  iso: "TR", country: "Turkey",          flag: "🇹🇷", len: 10, placeholder: "000 000 00 00",    format: "ddd ddd dd dd" },
-  { code: "+20",  iso: "EG", country: "Egypt",           flag: "🇪🇬", len: 10, placeholder: "00 0000 0000",     format: "dd dddd dddd" },
-  { code: "+92",  iso: "PK", country: "Pakistan",        flag: "🇵🇰", len: 10, placeholder: "000 0000000",      format: "ddd ddddddd" },
-  { code: "+880", iso: "BD", country: "Bangladesh",      flag: "🇧🇩", len: 10, placeholder: "0000 000000",      format: "dddd dddddd" },
-  { code: "+64",  iso: "NZ", country: "New Zealand",     flag: "🇳🇿", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" },
-  { code: "+353", iso: "IE", country: "Ireland",         flag: "🇮🇪", len: 9,  placeholder: "00 000 0000",      format: "dd ddd dddd" }
+  { code: "+20",  iso: "EG", country: "Egypt",           flag: "🇪🇬", len: 10, placeholder: "000 0000 0000",    format: "ddd dddd dddd" },
+  { code: "+92",  iso: "PK", country: "Pakistan",        flag: "🇵🇰", len: 10, placeholder: "0000 0000000",     format: "dddd ddddddd" },
+  { code: "+880", iso: "BD", country: "Bangladesh",      flag: "🇧🇩", len: 10, placeholder: "0000 0000000",     format: "dddd ddddddd" },
+  { code: "+64",  iso: "NZ", country: "New Zealand",     flag: "🇳🇿", len: 9,  placeholder: "000 000 0000",     format: "ddd ddd dddd" },
+  { code: "+353", iso: "IE", country: "Ireland",         flag: "🇮🇪", len: 9,  placeholder: "000 000 0000",     format: "ddd ddd dddd" }
 ];
 
 // Format a digit string according to a mask. 'd' = digit slot. Other chars passed through.
@@ -83,6 +78,8 @@ const formatPhoneByMask = (digits, mask) => {
   }
   return out;
 };
+
+const looksLikeEmail = (value) => /^\S+@\S+\.\S+$/.test(value.trim());
 
 
 // Country code picker — rendered INLINE (no portal).
@@ -139,8 +136,11 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // "phone" → check existence → "otp" (existing) or "details" (new) → "handoff"
-  const [step, setStep] = useState("phone");
+  // "contact" → "otp" → ("details" if the ButtrBase user is new to gully)
+  // "legacyphone" / "legacyotp" = pre-ButtrBase Twilio flow, link at the bottom.
+  const [step, setStep] = useState("contact");
+  const [channel, setChannel] = useState("email");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [countryCode, setCountryCode] = useState("+1");
   const [countryIso, setCountryIso] = useState("US");
@@ -153,12 +153,14 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const phoneInputRef = useRef(null);
+  const contactInputRef = useRef(null);
 
   // Reset when modal opens/closes
   useEffect(() => {
     if (isOpen) {
-      setStep("phone");
+      setStep("contact");
+      setChannel("email");
+      setEmail("");
       setPhone("");
       setName("");
       setLocation("");
@@ -205,6 +207,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   }, [isOpen]);
 
   const fullPhone = `${countryCode}${phone.replace(/\D/g, "")}`;
+  const contact = channel === "email" ? email.trim().toLowerCase() : fullPhone;
   const filteredCountries = COUNTRY_CODES.filter(
     (c) =>
       c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
@@ -222,8 +225,103 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const selectedPlaceholder = selectedCountry.placeholder;
   const selectedMask = selectedCountry.format;
 
-  // ===== Step 1: phone → route to OTP or details =====
-  const handlePhoneSubmit = async () => {
+  // ===== Step 1: contact → send the ButtrBase code =====
+  const handleContactSubmit = async () => {
+    setError("");
+    if (channel === "email" && !looksLikeEmail(email)) {
+      setError("enter a valid email address");
+      return;
+    }
+    if (channel === "phone" && phone.replace(/\D/g, "").length !== selectedMaxDigits) {
+      setError(`enter a valid ${selectedCountry.country.toLowerCase()} number (${selectedMaxDigits} digits)`);
+      return;
+    }
+    if (!agreedToTerms) {
+      setError("please accept the terms to continue");
+      return;
+    }
+    setLoading(true);
+    try {
+      await axios.post(`${API}/auth/bb/otp/send`,
+        channel === "email" ? { email: contact } : { phone: contact }
+      );
+      setOtp("");
+      setStep("otp");
+    } catch (e) {
+      const msg = e?.response?.data?.detail || "something went wrong, try again";
+      setError(typeof msg === "string" ? msg.toLowerCase() : "something went wrong, try again");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ===== Step 2: verify → login, then details if new =====
+  const handleOtpSubmit = async () => {
+    setError("");
+    if (otp.length !== 6) {
+      setError("enter the 6-digit code");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { data } = await axios.post(`${API}/auth/bb/otp/verify`, {
+        ...(channel === "email" ? { email: contact } : { phone: contact }),
+        otp
+      });
+      login(data.token, data.user);
+      if (data.user?.profile_completed) {
+        toast.success("welcome back");
+        onClose();
+        navigate("/app");
+      } else {
+        setStep("details");
+      }
+    } catch (e) {
+      const msg = e?.response?.data?.detail || "invalid or expired code";
+      setError(typeof msg === "string" ? msg.toLowerCase() : "invalid or expired code");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ===== Step 3: name + location for the bare ButtrBase user =====
+  const handleDetailsSubmit = async () => {
+    setError("");
+    if (!name.trim()) {
+      setError("what should taj call you?");
+      return;
+    }
+    if (!location.trim()) {
+      setError("where are you based?");
+      return;
+    }
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("gully_token");
+      const refCode = localStorage.getItem("gully_ref") || null;
+      const { data } = await axios.post(
+        `${API}/auth/bb/complete-profile`,
+        { name: name.trim(), location: location.trim(), ref_code: refCode },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      login(token, data.user);
+      if (refCode) localStorage.removeItem("gully_ref");
+
+      // Same handoff as the old signup: socials connect page carries the
+      // "text taj to get started" prompt (WhatsApp policy: user messages first).
+      sessionStorage.setItem("gully_needs_first_text", "1");
+      onClose();
+      navigate("/app/you?tab=socials");
+    } catch (e) {
+      const msg = e?.response?.data?.detail || "something went wrong, try again";
+      setError(typeof msg === "string" ? msg.toLowerCase() : "signup failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ===== Legacy (pre-ButtrBase) phone login, unchanged =====
+  const handleLegacyPhoneSubmit = async () => {
     setError("");
     const digits = phone.replace(/\D/g, "");
     if (digits.length !== selectedMaxDigits) {
@@ -238,23 +336,20 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     try {
       const { data } = await axios.get(`${API}/auth/check-phone?phone=${encodeURIComponent(fullPhone)}`);
       if (data.exists) {
-        // Existing user — send OTP for signin
         await axios.post(`${API}/auth/send-otp`, { phone: fullPhone });
-        setStep("otp");
+        setStep("legacyotp");
       } else {
-        // New user — ask for name + location
-        setStep("details");
+        setError("no old account on this number — sign in with email or phone above instead");
       }
     } catch (e) {
       const msg = e?.response?.data?.detail || "something went wrong, try again";
-      setError(msg.toLowerCase());
+      setError(typeof msg === "string" ? msg.toLowerCase() : "something went wrong, try again");
     } finally {
       setLoading(false);
     }
   };
 
-  // ===== Step 2a: OTP verify (signin) =====
-  const handleOtpSubmit = async () => {
+  const handleLegacyOtpSubmit = async () => {
     setError("");
     if (otp.length !== 6) {
       setError("enter the 6-digit code");
@@ -262,12 +357,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     }
     setLoading(true);
     try {
-      const { data } = await axios.post(`${API}/auth/verify-otp`, {
-        phone: fullPhone,
-        otp
-      });
+      const { data } = await axios.post(`${API}/auth/verify-otp`, { phone: fullPhone, otp });
       login(data.token, data.user);
-      // Existing users skip handoff — they've used the product before
       toast.success("welcome back");
       onClose();
       navigate("/app");
@@ -278,56 +369,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     }
   };
 
-  // ===== Step 2b: signup (new user) =====
-  const handleDetailsSubmit = async () => {
-    setError("");
-    if (!name.trim()) {
-      setError("what should taj call you?");
-      return;
-    }
-    if (!location.trim()) {
-      setError("where are you based?");
-      return;
-    }
-    setLoading(true);
-    try {
-      // Read referral code if stored from ?ref= URL param
-      const refCode = localStorage.getItem("gully_ref") || null;
-      // NOTE: /auth/signup-and-call is named historically — voice calls are DISABLED.
-      // It now just: creates user → logs activity → waits for user to text Taj first
-      // (WhatsApp policy requires user-initiated first message).
-      const { data } = await axios.post(`${API}/auth/signup-and-call`, {
-        name: name.trim(),
-        phone: fullPhone,
-        email: null,
-        location: location.trim(),
-        instagram: null,
-        linkedin: null,
-        ref_code: refCode,
-        whatsapp_alerts_opt_in: true
-      });
-      login(data.token, data.user);
-      // Fire-and-forget cleanup of referral code
-      if (refCode) localStorage.removeItem("gully_ref");
-
-      // ── Onboarding v2 handoff ──
-      // Skip the old handoff screen entirely. Send the user to their socials
-      // connect page (that's where Taj's OAuth button will land them anyway)
-      // with a flag so the page shows a "text taj to get started" prompt.
-      sessionStorage.setItem("gully_needs_first_text", "1");
-      onClose();
-      navigate("/app/you?tab=socials");
-    } catch (e) {
-      const msg = e?.response?.data?.detail || "something went wrong, try again";
-      setError(typeof msg === "string" ? msg.toLowerCase() : "signup failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleBack = () => {
     setError("");
-    if (step === "otp" || step === "details") setStep("phone");
+    if (step === "otp" || step === "details") setStep("contact");
+    if (step === "legacyotp") setStep("legacyphone");
   };
 
 
@@ -343,8 +388,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         <DialogContent
           className="sm:max-w-md p-0 bg-white border border-gray-100 rounded-3xl"
         >
-          {/* Back arrow — only on step 2 */}
-          {(step === "otp" || step === "details") && (
+          {/* Back arrow — only on step 2+ */}
+          {(step === "otp" || step === "details" || step === "legacyotp") && (
             <button
               onClick={handleBack}
               className="absolute top-5 left-5 w-9 h-9 rounded-full border border-gray-200 hover:border-gray-900 text-gray-600 hover:text-gray-900 flex items-center justify-center transition-colors z-10"
@@ -354,65 +399,97 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             </button>
           )}
 
-          {/* ========== STEP 1: PHONE ========== */}
-          {step === "phone" && (
+          {/* ========== STEP 1: CONTACT ========== */}
+          {step === "contact" && (
             <div className="px-10 py-12">
               <h2 className="font-display text-[42px] leading-[0.95] tracking-tight text-gray-900 font-normal lowercase mb-2">
                 just give me your<br />
-                <em className="text-[#E50914]">phone.</em>
+                <em className="text-[#E50914]">{channel}.</em>
               </h2>
-              <p className="font-syne text-sm text-gray-500 mb-8 lowercase">
-                taj will text you to take it from here.
+              <p className="font-syne text-sm text-gray-500 mb-6 lowercase">
+                {channel === "email"
+                  ? "we'll send a 6-digit code. taj does the rest."
+                  : "taj will text you to take it from here."}
               </p>
 
+              {/* channel toggle */}
+              <div className="inline-flex gap-1 p-1 bg-gray-100 rounded-full mb-5">
+                {["email", "phone"].map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => { setChannel(c); setError(""); }}
+                    className={`px-4 h-8 rounded-full font-mono text-xs lowercase transition-colors ${
+                      channel === c ? "bg-gray-900 text-white" : "text-gray-500 hover:text-gray-900"
+                    }`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+
               <div className="mb-5">
-                <div className="flex gap-2">
-                  <div className="relative">
-                    <button
-                      type="button"
-                      onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                      className="flex items-center gap-1.5 px-3 h-12 bg-white border border-gray-200 rounded-xl hover:border-gray-400 transition-colors"
-                    >
-                      <span className="text-lg">{selectedFlag}</span>
-                      <span className="font-mono text-sm text-gray-900">{countryCode}</span>
-                      <ChevronDown size={14} className="text-gray-400" />
-                    </button>
-                    <CountryDropdown
-                      isOpen={showCountryDropdown}
-                      onClose={() => {
-                        setShowCountryDropdown(false);
-                        setCountrySearch("");
+                {channel === "email" ? (
+                  <Input
+                    ref={contactInputRef}
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@studio.com"
+                    className="h-12 rounded-xl font-mono text-[15px]"
+                    autoComplete="email"
+                    autoFocus
+                    onKeyDown={(e) => e.key === "Enter" && handleContactSubmit()}
+                  />
+                ) : (
+                  <div className="flex gap-2">
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                        className="flex items-center gap-1.5 px-3 h-12 bg-white border border-gray-200 rounded-xl hover:border-gray-400 transition-colors"
+                      >
+                        <span className="text-lg">{selectedFlag}</span>
+                        <span className="font-mono text-sm text-gray-900">{countryCode}</span>
+                        <ChevronDown size={14} className="text-gray-400" />
+                      </button>
+                      <CountryDropdown
+                        isOpen={showCountryDropdown}
+                        onClose={() => {
+                          setShowCountryDropdown(false);
+                          setCountrySearch("");
+                        }}
+                        onSelect={(c) => {
+                          setCountryCode(c.code);
+                          setCountryIso(c.iso);
+                          // Re-format any typed digits to the new country's mask,
+                          // and truncate if they typed more digits than the new country allows.
+                          const digits = phone.replace(/\D/g, "").slice(0, c.len);
+                          setPhone(formatPhoneByMask(digits, c.format));
+                          setError("");
+                        }}
+                        searchValue={countrySearch}
+                        onSearchChange={setCountrySearch}
+                        filteredCountries={filteredCountries}
+                      />
+                    </div>
+                    <Input
+                      ref={contactInputRef}
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => {
+                        // Strip non-digits, cap at country's max, then format with country mask.
+                        const raw = e.target.value.replace(/\D/g, "").slice(0, selectedMaxDigits);
+                        setPhone(formatPhoneByMask(raw, selectedMask));
                       }}
-                      onSelect={(c) => {
-                        setCountryCode(c.code);
-                        setCountryIso(c.iso);
-                        // Re-format any typed digits to the new country's mask,
-                        // and truncate if they typed more digits than the new country allows.
-                        const digits = phone.replace(/\D/g, "").slice(0, c.len);
-                        setPhone(formatPhoneByMask(digits, c.format));
-                        setError("");
-                      }}
-                      searchValue={countrySearch}
-                      onSearchChange={setCountrySearch}
-                      filteredCountries={filteredCountries}
+                      placeholder={selectedPlaceholder}
+                      className="flex-1 h-12 rounded-xl font-mono text-[15px]"
+                      autoComplete="tel"
+                      autoFocus
+                      onKeyDown={(e) => e.key === "Enter" && handleContactSubmit()}
                     />
                   </div>
-                  <Input
-                    ref={phoneInputRef}
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => {
-                      // Strip non-digits, cap at country's max, then format with country mask.
-                      const raw = e.target.value.replace(/\D/g, "").slice(0, selectedMaxDigits);
-                      setPhone(formatPhoneByMask(raw, selectedMask));
-                    }}
-                    placeholder={selectedPlaceholder}
-                    className="flex-1 h-12 rounded-xl font-mono text-[15px]"
-                    autoComplete="tel"
-                    autoFocus
-                    onKeyDown={(e) => e.key === "Enter" && handlePhoneSubmit()}
-                  />
-                </div>
+                )}
               </div>
 
               <label className="flex items-start gap-3 mb-6 cursor-pointer select-none">
@@ -436,7 +513,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
               )}
 
               <button
-                onClick={handlePhoneSubmit}
+                onClick={handleContactSubmit}
                 disabled={loading}
                 className="w-full h-12 bg-gray-900 hover:bg-black text-white font-syne font-semibold rounded-full transition-colors lowercase text-[15px] flex items-center justify-center gap-2 disabled:opacity-50"
               >
@@ -447,17 +524,27 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   </>
                 )}
               </button>
+
+              <p className="text-xs text-gray-400 text-center mt-4 font-mono lowercase">
+                old gully account?{" "}
+                <button
+                  onClick={() => { setStep("legacyphone"); setError(""); }}
+                  className="text-gray-900 underline"
+                >
+                  sign in with your phone
+                </button>
+              </p>
             </div>
           )}
 
-          {/* ========== STEP 2a: OTP (existing user) ========== */}
+          {/* ========== STEP 2: OTP ========== */}
           {step === "otp" && (
             <div className="px-10 py-12 pt-16">
               <h2 className="font-display text-[36px] leading-[0.95] tracking-tight text-gray-900 font-normal lowercase mb-2">
                 welcome back.
               </h2>
               <p className="font-syne text-sm text-gray-500 mb-8 lowercase">
-                we texted a 6-digit code to <span className="text-gray-900">{fullPhone}</span>
+                we sent a 6-digit code to <span className="text-gray-900">{contact}</span>
               </p>
 
               <div className="mb-6 flex justify-center">
@@ -493,7 +580,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
               <p className="text-xs text-gray-400 text-center mt-4 font-mono lowercase">
                 didn't get it?{" "}
                 <button
-                  onClick={handlePhoneSubmit}
+                  onClick={handleContactSubmit}
                   className="text-gray-900 underline"
                   disabled={loading}
                 >
@@ -503,8 +590,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             </div>
           )}
 
-
-          {/* ========== STEP 2b: DETAILS (new user) ========== */}
+          {/* ========== STEP 3: DETAILS (new ButtrBase user) ========== */}
           {step === "details" && (
             <div className="px-10 py-12 pt-16">
               <h2 className="font-display text-[36px] leading-[0.95] tracking-tight text-gray-900 font-normal lowercase mb-2">
@@ -559,52 +645,148 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
             </div>
           )}
 
-          {/* ========== STEP 3: HANDOFF ========== */}
-          {step === "handoff" && (
-            <div className="px-10 py-12 text-center">
-              <div className="inline-flex items-center gap-1.5 mb-6 px-3 py-1.5 bg-gray-50 rounded-full">
-                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse-dot" />
-                <span className="font-mono text-[10px] tracking-wider text-gray-600 lowercase">you're in</span>
-              </div>
-              <h2 className="font-display text-[42px] leading-[0.95] tracking-tight text-gray-900 font-normal lowercase mb-3">
-                say hi to <em className="text-[#E50914]">taj.</em>
+          {/* ========== LEGACY: old phone login (pre-ButtrBase users) ========== */}
+          {step === "legacyphone" && (
+            <div className="px-10 py-12">
+              <h2 className="font-display text-[42px] leading-[0.95] tracking-tight text-gray-900 font-normal lowercase mb-2">
+                just give me your<br />
+                <em className="text-[#E50914]">phone.</em>
               </h2>
-              <p className="font-syne text-[15px] text-gray-500 leading-relaxed mb-8 lowercase">
-                text her first — she'll ask 2 quick qs,<br />
-                then find you your first match.
+              <p className="font-syne text-sm text-gray-500 mb-8 lowercase">
+                for accounts made before the buttrbase switch.
               </p>
 
-              <div className="inline-flex flex-col items-center gap-3 p-6 border border-gray-200 rounded-2xl mb-2">
-                <div className="p-2 bg-white rounded-lg">
-                  <QRCodeSVG
-                    value={WHATSAPP_URL}
-                    size={140}
-                    level="M"
-                    bgColor="#ffffff"
-                    fgColor="#0a0a0a"
-                    marginSize={0}
+              <div className="mb-5">
+                <div className="flex gap-2">
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                      className="flex items-center gap-1.5 px-3 h-12 bg-white border border-gray-200 rounded-xl hover:border-gray-400 transition-colors"
+                    >
+                      <span className="text-lg">{selectedFlag}</span>
+                      <span className="font-mono text-sm text-gray-900">{countryCode}</span>
+                      <ChevronDown size={14} className="text-gray-400" />
+                    </button>
+                    <CountryDropdown
+                      isOpen={showCountryDropdown}
+                      onClose={() => {
+                        setShowCountryDropdown(false);
+                        setCountrySearch("");
+                      }}
+                      onSelect={(c) => {
+                        setCountryCode(c.code);
+                        setCountryIso(c.iso);
+                        const digits = phone.replace(/\D/g, "").slice(0, c.len);
+                        setPhone(formatPhoneByMask(digits, c.format));
+                        setError("");
+                      }}
+                      searchValue={countrySearch}
+                      onSearchChange={setCountrySearch}
+                      filteredCountries={filteredCountries}
+                    />
+                  </div>
+                  <Input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/\D/g, "").slice(0, selectedMaxDigits);
+                      setPhone(formatPhoneByMask(raw, selectedMask));
+                    }}
+                    placeholder={selectedPlaceholder}
+                    className="flex-1 h-12 rounded-xl font-mono text-[15px]"
+                    autoComplete="tel"
+                    autoFocus
+                    onKeyDown={(e) => e.key === "Enter" && handleLegacyPhoneSubmit()}
                   />
-                </div>
-                <div className="font-mono text-[10px] text-gray-500 tracking-wider lowercase">
-                  scan · {WHATSAPP_DISPLAY}
                 </div>
               </div>
 
-              <div className="mt-4">
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => {
-                    // Close modal and head to dashboard so when they come back later they land on /app
-                    setTimeout(() => { onClose(); navigate("/app"); }, 250);
-                  }}
-                  className="inline-flex items-center gap-2 px-6 h-12 bg-[#25D366] hover:bg-[#1fb855] text-white font-syne font-semibold rounded-full transition-colors lowercase text-[15px]"
+              <label className="flex items-start gap-3 mb-6 cursor-pointer select-none">
+                <div
+                  className={`w-5 h-5 rounded-md border-2 shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
+                    agreedToTerms ? "bg-[#E50914] border-[#E50914]" : "bg-white border-gray-300"
+                  }`}
+                  onClick={() => setAgreedToTerms(!agreedToTerms)}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                  open whatsapp
-                </a>
+                  {agreedToTerms && <Check size={14} className="text-white" strokeWidth={3} />}
+                </div>
+                <span className="text-xs text-gray-500 leading-relaxed lowercase" onClick={() => setAgreedToTerms(!agreedToTerms)}>
+                  i agree to gully's{" "}
+                  <a href="/terms" target="_blank" className="text-gray-900 underline">terms</a>{" "}and{" "}
+                  <a href="/privacy" target="_blank" className="text-gray-900 underline">privacy policy</a>. taj will send me whatsapp messages.
+                </span>
+              </label>
+
+              {error && (
+                <p className="text-sm text-[#E50914] mb-4 lowercase font-syne">{error}</p>
+              )}
+
+              <button
+                onClick={handleLegacyPhoneSubmit}
+                disabled={loading}
+                className="w-full h-12 bg-gray-900 hover:bg-black text-white font-syne font-semibold rounded-full transition-colors lowercase text-[15px] flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {loading ? "..." : (
+                  <>
+                    continue
+                    <ArrowRight size={16} />
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* ========== LEGACY: old OTP step ========== */}
+          {step === "legacyotp" && (
+            <div className="px-10 py-12 pt-16">
+              <h2 className="font-display text-[36px] leading-[0.95] tracking-tight text-gray-900 font-normal lowercase mb-2">
+                welcome back.
+              </h2>
+              <p className="font-syne text-sm text-gray-500 mb-8 lowercase">
+                we texted a 6-digit code to <span className="text-gray-900">{fullPhone}</span>
+              </p>
+
+              <div className="mb-6 flex justify-center">
+                <InputOTP
+                  maxLength={6}
+                  value={otp}
+                  onChange={setOtp}
+                  onComplete={handleLegacyOtpSubmit}
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
               </div>
+
+              {error && (
+                <p className="text-sm text-[#E50914] mb-4 lowercase font-syne text-center">{error}</p>
+              )}
+
+              <button
+                onClick={handleLegacyOtpSubmit}
+                disabled={loading || otp.length !== 6}
+                className="w-full h-12 bg-gray-900 hover:bg-black text-white font-syne font-semibold rounded-full transition-colors lowercase text-[15px] flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {loading ? "..." : "verify"}
+              </button>
+
+              <p className="text-xs text-gray-400 text-center mt-4 font-mono lowercase">
+                didn't get it?{" "}
+                <button
+                  onClick={handleLegacyPhoneSubmit}
+                  className="text-gray-900 underline"
+                  disabled={loading}
+                >
+                  resend
+                </button>
+              </p>
             </div>
           )}
         </DialogContent>
