@@ -5,6 +5,13 @@
 //   Step 2 (otp):      6-digit code → POST /auth/bb/otp/verify
 //                      → profile complete?  done, go to /app
 //                      → new bare user?     Step 3
+//   Step 2b (addphone, addphoneotp):  no phone on the account yet (every email
+//                      signup) → number → POST /auth/bb/phone/send, code →
+//                      POST /auth/bb/phone/verify. Taj only works over WhatsApp,
+//                      and none of the 61 pre-ButtrBase users has an email, so
+//                      this step is both how a new user becomes reachable and how
+//                      a returning one gets back to their account: a verified
+//                      number that belongs to an existing account signs them into it.
 //   Step 3 (details):  name + location → POST /auth/bb/complete-profile
 //                      → socials connect page with the "text taj" flag
 //
@@ -152,6 +159,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // Session for a signup still in progress. login() is deferred until the flow
+  // ends: the "/" route shows the landing page only while signed out, so signing
+  // in early navigated to /app and unmounted this modal mid-signup.
+  const [pending, setPending] = useState(null);
 
   const contactInputRef = useRef(null);
 
@@ -167,6 +178,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
       setOtp("");
       setAgreedToTerms(false);
       setError("");
+      setPending(null);
     }
   }, [isOpen]);
 
@@ -268,12 +280,71 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
         ...(channel === "email" ? { email: contact } : { phone: contact }),
         otp
       });
-      login(data.token, data.user);
       if (data.user?.profile_completed) {
+        login(data.token, data.user);
         toast.success("welcome back");
         onClose();
         navigate("/app");
       } else {
+        setPending({ token: data.token, user: data.user });
+        if (!data.user?.phone) {
+          setPhone("");
+          setOtp("");
+          setStep("addphone");
+        } else {
+          setStep("details");
+        }
+      }
+    } catch (e) {
+      const msg = e?.response?.data?.detail || "invalid or expired code";
+      setError(typeof msg === "string" ? msg.toLowerCase() : "invalid or expired code");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ===== Step 2b: a verified phone for accounts without one =====
+  const handleAddPhoneSubmit = async () => {
+    setError("");
+    if (phone.replace(/\D/g, "").length !== selectedMaxDigits) {
+      setError(`enter a valid ${selectedCountry.country.toLowerCase()} number (${selectedMaxDigits} digits)`);
+      return;
+    }
+    setLoading(true);
+    try {
+      const token = pending?.token;
+      await axios.post(`${API}/auth/bb/phone/send`, { phone: fullPhone },
+        { headers: { Authorization: `Bearer ${token}` } });
+      setOtp("");
+      setStep("addphoneotp");
+    } catch (e) {
+      const msg = e?.response?.data?.detail || "could not send the code, try again";
+      setError(typeof msg === "string" ? msg.toLowerCase() : "could not send the code, try again");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddPhoneOtpSubmit = async () => {
+    setError("");
+    if (otp.length !== 6) {
+      setError("enter the 6-digit code");
+      return;
+    }
+    setLoading(true);
+    try {
+      const token = pending?.token;
+      const { data } = await axios.post(`${API}/auth/bb/phone/verify`, { phone: fullPhone, code: otp },
+        { headers: { Authorization: `Bearer ${token}` } });
+      // "linked" returns a token for the existing account the number belongs to;
+      // the empty account just created is gone, so the old token must be replaced.
+      if (data.status === "linked" && data.user?.profile_completed) {
+        login(data.token, data.user);
+        toast.success("welcome back, we found your account");
+        onClose();
+        navigate("/app");
+      } else {
+        setPending({ token: data.token, user: data.user });
         setStep("details");
       }
     } catch (e) {
@@ -297,7 +368,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     }
     setLoading(true);
     try {
-      const token = localStorage.getItem("gully_token");
+      const token = pending?.token || localStorage.getItem("gully_token");
       const refCode = localStorage.getItem("gully_ref") || null;
       const { data } = await axios.post(
         `${API}/auth/bb/complete-profile`,
@@ -373,6 +444,8 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
     setError("");
     if (step === "otp" || step === "details") setStep("contact");
     if (step === "legacyotp") setStep("legacyphone");
+    // No back from "addphone": the user is already signed in by then.
+    if (step === "addphoneotp") setStep("addphone");
   };
 
 
@@ -389,7 +462,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
           className="sm:max-w-md p-0 bg-white border border-gray-100 rounded-3xl"
         >
           {/* Back arrow — only on step 2+ */}
-          {(step === "otp" || step === "details" || step === "legacyotp") && (
+          {(step === "otp" || step === "details" || step === "legacyotp" || step === "addphoneotp") && (
             <button
               onClick={handleBack}
               className="absolute top-5 left-5 w-9 h-9 rounded-full border border-gray-200 hover:border-gray-900 text-gray-600 hover:text-gray-900 flex items-center justify-center transition-colors z-10"
@@ -646,14 +719,17 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
           )}
 
           {/* ========== LEGACY: old phone login (pre-ButtrBase users) ========== */}
-          {step === "legacyphone" && (
+          {(step === "legacyphone" || step === "addphone") && (
             <div className="px-10 py-12">
               <h2 className="font-display text-[42px] leading-[0.95] tracking-tight text-gray-900 font-normal lowercase mb-2">
-                just give me your<br />
-                <em className="text-[#E50914]">phone.</em>
+                {step === "addphone"
+                  ? <>where can taj<br /><em className="text-[#E50914]">text you?</em></>
+                  : <>just give me your<br /><em className="text-[#E50914]">phone.</em></>}
               </h2>
               <p className="font-syne text-sm text-gray-500 mb-8 lowercase">
-                for accounts made before the buttrbase switch.
+                {step === "addphone"
+                  ? "taj works over whatsapp. we'll text a code to confirm it's yours. used gully before? this brings back your account."
+                  : "for accounts made before the buttrbase switch."}
               </p>
 
               <div className="mb-5">
@@ -697,11 +773,12 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                     className="flex-1 h-12 rounded-xl font-mono text-[15px]"
                     autoComplete="tel"
                     autoFocus
-                    onKeyDown={(e) => e.key === "Enter" && handleLegacyPhoneSubmit()}
+                    onKeyDown={(e) => e.key === "Enter" && (step === "addphone" ? handleAddPhoneSubmit() : handleLegacyPhoneSubmit())}
                   />
                 </div>
               </div>
 
+              {step === "legacyphone" && (
               <label className="flex items-start gap-3 mb-6 cursor-pointer select-none">
                 <div
                   className={`w-5 h-5 rounded-md border-2 shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
@@ -717,13 +794,14 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   <a href="/privacy" target="_blank" className="text-gray-900 underline">privacy policy</a>. taj will send me whatsapp messages.
                 </span>
               </label>
+              )}
 
               {error && (
                 <p className="text-sm text-[#E50914] mb-4 lowercase font-syne">{error}</p>
               )}
 
               <button
-                onClick={handleLegacyPhoneSubmit}
+                onClick={step === "addphone" ? handleAddPhoneSubmit : handleLegacyPhoneSubmit}
                 disabled={loading}
                 className="w-full h-12 bg-gray-900 hover:bg-black text-white font-syne font-semibold rounded-full transition-colors lowercase text-[15px] flex items-center justify-center gap-2 disabled:opacity-50"
               >
@@ -738,10 +816,10 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
           )}
 
           {/* ========== LEGACY: old OTP step ========== */}
-          {step === "legacyotp" && (
+          {(step === "legacyotp" || step === "addphoneotp") && (
             <div className="px-10 py-12 pt-16">
               <h2 className="font-display text-[36px] leading-[0.95] tracking-tight text-gray-900 font-normal lowercase mb-2">
-                welcome back.
+                {step === "addphoneotp" ? "check your texts." : "welcome back."}
               </h2>
               <p className="font-syne text-sm text-gray-500 mb-8 lowercase">
                 we texted a 6-digit code to <span className="text-gray-900">{fullPhone}</span>
@@ -752,7 +830,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
                   maxLength={6}
                   value={otp}
                   onChange={setOtp}
-                  onComplete={handleLegacyOtpSubmit}
+                  onComplete={step === "addphoneotp" ? handleAddPhoneOtpSubmit : handleLegacyOtpSubmit}
                 >
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
@@ -770,7 +848,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
               )}
 
               <button
-                onClick={handleLegacyOtpSubmit}
+                onClick={step === "addphoneotp" ? handleAddPhoneOtpSubmit : handleLegacyOtpSubmit}
                 disabled={loading || otp.length !== 6}
                 className="w-full h-12 bg-gray-900 hover:bg-black text-white font-syne font-semibold rounded-full transition-colors lowercase text-[15px] flex items-center justify-center gap-2 disabled:opacity-50"
               >
@@ -780,7 +858,7 @@ const AuthModal = ({ isOpen, onClose, mode = "signup" }) => {
               <p className="text-xs text-gray-400 text-center mt-4 font-mono lowercase">
                 didn't get it?{" "}
                 <button
-                  onClick={handleLegacyPhoneSubmit}
+                  onClick={step === "addphoneotp" ? handleAddPhoneSubmit : handleLegacyPhoneSubmit}
                   className="text-gray-900 underline"
                   disabled={loading}
                 >

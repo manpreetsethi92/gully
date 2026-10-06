@@ -1,12 +1,25 @@
 app = "trygully-web"
 primary_region = "dfw"
 
+# The API this build calls is baked in at build time (Vite). Pointed at the Fly
+# backend's own hostname so the Fly-hosted app works before the api.trygully.com
+# DNS cutover — and keeps working after it, since fly.dev stays valid.
+[build.args]
+  VITE_BACKEND_URL = "https://gully-backend.fly.dev"
+
 [http_service]
   internal_port = 8080
   force_https = true
   auto_stop_machines = "stop"
   auto_start_machines = true
   min_machines_running = 1
+
+  [[http_service.checks]]
+    method = "GET"
+    path = "/"
+    interval = "15s"
+    timeout = "5s"
+    grace_period = "10s"
 
 [[vm]]
   size = "shared-cpu-1x"
