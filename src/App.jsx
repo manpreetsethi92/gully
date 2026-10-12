@@ -15,7 +15,9 @@ import TermsOfService from "./pages/TermsOfService";
 import FAQ from "./pages/FAQ";
 import OAuthCallback from "./pages/OAuthCallback";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://gully-backend-production.up.railway.app";
+// Fallback for builds with no VITE_BACKEND_URL (Vercel). Move to api.trygully.com
+// once its DNS points at Fly; Railway is gone.
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://gully-backend.fly.dev";
 export const API = `${BACKEND_URL}/api`;
 
 // Global handler for 429 rate limit - will be set by AuthProvider
